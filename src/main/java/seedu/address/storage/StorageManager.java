@@ -18,12 +18,14 @@ public class StorageManager implements Storage {
 
     private static final Logger logger = LogsCenter.getLogger(StorageManager.class);
     private AddressBookStorage addressBookStorage;
+    private DegreePlannerStorage degreePlannerStorage;
     private UserPrefsStorage userPrefsStorage;
 
 
-    public StorageManager(AddressBookStorage addressBookStorage, UserPrefsStorage userPrefsStorage) {
+    public StorageManager(AddressBookStorage addressBookStorage, DegreePlannerStorage degreePlannerStorage, UserPrefsStorage userPrefsStorage) {
         super();
         this.addressBookStorage = addressBookStorage;
+        this.degreePlannerStorage = degreePlannerStorage;
         this.userPrefsStorage = userPrefsStorage;
     }
 
@@ -72,6 +74,35 @@ public class StorageManager implements Storage {
     public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
         logger.fine("Attempting to write to data file: " + filePath);
         addressBookStorage.saveAddressBook(addressBook, filePath);
+    }
+
+    // ================ DegreePlanner methods ==============================
+
+    @Override
+    public Path getDegreePlannerFilePath() {
+        return degreePlannerStorage.getDegreePlannerFilePath();
+    }
+
+    @Override
+    public Optional<ReadOnlyAddressBook> readDegreePlanner() throws DataConversionException, IOException {
+        return readDegreePlanner(degreePlannerStorage.getDegreePlannerFilePath());
+    }
+
+    @Override
+    public Optional<ReadOnlyAddressBook> readDegreePlanner(Path filePath) throws DataConversionException, IOException {
+        logger.fine("Attempting to read data from file: " + filePath);
+        return degreePlannerStorage.readDegreePlanner(filePath);
+    }
+
+    @Override
+    public void saveDegreePlanner(ReadOnlyAddressBook degreePlanner) throws IOException {
+        saveDegreePlanner(degreePlanner, degreePlannerStorage.getDegreePlannerFilePath());
+    }
+
+    @Override
+    public void saveDegreePlanner(ReadOnlyAddressBook degreePlanner, Path filePath) throws IOException {
+        logger.fine("Attempting to write to data file: " + filePath);
+        degreePlannerStorage.saveDegreePlanner(degreePlanner, filePath);
     }
 
 }

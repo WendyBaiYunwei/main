@@ -16,6 +16,7 @@ import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.Logic;
 import seedu.address.logic.LogicManager;
 import seedu.address.model.AddressBook;
+import seedu.address.model.DegreePlanner;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
@@ -23,7 +24,9 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.util.SampleDataUtil;
 import seedu.address.storage.AddressBookStorage;
+import seedu.address.storage.DegreePlannerStorage;
 import seedu.address.storage.JsonAddressBookStorage;
+import seedu.address.storage.JsonDegreePlannerStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.Storage;
 import seedu.address.storage.StorageManager;
@@ -57,7 +60,8 @@ public class MainApp extends Application {
         UserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(config.getUserPrefsFilePath());
         UserPrefs userPrefs = initPrefs(userPrefsStorage);
         AddressBookStorage addressBookStorage = new JsonAddressBookStorage(userPrefs.getAddressBookFilePath());
-        storage = new StorageManager(addressBookStorage, userPrefsStorage);
+        DegreePlannerStorage degreePlannerStorage = new JsonDegreePlannerStorage(userPrefs.getDegreePlannerFilePath());
+        storage = new StorageManager(addressBookStorage, degreePlannerStorage, userPrefsStorage);
 
         initLogging(config);
 
@@ -75,6 +79,7 @@ public class MainApp extends Application {
      */
     private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
         Optional<ReadOnlyAddressBook> addressBookOptional;
+
         ReadOnlyAddressBook initialData;
         try {
             addressBookOptional = storage.readAddressBook();
@@ -90,7 +95,7 @@ public class MainApp extends Application {
             initialData = new AddressBook();
         }
 
-        return new ModelManager(initialData, userPrefs);
+        return new ModelManager(initialData, initialData, userPrefs);
     }
 
     private void initLogging(Config config) {

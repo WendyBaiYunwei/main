@@ -25,27 +25,32 @@ public class ModelManager implements Model {
     private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
 
     private final VersionedAddressBook versionedAddressBook;
+    private final VersionedDegreePlanner versionedDegreePlanner;
     private final UserPrefs userPrefs;
     private final FilteredList<Module> filteredModules;
+    private final FilteredList<Module> filteredPlannerModules;
     private final SimpleObjectProperty<Module> selectedModule = new SimpleObjectProperty<>();
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
-    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyUserPrefs userPrefs) {
+    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyAddressBook degreePlanner, ReadOnlyUserPrefs userPrefs) {
         super();
-        requireAllNonNull(addressBook, userPrefs);
+        requireAllNonNull(addressBook, degreePlanner, userPrefs);
 
-        logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
+        logger.fine("Initializing with address book: " + addressBook + "Initializing with degree planner: " + degreePlanner + " and user prefs " + userPrefs);
 
         versionedAddressBook = new VersionedAddressBook(addressBook);
+        versionedDegreePlanner = new VersionedDegreePlanner(degreePlanner);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredModules = new FilteredList<>(versionedAddressBook.getModuleList());
         filteredModules.addListener(this::ensureSelectedModuleIsValid);
+        filteredPlannerModules = new FilteredList<>(versionedDegreePlanner.getModuleList());
+        filteredPlannerModules.addListener(this::ensureSelectedModuleIsValid);
     }
 
     public ModelManager() {
-        this(new AddressBook(), new UserPrefs());
+        this(new AddressBook(), new DegreePlanner(), new UserPrefs());
     }
 
     //=========== UserPrefs ==================================================================================
@@ -78,9 +83,20 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public Path getDegreePlannerFilePath() {
+        return userPrefs.getDegreePlannerFilePath();
+    }
+
+    @Override
     public void setAddressBookFilePath(Path addressBookFilePath) {
         requireNonNull(addressBookFilePath);
         userPrefs.setAddressBookFilePath(addressBookFilePath);
+    }
+
+    @Override
+    public void setDegreePlannerFilePath(Path degreePlannerFilePath) {
+        requireNonNull(degreePlannerFilePath);
+        userPrefs.setAddressBookFilePath(degreePlannerFilePath);
     }
 
     //=========== AddressBook ================================================================================
@@ -107,6 +123,11 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void plannerDeleteModule(Module target) {
+
+    }
+
+    @Override
     public void addModule(Module module) {
         versionedAddressBook.addModule(module);
         updateFilteredModuleList(PREDICATE_SHOW_ALL_MODULES);
@@ -117,6 +138,37 @@ public class ModelManager implements Model {
         requireAllNonNull(target, editedModule);
 
         versionedAddressBook.setModule(target, editedModule);
+    }
+
+    //=========== DegreePlanner ================================================================================
+
+    @Override
+    public void setDegreePlanner(ReadOnlyAddressBook degreePlanner) {
+        versionedDegreePlanner.resetData(degreePlanner);
+    }
+
+    @Override
+    public ReadOnlyAddressBook getDegreePlanner() {
+        return versionedDegreePlanner;
+    }
+
+    @Override
+    public boolean plannerHasModule(Module module) {
+        requireNonNull(module);
+        return versionedDegreePlanner.plannerHasModule(module);
+    }
+
+    @Override
+    public void plannerAddModule(Module module) {
+        versionedDegreePlanner.plannerAddModule(module);
+        updateFilteredModuleList(PREDICATE_SHOW_ALL_MODULES);
+    }
+
+    @Override
+    public void plannerSetModule(Module target, Module editedModule) {
+        requireAllNonNull(target, editedModule);
+
+        versionedDegreePlanner.plannerSetModule(target, editedModule);
     }
 
     //=========== Filtered Module List Accessors =============================================================
@@ -140,27 +192,55 @@ public class ModelManager implements Model {
 
     @Override
     public boolean canUndoAddressBook() {
-        return versionedAddressBook.canUndo();
+        return versionedAddressBook.canUndo() && versionedDegreePlanner.canUndo();
+    }
+
+    @Override
+    public boolean canUndoDegreePlanner() {
+        return false;
     }
 
     @Override
     public boolean canRedoAddressBook() {
-        return versionedAddressBook.canRedo();
+        return versionedAddressBook.canRedo() && versionedDegreePlanner.canRedo();
+    }
+
+    @Override
+    public boolean canRedoDegreePlanner() {
+        return false;
     }
 
     @Override
     public void undoAddressBook() {
         versionedAddressBook.undo();
+        versionedDegreePlanner.undo();
+    }
+
+    @Override
+    public void undoDegreePlanner() {
+
     }
 
     @Override
     public void redoAddressBook() {
         versionedAddressBook.redo();
+        versionedDegreePlanner.redo();
+    }
+
+    @Override
+    public void redoDegreePlanner() {
+
     }
 
     @Override
     public void commitAddressBook() {
         versionedAddressBook.commit();
+        versionedDegreePlanner.commit();
+    }
+
+    @Override
+    public void commitDegreePlanner() {
+
     }
 
     //=========== Selected module ===========================================================================
@@ -227,6 +307,7 @@ public class ModelManager implements Model {
         // state check
         ModelManager other = (ModelManager) obj;
         return versionedAddressBook.equals(other.versionedAddressBook)
+                && versionedDegreePlanner.equals(other.versionedDegreePlanner)
                 && userPrefs.equals(other.userPrefs)
                 && filteredModules.equals(other.filteredModules)
                 && Objects.equals(selectedModule.get(), other.selectedModule.get());

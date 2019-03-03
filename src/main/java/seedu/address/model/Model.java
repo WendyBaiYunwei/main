@@ -40,29 +40,39 @@ public interface Model {
      */
     Path getAddressBookFilePath();
 
+    Path getDegreePlannerFilePath();
+
     /**
      * Sets the user prefs' address book file path.
      */
     void setAddressBookFilePath(Path addressBookFilePath);
+
+    void setDegreePlannerFilePath(Path degreePlannerFilePathFilePath);
 
     /**
      * Replaces address book data with the data in {@code addressBook}.
      */
     void setAddressBook(ReadOnlyAddressBook addressBook);
 
+    void setDegreePlanner(ReadOnlyAddressBook degreePlanner);
+
     /** Returns the AddressBook */
     ReadOnlyAddressBook getAddressBook();
+
+    ReadOnlyAddressBook getDegreePlanner();
 
     /**
      * Returns true if a module with the same identity as {@code module} exists in the address book.
      */
     boolean hasModule(Module module);
 
+    boolean plannerHasModule(Module module);
     /**
      * Deletes the given module.
      * The module must exist in the address book.
      */
     void deleteModule(Module target);
+    void plannerDeleteModule(Module target);
 
     /**
      * Adds the given module.
@@ -70,12 +80,16 @@ public interface Model {
      */
     void addModule(Module module);
 
+    void plannerAddModule(Module module);
+
     /**
      * Replaces the given module {@code target} with {@code editedModule}.
      * {@code target} must exist in the address book.
      * The module identity of {@code editedModule} must not be the same as another existing module in the address book.
      */
     void setModule(Module target, Module editedModule);
+
+    void plannerSetModule(Module target, Module editedModule);
 
     /** Returns an unmodifiable view of the filtered module list */
     ObservableList<Module> getFilteredModuleList();
@@ -91,25 +105,33 @@ public interface Model {
      */
     boolean canUndoAddressBook();
 
+    boolean canUndoDegreePlanner();
+
     /**
      * Returns true if the model has undone address book states to restore.
      */
     boolean canRedoAddressBook();
 
+    boolean canRedoDegreePlanner();
     /**
      * Restores the model's address book to its previous state.
      */
     void undoAddressBook();
+
+    void undoDegreePlanner();
 
     /**
      * Restores the model's address book to its previously undone state.
      */
     void redoAddressBook();
 
+    void redoDegreePlanner();
+
     /**
      * Saves the current address book state for undo/redo.
      */
     void commitAddressBook();
+    void commitDegreePlanner();
 
     /**
      * Selected module in the filtered module list.

@@ -45,6 +45,8 @@ public interface Logic {
      */
     Path getAddressBookFilePath();
 
+    Path getDegreePlannerFilePath();
+
     /**
      * Returns the user prefs' GUI settings.
      */
