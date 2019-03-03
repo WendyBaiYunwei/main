@@ -94,11 +94,6 @@ public class LogicManager implements Logic {
     }
 
     @Override
-    public Path getDegreePlannerFilePath() {
-        return null;
-    }
-
-    @Override
     public GuiSettings getGuiSettings() {
         return model.getGuiSettings();
     }
