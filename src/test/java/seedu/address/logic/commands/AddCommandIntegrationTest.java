@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import seedu.address.logic.CommandHistory;
+import seedu.address.model.DegreePlannerList;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -24,14 +25,14 @@ public class AddCommandIntegrationTest {
 
     @Before
     public void setUp() {
-        model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        //ToDo: Implement getTypicalDegreePlannerList for DegreePlannerList and update the codes below
+        model = new ModelManager(getTypicalAddressBook(), new DegreePlannerList(), new UserPrefs());
     }
 
     @Test
     public void execute_newModule_success() {
         Module validModule = new ModuleBuilder().build();
-
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(), new UserPrefs());
         expectedModel.addModule(validModule);
         expectedModel.commitAddressBook();
 

@@ -13,6 +13,5 @@ public interface ReadOnlyUserPrefs {
 
     Path getAddressBookFilePath();
 
-    Path getDegreePlannerFilePath();
-
+    Path getDegreePlannerListFilePath();
 }

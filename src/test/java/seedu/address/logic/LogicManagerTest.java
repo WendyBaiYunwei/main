@@ -29,6 +29,7 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.module.Module;
 import seedu.address.storage.JsonAddressBookStorage;
+import seedu.address.storage.JsonDegreePlannerListStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.StorageManager;
 import seedu.address.testutil.ModuleBuilder;
@@ -49,7 +50,9 @@ public class LogicManagerTest {
     public void setUp() throws Exception {
         JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(temporaryFolder.newFile().toPath());
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.newFile().toPath());
-        StorageManager storage = new StorageManager(addressBookStorage, userPrefsStorage);
+        JsonDegreePlannerListStorage degreePlannerListStorage =
+                new JsonDegreePlannerListStorage(temporaryFolder.newFile().toPath());
+        StorageManager storage = new StorageManager(addressBookStorage, degreePlannerListStorage, userPrefsStorage);
         logic = new LogicManager(model, storage);
     }
 
@@ -80,7 +83,9 @@ public class LogicManagerTest {
         JsonAddressBookStorage addressBookStorage =
                 new JsonAddressBookIoExceptionThrowingStub(temporaryFolder.newFile().toPath());
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.newFile().toPath());
-        StorageManager storage = new StorageManager(addressBookStorage, userPrefsStorage);
+        JsonDegreePlannerListStorage degreePlannerListStorage =
+                new JsonDegreePlannerListStorage(temporaryFolder.newFile().toPath());
+        StorageManager storage = new StorageManager(addressBookStorage, degreePlannerListStorage, userPrefsStorage);
         logic = new LogicManager(model, storage);
 
         // Execute add command
@@ -103,6 +108,7 @@ public class LogicManagerTest {
     /**
      * Executes the command, confirms that no exceptions are thrown and that the result message is correct.
      * Also confirms that {@code expectedModel} is as specified.
+     *
      * @see #assertCommandBehavior(Class, String, String, Model)
      */
     private void assertCommandSuccess(String inputCommand, String expectedMessage, Model expectedModel) {
@@ -111,6 +117,7 @@ public class LogicManagerTest {
 
     /**
      * Executes the command, confirms that a ParseException is thrown and that the result message is correct.
+     *
      * @see #assertCommandBehavior(Class, String, String, Model)
      */
     private void assertParseException(String inputCommand, String expectedMessage) {
@@ -119,6 +126,7 @@ public class LogicManagerTest {
 
     /**
      * Executes the command, confirms that a CommandException is thrown and that the result message is correct.
+     *
      * @see #assertCommandBehavior(Class, String, String, Model)
      */
     private void assertCommandException(String inputCommand, String expectedMessage) {
@@ -127,21 +135,22 @@ public class LogicManagerTest {
 
     /**
      * Executes the command, confirms that the exception is thrown and that the result message is correct.
+     *
      * @see #assertCommandBehavior(Class, String, String, Model)
      */
     private void assertCommandFailure(String inputCommand, Class<?> expectedException, String expectedMessage) {
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(), new UserPrefs());
         assertCommandBehavior(expectedException, inputCommand, expectedMessage, expectedModel);
     }
 
     /**
      * Executes the command, confirms that the result message is correct and that the expected exception is thrown,
      * and also confirms that the following two parts of the LogicManager object's state are as expected:<br>
-     *      - the internal model manager data are same as those in the {@code expectedModel} <br>
-     *      - {@code expectedModel}'s address book was saved to the storage file.
+     * - the internal model manager data are same as those in the {@code expectedModel} <br>
+     * - {@code expectedModel}'s address book was saved to the storage file.
      */
     private void assertCommandBehavior(Class<?> expectedException, String inputCommand,
-                                           String expectedMessage, Model expectedModel) {
+            String expectedMessage, Model expectedModel) {
 
         try {
             CommandResult result = logic.execute(inputCommand);

@@ -63,6 +63,13 @@ public class LogicManager implements Logic {
             }
         }
 
+        try {
+            storage.saveDegreePlannerList(model.getDegreePlannerList());
+        } catch (IOException ioe) {
+            throw new CommandException(FILE_OPS_ERROR_MESSAGE + ioe, ioe);
+        }
+
+
         return commandResult;
     }
 

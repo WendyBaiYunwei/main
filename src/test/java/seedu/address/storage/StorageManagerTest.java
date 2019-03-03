@@ -27,13 +27,14 @@ public class StorageManagerTest {
     public void setUp() {
         JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(getTempFilePath("ab"));
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(getTempFilePath("prefs"));
-        storageManager = new StorageManager(addressBookStorage, userPrefsStorage);
+        JsonDegreePlannerListStorage degreePlannerListStorage =
+                new JsonDegreePlannerListStorage(getTempFilePath("planner"));
+        storageManager = new StorageManager(addressBookStorage, degreePlannerListStorage, userPrefsStorage);
     }
 
     private Path getTempFilePath(String fileName) {
         return testFolder.getRoot().toPath().resolve(fileName);
     }
-
 
     @Test
     public void prefsReadSave() throws Exception {

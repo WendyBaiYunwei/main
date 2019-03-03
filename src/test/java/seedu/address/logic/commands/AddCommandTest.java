@@ -22,8 +22,10 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.ReadOnlyDegreePlannerList;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.module.Module;
+import seedu.address.model.planner.DegreePlanner;
 import seedu.address.testutil.ModuleBuilder;
 
 public class AddCommandTest {
@@ -122,6 +124,15 @@ public class AddCommandTest {
             throw new AssertionError("This method should not be called.");
         }
 
+        @Override public Path getDegreePlannerListFilePath() {
+            //ToDo: implement error check
+            return null;
+        }
+
+        @Override public void setDegreePlannerListFilePath(Path degreePlannerListFilePath) {
+            //ToDo: implement error check
+        }
+
         @Override
         public void addModule(Module module) {
             throw new AssertionError("This method should not be called.");
@@ -200,6 +211,58 @@ public class AddCommandTest {
         @Override
         public void setSelectedModule(Module module) {
             throw new AssertionError("This method should not be called.");
+        }
+
+        @Override public ReadOnlyDegreePlannerList getDegreePlannerList() {
+            //ToDo: implement error check
+            return null;
+        }
+
+        @Override public boolean hasDegreePlanner(DegreePlanner degreePlanner) {
+            //ToDo: implement error check
+            return false;
+        }
+
+        @Override public void deleteDegreePlanner(DegreePlanner degreePlanner) {
+            //ToDo: implement AssertionError
+        }
+
+        @Override public void addDegreePlanner(DegreePlanner degreePlanner) {
+            //ToDo: implement error check
+        }
+
+        @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
+            //ToDo: implement error check
+        }
+
+        @Override public ObservableList<DegreePlanner> getFilteredDegreePlannerList() {
+            return null;
+        }
+
+        @Override public void updateFilteredDegreePlannerList(Predicate<DegreePlanner> predicate) {
+            //ToDo: implement error check
+        }
+
+        @Override public boolean canUndoDegreePlannerList() {
+            //ToDo: implement error check
+            return false;
+        }
+
+        @Override public boolean canRedoDegreePlannerList() {
+            //ToDo: implement error check
+            return false;
+        }
+
+        @Override public void undoDegreePlannerList() {
+            //ToDo: implement error check
+        }
+
+        @Override public void redoDegreePlannerList() {
+            //ToDo: implement error check
+        }
+
+        @Override public void commitDegreePlannerList() {
+            //ToDo: implement error check
         }
     }
 
