@@ -1,28 +1,35 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CREDITS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 import seedu.address.commons.core.Messages;
 import seedu.address.logic.CommandHistory;
 import seedu.address.model.Model;
-import seedu.address.model.module.NameContainsKeywordsPredicate;
+import seedu.address.model.module.KeywordsPredicate;
 
 /**
- * Finds and lists all modules in address book whose name contains any of the argument keywords.
+ * Finds and lists all modules in address book whose name or code contains any of the argument keywords.
  * Keyword matching is case insensitive.
  */
 public class FindCommand extends Command {
 
     public static final String COMMAND_WORD = "find";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all modules whose names contain any of "
-            + "the specified keywords (case-insensitive) and displays them as a list with index numbers.\n"
-            + "Parameters: KEYWORD [MORE_KEYWORDS]...\n"
-            + "Example: " + COMMAND_WORD + " alice bob charlie";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all modules whose names, code or credits"
+            + "contain any of the specified keywords (case-insensitive)"
+            + " and displays them as a list with index numbers.\n"
+            + "Parameters: "
+            + "[" + PREFIX_NAME + "NAME name...]"
+            + "[" + PREFIX_CODE + "CODE code...]\n"
+            + "[" + PREFIX_CREDITS + "CREDITS credits ...]"
+            + "Example: " + COMMAND_WORD + " " + PREFIX_NAME + "alice bob charlie\n";
 
-    private final NameContainsKeywordsPredicate predicate;
+    private final KeywordsPredicate predicate;
 
-    public FindCommand(NameContainsKeywordsPredicate predicate) {
+    public FindCommand(KeywordsPredicate predicate) {
         this.predicate = predicate;
     }
 

@@ -3,7 +3,6 @@ package seedu.address.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.TypicalModules.ALICE;
 import static seedu.address.testutil.TypicalModules.getTypicalAddressBook;
@@ -53,7 +52,7 @@ public class AddressBookTest {
     @Test
     public void resetData_withDuplicateModules_throwsDuplicateModuleException() {
         // Two modules with the same identity fields
-        Module editedAlice = new ModuleBuilder(ALICE).withAddress(VALID_ADDRESS_BOB).withTags(VALID_TAG_HUSBAND)
+        Module editedAlice = new ModuleBuilder(ALICE).withTags(VALID_TAG_HUSBAND)
                 .build();
         List<Module> newModules = Arrays.asList(ALICE, editedAlice);
         AddressBookStub newData = new AddressBookStub(newModules);
@@ -82,7 +81,7 @@ public class AddressBookTest {
     @Test
     public void hasModule_moduleWithSameIdentityFieldsInAddressBook_returnsTrue() {
         addressBook.addModule(ALICE);
-        Module editedAlice = new ModuleBuilder(ALICE).withAddress(VALID_ADDRESS_BOB).withTags(VALID_TAG_HUSBAND)
+        Module editedAlice = new ModuleBuilder(ALICE).withTags(VALID_TAG_HUSBAND)
                 .build();
         assertTrue(addressBook.hasModule(editedAlice));
     }

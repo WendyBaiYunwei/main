@@ -3,25 +3,21 @@ package systemtests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_ADDRESS_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMAIL_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.CODE_DESC_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.CODE_DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.CREDITS_DESC_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.CREDITS_DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_CODE_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_CREDITS_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_CREDITS_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_MODULES;
@@ -39,11 +35,10 @@ import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.RedoCommand;
 import seedu.address.logic.commands.UndoCommand;
 import seedu.address.model.Model;
-import seedu.address.model.module.Address;
-import seedu.address.model.module.Email;
+import seedu.address.model.module.Code;
+import seedu.address.model.module.Credits;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
-import seedu.address.model.module.Phone;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.ModuleBuilder;
 import seedu.address.testutil.ModuleUtil;
@@ -61,7 +56,7 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
          */
         Index index = INDEX_FIRST_MODULE;
         String command = " " + EditCommand.COMMAND_WORD + "  " + index.getOneBased() + "  " + NAME_DESC_BOB + "  "
-                + PHONE_DESC_BOB + " " + EMAIL_DESC_BOB + "  " + ADDRESS_DESC_BOB + " " + TAG_DESC_HUSBAND + " ";
+                + CREDITS_DESC_BOB + " " + CODE_DESC_BOB + " " + TAG_DESC_HUSBAND + " ";
         Module editedModule = new ModuleBuilder(BOB).withTags(VALID_TAG_HUSBAND).build();
         assertCommandSuccess(command, index, editedModule);
 
@@ -77,26 +72,26 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         assertCommandSuccess(command, model, expectedResultMessage);
 
         /* Case: edit a module with new values same as existing values -> edited */
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
-                + ADDRESS_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_BOB
+                + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
         assertCommandSuccess(command, index, BOB);
 
         /* Case: edit a module with new values same as another module's values but with different name -> edited */
         assertTrue(getModel().getAddressBook().getModuleList().contains(BOB));
         index = INDEX_SECOND_MODULE;
         assertNotEquals(getModel().getFilteredModuleList().get(index.getZeroBased()), BOB);
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + PHONE_DESC_BOB + EMAIL_DESC_BOB
-                + ADDRESS_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + CREDITS_DESC_BOB
+                + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
         editedModule = new ModuleBuilder(BOB).withName(VALID_NAME_AMY).build();
         assertCommandSuccess(command, index, editedModule);
 
-        /* Case: edit a module with new values same as another module's values but with different phone and email
+        /* Case: edit a module with new values same as another module's values but with different credits
          * -> edited
          */
         index = INDEX_SECOND_MODULE;
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + PHONE_DESC_AMY + EMAIL_DESC_AMY
-                + ADDRESS_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
-        editedModule = new ModuleBuilder(BOB).withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY).build();
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_AMY
+                + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
+        editedModule = new ModuleBuilder(BOB).withCredits(VALID_CREDITS_AMY).build();
         assertCommandSuccess(command, index, editedModule);
 
         /* Case: clear tags -> cleared */
@@ -133,8 +128,8 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         showAllModules();
         index = INDEX_FIRST_MODULE;
         selectModule(index);
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY
-                + ADDRESS_DESC_AMY + TAG_DESC_FRIEND;
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + CREDITS_DESC_AMY
+                + CODE_DESC_AMY + TAG_DESC_FRIEND;
         // this can be misleading: card selection actually remains unchanged but the
         // browser's url is updated to reflect the new module's name
         assertCommandSuccess(command, index, AMY, index);
@@ -166,17 +161,13 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_MODULE.getOneBased() + INVALID_NAME_DESC,
                 Name.MESSAGE_CONSTRAINTS);
 
-        /* Case: invalid phone -> rejected */
-        assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_MODULE.getOneBased() + INVALID_PHONE_DESC,
-                Phone.MESSAGE_CONSTRAINTS);
+        /* Case: invalid credits -> rejected */
+        assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_MODULE.getOneBased() + INVALID_CREDITS_DESC,
+                Credits.MESSAGE_CONSTRAINTS);
 
-        /* Case: invalid email -> rejected */
-        assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_MODULE.getOneBased() + INVALID_EMAIL_DESC,
-                Email.MESSAGE_CONSTRAINTS);
-
-        /* Case: invalid address -> rejected */
-        assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_MODULE.getOneBased() + INVALID_ADDRESS_DESC,
-                Address.MESSAGE_CONSTRAINTS);
+        /* Case: invalid code -> rejected */
+        assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_MODULE.getOneBased() + INVALID_CODE_DESC,
+                Code.MESSAGE_CONSTRAINTS);
 
         /* Case: invalid tag -> rejected */
         assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_MODULE.getOneBased() + INVALID_TAG_DESC,
@@ -187,28 +178,13 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         assertTrue(getModel().getAddressBook().getModuleList().contains(BOB));
         index = INDEX_FIRST_MODULE;
         assertFalse(getModel().getFilteredModuleList().get(index.getZeroBased()).equals(BOB));
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
-                + ADDRESS_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_BOB
+                + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
         assertCommandFailure(command, EditCommand.MESSAGE_DUPLICATE_MODULE);
 
         /* Case: edit a module with new values same as another module's values but with different tags -> rejected */
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
-                + ADDRESS_DESC_BOB + TAG_DESC_HUSBAND;
-        assertCommandFailure(command, EditCommand.MESSAGE_DUPLICATE_MODULE);
-
-        /* Case: edit a module with new values same as another module's values but with different address -> rejected */
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
-                + ADDRESS_DESC_AMY + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
-        assertCommandFailure(command, EditCommand.MESSAGE_DUPLICATE_MODULE);
-
-        /* Case: edit a module with new values same as another module's values but with different phone -> rejected */
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + PHONE_DESC_AMY + EMAIL_DESC_BOB
-                + ADDRESS_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
-        assertCommandFailure(command, EditCommand.MESSAGE_DUPLICATE_MODULE);
-
-        /* Case: edit a module with new values same as another module's values but with different email -> rejected */
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_AMY
-                + ADDRESS_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_BOB
+                + CODE_DESC_BOB + TAG_DESC_HUSBAND;
         assertCommandFailure(command, EditCommand.MESSAGE_DUPLICATE_MODULE);
     }
 

@@ -17,11 +17,10 @@ import guitests.guihandles.ModuleListPanelHandle;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import seedu.address.model.module.Address;
-import seedu.address.model.module.Email;
+import seedu.address.model.module.Code;
+import seedu.address.model.module.Credits;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
-import seedu.address.model.module.Phone;
 
 public class ModuleListPanelTest extends GuiUnitTest {
     private static final ObservableList<Module> TYPICAL_MODULES =
@@ -80,10 +79,9 @@ public class ModuleListPanelTest extends GuiUnitTest {
         ObservableList<Module> backingList = FXCollections.observableArrayList();
         for (int i = 0; i < moduleCount; i++) {
             Name name = new Name(i + "a");
-            Phone phone = new Phone("000");
-            Email email = new Email("a@aa");
-            Address address = new Address("a");
-            Module module = new Module(name, phone, email, address, Collections.emptySet());
+            Credits credits = new Credits("000");
+            Code code = new Code("a");
+            Module module = new Module(name, credits, code, Collections.emptySet());
             backingList.add(module);
         }
         return backingList;

@@ -33,11 +33,9 @@ public class ModuleCard extends UiPart<Region> {
     @FXML
     private Label id;
     @FXML
-    private Label phone;
+    private Label credits;
     @FXML
-    private Label address;
-    @FXML
-    private Label email;
+    private Label code;
     @FXML
     private FlowPane tags;
 
@@ -46,9 +44,8 @@ public class ModuleCard extends UiPart<Region> {
         this.module = module;
         id.setText(displayedIndex + ". ");
         name.setText(module.getName().fullName);
-        phone.setText(module.getPhone().value);
-        address.setText(module.getAddress().value);
-        email.setText(module.getEmail().value);
+        credits.setText(module.getCredits().value);
+        code.setText(module.getCode().value);
         module.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));

@@ -3,7 +3,8 @@
 :imagesDir: ../images
 :stylesDir: ../stylesheets
 
-== PROJECT: AddressBook - Level 4
+== PROJECT: PlanWithEase
+_{The dummy content given below serves as a placeholder to be updated in the future.}_ +
 
 ---
 

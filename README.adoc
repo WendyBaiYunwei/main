@@ -1,12 +1,12 @@
 = PlanWithEase
 ifdef::env-github,env-browser[:relfileprefix: docs/]
 
-https://travis-ci.org/cs2113-ay1819s2-t09-1/main[image:https://img.shields.io/travis/cs2113-ay1819s2-t09-1/main/master.svg?logo=travis-ci&logoColor=FFDC00&cacheSeconds=0[Travis CI Build Status]]
-https://ci.appveyor.com/project/Creastery/main[image:https://img.shields.io/appveyor/ci/Creastery/main.svg?logo=appveyor&logoColor=39CCCC&cacheSeconds=0[AppVeyor CI Build Status]]
-https://coveralls.io/github/cs2113-ay1819s2-t09-1/main?branch=master[image:https://img.shields.io/coveralls/github/cs2113-ay1819s2-t09-1/main.svg?logo=reverbnation&logoColor=FF851B&cacheSeconds=0[Coveralls Code Coverage Status]]
+https://travis-ci.org/CS2113-AY1819S2-T09-1/main[image:https://img.shields.io/travis/CS2113-AY1819S2-T09-1/main/master.svg?logo=travis-ci&logoColor=FFDC00&cacheSeconds=0[Travis CI Build Status]]
+https://ci.appveyor.com/project/Creastery/main[image:https://img.shields.io/appveyor/ci/Creastery/main/master.svg?logo=appveyor&logoColor=39CCCC&cacheSeconds=0[AppVeyor CI Build Status]]
+https://coveralls.io/github/CS2113-AY1819S2-T09-1/main?branch=master[image:https://img.shields.io/coveralls/github/CS2113-AY1819S2-T09-1/main.svg?logo=reverbnation&logoColor=FF851B&cacheSeconds=0[Coveralls Code Coverage Status]]
 https://www.codacy.com/app/cs2113-ay1819s2-t09-1/main[image:https://img.shields.io/codacy/grade/fb54572137f043de9b9913f791b4017f.svg?logo=codacy&logoColor=white&cacheSeconds=0[Codacy Code Quality Status]]
 https://app.netlify.com/sites/cs2113-ay1819s2-t09-1/deploys[image:https://img.shields.io/badge/dynamic/json.svg?url=https://api.netlify.com/api/v1/sites/cs2113-ay1819s2-t09-1.netlify.com/deploys&query=$%5B0%5D.state&label=deploy&color=blue&logo=netlify&cacheSeconds=0[Netlify Deploy Previews Status]]
-link:LICENSE[image:https://img.shields.io/badge/license-MIT-blue.svg?logo=github&logoColor=white[MIT License]]
+link:https://github.com/cs2113-ay1819s2-t09-1/main/blob/master/LICENSE[image:https://img.shields.io/badge/license-MIT-blue.svg?logo=github&logoColor=white[MIT License]]
 
 ifdef::env-github[]
 image::docs/images/Ui.png[width="600"]
@@ -37,4 +37,4 @@ endif::[]
 _Marco Jakob_.
 * Libraries used: https://github.com/TestFX/TestFX[TestFX], https://github.com/FasterXML/jackson[Jackson], https://github.com/junit-team/junit5[JUnit5]
 
-== Licence : link:LICENSE[MIT]
+== Licence : link:https://github.com/cs2113-ay1819s2-t09-1/main/blob/master/LICENSE[MIT]

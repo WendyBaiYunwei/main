@@ -1,8 +1,7 @@
 {
   "modules": [ {
     "name": "Hans Muster",
-    "phone": "9482424",
-    "email": "invalid@email!3e",
-    "address": "4th street"
+    "credits": "9482424z",
+    "code": "4th street"
   } ]
 }

@@ -14,16 +14,14 @@ import seedu.address.model.module.Module;
 public class ModuleCardHandle extends NodeHandle<Node> {
     private static final String ID_FIELD_ID = "#id";
     private static final String NAME_FIELD_ID = "#name";
-    private static final String ADDRESS_FIELD_ID = "#address";
-    private static final String PHONE_FIELD_ID = "#phone";
-    private static final String EMAIL_FIELD_ID = "#email";
+    private static final String CODE_FIELD_ID = "#code";
+    private static final String CREDITS_FIELD_ID = "#credits";
     private static final String TAGS_FIELD_ID = "#tags";
 
     private final Label idLabel;
     private final Label nameLabel;
-    private final Label addressLabel;
-    private final Label phoneLabel;
-    private final Label emailLabel;
+    private final Label codeLabel;
+    private final Label creditsLabel;
     private final List<Label> tagLabels;
 
     public ModuleCardHandle(Node cardNode) {
@@ -31,9 +29,8 @@ public class ModuleCardHandle extends NodeHandle<Node> {
 
         idLabel = getChildNode(ID_FIELD_ID);
         nameLabel = getChildNode(NAME_FIELD_ID);
-        addressLabel = getChildNode(ADDRESS_FIELD_ID);
-        phoneLabel = getChildNode(PHONE_FIELD_ID);
-        emailLabel = getChildNode(EMAIL_FIELD_ID);
+        codeLabel = getChildNode(CODE_FIELD_ID);
+        creditsLabel = getChildNode(CREDITS_FIELD_ID);
 
         Region tagsContainer = getChildNode(TAGS_FIELD_ID);
         tagLabels = tagsContainer
@@ -51,16 +48,12 @@ public class ModuleCardHandle extends NodeHandle<Node> {
         return nameLabel.getText();
     }
 
-    public String getAddress() {
-        return addressLabel.getText();
+    public String getCode() {
+        return codeLabel.getText();
     }
 
-    public String getPhone() {
-        return phoneLabel.getText();
-    }
-
-    public String getEmail() {
-        return emailLabel.getText();
+    public String getCredits() {
+        return creditsLabel.getText();
     }
 
     public List<String> getTags() {
@@ -75,9 +68,8 @@ public class ModuleCardHandle extends NodeHandle<Node> {
      */
     public boolean equals(Module module) {
         return getName().equals(module.getName().fullName)
-                && getAddress().equals(module.getAddress().value)
-                && getPhone().equals(module.getPhone().value)
-                && getEmail().equals(module.getEmail().value)
+                && getCode().equals(module.getCode().value)
+                && getCredits().equals(module.getCredits().value)
                 && getTags().equals(module.getTags().stream()
                         .map(tag -> tag.tagName)
                         .sorted()

@@ -1,14 +1,13 @@
 package seedu.address.model.module;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 import seedu.address.commons.util.StringUtil;
 
 /**
  * Tests that a {@code Module}'s {@code Name} matches any of the keywords given.
  */
-public class NameContainsKeywordsPredicate implements Predicate<Module> {
+public class NameContainsKeywordsPredicate extends KeywordsPredicate {
     private final List<String> keywords;
 
     public NameContainsKeywordsPredicate(List<String> keywords) {

@@ -6,23 +6,22 @@
 
 PlanWithEase was developed by the
 https://github.com/cs2113-ay1819s2-t09-1[CS2113-AY1819S2-T09-1] team. +
-_{The dummy content given below serves as a placeholder to be used by future forks of the project.}_ +
-{empty} +
-We are a team based in the http://www.comp.nus.edu.sg[School of Computing, National University of Singapore].
+We are a team based in the https://www.comp.nus.edu.sg[School of Computing, National University of Singapore].
 
 == Project Team
 
-=== John Doe
-image::damithc.jpg[width="150", align="left"]
-{empty}[http://www.comp.nus.edu.sg/~damithch[homepage]] [https://github.com/damithc[github]] [<<johndoe#, portfolio>>]
+=== Ngo Wei Lin
+image::creastery.png[width="150", align="left"]
+{empty}[https://github.com/creastery[github]] [<<creastery#, portfolio>>]
 
-Role: Project Advisor
+Role: Team Lead +
+Responsibilities: Model
 
 '''
 
 === Bai Yunwei
 image::wendybaiyunwei.png[width="150", align="left"]
-{empty}[http://github.com/wendybaiyunwei[github]] [<<wendybaiyunwei#, portfolio>>]
+{empty}[https://github.com/wendybaiyunwei[github]] [<<wendybaiyunwei#, portfolio>>]
 
 Role: Developer +
 Responsibilities: Logic
@@ -40,7 +39,7 @@ Responsibilities: Logic
 
 === Ahn TaeGyu
 image::truegitnovice.png[width="150", align="left"]
-{empty}[http://github.com/truegitnovice[github]] [<<truegitnovice#, portfolio>>]
+{empty}[https://github.com/truegitnovice[github]] [<<truegitnovice#, portfolio>>]
 
 Role: Developer +
 Responsibilities: Documentation + UI
@@ -48,8 +47,8 @@ Responsibilities: Documentation + UI
 '''
 
 === Yeo Cheng Hong
-image::chyeo.jpg[width="150", align="left"]
-{empty}[http://github.com/chyeo[github]] [<<chyeo#, portfolio>>]
+image::chyeo.png[width="150", align="left"]
+{empty}[https://github.com/chyeo[github]] [<<chyeo#, portfolio>>]
 
 Role: Developer +
 Responsibilities: Storage

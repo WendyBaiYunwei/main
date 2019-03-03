@@ -19,6 +19,8 @@ import seedu.address.logic.CommandHistory;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.module.CodeContainsKeywordsPredicate;
+import seedu.address.model.module.CreditsContainsKeywordsPredicate;
 import seedu.address.model.module.NameContainsKeywordsPredicate;
 
 /**
@@ -59,7 +61,7 @@ public class FindCommandTest {
     @Test
     public void execute_zeroKeywords_noModuleFound() {
         String expectedMessage = String.format(MESSAGE_MODULES_LISTED_OVERVIEW, 0);
-        NameContainsKeywordsPredicate predicate = preparePredicate(" ");
+        NameContainsKeywordsPredicate predicate = prepareNamePredicate(" ");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredModuleList(predicate);
         assertCommandSuccess(command, model, commandHistory, expectedMessage, expectedModel);
@@ -67,9 +69,31 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_multipleKeywords_multipleModulesFound() {
+    public void execute_multipleNameKeywords_multipleModulesFound() {
         String expectedMessage = String.format(MESSAGE_MODULES_LISTED_OVERVIEW, 3);
-        NameContainsKeywordsPredicate predicate = preparePredicate("Kurz Elle Kunz");
+        NameContainsKeywordsPredicate predicate = prepareNamePredicate("Kurz Elle Kunz");
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredModuleList(predicate);
+        assertCommandSuccess(command, model, commandHistory, expectedMessage, expectedModel);
+        assertEquals(Arrays.asList(CARL, ELLE, FIONA), model.getFilteredModuleList());
+    }
+
+    @Test
+    public void execute_multipleCodeKeywords_multipleModulesFound() {
+        String expectedMessage = String.format(MESSAGE_MODULES_LISTED_OVERVIEW, 3);
+        // TODO: update the module code after TypicalModule attribute are updated
+        CodeContainsKeywordsPredicate predicate = prepareCodePredicate("wall michegan tokyo");
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredModuleList(predicate);
+        assertCommandSuccess(command, model, commandHistory, expectedMessage, expectedModel);
+        assertEquals(Arrays.asList(CARL, ELLE, FIONA), model.getFilteredModuleList());
+    }
+
+    @Test
+    public void execute_multipleCreditsKeywords_multipleModulesFound() {
+        String expectedMessage = String.format(MESSAGE_MODULES_LISTED_OVERVIEW, 3);
+        // TODO: update the module credits after TypicalModule attribute are updated
+        CreditsContainsKeywordsPredicate predicate = prepareCreditsPredicate("95352563 9482224 9482427");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredModuleList(predicate);
         assertCommandSuccess(command, model, commandHistory, expectedMessage, expectedModel);
@@ -79,7 +103,22 @@ public class FindCommandTest {
     /**
      * Parses {@code userInput} into a {@code NameContainsKeywordsPredicate}.
      */
-    private NameContainsKeywordsPredicate preparePredicate(String userInput) {
+    private NameContainsKeywordsPredicate prepareNamePredicate(String userInput) {
         return new NameContainsKeywordsPredicate(Arrays.asList(userInput.split("\\s+")));
     }
+
+    /**
+     * Parses {@code userInput} into a {@code CodeContainsKeywordsPredicate}.
+     */
+    private CodeContainsKeywordsPredicate prepareCodePredicate(String userInput) {
+        return new CodeContainsKeywordsPredicate(Arrays.asList(userInput.split("\\s+")));
+    }
+
+    /**
+     * Parses {@code userInput} into a {@code CreditsContainsKeywordsPredicate}.
+     */
+    private CreditsContainsKeywordsPredicate prepareCreditsPredicate(String userInput) {
+        return new CreditsContainsKeywordsPredicate(Arrays.asList(userInput.split("\\s+")));
+    }
+
 }

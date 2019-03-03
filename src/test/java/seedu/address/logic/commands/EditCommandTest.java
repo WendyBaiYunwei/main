@@ -5,8 +5,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_CREDITS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
@@ -58,11 +58,11 @@ public class EditCommandTest {
         Module lastModule = model.getFilteredModuleList().get(indexLastModule.getZeroBased());
 
         ModuleBuilder moduleInList = new ModuleBuilder(lastModule);
-        Module editedModule = moduleInList.withName(VALID_NAME_BOB).withPhone(VALID_PHONE_BOB)
+        Module editedModule = moduleInList.withName(VALID_NAME_BOB).withCredits(VALID_CREDITS_BOB)
                 .withTags(VALID_TAG_HUSBAND).build();
 
         EditCommand.EditModuleDescriptor descriptor = new EditModuleDescriptorBuilder().withName(VALID_NAME_BOB)
-                .withPhone(VALID_PHONE_BOB).withTags(VALID_TAG_HUSBAND).build();
+                .withCredits(VALID_CREDITS_BOB).withTags(VALID_TAG_HUSBAND).build();
         EditCommand editCommand = new EditCommand(indexLastModule, descriptor);
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);

@@ -6,11 +6,10 @@ import java.util.stream.Stream;
 
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditModuleDescriptor;
-import seedu.address.model.module.Address;
-import seedu.address.model.module.Email;
+import seedu.address.model.module.Code;
+import seedu.address.model.module.Credits;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
-import seedu.address.model.module.Phone;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -34,9 +33,8 @@ public class EditModuleDescriptorBuilder {
     public EditModuleDescriptorBuilder(Module module) {
         descriptor = new EditCommand.EditModuleDescriptor();
         descriptor.setName(module.getName());
-        descriptor.setPhone(module.getPhone());
-        descriptor.setEmail(module.getEmail());
-        descriptor.setAddress(module.getAddress());
+        descriptor.setCredits(module.getCredits());
+        descriptor.setCode(module.getCode());
         descriptor.setTags(module.getTags());
     }
 
@@ -49,26 +47,18 @@ public class EditModuleDescriptorBuilder {
     }
 
     /**
-     * Sets the {@code Phone} of the {@code EditModuleDescriptor} that we are building.
+     * Sets the {@code Credits} of the {@code EditModuleDescriptor} that we are building.
      */
-    public EditModuleDescriptorBuilder withPhone(String phone) {
-        descriptor.setPhone(new Phone(phone));
+    public EditModuleDescriptorBuilder withCredits(String credits) {
+        descriptor.setCredits(new Credits(credits));
         return this;
     }
 
     /**
-     * Sets the {@code Email} of the {@code EditModuleDescriptor} that we are building.
+     * Sets the {@code Code} of the {@code EditModuleDescriptor} that we are building.
      */
-    public EditModuleDescriptorBuilder withEmail(String email) {
-        descriptor.setEmail(new Email(email));
-        return this;
-    }
-
-    /**
-     * Sets the {@code Address} of the {@code EditModuleDescriptor} that we are building.
-     */
-    public EditModuleDescriptorBuilder withAddress(String address) {
-        descriptor.setAddress(new Address(address));
+    public EditModuleDescriptorBuilder withCode(String code) {
+        descriptor.setCode(new Code(code));
         return this;
     }
 

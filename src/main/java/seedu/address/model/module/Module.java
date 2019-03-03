@@ -17,22 +17,20 @@ public class Module {
 
     // Identity fields
     private final Name name;
-    private final Phone phone;
-    private final Email email;
+    private final Credits credits;
 
     // Data fields
-    private final Address address;
+    private final Code code;
     private final Set<Tag> tags = new HashSet<>();
 
     /**
      * Every field must be present and not null.
      */
-    public Module(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags);
+    public Module(Name name, Credits credits, Code code, Set<Tag> tags) {
+        requireAllNonNull(name, credits, code, tags);
         this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
+        this.credits = credits;
+        this.code = code;
         this.tags.addAll(tags);
     }
 
@@ -40,16 +38,12 @@ public class Module {
         return name;
     }
 
-    public Phone getPhone() {
-        return phone;
+    public Credits getCredits() {
+        return credits;
     }
 
-    public Email getEmail() {
-        return email;
-    }
-
-    public Address getAddress() {
-        return address;
+    public Code getCode() {
+        return code;
     }
 
     /**
@@ -70,8 +64,9 @@ public class Module {
         }
 
         return otherModule != null
-                && otherModule.getName().equals(getName())
-                && (otherModule.getPhone().equals(getPhone()) || otherModule.getEmail().equals(getEmail()));
+                && otherModule.getCode().equals(getCode())
+                && otherModule.getCredits().equals(getCredits())
+                && otherModule.getName().equals(getName());
     }
 
     /**
@@ -90,28 +85,25 @@ public class Module {
 
         Module otherModule = (Module) other;
         return otherModule.getName().equals(getName())
-                && otherModule.getPhone().equals(getPhone())
-                && otherModule.getEmail().equals(getEmail())
-                && otherModule.getAddress().equals(getAddress())
+                && otherModule.getCredits().equals(getCredits())
+                && otherModule.getCode().equals(getCode())
                 && otherModule.getTags().equals(getTags());
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags);
+        return Objects.hash(name, credits, code, tags);
     }
 
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append(getName())
-                .append(" Phone: ")
-                .append(getPhone())
-                .append(" Email: ")
-                .append(getEmail())
-                .append(" Address: ")
-                .append(getAddress())
+                .append(" Credits: ")
+                .append(getCredits())
+                .append(" Code: ")
+                .append(getCode())
                 .append(" Tags: ");
         getTags().forEach(builder::append);
         return builder.toString();

@@ -1,0 +1,30 @@
+{
+  "authors":
+  [
+    {
+      "githubId": "truegitnovice",
+      "displayName": "AHN...GYU",
+      "authorNames": ["truegitnovice", "Ahn TaeGyu"]
+    },
+    {
+      "githubId": "WendyBaiYunwei",
+      "displayName": "BAI...WEI",
+      "authorNames": ["WendyBaiYunwei", "Bai Yunwei"]
+    },
+    {
+      "githubId": "lycjackie",
+      "displayName": "LEE...HOY",
+      "authorNames": ["lycjackie", "Jackie Lee"]
+    },
+    {
+      "githubId": "Creastery",
+      "displayName": "NGO...LIN",
+      "authorNames": ["Creastery", "Ngo Wei Lin"]
+    },
+    {
+      "githubId": "chyeo",
+      "displayName": "YEO...ONG",
+      "authorNames": ["chyeo", "CH YEO", "Yeo Cheng Hong"]
+    }
+  ]
+}

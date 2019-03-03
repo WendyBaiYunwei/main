@@ -1,13 +1,11 @@
 {
   "modules": [ {
     "name": "Valid Module",
-    "phone": "9482424",
-    "email": "hans@example.com",
-    "address": "4th street"
+    "credits": "9482424",
+    "code": "4th street"
   }, {
-    "name": "Module With Invalid Phone Field",
-    "phone": "948asdf2424",
-    "email": "hans@example.com",
-    "address": "4th street"
+    "name": "Module With Invalid Credits Field",
+    "credits": "948asdf2424",
+    "code": "4th street"
   } ]
 }
