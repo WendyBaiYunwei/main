@@ -17,7 +17,7 @@ import seedu.address.model.module.Module;
  */
 public class PlannerAddCommand extends Command {
 
-    public static final String COMMAND_WORD = "planner add";
+    public static final String COMMAND_WORD = "planneradd";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a module to the degree planner. "
             + "Parameters: "
