@@ -16,13 +16,19 @@ ifndef::env-github[]
 image::images/Ui.png[width="600"]
 endif::[]
 
-* This is a desktop Address Book application. It has a GUI but most of the user interactions happen using a CLI (Command Line Interface).
-* It is a Java sample application intended for students learning Software Engineering while using Java as the main programming language.
-* It is *written in OOP fashion*. It provides a *reasonably well-written* code example that is *significantly bigger* (around 6 KLoC)than what students usually write in beginner-level SE modules.
-* What's different from https://github.com/se-edu/addressbook-level3[level 3]:
-** A more sophisticated GUI that includes a list  panel and an in-built Browser.
-** More test cases, including automated GUI testing.
-** Support for _Build Automation_ using Gradle and for _Continuous Integration_ using Travis CI.
+* PlanWithEase (PWE) is a degree planner desktop application. It has a GUI but most of the user
+interactions happen
+using a CLI
+(Command Line Interface).
+* PWE is designed to help students in National University of Singapore(NUS) Information Security freshmen in creating a
+ comprehensive degree plan according to the degree requirements.
+* PWE is optimized for those who prefer using a CLI. The commands used to interact with PWE
+are designed to be simple and intuitive, so even those who are unfamiliar with CLI can use PWE with ease.
+
+* PWE allows users to:
+** plan their module quickly and more conveniently.
+** automate checking of module pre-requisites to avoid module conflicts. _(coming soon)_
+** provide an informed decision so that the user are able to decide which module to take at which semester.
 
 == Site Map
 
@@ -32,7 +38,8 @@ endif::[]
 * <<ContactUs#, Contact Us>>
 
 == Acknowledgements
-* This application is based on https://github.com/nusCS2113-AY1819S2/addressbook-level4[AddressBook Level 4]
+* Original source: https://github.com/se-edu/addressbook-level4[AddressBook
+Level 4 project] created by https://github.com/se-edu/[SE-EDU initiative]
 * Some parts of this sample application were inspired by the excellent http://code.makery.ch/library/javafx-8-tutorial/[Java FX tutorial] by
 _Marco Jakob_.
 * Libraries used: https://github.com/TestFX/TestFX[TestFX], https://github.com/FasterXML/jackson[Jackson], https://github.com/junit-team/junit5[JUnit5]

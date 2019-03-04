@@ -20,6 +20,7 @@ import seedu.address.model.module.Module;
 import seedu.address.model.module.exceptions.ModuleNotFoundException;
 import seedu.address.model.planner.DegreePlanner;
 import seedu.address.model.planner.DegreePlannerModule;
+import seedu.address.model.requirement.RequirementCategory;
 
 /**
  * Represents the in-memory model of the address book data.
@@ -35,12 +36,17 @@ public class ModelManager implements Model {
     private final VersionedDegreePlannerList versionedDegreePlannerList;
     private final FilteredList<DegreePlanner> filteredDegreePlanners;
 
+    private final VersionedRequirementCategoryList versionedRequirementCategoryList;
+    private final FilteredList<RequirementCategory> filteredRequirementCategory;
+
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
-    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyDegreePlannerList degreePlannerList, ReadOnlyUserPrefs userPrefs) {
+    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyDegreePlannerList degreePlannerList,
+            ReadOnlyRequirementCategoryList requirementCategoryList, ReadOnlyUserPrefs userPrefs) {
         super();
-        requireAllNonNull(addressBook, degreePlannerList, userPrefs);
+        requireAllNonNull(addressBook, degreePlannerList, requirementCategoryList, userPrefs);
+
 
         logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
 
@@ -52,13 +58,16 @@ public class ModelManager implements Model {
         versionedDegreePlannerList = new VersionedDegreePlannerList(degreePlannerList);
         filteredDegreePlanners = new FilteredList<>((versionedDegreePlannerList.getDegreePlannerList()));
 
+        versionedRequirementCategoryList = new VersionedRequirementCategoryList(requirementCategoryList);
+        filteredRequirementCategory =
+                new FilteredList<>((versionedRequirementCategoryList.getRequirementCategoryList()));
     }
 
     /**
      * ToDo: Add DegreePlannerList
      */
     public ModelManager() {
-        this(new AddressBook(), new DegreePlannerList(), new UserPrefs());
+        this(new AddressBook(), new DegreePlannerList(), new RequirementCategoryList(), new UserPrefs());
     }
 
     //=========== UserPrefs ==================================================================================
@@ -105,6 +114,17 @@ public class ModelManager implements Model {
     public void setDegreePlannerListFilePath(Path degreePlannerListFilePath) {
         requireNonNull(degreePlannerListFilePath);
         userPrefs.setDegreePlannerListFilePath(degreePlannerListFilePath);
+    }
+
+    @Override
+    public Path getRequirementCategoryListFilePath() {
+        return userPrefs.getRequirementCategoryListFilePath();
+    }
+
+    @Override
+    public void setRequirementCategoryListFilePath(Path requirementCategoryListFilePath) {
+        requireNonNull(requirementCategoryListFilePath);
+        userPrefs.setDegreePlannerListFilePath(requirementCategoryListFilePath);
     }
 
     //=========== AddressBook ================================================================================
@@ -321,5 +341,63 @@ public class ModelManager implements Model {
 
     @Override public void commitDegreePlannerList() {
         versionedDegreePlannerList.commit();
+    }
+
+    //=========== RequirementCategoryList Methods =================================================================
+
+    @Override
+    public ReadOnlyRequirementCategoryList getRequirementCategoryList() {
+        return versionedRequirementCategoryList;
+    }
+
+    @Override
+    public boolean hasRequirementCategory(RequirementCategory planner) {
+        requireNonNull(planner);
+        return versionedRequirementCategoryList.hasRequirementCategory(planner);
+    }
+
+    @Override public void deleteRequirementCategory(RequirementCategory target) {
+        versionedRequirementCategoryList.removeRequirementCategory(target);
+    }
+
+    @Override public void addRequirementCategory(RequirementCategory degreePlanner) {
+        versionedRequirementCategoryList.addRequirementCategory(degreePlanner);
+    }
+
+    @Override public void setRequirementCategory(RequirementCategory target,
+            RequirementCategory editedRequirementCategory) {
+        requireAllNonNull(target, editedRequirementCategory);
+
+        versionedRequirementCategoryList.setRequirementCategory(target, editedRequirementCategory);
+    }
+
+    @Override public ObservableList<RequirementCategory> getFilteredRequirementCategoryList() {
+        return filteredRequirementCategory;
+    }
+
+    @Override public void updateFilteredRequirementCategoryList(Predicate<RequirementCategory> predicate) {
+        requireNonNull(predicate);
+        filteredRequirementCategory.setPredicate(predicate);
+    }
+
+    //=========== Undo/Redo =================================================================================
+    @Override public boolean canUndoRequirementCategoryList() {
+        return versionedRequirementCategoryList.canUndo();
+    }
+
+    @Override public boolean canRedoRequirementCategoryList() {
+        return versionedRequirementCategoryList.canRedo();
+    }
+
+    @Override public void undoRequirementCategoryList() {
+        versionedRequirementCategoryList.undo();
+    }
+
+    @Override public void redoRequirementCategoryList() {
+        versionedRequirementCategoryList.redo();
+    }
+
+    @Override public void commitRequirementCategoryList() {
+        versionedRequirementCategoryList.commit();
     }
 }

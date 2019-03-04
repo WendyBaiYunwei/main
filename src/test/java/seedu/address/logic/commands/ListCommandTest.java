@@ -12,6 +12,7 @@ import seedu.address.logic.CommandHistory;
 import seedu.address.model.DegreePlannerList;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
+import seedu.address.model.RequirementCategoryList;
 import seedu.address.model.UserPrefs;
 
 /**
@@ -26,8 +27,10 @@ public class ListCommandTest {
     @Before
     public void setUp() {
         //ToDo: Implement getTypicalDegreePlannerList for DegreePlannerList and update the codes below
-        model = new ModelManager(getTypicalAddressBook(), new DegreePlannerList(), new UserPrefs());
-        expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(), new UserPrefs());
+        model = new ModelManager(getTypicalAddressBook(), new DegreePlannerList(), new RequirementCategoryList(),
+                new UserPrefs());
+        expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
+                model.getRequirementCategoryList(), new UserPrefs());
     }
 
     @Test

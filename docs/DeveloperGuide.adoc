@@ -851,7 +851,8 @@ _{More to be added}_
 [appendix]
 == Use Cases
 
-(For all use cases below, the *System* is the `AddressBook` and the *Actor* is the `user`, unless specified otherwise)
+(For all use cases below, the *System* is the PlanWithEase `Application` and the *Actor* is the `user`, unless
+specified otherwise)
 
 [discrete]
 === Use case: Delete module
@@ -879,7 +880,32 @@ Use case ends.
 +
 Use case resumes at step 2.
 
-_{More to be added}_
+[discrete]
+=== Use case: Find a module
+*Guarantee(s):*
+
+* Modules will be listed if the input from the user is valid and can be matches the existing entries in the module list. +
+
+*MSS*
+
+. User requests to find modules with their keyword of choice.
+. Application shows a list of modules matched the keyword.
++
+Use case ends.
+
+*Extensions*
+[none]
+* 1a. The given input is invalid.
+** 1a1. Application shows an error message that given input is invalid.
++
+Use case ends.
+
+[none]
+* 2a. The module list is empty.
+** 2a1. Application shows an error message that module list is empty.
++
+Use case ends.
+
 
 [appendix]
 == Non Functional Requirements
@@ -946,7 +972,7 @@ _{ more test cases ... }_
 
 .. Prerequisites: List all modules using the `list` command. Multiple modules in the list.
 .. Test case: `delete 1` +
-   Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+   Expected: First module is deleted from the list. Details of the deleted module shown in the status message. Timestamp in the status bar is updated.
 .. Test case: `delete 0` +
    Expected: No module is deleted. Error details shown in the status message. Status bar remains the same.
 .. Other incorrect delete commands to try: `delete`, `delete x` (where x is larger than the list size) _{give more}_ +

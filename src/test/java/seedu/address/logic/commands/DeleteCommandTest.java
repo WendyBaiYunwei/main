@@ -18,6 +18,7 @@ import seedu.address.logic.CommandHistory;
 import seedu.address.model.DegreePlannerList;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
+import seedu.address.model.RequirementCategoryList;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.module.Module;
 
@@ -26,9 +27,10 @@ import seedu.address.model.module.Module;
  * {@code DeleteCommand}.
  */
 public class DeleteCommandTest {
-
     //ToDo: Implement getTypicalDegreePlannerList for DegreePlannerList and update the codes below
-    private Model model = new ModelManager(getTypicalAddressBook(), new DegreePlannerList(), new UserPrefs());
+    private Model model =
+            new ModelManager(getTypicalAddressBook(), new DegreePlannerList(), new RequirementCategoryList(),
+                    new UserPrefs());
     private CommandHistory commandHistory = new CommandHistory();
 
     @Test
@@ -39,7 +41,8 @@ public class DeleteCommandTest {
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_MODULE_SUCCESS, moduleToDelete);
 
         ModelManager expectedModel =
-                new ModelManager(model.getAddressBook(), model.getDegreePlannerList(), new UserPrefs());
+                new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
+                        model.getRequirementCategoryList(), new UserPrefs());
         expectedModel.deleteModule(moduleToDelete);
         expectedModel.commitAddressBook();
 
@@ -63,7 +66,8 @@ public class DeleteCommandTest {
 
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_MODULE_SUCCESS, moduleToDelete);
 
-        Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(), new UserPrefs());
+        Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
+                model.getRequirementCategoryList(), new UserPrefs());
         expectedModel.deleteModule(moduleToDelete);
         expectedModel.commitAddressBook();
         showNoModule(expectedModel);
@@ -88,7 +92,8 @@ public class DeleteCommandTest {
     public void executeUndoRedo_validIndexUnfilteredList_success() throws Exception {
         Module moduleToDelete = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_MODULE);
-        Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(), new UserPrefs());
+        Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
+                model.getRequirementCategoryList(), new UserPrefs());
         expectedModel.deleteModule(moduleToDelete);
         expectedModel.commitAddressBook();
 
@@ -127,7 +132,9 @@ public class DeleteCommandTest {
     @Test
     public void executeUndoRedo_validIndexFilteredList_sameModuleDeleted() throws Exception {
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_MODULE);
-        Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(), new UserPrefs());
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
+                model.getRequirementCategoryList(), new UserPrefs());
 
         showModuleAtIndex(model, INDEX_SECOND_MODULE);
         Module moduleToDelete = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());

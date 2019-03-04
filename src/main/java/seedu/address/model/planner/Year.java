@@ -23,12 +23,12 @@ public class Year {
     /**
      * Constructs a {@code Year}.
      *
-     * @param Year A valid year.
+     * @param year A valid year.
      */
-    public Year(String Year) {
-        requireNonNull(Year);
-        checkArgument(isValidYear(Year), MESSAGE_YEAR_CONSTRAINTS);
-        year = Year;
+    public Year(String year) {
+        requireNonNull(year);
+        checkArgument(isValidYear(year), MESSAGE_YEAR_CONSTRAINTS);
+        this.year = year;
     }
 
     /**

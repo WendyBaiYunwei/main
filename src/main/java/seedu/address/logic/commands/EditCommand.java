@@ -37,11 +37,11 @@ public class EditCommand extends Command {
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: INDEX (must be a positive integer) "
             + "[" + PREFIX_NAME + "NAME] "
-            + "[" + PREFIX_CREDITS + "CREDITS] "
             + "[" + PREFIX_CODE + "CODE] "
+            + "[" + PREFIX_CREDITS + "CREDITS] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
-            + PREFIX_CREDITS + "91234567 ";
+            + PREFIX_CREDITS + "008 ";
 
     public static final String MESSAGE_EDIT_MODULE_SUCCESS = "Edited Module: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";

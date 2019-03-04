@@ -11,6 +11,7 @@
 ifdef::env-github[]
 :tip-caption: :bulb:
 :note-caption: :information_source:
+:warning-caption: :warning:
 endif::[]
 :repoURL: https://github.com/cs2113-ay1819s2-t09-1/main/tree/master
 
@@ -18,25 +19,31 @@ By: `Team T09-1`      Since: `Feb 2019`      Licence: `MIT`
 
 == Introduction
 
-Plan With Ease (PWE) is an application target at National University of Singapore (NUS) Information Security freshmen who prefer to use a desktop application to plan their modules according to their degree requirements. More Importantly, PWE is optimized for users who prefer an environment with a Command Line Interface (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, PWE is able to plan your modules faster than traditional GUI apps. Interested? Jump to the <<Quick Start>> to get started. Enjoy!
+PlanWithEase (PWE) is an application designed to help National University of Singapore (NUS) Information Security freshmen in creating a comprehensive degree plan according to the degree requirements.
+
+PWE is optimized for those who prefer using a Command Line Interface (CLI). The commands used to interact with PWE
+are designed to be simple and intuitive, so even those who are unfamiliar with CLI can use PWE with ease.
+
+PWE also comes with a clean Graphical User Interface (GUI) that presents information in an organized manner.
+
+Interested in using PWE to plan your degree easily? Jump to <<Quick Start>> to get started!
 
 == Quick Start
 
 .  Ensure you have Java version `9` installed in your Computer.
 .  Download the latest `PWE.jar` link:{repoURL}/releases[here].
-.  Copy the file to the folder you want to use as the home folder for your Address Book.
+.  Copy the file to the folder you want to use as the home folder for PlanWithEase.
 .  Double-click the file to start the app. The GUI should appear in a few seconds.
 +
 image::Ui.png[width="790"]
 +
 .  Type the command in the command box and press kbd:[Enter] to execute it. +
 e.g. typing *`help`* and pressing kbd:[Enter] will open the help window.
-.  Some example commands you can try:
-
-* *`list`* : lists all contacts
-* **`add`**`n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : adds a contact named `John Doe` to the Address Book.
-* **`delete`**`3` : deletes the 3rd contact shown in the current list
-* *`exit`* : exits the app
+.  Below are some example commands you can try:
+* *`list`* : lists all modules
+* **`add`**`name/Programming Methodology code/CS1010` : adds a module named `Programming Methodology` with code `CS1010` into module list
+* **`delete`**`3` : deletes the 3rd module shown in the current list
+* *`exit`* : exits the application
 
 .  Refer to <<Features>> for details of each command.
 
@@ -46,10 +53,24 @@ e.g. typing *`help`* and pressing kbd:[Enter] will open the help window.
 ====
 *Command Format*
 
-* Words in `UPPER_CASE` are the parameters to be supplied by the user e.g. in `add n/NAME`, `NAME` is a parameter which can be used as `add n/John Doe`.
-* Items in square brackets are optional e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
-* Items with `…`​ after them can be used multiple times including zero times e.g. `[t/TAG]...` can be used as `{nbsp}` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
-* Parameters can be in any order e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
+* Words in `UPPER_CASE` are the parameters to be supplied by the user
+.. e.g. in `add name/NAME`, `NAME` is a parameter
+which can be used as `add name/Programming Methodology`.
+* Items in square brackets are optional parameters
+** e.g. `name/NAME [tag/TAG]` can be used as:
+.. `name/Database Systems tag/sql` (with optional `tag` parameter)
+.. `name/Database Systems` (without optional `tag` parameter)
+* Items with `…`​ after them are parameters that can be used multiple times (including zero times)
+** e.g. `[tag/TAG]…` can be used as:
+.. `{nbsp}` (i.e. 0 times)
+.. `tag/programming` (i.e. 1 time)
+.. `tag/programming tag/algorithms`, etc.  (i.e. many times)
+** e.g. `[name/NAME NAME…]` can be used as:
+.. `{nbsp}` (i.e. 0 times)
+.. `name/Programming` (i.e. 1 time)
+.. `name/Programming Methodology`, etc.  (i.e. many times)
+* Prefixed-parameters can be arranged in any order
+.. e.g. if the command specifies `name/NAME code/CODE`, entering `code/CODE name/NAME` is also acceptable.
 ====
 
 === Viewing help : `help`
@@ -58,79 +79,111 @@ Format: `help`
 
 === Adding a module: `add`
 
-Adds a module to the address book +
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]...`
+Adds a module to the module list. +
+Format: `add name/NAME code/CODE credits/CREDITS [tag/TAG]…`
+
+* `NAME` indicates the name of the module (e.g. `Programming Methodology`).
+* `CODE` indicates the module code (e.g. `CS1010`).
+* `CREDITS` indicates the modular credits assigned to the module (e.g. `004`).
+* `TAG` indicates the extra information to associate the module with (e.g. `programming`, `loops`).
+
+[WARNING]
+====
+`NAME` should only contain alphanumeric characters and spaces, and it should not be blank. +
+`CODE` can contain any character but it should not be blank. +
+`CREDITS` should be 3 digits long, and it should not be blank. +
+If the amount of modular credits is not 3 digit long (e.g. 4), prepend the value with `0` (i.e. 004) +
+`TAG` should only contain alphanumeric characters, and it should not be blank.
+====
+
+Examples:
+
+* `add name/Programming Methodology code/CS1010 credits/004 tag/programming tag/algorithms tag/c tag/imperative`
+* `add code/CS1231 name/Discrete Structures credits/004 tag/logic tag/math tag/proving`
 
 [TIP]
 A module can have any number of tags (including 0)
 
-Examples:
+Examples: +
 
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `add code/CS1231 credits/004 name/Discrete Structures`
 
 === Listing all modules : `list`
 
-Shows a list of all modules in the address book. +
+Shows a list of all modules in the module list. +
 Format: `list`
 
 === Editing a module : `edit`
 
-Edits an existing module in the address book. +
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...`
+Edits an existing module in the module list. +
+Format: `edit INDEX [name/NAME] [code/CODE] [credits/CREDITS] [tag/TAG]…`
 
-****
-* Edits the module at the specified `INDEX`. The index refers to the index number shown in the displayed module list. The index *must be a positive integer* 1, 2, 3, ...
+[NOTE]
+====
+* Edits the module at the specified `INDEX`. The index refers to the index number shown in the displayed module list. The index *must be a positive integer* 1, 2, 3, …
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
 * When editing tags, the existing tags of the module will be removed i.e adding of tags is not cumulative.
-* You can remove all the module's tags by typing `t/` without specifying any tags after it.
-****
+* You can remove all the module's tags by typing `tag/` without specifying any tags after it.
+====
 
 Examples:
 
-* `edit 1 p/91234567 e/johndoe@example.com` +
-Edits the phone number and email address of the 1st module to be `91234567` and `johndoe@example.com` respectively.
-* `edit 2 n/Betsy Crower t/` +
-Edits the name of the 2nd module to be `Betsy Crower` and clears all existing tags.
+* `edit 1 name/Data Structures and Algorithms code/CS2040C` +
+Edits the name and code of the 1st module in the displayed module list to be `Data Structures and Algorithms` and `CS2040C` respectively. +
+* `edit 2 code/CS2040C tag/` +
+Edits the code of the 2nd module in the displayed module list to be `CS2040C` and clears all existing tags associated
+ with the module.
 
-=== Locating modules by name: `find`
+=== Locating modules either by name, code or credits: `find`
 
-Finds modules whose names contain any of the given keywords. +
-Format: `find KEYWORD [MORE_KEYWORDS]`
+Finds modules whose names, code or credits matches any of the given keywords. +
+Format: `find [name/NAME NAME…] [code/CODE CODE…] [credits/CREDITS CREDITS…]`
 
 ****
-* The search is case insensitive. e.g `hans` will match `Hans`
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
-* Only the name is searched.
-* Only full words will be matched e.g. `Han` will not match `Hans`
-* Modules matching at least one keyword will be returned (i.e. `OR` search). e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
-****
 
+* The search is case insensitive. e.g `security` will match `Security`
+* The order of the keywords does not matter. e.g. `Security Information` will match `Information Security`
+* Only the module name, code or credits is searched.
+* Only full words will be matched. e.g. `CS` will not match `CS1231`
+* Modules matching at least one keyword will be returned (i.e. `OR` search). +
+e.g. `Information` will return `Information Technology`, `Information Business`
+****
+[NOTE]
+====
+You can only search one prefix. +
+e.g. `name/Information` or `code/CS1231` but not
+`name/Information code/CS1231`
+====
 Examples:
 
-* `find John` +
-Returns `john` and `John Doe`
-* `find Betsy Tim John` +
-Returns any module having names `Betsy`, `Tim`, or `John`
+* `find name/Security` +
+Returns `security` and `Information Security` in the displayed module list.
+* `find name/Security Information Computer` +
+Returns any module having names `Security`, `Information`, or `Computer` in the displayed module list.
+* `find code/CS1231 CS2040` +
+Returns any module having code `CS1231` or `CS2040` in the displayed module list.
+* `find credits/004 012` +
+Returns any module having credits `004` or `012` in the displayed module list.
 
 === Deleting a module : `delete`
 
-Deletes the specified module from the address book. +
+Deletes the specified module from the module list. +
 Format: `delete INDEX`
 
-****
+[NOTE]
+====
 * Deletes the module at the specified `INDEX`.
 * The index refers to the index number shown in the displayed module list.
-* The index *must be a positive integer* 1, 2, 3, ...
-****
+* The index *must be a positive integer* 1, 2, 3, …
+====
 
 Examples:
 
 * `list` +
 `delete 2` +
-Deletes the 2nd module in the address book.
-* `find Betsy` +
+Deletes the 2nd module in the module list.
+* `find Programming` +
 `delete 1` +
 Deletes the 1st module in the results of the `find` command.
 
@@ -142,14 +195,14 @@ Format: `select INDEX`
 ****
 * Selects the module and loads the Google search page the module at the specified `INDEX`.
 * The index refers to the index number shown in the displayed module list.
-* The index *must be a positive integer* `1, 2, 3, ...`
+* The index *must be a positive integer* `1, 2, 3, …`
 ****
 
 Examples:
 
 * `list` +
 `select 2` +
-Selects the 2nd module in the address book.
+Selects the 2nd module in the displayed module list.
 * `find Betsy` +
 `select 1` +
 Selects the 1st module in the results of the `find` command.
@@ -167,12 +220,12 @@ Pressing the kbd:[&uarr;] and kbd:[&darr;] arrows will display the previous and 
 // tag::undoredo[]
 === Undoing previous command : `undo`
 
-Restores the address book to the state before the previous _undoable_ command was executed. +
+Restores PlanWithEase's data to the state before the previous _undoable_ command was executed. +
 Format: `undo`
 
 [NOTE]
 ====
-Undoable commands: those commands that modify the address book's content (`add`, `delete`, `edit` and `clear`).
+Undoable commands: those commands that modify the contents of PlanWithEase's data (`add`, `delete`, `edit` and `clear`).
 ====
 
 Examples:
@@ -216,8 +269,120 @@ The `redo` command fails as there are no `undo` commands executed previously.
 
 === Clearing all entries : `clear`
 
-Clears all entries from the address book. +
+Clears all entries from the module list. +
 Format: `clear`
+
+=== Adding a module to the degree planner : `planner_add` `[coming in v2.0]`
+
+Adds an existing module to the degree planner. +
+Format: `planner_add CODE y/YEAR s/SEMESTER`
+
+* `CODE` indicates module code.
+* `YEAR` indicates the year.
+* `SEMESTER` indicates the semester.
+* `YEAR` and `SEMESTER` must be either 1, 2, 3 or 4.
+** 3 or 4 for `SEMESTER` indicates special semesters 1 and 2 respectively.
+* After adding, the changes will be reflected in the degree planner accordingly.
+
+Examples:
+
+* `planner_add CS1231 y/1 s/2` +
+Adds module CS1231 to year 1 semester 2.
+
+* `planner_add CS1010 y/1 s/3` +
+Adds module CS1010 to year 1 special semester 1.
+
+=== Deleting a module from the degree planner : `planner_delete` `[coming in v2.0]`
+
+Deletes an existing module from the degree planner. +
+Format: `planner_delete CODE`
+
+* After deleting, the changes will be reflected in the degree planner accordingly.
+
+Examples:
+
+* `planner_delete CS1231`
+
+=== Moving a module in the degree planner : `planner_move` `[coming in v2.0]`
+
+Moves a module in the degree planner to another academic semester. +
+Format: `planner_move CODE y/YEAR s/SEMESTER`
+
+* After moving, the changes will be reflected in the degree planner accordingly.
+
+Examples:
+
+* `planner_move CS1231 y/1 s/2` +
+Moves module CS1231 to year 1 semester 2.
+
+* `planner_move CS1231 y/1 s/4` +
+Moves module CS1231 to year 1 special semester 2.
+
+=== Listing degree planners: `planner_list_all` `[coming in v2.0]`
+
+Shows a list of all degree planners. +
+Format: `planner_list_all`
+
+=== Listing a degree planner: `planner_list` `[coming in v2.0]`
+
+Shows a list of a specific degree planner. +
+Format: `planner_list y/YEAR s/SEMESTER`
+
+Examples:
+
+* `planner_list y/1 s/1` +
+Shows a degree planner for year 1 semester 1.
+* `planner_list y/1 s/2` +
+Shows a degree planner for year 1 semester 2
+
+=== Using degree planner to suggest modules: `planner_suggest` `[coming in v2.0]`
+
+Displays a list of modules that can be added to the degree planner.
+
+=== Adding a module code to degree requirement category : `requirement_add` `[coming in v2.0]`
+
+Add module code to a degree requirement category in the application. +
+Format: `requirement_add name/NAME [code/CODE]…`
+
+*  After adding, the changes will be reflected in the application accordingly.
+
+Examples:
+
+* `requirement_add name/IT Professionalism code/IS4231` +
+Add module code `IS4231` into `IT Professionalism` degree requirement category.
+
+* `requirement_add name/Computing Foundations code/CS1231 code/CS2100` +
+Adds module codes `CS1231` and `CS2100` into `Computing Foundations` degree requirement category.
+
+=== Deleting a module code from degree requirement category : `requirement_delete` `[coming in v2.0]`
+
+Deletes an existing module code from a degree requirement category. +
+Format: `requirement_delete name/NAME [code/CODE]…`
+
+*  After deleting, the changes will be reflected in the application accordingly.
+
+Examples:
+
+* `requirement_delete name/Professionalism code/IS4231` +
+Deletes the module code `IS4231` from the `IT Professionalism` degree requirement category.
+
+=== Moving a module code in degree requirement category : `requirement_move` `[coming in v2.0]`
+
+Moves a module code to another degree requirement category. +
+Format: `requirement_move CODE name/NAME`
+
+*  After moving, the changes will be reflected in the application accordingly.
+
+Examples:
+
+* `requirement_move IS4231 name/IT Professionalism` +
+Moves the module code `IS4231` from to `IT Professionalism` degree requirement category.
+
+=== Listing all degree requirement categories : `requirement_list` `[coming in v2.0]`
+
+Shows a list of all degree requirement categories in the application and the module codes
+added into each degree requirement categories. +
+Format: `requirement_list`
 
 === Exiting the program : `exit`
 
@@ -226,31 +391,33 @@ Format: `exit`
 
 === Saving the data
 
-Address book data are saved in the hard disk automatically after any command that changes the data. +
+PlanWithEase data are saved in the hard disk automatically after any command that changes the data. +
 There is no need to save manually.
-
-// tag::dataencryption[]
-=== Encrypting data files `[coming in v2.0]`
-
-_{explain how the user can enable/disable data encryption}_
-// end::dataencryption[]
 
 == FAQ
 
-*Q*: How do I transfer my data to another Computer? +
-*A*: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous Address Book folder.
+*Q*: How am I able to import my data to the same application on another computer? +
+*A*: Install the application in the other computer and run the import command with the file path to
+the exported data.
+
+*Q*: How do I save my task data in the application? +
+*A*: The application saves your data automatically whenever you make any changes. You will not need to save the data
+manually. The application will save the data at the specified storage location.
+
+*Q*: Why did the application complain about an invalid file directory? +
+*A*: Check if the directory you wish to relocate to exists and if you have sufficient privileges to read the file.
 
 == Command Summary
 
-* *Add* `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]...` +
-e.g. `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
-* *Clear* : `clear`
+* *Add module to module list* : `add name/NAME code/CODE credits/CREDITS [tag/TAG]…` +
+e.g. `add name/Programming Methodology code/CS1010 credits/004 tag/programming tag/algorithms tag/c tag/imperative`
+* *Edit* : `edit INDEX [name/NAME] [code/CODE] [credits/CREDITS] [tag/TAG]…` +
+e.g. `edit 1 name/Data Structures and Algorithms code/CS2040C`
 * *Delete* : `delete INDEX` +
 e.g. `delete 3`
-* *Edit* : `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]...` +
-e.g. `edit 2 n/James Lee e/jameslee@example.com`
-* *Find* : `find KEYWORD [MORE_KEYWORDS]` +
-e.g. `find James Jake`
+* *Find* : `find [name/NAME NAME…] [code/CODE CODE…] [credits/CREDITS CREDITS…]` +
+e.g. `find name/Information Security`
+* *Clear* : `clear`
 * *List* : `list`
 * *Help* : `help`
 * *Select* : `select INDEX` +
@@ -258,3 +425,21 @@ e.g.`select 2`
 * *History* : `history`
 * *Undo* : `undo`
 * *Redo* : `redo`
+* *Add module to degree planner* : `planner_add CODE y/YEAR s/SEMESTER` +
+e.g.  `planner_add CS1010 y/1 s/2`
+* *Delete module from degree planner* : `planner_delete CODE` +
+e.g.  `planner_delete CS1231`
+* *Move module in degree planner* : `planner_move CODE y/YEAR s/SEMESTER` +
+e.g.  `planner_move CS1231 y/1 s/2`
+* *List all degree planners* : `planner_list_all`
+* *List specific degree planner* : `planner_list y/YEAR s/SEMESTER` +
+e.g. `planner_list y/1 s/2`
+* *Using degree planner to suggest modules* : `planner_suggest`
+* *Add module code to degree requirement category* : `requirement_add name/NAME [code/CODE]…` +
+e.g. `requirement_add name/IT Professionalism code/IS4231`
+* *Delete module code from degree requirement category* : `requirement_delete name/NAME [code/CODE]…` +
+e.g. `requirement_delete name/IT Professionalism code/IS4231`
+* *Move module code from degree requirement category*  : `requirement_move CODE
+name/NAME` +
+e.g. `requirement_move IS4231 name/IT Professionalism`
+* *List all degree requirement category* : `requirement_list`

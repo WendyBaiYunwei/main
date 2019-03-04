@@ -14,8 +14,10 @@ import seedu.address.commons.core.GuiSettings;
 public class UserPrefs implements ReadOnlyUserPrefs {
 
     private GuiSettings guiSettings = new GuiSettings();
-    private Path addressBookFilePath = Paths.get("data" , "addressbook.json");
+
+    private Path addressBookFilePath = Paths.get("data", "addressbook.json");
     private Path degreePlannerListFilePath = Paths.get("data", "degreePlannerList.json");
+    private Path requirementCategoryListFilePath = Paths.get("data", "requirementCategoryList.json");
 
     /**
      * Creates a {@code UserPrefs} with default values.
@@ -38,6 +40,8 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         setGuiSettings(newUserPrefs.getGuiSettings());
         setAddressBookFilePath(newUserPrefs.getAddressBookFilePath());
         setDegreePlannerListFilePath(newUserPrefs.getDegreePlannerListFilePath());
+        setRequirementCategoryListFilePath(newUserPrefs.getRequirementCategoryListFilePath());
+
     }
 
     public GuiSettings getGuiSettings() {
@@ -65,6 +69,15 @@ public class UserPrefs implements ReadOnlyUserPrefs {
     public void setDegreePlannerListFilePath(Path degreePlannerListFilePath) {
         requireNonNull(degreePlannerListFilePath);
         this.degreePlannerListFilePath = degreePlannerListFilePath;
+    }
+
+    public Path getRequirementCategoryListFilePath() {
+        return requirementCategoryListFilePath;
+    }
+
+    public void setRequirementCategoryListFilePath(Path requirementCategoryListFilePath) {
+        requireNonNull(requirementCategoryListFilePath);
+        this.requirementCategoryListFilePath = requirementCategoryListFilePath;
     }
 
     @Override

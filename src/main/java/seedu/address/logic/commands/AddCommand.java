@@ -18,21 +18,23 @@ public class AddCommand extends Command {
 
     public static final String COMMAND_WORD = "add";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a module to the address book. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a module to module list. "
             + "Parameters: "
             + PREFIX_NAME + "NAME "
-            + PREFIX_CREDITS + "CREDITS "
             + PREFIX_CODE + "CODE "
+            + PREFIX_CREDITS + "CREDITS "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_NAME + "John Doe "
-            + PREFIX_CREDITS + "98765432 "
-            + PREFIX_CODE + "311, Clementi Ave 2, #02-25 "
-            + PREFIX_TAG + "friends "
-            + PREFIX_TAG + "owesMoney";
+            + PREFIX_NAME + "Programming Methodology "
+            + PREFIX_CODE + "CS1010 "
+            + PREFIX_CREDITS + "004 "
+            + PREFIX_TAG + "programming "
+            + PREFIX_TAG + "algorithms "
+            + PREFIX_TAG + "c "
+            + PREFIX_TAG + "imperative";
 
     public static final String MESSAGE_SUCCESS = "New module added: %1$s";
-    public static final String MESSAGE_DUPLICATE_MODULE = "This module already exists in the address book";
+    public static final String MESSAGE_DUPLICATE_MODULE = "This module already exists in the module list";
 
     private final Module toAdd;
 

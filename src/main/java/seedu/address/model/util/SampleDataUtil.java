@@ -16,26 +16,44 @@ import seedu.address.model.tag.Tag;
  * Contains utility methods for populating {@code AddressBook} with sample data.
  */
 public class SampleDataUtil {
+    private static final Module CS1010 = new Module(
+            new Name("Programming Methodology"),
+            new Credits("004"),
+            new Code("CS1010"),
+            getTagSet("programming", "algorithms", "c", "imperative")
+    );
+
+    private static final Module CS1231 = new Module(
+            new Name("Discrete Structures"),
+            new Credits("004"),
+            new Code("CS1231"),
+            getTagSet("math", "logic", "proving")
+    );
+
+    private static final Module CS2040C = new Module(
+            new Name("Data Structures and Algorithms"),
+            new Credits("004"),
+            new Code("CS2040C"),
+            getTagSet("linkedlist", "stack", "queue", "hashtable", "heap", "avltree", "graph", "sssp")
+    );
+
+    private static final Module CS2100 = new Module(
+            new Name("Computer Organisation"),
+            new Credits("004"),
+            new Code("CS2100"),
+            getTagSet("boolean", "mips", "assembly", "circuit", "flipflop", "pipelining", "cache")
+    );
+
+    private static final Module CS2102 = new Module(
+            new Name("Database Systems"),
+            new Credits("004"),
+            new Code("CS2100"),
+            getTagSet("database", "rdbms", "entity", "sql", "normalisation")
+    );
+
     public static Module[] getSampleModules() {
         return new Module[] {
-            new Module(new Name("Alex Yeoh"), new Credits("87438807"),
-                new Code("Blk 30 Geylang Street 29, #06-40"),
-                getTagSet("friends")),
-            new Module(new Name("Bernice Yu"), new Credits("99272758"),
-                new Code("Blk 30 Lorong 3 Serangoon Gardens, #07-18"),
-                getTagSet("colleagues", "friends")),
-            new Module(new Name("Charlotte Oliveiro"), new Credits("93210283"),
-                new Code("Blk 11 Ang Mo Kio Street 74, #11-04"),
-                getTagSet("neighbours")),
-            new Module(new Name("David Li"), new Credits("91031282"),
-                new Code("Blk 436 Serangoon Gardens Street 26, #16-43"),
-                getTagSet("family")),
-            new Module(new Name("Irfan Ibrahim"), new Credits("92492021"),
-                new Code("Blk 47 Tampines Street 20, #17-35"),
-                getTagSet("classmates")),
-            new Module(new Name("Roy Balakrishnan"), new Credits("92624417"),
-                new Code("Blk 45 Aljunied Street 85, #11-31"),
-                getTagSet("colleagues"))
+            CS1010, CS1231, CS2040C, CS2100, CS2102
         };
     }
 
