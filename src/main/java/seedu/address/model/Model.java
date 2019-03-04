@@ -1,13 +1,17 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.Semester;
+import seedu.address.model.planner.Year;
 
 /**
  * The API of the Model component.
@@ -148,6 +152,8 @@ public interface Model {
      */
     boolean hasDegreePlanner(DegreePlanner degreePlanner);
 
+    boolean hasDegreePlannerModule(Code code, Year year, Semester semester, Set<Code> codes);
+
     /**
      * Deletes the given degreePlanner.
      * The degreePlanner must exist in the degreePlaner list.
@@ -160,6 +166,8 @@ public interface Model {
      */
     void addDegreePlanner(DegreePlanner degreePlanner);
 
+
+    void addDegreePlannerModule(Code code, Year year, Semester semester, Set<Code> codes);
     /**
      * Replaces the given degreePlanner {@code target} with {@code editedDegreePlanner}.
      * {@code target} must exist in the degreePlanner list.

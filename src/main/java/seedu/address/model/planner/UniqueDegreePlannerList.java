@@ -5,9 +5,12 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.model.module.Code;
+import seedu.address.model.module.exceptions.DuplicateModuleException;
 import seedu.address.model.planner.exceptions.DegreePlannerNotFoundException;
 import seedu.address.model.planner.exceptions.DuplicateDegreePlannerException;
 
@@ -28,7 +31,6 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
     private final ObservableList<DegreePlanner> internalList = FXCollections.observableArrayList();
     private final ObservableList<DegreePlanner> internalUnmodifiableList =
             FXCollections.unmodifiableObservableList(internalList);
-
     /**
      * Returns true if the list contains an equivalent planner module as the given argument.
      */
@@ -49,6 +51,13 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
         internalList.add(toAdd);
     }
 
+    public void addDegreePlannerModule(Code code, Year year, Semester semester) {
+        requireNonNull(code);
+
+        int i = (Integer.valueOf(String.valueOf(semester)) == 2) ? 1 : 0;
+
+        internalList.get(Integer.valueOf(String.valueOf(year)) * 2 + i - 2).add(code, year, semester);
+    }
     /**
      * Replaces the degreePlanner {@code target} in the list with {@code editedDegreePlanner}.
      * {@code target} must exist in the list.

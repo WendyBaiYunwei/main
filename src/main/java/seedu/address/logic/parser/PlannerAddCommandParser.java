@@ -1,22 +1,23 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.PlannerAddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.module.Address;
-import seedu.address.model.module.Email;
-import seedu.address.model.module.Module;
+import seedu.address.model.module.Code;
 import seedu.address.model.module.Name;
-import seedu.address.model.module.Phone;
+import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.DegreePlannerModule;
+import seedu.address.model.planner.Semester;
+import seedu.address.model.planner.Year;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -31,22 +32,18 @@ public class PlannerAddCommandParser implements Parser<PlannerAddCommand> {
      */
     public PlannerAddCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS, PREFIX_TAG);
+                ArgumentTokenizer.tokenize(args, PREFIX_CODE, PREFIX_SEMESTER);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_ADDRESS, PREFIX_PHONE, PREFIX_EMAIL)
+        if (!arePrefixesPresent(argMultimap, PREFIX_CODE)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, PlannerAddCommand.MESSAGE_USAGE));
         }
 
-        Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
-        Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
-        Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
-        Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
-        Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
+        Code code = ParserUtil.parseCode(argMultimap.getValue(PREFIX_CODE).get());
+        Year year = ParserUtil.parseYear(argMultimap.getValue(PREFIX_YEAR).get());
+        Semester semester = ParserUtil.parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
 
-        Module module = new Module(name, phone, email, address, tagList);
-
-        return new PlannerAddCommand(module);
+        return new PlannerAddCommand(code, year, semester, codes);
     }
 
     /**

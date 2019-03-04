@@ -12,6 +12,8 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.module.Code;
 import seedu.address.model.module.Credits;
 import seedu.address.model.module.Name;
+import seedu.address.model.planner.Semester;
+import seedu.address.model.planner.Year;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -104,5 +106,23 @@ public class ParserUtil {
             tagSet.add(parseTag(tagName));
         }
         return tagSet;
+    }
+
+    public static Year parseYear(String year) throws ParseException {
+        requireNonNull(year);
+        String trimmedYear = year.trim();
+        if (!Code.isValidCode(trimmedYear)) {
+            throw new ParseException(Code.MESSAGE_CONSTRAINTS);
+        }
+        return new Year(trimmedYear);
+    }
+
+    public static Semester parseSemester(String semester) throws ParseException {
+        requireNonNull(semester);
+        String trimmedSemester = semester.trim();
+        if (!Code.isValidCode(trimmedSemester)) {
+            throw new ParseException(Code.MESSAGE_CONSTRAINTS);
+        }
+        return new Semester(trimmedSemester);
     }
 }

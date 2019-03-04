@@ -15,9 +15,11 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.exceptions.ModuleNotFoundException;
 import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.DegreePlannerModule;
 
 /**
  * Represents the in-memory model of the address book data.
@@ -267,12 +269,22 @@ public class ModelManager implements Model {
         return versionedDegreePlannerList.hasDegreePlanner(planner);
     }
 
+    @Override
+    public boolean hasDegreePlannerModule(DegreePlannerModule plannerModule) {
+        return false;
+    }
+
     @Override public void deleteDegreePlanner(DegreePlanner target) {
         versionedDegreePlannerList.removeDegreePlanner(target);
     }
 
     @Override public void addDegreePlanner(DegreePlanner degreePlanner) {
         versionedDegreePlannerList.addDegreePlanner(degreePlanner);
+    }
+
+    @Override
+    public void addDegreePlannerModule(DegreePlannerModule degreePlannerModule) {
+
     }
 
     @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
