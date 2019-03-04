@@ -26,6 +26,7 @@ import seedu.address.model.ReadOnlyDegreePlannerList;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.module.Module;
 import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.DegreePlannerModule;
 import seedu.address.testutil.ModuleBuilder;
 
 public class AddCommandTest {
@@ -223,12 +224,22 @@ public class AddCommandTest {
             return false;
         }
 
+        @Override
+        public boolean hasDegreePlannerModule(DegreePlannerModule plannerModule) {
+            return false;
+        }
+
         @Override public void deleteDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement AssertionError
         }
 
         @Override public void addDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement error check
+        }
+
+        @Override
+        public void addDegreePlannerModule(DegreePlannerModule plannerModule) {
+
         }
 
         @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
@@ -306,6 +317,7 @@ public class AddCommandTest {
         public void commitAddressBook() {
             // called by {@code AddCommand#execute()}
         }
+
 
         @Override
         public ReadOnlyAddressBook getAddressBook() {
