@@ -4,7 +4,9 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
 
 import java.util.Set;
 
@@ -27,16 +29,9 @@ public class PlannerAddCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a module to the degree planner. "
             + "Parameters: "
-            + PREFIX_NAME + "NAME "
-            + PREFIX_CREDITS + "CREDITS "
             + PREFIX_CODE + "CODE "
-            + "[" + PREFIX_TAG + "TAG]...\n"
-            + "Example: " + COMMAND_WORD + " "
-            + PREFIX_NAME + "John Doe "
-            + PREFIX_CREDITS + "98765432 "
-            + PREFIX_CODE + "311, Clementi Ave 2, #02-25 "
-            + PREFIX_TAG + "friends "
-            + PREFIX_TAG + "owesMoney";
+            + PREFIX_YEAR + "y/YEAR"
+            + PREFIX_SEMESTER + "s/SEMESTER";
 
     public static final String MESSAGE_SUCCESS = "New module added: %1$s";
     public static final String MESSAGE_DUPLICATE_MODULE = "This module already exists in the address book";

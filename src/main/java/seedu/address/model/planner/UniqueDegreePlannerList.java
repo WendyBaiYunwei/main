@@ -8,6 +8,7 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.model.module.Code;
 import seedu.address.model.planner.exceptions.DegreePlannerNotFoundException;
 import seedu.address.model.planner.exceptions.DuplicateDegreePlannerException;
 /**
@@ -47,12 +48,12 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
         internalList.add(toAdd);
     }
 
-    public void addDegreePlannerModule(Code code) {
+    public void addDegreePlannerModule(DegreePlannerModule toAdd) {
         requireNonNull(toAdd);
 
         String year = toAdd.getYear().toString();
         String semester = toAdd.getSemester().toString();
-
+        Code code = toAdd.getCode();
         int i = (Integer.valueOf(semester) == 2) ? 1 : 0;
 
         internalList.get(Integer.valueOf(year) * 2 + i - 2).addModuleCode(code);
