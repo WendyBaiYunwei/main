@@ -5,15 +5,11 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import seedu.address.model.module.Code;
-import seedu.address.model.module.exceptions.DuplicateModuleException;
 import seedu.address.model.planner.exceptions.DegreePlannerNotFoundException;
 import seedu.address.model.planner.exceptions.DuplicateDegreePlannerException;
-
 /**
  * A list of degreePlanners that enforces uniqueness between its elements and does not allow nulls.
  * A code is considered unique by comparing using {@code DegreePlanner#isSameDegreePlanner(DegreePlanner)}. As such,
@@ -51,12 +47,15 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
         internalList.add(toAdd);
     }
 
-    public void addDegreePlannerModule(Code code, Year year, Semester semester) {
-        requireNonNull(code);
+    public void addDegreePlannerModule(Code code) {
+        requireNonNull(toAdd);
 
-        int i = (Integer.valueOf(String.valueOf(semester)) == 2) ? 1 : 0;
+        String year = toAdd.getYear().toString();
+        String semester = toAdd.getSemester().toString();
 
-        internalList.get(Integer.valueOf(String.valueOf(year)) * 2 + i - 2).add(code, year, semester);
+        int i = (Integer.valueOf(semester) == 2) ? 1 : 0;
+
+        internalList.get(Integer.valueOf(year) * 2 + i - 2).addModuleCode(code);
     }
     /**
      * Replaces the degreePlanner {@code target} in the list with {@code editedDegreePlanner}.

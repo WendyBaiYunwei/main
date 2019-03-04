@@ -10,6 +10,7 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.DegreePlannerModule;
 import seedu.address.model.planner.Semester;
 import seedu.address.model.planner.Year;
 
@@ -152,7 +153,7 @@ public interface Model {
      */
     boolean hasDegreePlanner(DegreePlanner degreePlanner);
 
-    boolean hasDegreePlannerModule(Code code, Year year, Semester semester, Set<Code> codes);
+    boolean hasDegreePlannerModule(DegreePlannerModule plannerModule);
 
     /**
      * Deletes the given degreePlanner.
@@ -167,7 +168,7 @@ public interface Model {
     void addDegreePlanner(DegreePlanner degreePlanner);
 
 
-    void addDegreePlannerModule(Code code, Year year, Semester semester, Set<Code> codes);
+    void addDegreePlannerModule(DegreePlannerModule plannerModule);
     /**
      * Replaces the given degreePlanner {@code target} with {@code editedDegreePlanner}.
      * {@code target} must exist in the degreePlanner list.

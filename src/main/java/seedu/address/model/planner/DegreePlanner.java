@@ -95,4 +95,7 @@ public class DegreePlanner {
         return builder.toString();
     }
 
+    void addModuleCode(Code code){
+        codes.add(code);
+    }
 }
