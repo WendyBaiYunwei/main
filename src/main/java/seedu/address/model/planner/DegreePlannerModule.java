@@ -6,6 +6,10 @@ import java.util.Objects;
 
 import seedu.address.model.module.Code;
 
+/**
+ * Represents a Module in the planner.
+ * Guarantees: details are present and not null, field values are validated, immutable.
+ */
 public class DegreePlannerModule {
 
     // Identity fields
