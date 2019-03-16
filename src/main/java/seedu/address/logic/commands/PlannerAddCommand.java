@@ -2,14 +2,8 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_CREDITS;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SEMESTER;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
-
-import java.util.Set;
-
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -38,7 +32,7 @@ public class PlannerAddCommand extends Command {
     private DegreePlannerModule toAdd;
 
     /**
-     * Creates an AddCommand to add the specified {@Code code Module}
+     * Creates a PlannerAddCommand to add the specified {@Code code Module} to the degree planner
      */
     public PlannerAddCommand(DegreePlannerModule plannerModule) {
         requireNonNull(plannerModule);
@@ -55,7 +49,7 @@ public class PlannerAddCommand extends Command {
 
         model.addDegreePlannerModule(toAdd);
         model.commitDegreePlannerList();
-        return new CommandResult(String.format(MESSAGE_SUCCESS,toAdd));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, toAdd));
     }
 
     @Override

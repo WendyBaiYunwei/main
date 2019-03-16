@@ -48,6 +48,10 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
         internalList.add(toAdd);
     }
 
+    /**
+     * Adds a planner module to the list.
+     * The planner module must not already exist in the list.
+     */
     public void addDegreePlannerModule(DegreePlannerModule toAdd) {
         requireNonNull(toAdd);
 

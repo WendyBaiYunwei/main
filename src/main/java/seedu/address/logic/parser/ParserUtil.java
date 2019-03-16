@@ -168,6 +168,12 @@ public class ParserUtil {
         return tagSet;
     }
 
+    /**
+     * Parses a {@code String year} into a {@code Year}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code year} is invalid.
+     */
     public static Year parseYear(String year) throws ParseException {
         requireNonNull(year);
         String trimmedYear = year.trim();
@@ -177,6 +183,12 @@ public class ParserUtil {
         return new Year(trimmedYear);
     }
 
+    /**
+     * Parses a {@code String semester} into a {@code Semester}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code semester} is invalid.
+     */
     public static Semester parseSemester(String semester) throws ParseException {
         requireNonNull(semester);
         String trimmedSemester = semester.trim();

@@ -26,9 +26,9 @@ public class PlannerAddCommandParser implements Parser<PlannerAddCommand> {
      */
     public PlannerAddCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_CODE, PREFIX_YEAR ,PREFIX_SEMESTER);
+                ArgumentTokenizer.tokenize(args, PREFIX_CODE, PREFIX_YEAR , PREFIX_SEMESTER);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_CODE, PREFIX_YEAR ,PREFIX_SEMESTER)
+        if (!arePrefixesPresent(argMultimap, PREFIX_CODE, PREFIX_YEAR , PREFIX_SEMESTER)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, PlannerAddCommand.MESSAGE_USAGE));
         }

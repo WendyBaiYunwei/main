@@ -24,7 +24,8 @@ public class StorageManager implements Storage {
     private DegreePlannerListStorage degreePlannerListStorage;
     private RequirementCategoryListStorage requirementCategoryListStorage;
 
-    public StorageManager(AddressBookStorage addressBookStorage, RequirementCategoryListStorage requirementCategoryListStorage,
+    public StorageManager(AddressBookStorage addressBookStorage,
+                          RequirementCategoryListStorage requirementCategoryListStorage,
             DegreePlannerListStorage degreePlannerListStorage, UserPrefsStorage userPrefsStorage) {
         super();
         this.addressBookStorage = addressBookStorage;
