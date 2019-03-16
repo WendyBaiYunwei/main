@@ -2,11 +2,11 @@
   "modules": [ {
     "name": "Alice Pauline",
     "credits": "94351253",
-    "code": "4th street",
+    "code": "CS1010",
     "tagged": [ "friends" ]
   }, {
     "name": "Alice Pauline",
     "credits": "94351253",
-    "code": "4th street"
+    "code": "CS1010"
   } ]
 }

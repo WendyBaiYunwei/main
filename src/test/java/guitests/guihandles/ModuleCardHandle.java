@@ -53,7 +53,11 @@ public class ModuleCardHandle extends NodeHandle<Node> {
     }
 
     public String getCredits() {
-        return creditsLabel.getText();
+        String credits = creditsLabel.getText();
+        if (credits.endsWith(" Module Credits")) {
+            credits = credits.substring(0, credits.length() - " Module Credits".length());
+        }
+        return credits;
     }
 
     public List<String> getTags() {

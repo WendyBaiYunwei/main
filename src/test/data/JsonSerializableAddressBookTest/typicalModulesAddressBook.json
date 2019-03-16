@@ -3,37 +3,37 @@
   "modules" : [ {
     "name" : "Alice Pauline",
     "credits" : "94351253",
-    "code" : "123, Jurong West Ave 6, #08-111",
+    "code" : "CS1010",
     "tagged" : [ "friends" ]
   }, {
     "name" : "Benson Meier",
     "credits" : "98765432",
-    "code" : "311, Clementi Ave 2, #02-25",
+    "code" : "CS1231",
     "tagged" : [ "owesMoney", "friends" ]
   }, {
     "name" : "Carl Kurz",
     "credits" : "95352563",
-    "code" : "wall street",
+    "code" : "CS2040C",
     "tagged" : [ ]
   }, {
     "name" : "Daniel Meier",
     "credits" : "87652533",
-    "code" : "10th street",
+    "code" : "CS2100",
     "tagged" : [ "friends" ]
   }, {
     "name" : "Elle Meyer",
     "credits" : "9482224",
-    "code" : "michegan ave",
+    "code" : "CS2101",
     "tagged" : [ ]
   }, {
     "name" : "Fiona Kunz",
     "credits" : "9482427",
-    "code" : "little tokyo",
+    "code" : "CS2102",
     "tagged" : [ ]
   }, {
     "name" : "George Best",
     "credits" : "9482442",
-    "code" : "4th street",
+    "code" : "CS2105",
     "tagged" : [ ]
   } ]
 }

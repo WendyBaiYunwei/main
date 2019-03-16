@@ -17,7 +17,7 @@ import seedu.address.model.module.Name;
 import seedu.address.testutil.Assert;
 
 public class JsonAdaptedModuleTest {
-    private static final String INVALID_NAME = "R@chel";
+    private static final String INVALID_NAME = "Rächel";
     private static final String INVALID_CREDITS = "+651234";
     private static final String INVALID_CODE = " ";
     private static final String INVALID_TAG = "#friend";

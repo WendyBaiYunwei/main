@@ -3,8 +3,9 @@ package seedu.address.model.module;
 import java.util.function.Predicate;
 
 /**
- * The abstract class for find keyword predicate
+ * {@inheritDoc}
+ * This interface let us have a list of predicate of different module's attributes
  */
-public abstract class KeywordsPredicate implements Predicate<Module> {
-    public abstract boolean test(Module module);
+@FunctionalInterface
+public interface KeywordsPredicate extends Predicate<Module> {
 }

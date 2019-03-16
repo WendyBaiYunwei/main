@@ -5,10 +5,12 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
+import java.util.function.Predicate;
+
 import seedu.address.commons.core.Messages;
 import seedu.address.logic.CommandHistory;
 import seedu.address.model.Model;
-import seedu.address.model.module.KeywordsPredicate;
+import seedu.address.model.module.Module;
 
 /**
  * Finds and lists all modules in address book whose name or code contains any of the argument keywords.
@@ -27,9 +29,9 @@ public class FindCommand extends Command {
             + "[" + PREFIX_CREDITS + "CREDITS credits ...]\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_NAME + "Programming Methodology\n";
 
-    private final KeywordsPredicate predicate;
+    private final Predicate<Module> predicate;
 
-    public FindCommand(KeywordsPredicate predicate) {
+    public FindCommand(Predicate<Module> predicate) {
         this.predicate = predicate;
     }
 

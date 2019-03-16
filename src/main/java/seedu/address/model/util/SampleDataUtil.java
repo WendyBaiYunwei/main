@@ -47,7 +47,7 @@ public class SampleDataUtil {
     private static final Module CS2102 = new Module(
             new Name("Database Systems"),
             new Credits("004"),
-            new Code("CS2100"),
+            new Code("CS2102"),
             getTagSet("database", "rdbms", "entity", "sql", "normalisation")
     );
 

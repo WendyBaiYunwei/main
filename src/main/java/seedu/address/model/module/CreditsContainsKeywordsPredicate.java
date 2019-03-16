@@ -7,7 +7,7 @@ import seedu.address.commons.util.StringUtil;
 /**
  * Tests that a {@code Module}'s {@code Credit} matches any of the keywords given.
  */
-public class CreditsContainsKeywordsPredicate extends KeywordsPredicate {
+public class CreditsContainsKeywordsPredicate implements KeywordsPredicate {
     private final List<String> keywords;
 
     public CreditsContainsKeywordsPredicate(List<String> keywords) {

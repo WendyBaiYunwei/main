@@ -80,7 +80,7 @@ public class ModuleListPanelTest extends GuiUnitTest {
         for (int i = 0; i < moduleCount; i++) {
             Name name = new Name(i + "a");
             Credits credits = new Credits("000");
-            Code code = new Code("a");
+            Code code = new Code("CS1010");
             Module module = new Module(name, credits, code, Collections.emptySet());
             backingList.add(module);
         }

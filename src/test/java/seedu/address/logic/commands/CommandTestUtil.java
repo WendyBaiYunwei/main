@@ -29,8 +29,8 @@ public class CommandTestUtil {
     public static final String VALID_NAME_BOB = "Bob Choo";
     public static final String VALID_CREDITS_AMY = "11111111";
     public static final String VALID_CREDITS_BOB = "22222222";
-    public static final String VALID_CODE_AMY = "Block 312, Amy Street 1";
-    public static final String VALID_CODE_BOB = "Block 123, Bobby Street 3";
+    public static final String VALID_CODE_AMY = "CS1010";
+    public static final String VALID_CODE_BOB = "CS1231";
     public static final String VALID_TAG_HUSBAND = "husband";
     public static final String VALID_TAG_FRIEND = "friend";
 
@@ -43,7 +43,7 @@ public class CommandTestUtil {
     public static final String TAG_DESC_FRIEND = " " + PREFIX_TAG + VALID_TAG_FRIEND;
     public static final String TAG_DESC_HUSBAND = " " + PREFIX_TAG + VALID_TAG_HUSBAND;
 
-    public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "James&"; // '&' not allowed in names
+    public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "Jame§"; // '§' not allowed in names
     public static final String INVALID_CREDITS_DESC = " " + PREFIX_CREDITS + "911a"; // 'a' not allowed in credits
     public static final String INVALID_CODE_DESC = " " + PREFIX_CODE; // empty string not allowed for codes
     public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags

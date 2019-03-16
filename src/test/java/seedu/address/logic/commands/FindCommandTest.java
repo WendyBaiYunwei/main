@@ -89,7 +89,7 @@ public class FindCommandTest {
     public void execute_multipleCodeKeywords_multipleModulesFound() {
         String expectedMessage = String.format(MESSAGE_MODULES_LISTED_OVERVIEW, 3);
         // TODO: update the module code after TypicalModule attribute are updated
-        CodeContainsKeywordsPredicate predicate = prepareCodePredicate("wall michegan tokyo");
+        CodeContainsKeywordsPredicate predicate = prepareCodePredicate("CS2040C CS2101 CS2102");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredModuleList(predicate);
         assertCommandSuccess(command, model, commandHistory, expectedMessage, expectedModel);

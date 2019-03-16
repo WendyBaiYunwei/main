@@ -7,7 +7,7 @@ import seedu.address.commons.util.StringUtil;
 /**
  * Tests that a {@code Module}'s {@code Name} matches any of the keywords given.
  */
-public class NameContainsKeywordsPredicate extends KeywordsPredicate {
+public class NameContainsKeywordsPredicate implements KeywordsPredicate {
     private final List<String> keywords;
 
     public NameContainsKeywordsPredicate(List<String> keywords) {

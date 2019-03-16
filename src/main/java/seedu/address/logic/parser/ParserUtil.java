@@ -2,8 +2,10 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
@@ -26,6 +28,7 @@ public class ParserUtil {
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
      * trimmed.
+     *
      * @throws ParseException if the specified index is invalid (not non-zero unsigned integer).
      */
     public static Index parseIndex(String oneBasedIndex) throws ParseException {
@@ -52,6 +55,25 @@ public class ParserUtil {
     }
 
     /**
+     * Parses a {@code String... name} into a {@code List<Name>}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code name} is invalid.
+     */
+    public static List<Name> parseMultiNames(String... names) throws ParseException {
+        List<Name> result = new ArrayList<>();
+        requireNonNull(names);
+        for (String name : names) {
+            String trimmedName = name.trim();
+            if (!Name.isValidName(trimmedName)) {
+                throw new ParseException(Name.MESSAGE_CONSTRAINTS);
+            }
+            result.add(new Name(trimmedName));
+        }
+        return result;
+    }
+
+    /**
      * Parses a {@code String credits} into a {@code Credits}.
      * Leading and trailing whitespaces will be trimmed.
      *
@@ -67,6 +89,25 @@ public class ParserUtil {
     }
 
     /**
+     * Parses a {@code String... credits} into a {@code List<Credits>}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code credits} is invalid.
+     */
+    public static List<Credits> parseMultiCredits(String... credits) throws ParseException {
+        List<Credits> result = new ArrayList<>();
+        requireNonNull(credits);
+        for (String credit : credits) {
+            String trimmedCredits = credit.trim();
+            if (!Credits.isValidCredits(trimmedCredits)) {
+                throw new ParseException(Credits.MESSAGE_CONSTRAINTS);
+            }
+            result.add(new Credits(trimmedCredits));
+        }
+        return result;
+    }
+
+    /**
      * Parses a {@code String code} into an {@code Code}.
      * Leading and trailing whitespaces will be trimmed.
      *
@@ -79,6 +120,25 @@ public class ParserUtil {
             throw new ParseException(Code.MESSAGE_CONSTRAINTS);
         }
         return new Code(trimmedCode);
+    }
+
+    /**
+     * Parses a {@code String... code} into an {@code List<Code>}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code code} is invalid.
+     */
+    public static List<Code> parseMultiCodes(String... codes) throws ParseException {
+        List<Code> result = new ArrayList<>();
+        requireNonNull(codes);
+        for (String code : codes) {
+            String trimmedCode = code.trim();
+            if (!Code.isValidCode(trimmedCode)) {
+                throw new ParseException(Code.MESSAGE_CONSTRAINTS);
+            }
+            result.add(new Code(trimmedCode));
+        }
+        return result;
     }
 
     /**

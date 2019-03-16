@@ -25,11 +25,11 @@
             <Region fx:constant="USE_PREF_SIZE" />
           </minWidth>
         </Label>
-        <Label fx:id="name" text="\$first" styleClass="cell_big_label" />
+        <Label fx:id="code" styleClass="cell_big_label" text="\$code" />
       </HBox>
-      <FlowPane fx:id="tags" />
+      <Label fx:id="name" styleClass="cell_big_label" text="\$first" />
       <Label fx:id="credits" styleClass="cell_small_label" text="\$credits" />
-      <Label fx:id="code" styleClass="cell_small_label" text="\$code" />
+      <FlowPane fx:id="tags" />
     </VBox>
   </GridPane>
 </HBox>

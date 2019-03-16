@@ -9,13 +9,15 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Code {
 
-    public static final String MESSAGE_CONSTRAINTS = "Codes can take any values, and it should not be blank";
+    public static final String MESSAGE_CONSTRAINTS =
+            "Codes should begin with two alphabets, followed by four digits, and may optionally end with an alphabet. "
+            + "Codes should not be blank";
 
     /*
      * The first character of the code must not be a whitespace,
      * otherwise " " (a blank string) becomes a valid input.
      */
-    public static final String VALIDATION_REGEX = "[^\\s].*";
+    public static final String VALIDATION_REGEX = "[\\p{Alpha}]{2,3}[\\p{Digit}]{4}[\\p{Alpha}]?";
 
     public final String value;
 

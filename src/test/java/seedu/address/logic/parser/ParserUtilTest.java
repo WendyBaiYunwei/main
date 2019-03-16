@@ -23,14 +23,14 @@ import seedu.address.model.tag.Tag;
 import seedu.address.testutil.Assert;
 
 public class ParserUtilTest {
-    private static final String INVALID_NAME = "R@chel";
+    private static final String INVALID_NAME = "Rächel";
     private static final String INVALID_CREDITS = "+651234";
     private static final String INVALID_CODE = " ";
     private static final String INVALID_TAG = "#friend";
 
     private static final String VALID_NAME = "Rachel Walker";
     private static final String VALID_CREDITS = "123456";
-    private static final String VALID_CODE = "123 Main Street #0505";
+    private static final String VALID_CODE = "MA1301";
     private static final String VALID_TAG_1 = "friend";
     private static final String VALID_TAG_2 = "neighbour";
 

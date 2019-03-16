@@ -2,10 +2,10 @@
   "modules": [ {
     "name": "Valid Module",
     "credits": "9482424",
-    "code": "4th street"
+    "code": "CS1010"
   }, {
     "name": "Module With Invalid Credits Field",
     "credits": "948asdf2424",
-    "code": "4th street"
+    "code": "CS1231"
   } ]
 }

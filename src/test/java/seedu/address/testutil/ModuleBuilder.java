@@ -17,7 +17,7 @@ public class ModuleBuilder {
 
     public static final String DEFAULT_NAME = "Alice Pauline";
     public static final String DEFAULT_CREDITS = "85355255";
-    public static final String DEFAULT_CODE = "123, Jurong West Ave 6, #08-111";
+    public static final String DEFAULT_CODE = "CS1010";
 
     private Name name;
     private Credits credits;

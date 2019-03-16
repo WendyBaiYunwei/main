@@ -30,8 +30,9 @@ public class CodeTest {
         assertFalse(Code.isValidCode(" ")); // spaces only
 
         // valid codes
-        assertTrue(Code.isValidCode("Blk 456, Den Road, #01-355"));
-        assertTrue(Code.isValidCode("-")); // one character
-        assertTrue(Code.isValidCode("Leng Inc; 1234 Market St; San Francisco CA 2349879; USA")); // long code
+        assertTrue(Code.isValidCode("CS1010"));
+        assertTrue(Code.isValidCode("CS2040C")); // ends with an optional alphabet
+        assertTrue(Code.isValidCode("IFS4231")); // starts with 3 alphabets
+        assertTrue(Code.isValidCode("ABC1234D")); // starts with 3 alphabets and ends with optional alphabet
     }
 }

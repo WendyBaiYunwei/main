@@ -44,35 +44,33 @@ public class CodeContainsKeywordsPredicateTest {
     public void test_nameContainsKeywords_returnsTrue() {
         // One keyword
         CodeContainsKeywordsPredicate predicate =
-                new CodeContainsKeywordsPredicate(Collections.singletonList("Clementi"));
-        assertTrue(predicate.test(new ModuleBuilder().withCode("Clementi Road").build()));
+                new CodeContainsKeywordsPredicate(Collections.singletonList("CS1010"));
+        assertTrue(predicate.test(new ModuleBuilder().withCode("CS1010").build()));
 
         // Multiple keywords
-        predicate = new CodeContainsKeywordsPredicate(Arrays.asList("Buona", "Vista"));
-        assertTrue(predicate.test(new ModuleBuilder().withCode("buona vista").build()));
-
-        // Only one matching keyword
-        predicate = new CodeContainsKeywordsPredicate(Arrays.asList("Kent", "Ridge"));
-        assertTrue(predicate.test(new ModuleBuilder().withCode("Alice Ridge").build()));
+        predicate = new CodeContainsKeywordsPredicate(Arrays.asList("CS1010", "CS1231"));
+        assertTrue(predicate.test(new ModuleBuilder().withCode("CS1010").build()));
+        assertTrue(predicate.test(new ModuleBuilder().withCode("CS1231").build()));
 
         // Mixed-case keywords
-        predicate = new CodeContainsKeywordsPredicate(Arrays.asList("kEnT", "rIdGe"));
-        assertTrue(predicate.test(new ModuleBuilder().withCode("kent ridge").build()));
+        predicate = new CodeContainsKeywordsPredicate(Arrays.asList("cS1010", "Cs1231"));
+        assertTrue(predicate.test(new ModuleBuilder().withCode("CS1010").build()));
+        assertTrue(predicate.test(new ModuleBuilder().withCode("CS1231").build()));
     }
 
     @Test
     public void test_nameDoesNotContainKeywords_returnsFalse() {
         // Zero keywords
         CodeContainsKeywordsPredicate predicate = new CodeContainsKeywordsPredicate(Collections.emptyList());
-        assertFalse(predicate.test(new ModuleBuilder().withCode("Wonderland").build()));
+        assertFalse(predicate.test(new ModuleBuilder().withCode("CS1010").build()));
 
         // Non-matching keyword
-        predicate = new CodeContainsKeywordsPredicate(Arrays.asList("Clementi"));
-        assertFalse(predicate.test(new ModuleBuilder().withCode("Ang Mo Kio").build()));
+        predicate = new CodeContainsKeywordsPredicate(Arrays.asList("CS1000"));
+        assertFalse(predicate.test(new ModuleBuilder().withCode("CS1010").build()));
 
         // Keywords match credits and name, but does not match code
-        predicate = new CodeContainsKeywordsPredicate(Arrays.asList("Alice", "12345"));
+        predicate = new CodeContainsKeywordsPredicate(Arrays.asList("CS0000", "CS1111"));
         assertFalse(predicate.test(new ModuleBuilder().withName("Alice").withCredits("12345")
-                .withCode("Main Street").build()));
+                .withCode("CS1010").build()));
     }
 }

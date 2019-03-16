@@ -23,29 +23,29 @@ import seedu.address.model.module.Module;
 public class TypicalModules {
 
     public static final Module ALICE = new ModuleBuilder().withName("Alice Pauline")
-            .withCode("123, Jurong West Ave 6, #08-111")
+            .withCode("CS1010")
             .withCredits("94351253")
             .withTags("friends").build();
     public static final Module BENSON = new ModuleBuilder().withName("Benson Meier")
-            .withCode("311, Clementi Ave 2, #02-25")
+            .withCode("CS1231")
             .withCredits("98765432")
             .withTags("owesMoney", "friends").build();
     public static final Module CARL = new ModuleBuilder().withName("Carl Kurz").withCredits("95352563")
-            .withCode("wall street").build();
+            .withCode("CS2040C").build();
     public static final Module DANIEL = new ModuleBuilder().withName("Daniel Meier").withCredits("87652533")
-            .withCode("10th street").withTags("friends").build();
+            .withCode("CS2100").withTags("friends").build();
     public static final Module ELLE = new ModuleBuilder().withName("Elle Meyer").withCredits("9482224")
-            .withCode("michegan ave").build();
+            .withCode("CS2101").build();
     public static final Module FIONA = new ModuleBuilder().withName("Fiona Kunz").withCredits("9482427")
-            .withCode("little tokyo").build();
+            .withCode("CS2102").build();
     public static final Module GEORGE = new ModuleBuilder().withName("George Best").withCredits("9482442")
-            .withCode("4th street").build();
+            .withCode("CS2105").build();
 
     // Manually added
     public static final Module HOON = new ModuleBuilder().withName("Hoon Meier").withCredits("8482424")
-            .withCode("little india").build();
+            .withCode("CS2106").build();
     public static final Module IDA = new ModuleBuilder().withName("Ida Mueller").withCredits("8482131")
-            .withCode("chicago ave").build();
+            .withCode("CS2107").build();
 
     // Manually added - Module's details found in {@code CommandTestUtil}
     public static final Module AMY = new ModuleBuilder().withName(VALID_NAME_AMY).withCredits(VALID_CREDITS_AMY)
