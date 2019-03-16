@@ -7,11 +7,8 @@ import java.util.List;
 import javafx.beans.InvalidationListener;
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.InvalidationListenerManager;
-import seedu.address.model.module.Code;
 import seedu.address.model.planner.DegreePlanner;
-import seedu.address.model.planner.Semester;
 import seedu.address.model.planner.UniqueDegreePlannerList;
-import seedu.address.model.planner.Year;
 
 /**
  * Wraps all data at the planner-list level
