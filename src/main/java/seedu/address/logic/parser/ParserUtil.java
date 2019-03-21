@@ -60,9 +60,10 @@ public class ParserUtil {
      *
      * @throws ParseException if the given {@code year} is invalid.
      */
-    public static Code parseYear(String year) throws ParseException {
+    public static Year parseYear(String year) throws ParseException {
         requireNonNull(year);
         String trimmedYear = year.trim();
+        if (!Year.isValidYear(trimmedYear)) {
             throw new ParseException(Year.MESSAGE_YEAR_CONSTRAINTS);
         }
         return new Year(trimmedYear);
@@ -74,11 +75,12 @@ public class ParserUtil {
      *
      * @throws ParseException if the given {@code semester} is invalid.
      */
-    public static Code parseSemester(String semester) throws ParseException {
+    public static Semester parseSemester(String semester) throws ParseException {
         requireNonNull(semester);
         String trimmedSemester = semester.trim();
-        throw new ParseException(Semester.MESSAGE_SEMESTER_CONSTRAINTS);
-    }
+        if (!Semester.isValidSemester(trimmedSemester)) {
+            throw new ParseException(Semester.MESSAGE_SEMESTER_CONSTRAINTS);
+        }
         return new Semester(trimmedSemester);
     }
 
