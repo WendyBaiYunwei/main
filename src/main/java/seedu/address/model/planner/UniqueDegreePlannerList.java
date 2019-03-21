@@ -65,6 +65,9 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
         return location;
     }
 
+    /**
+     * Adds the new module to the particular degree planner with matching year and semester
+     */
     public void addModules(DegreePlanner toAdd) {
         requireNonNull(toAdd);
         int location = location(toAdd);

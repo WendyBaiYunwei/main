@@ -3,8 +3,6 @@ package seedu.address.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import seedu.address.model.planner.DegreePlanner;
-
 /**
  * {@code DegreePlannerList} that keeps track of its own history.
  */
