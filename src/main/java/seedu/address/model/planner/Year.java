@@ -10,7 +10,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Year {
 
     public static final String MESSAGE_YEAR_CONSTRAINTS =
-            "Year should be an integer greater than 0 and smaller than 5.";
+            "Year should be in y/x format, where x is an integer greater than 0 and smaller than 5.";
 
     /*
      * The date should be valid and in the correct Year format.

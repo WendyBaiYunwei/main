@@ -9,7 +9,6 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.planner.DegreePlanner;
-import seedu.address.model.planner.DegreePlannerModule;
 import seedu.address.model.requirement.RequirementCategory;
 
 /**

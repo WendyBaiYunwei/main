@@ -27,11 +27,7 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.planner.DegreePlanner;
-<<<<<<< HEAD
-import seedu.address.model.planner.DegreePlannerModule;
-=======
 import seedu.address.model.requirement.RequirementCategory;
->>>>>>> 5b87fb070840ddfb8bce86bcfa545dbf913363c2
 import seedu.address.testutil.ModuleBuilder;
 
 public class AddCommandTest {
@@ -242,10 +238,9 @@ public class AddCommandTest {
         }
 
         @Override
-        public boolean hasDegreePlannerModule(DegreePlannerModule plannerModule) {
+        public boolean hasDegreePlannerModule(DegreePlanner plannerModules) {
             return false;
         }
-
         @Override public void deleteDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement AssertionError
         }
@@ -255,8 +250,8 @@ public class AddCommandTest {
         }
 
         @Override
-        public void addDegreePlannerModule(DegreePlannerModule plannerModule) {
-
+        public void addDegreePlannerModule(DegreePlanner plannerModules) {
+            //ToDo: implement error check
         }
 
         @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
