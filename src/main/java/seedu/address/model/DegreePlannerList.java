@@ -61,6 +61,14 @@ public class DegreePlannerList implements ReadOnlyDegreePlannerList {
     }
 
     /**
+     * Returns true if a module with the same identity as {@code degreePlanner} exists in the particular degreePlanner.
+     */
+    public boolean hasDegreePlannerModule(DegreePlanner plannerModules) {
+        requireNonNull(plannerModules);
+        return degreePlanners.containsModules(plannerModules);
+    }
+
+    /**
      * Adds a degreePlanner to the degreePlanner list.
      * The degreePlanner must not already exist in the degreePlanner list.
      */

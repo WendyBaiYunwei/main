@@ -297,7 +297,8 @@ public class ModelManager implements Model {
 
     @Override
     public boolean hasDegreePlannerModule(DegreePlanner plannerModules) {
-        return false;
+        requireNonNull(plannerModules);
+        return versionedDegreePlannerList.hasDegreePlannerModule(plannerModules);
     }
 
     @Override public void deleteDegreePlanner(DegreePlanner target) {

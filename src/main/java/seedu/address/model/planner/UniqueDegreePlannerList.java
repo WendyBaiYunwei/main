@@ -3,6 +3,7 @@ package seedu.address.model.planner;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -57,9 +58,9 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
         int location = 0;
         for (int i = 0; i < internalList.size(); i++) {
             if (toCheck.getYear().equals(internalList.get(i).getYear())
-                    && toCheck.getYear().equals(internalList.get(i).getYear())) {
+                    && toCheck.getSemester().equals(internalList.get(i).getSemester())) {
                 location = i;
-                i = internalList.size();
+                break;
             }
         }
         return location;
@@ -71,17 +72,11 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
     public void addModules(DegreePlanner toAdd) {
         requireNonNull(toAdd);
         int location = location(toAdd);
+        Set<Code> inputList = new HashSet<>();
+        inputList.addAll(toAdd.getCodes());
         Set<Code> currentDegreePlanner = internalList.get(location).getCodes();
-        Set<Code> inputList = toAdd.getCodes();
-
-        for (Code currentCode : currentDegreePlanner) {
-            inputList.add(currentCode);
-        }
-
-        DegreePlanner edited =
-                new DegreePlanner(toAdd.getYear(), toAdd.getSemester(),
-                        inputList);
-
+        inputList.addAll(currentDegreePlanner);
+        DegreePlanner edited = new DegreePlanner(toAdd.getYear(), toAdd.getSemester(), inputList);
         setDegreePlanner(internalList.get(location), edited);
     }
 
@@ -171,5 +166,27 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
             }
         }
         return true;
+    }
+    /**
+     * checks if the modules are contained inside the entire degree planner
+     */
+    public boolean containsModules(DegreePlanner toCheck) {
+        int location = location(toCheck);
+        boolean contains = false;
+        Set<Code> currentDegreePlanner = internalList.get(location).getCodes();
+        Set<Code> modulesToCheck = toCheck.getCodes();
+
+        requireNonNull(toCheck);
+        int i;
+        for (i = 0; i < internalList.size(); i++) {
+            for (Code currentCode : internalList.get(i).getCodes()) {
+                for (Code codeToAdd : modulesToCheck) {
+                    if (currentCode.equals(codeToAdd)) {
+                        contains = true;
+                    }
+                }
+            }
+        }
+        return contains;
     }
 }
