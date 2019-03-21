@@ -80,26 +80,30 @@ Format: `help`
 === Adding a module: `add`
 
 Adds a module to the module list. +
-Format: `add name/NAME code/CODE credits/CREDITS [tag/TAG]…`
+Format: `add name/NAME code/CODE credits/CREDITS [tag/TAG]… [coreq/COREQUISITE]…`
 
 * `NAME` indicates the name of the module (e.g. `Programming Methodology`).
 * `CODE` indicates the module code (e.g. `CS1010`).
 * `CREDITS` indicates the modular credits assigned to the module (e.g. `004`).
 * `TAG` indicates the extra information to associate the module with (e.g. `programming`, `loops`).
+* `COREQUISITE` indicates the module code that is a co-requisite of the module to be added.
 
 [WARNING]
 ====
 `NAME` should only contain alphanumeric characters and spaces, and it should not be blank. +
-`CODE` can contain any character but it should not be blank. +
-`CREDITS` should be 3 digits long, and it should not be blank. +
+`CODE` should begin with two alphabets, followed by four digits, and may optionally end with an alphabet. +
+In addition, `CODE` should not be be blank. +
+`CREDITS` should only contain numbers between 0 and 999. +
 If the amount of modular credits is not 3 digit long (e.g. 4), prepend the value with `0` (i.e. 004) +
-`TAG` should only contain alphanumeric characters, and it should not be blank.
+`TAG` should only contain alphanumeric characters, and it should not be blank. +
+`COREQUISITE` follows the same format as `CODE`.
 ====
 
 Examples:
 
-* `add name/Programming Methodology code/CS1010 credits/004 tag/programming tag/algorithms tag/c tag/imperative`
-* `add code/CS1231 name/Discrete Structures credits/004 tag/logic tag/math tag/proving`
+* `add name/Programming Methodology code/CS1010 credits/4 tag/programming tag/algorithms tag/c tag/imperative`
+* `add code/CS1231 name/Discrete Structures credits/4 tag/logic tag/math tag/proving`
+* `add code/CS2113T name/Software Engineering & Object-Oriented Programming credits/4 tag/sweng tag/java coreq/CS2101`
 
 [TIP]
 A module can have any number of tags (including 0)
@@ -116,15 +120,16 @@ Format: `list`
 === Editing a module : `edit`
 
 Edits an existing module in the module list. +
-Format: `edit INDEX [name/NAME] [code/CODE] [credits/CREDITS] [tag/TAG]…`
+Format: `edit INDEX [name/NAME] [code/CODE] [credits/CREDITS] [tag/TAG]… [coreq/COREQUISITE]…`
 
 [NOTE]
 ====
 * Edits the module at the specified `INDEX`. The index refers to the index number shown in the displayed module list. The index *must be a positive integer* 1, 2, 3, …
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
-* When editing tags, the existing tags of the module will be removed i.e adding of tags is not cumulative.
+* When editing tags/corequisites, the existing tags/corequisites of the module will be removed (i.e adding of tags is not cumulative.)
 * You can remove all the module's tags by typing `tag/` without specifying any tags after it.
+* Likewise, you can remove all module's co-requisites by typing `coreq/` without specifying any codes after it.
 ====
 
 Examples:
@@ -133,7 +138,11 @@ Examples:
 Edits the name and code of the 1st module in the displayed module list to be `Data Structures and Algorithms` and `CS2040C` respectively. +
 * `edit 2 code/CS2040C tag/` +
 Edits the code of the 2nd module in the displayed module list to be `CS2040C` and clears all existing tags associated
- with the module.
+ with the module. +
+* `edit 3 coreq/CS1010` +
+Edits the co-requisite of the 3rd module in the displayed module list to be `CS1010`. +
+* `edit 4 coreq/CS2105 coreq/CS2106 coreq/CS2107` +
+Edits the co-requisites of the 4rd module in the displayed module list to be `CS2105`, `CS2106` and `CS2107`. +
 
 === Locating modules either by name, code or credits: `find`
 
@@ -144,17 +153,13 @@ Format: `find [name/NAME NAME…] [code/CODE CODE…] [credits/CREDITS CREDITS�
 
 * The search is case insensitive. e.g `security` will match `Security`
 * The order of the keywords does not matter. e.g. `Security Information` will match `Information Security`
+* The order of the prefix does not matter. +
+e.g. finding `name/NAME... code/CODE...` will have the same result as finding `code/CODE... name/NAME...`
 * Only the module name, code or credits is searched.
 * Only full words will be matched. e.g. `CS` will not match `CS1231`
 * Modules matching at least one keyword will be returned (i.e. `OR` search). +
 e.g. `Information` will return `Information Technology`, `Information Business`
 ****
-[NOTE]
-====
-You can only search one prefix. +
-e.g. `name/Information` or `code/CS1231` but not
-`name/Information code/CS1231`
-====
 Examples:
 
 * `find name/Security` +
@@ -165,6 +170,10 @@ Returns any module having names `Security`, `Information`, or `Computer` in the 
 Returns any module having code `CS1231` or `CS2040` in the displayed module list.
 * `find credits/004 012` +
 Returns any module having credits `004` or `012` in the displayed module list.
+* `find name/Programming code/CS1231` +
+Returns any module having name `Programming` or code `CS1231` in the displayed module list.
+* `find code/CS2113 credits/004 name/Programming` +
+Returns any module having name `Programming` or code `CS2113` or credits `004` in the displayed module list.
 
 === Deleting a module : `delete`
 
@@ -176,6 +185,12 @@ Format: `delete INDEX`
 * Deletes the module at the specified `INDEX`.
 * The index refers to the index number shown in the displayed module list.
 * The index *must be a positive integer* 1, 2, 3, …
+====
+
+[WARNING]
+====
+When deleting a module, any modules with the deleted module as its co-requisite will be updated
+accordingly (i.e. deleted module is removed from the respective module's co-requisite list).
 ====
 
 Examples:
@@ -318,7 +333,7 @@ Moves module CS1231 to year 1 semester 2.
 * `planner_move CS1231 y/1 s/4` +
 Moves module CS1231 to year 1 special semester 2.
 
-=== Listing degree planners: `planner_list_all` `[coming in v2.0]`
+=== Listing degree planners: `planner_list_all`
 
 Shows a list of all degree planners. +
 Format: `planner_list_all`
@@ -339,7 +354,7 @@ Shows a degree planner for year 1 semester 2
 
 Displays a list of modules that can be added to the degree planner.
 
-=== Adding a module code to degree requirement category : `requirement_add` `[coming in v2.0]`
+=== Adding a module code to degree requirement category : `requirement_add`
 
 Add module code to a degree requirement category in the application. +
 Format: `requirement_add name/NAME [code/CODE]…`
@@ -409,9 +424,9 @@ manually. The application will save the data at the specified storage location.
 
 == Command Summary
 
-* *Add module to module list* : `add name/NAME code/CODE credits/CREDITS [tag/TAG]…` +
-e.g. `add name/Programming Methodology code/CS1010 credits/004 tag/programming tag/algorithms tag/c tag/imperative`
-* *Edit* : `edit INDEX [name/NAME] [code/CODE] [credits/CREDITS] [tag/TAG]…` +
+* *Add module to module list* : `add name/NAME code/CODE credits/CREDITS [tag/TAG]… [coreq/COREQUISITE]…` +
+e.g. `add code/CS2113T name/Software Engineering & Object-Oriented Programming credits/4 tag/sweng tag/java coreq/CS2101`
+* *Edit* : `edit INDEX [name/NAME] [code/CODE] [credits/CREDITS] [tag/TAG]… [coreq/COREQUISITE]…` +
 e.g. `edit 1 name/Data Structures and Algorithms code/CS2040C`
 * *Delete* : `delete INDEX` +
 e.g. `delete 3`

@@ -2,13 +2,19 @@ package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import javafx.beans.InvalidationListener;
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.InvalidationListenerManager;
+import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.UniqueModuleList;
+import seedu.address.model.requirement.RequirementCategory;
+import seedu.address.model.requirement.UniqueRequirementCategoryList;
 
 /**
  * Wraps all data at the address-book level
@@ -17,6 +23,7 @@ import seedu.address.model.module.UniqueModuleList;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniqueModuleList modules;
+    private final UniqueRequirementCategoryList requirementCategories;
     private final InvalidationListenerManager invalidationListenerManager = new InvalidationListenerManager();
 
     /*
@@ -28,6 +35,7 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     {
         modules = new UniqueModuleList();
+        requirementCategories = new UniqueRequirementCategoryList();
     }
 
     public AddressBook() {}
@@ -38,6 +46,15 @@ public class AddressBook implements ReadOnlyAddressBook {
     public AddressBook(ReadOnlyAddressBook toBeCopied) {
         this();
         resetData(toBeCopied);
+    }
+
+    /**
+     * Resets the existing data of this {@code AddressBook} with {@code newData}.
+     */
+    public void resetData(ReadOnlyAddressBook newData) {
+        requireNonNull(newData);
+        setModules(newData.getModuleList());
+        setRequirementCategories(newData.getRequirementCategoryList());
     }
 
     //// list overwrite operations
@@ -52,12 +69,12 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Resets the existing data of this {@code AddressBook} with {@code newData}.
+     * Replaces the contents of the requirement list with {@code requirement}.
+     * {@code requirement} must not contain duplicate requirement.
      */
-    public void resetData(ReadOnlyAddressBook newData) {
-        requireNonNull(newData);
-
-        setModules(newData.getModuleList());
+    public void setRequirementCategories(List<RequirementCategory> requirementCategories) {
+        this.requirementCategories.setRequirementCategories(requirementCategories);
+        indicateModified();
     }
 
     //// module-level operations
@@ -68,6 +85,14 @@ public class AddressBook implements ReadOnlyAddressBook {
     public boolean hasModule(Module module) {
         requireNonNull(module);
         return modules.contains(module);
+    }
+
+    /**
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the address book.
+     */
+    public boolean hasModuleCode(Code code) {
+        requireNonNull(code);
+        return modules.asUnmodifiableObservableList().stream().anyMatch((module) -> module.getCode().equals(code));
     }
 
     /**
@@ -97,8 +122,90 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void removeModule(Module key) {
         modules.remove(key);
+
+        ObservableList<Module> moduleList = modules.asUnmodifiableObservableList();
+        for (Module module : moduleList) {
+            if (module.getCorequisites().contains(key.getCode())) {
+                Set<Code> editedCorequisites = new HashSet<>(module.getCorequisites());
+                editedCorequisites.remove(key.getCode());
+
+                Module editedModule = new Module(module.getName(), module.getCredits(), module.getCode(),
+                        module.getTags(), editedCorequisites);
+                modules.setModule(module, editedModule);
+            }
+        }
         indicateModified();
     }
+
+    //// planner-level operations
+
+    /**
+     * Returns true if an requirement with the same identity as {@code requirement} exists in the
+     * requirement.
+     */
+    public boolean hasRequirementCategory(RequirementCategory requirementCategory) {
+        requireNonNull(requirementCategory);
+        return requirementCategories.contains(requirementCategory);
+    }
+
+    /**
+     * Adds a requirement to the requirementCategoryList.
+     * The requirement must not already exist in the requirementCategoryList.
+     */
+    public void addRequirementCategory(RequirementCategory requirementCategory) {
+        requirementCategories.add(requirementCategory);
+    }
+
+    /**
+     * Replaces the given requirement {@code target} in the list with {@code editedRequirementCategory}.
+     * {@code target} must exist in the requirement list.
+     * The identity of {@code editedRequirementCategory} must not be the same as another existing requirement
+     * in the
+     * requirement list.
+     */
+    public void setRequirementCategory(RequirementCategory target, RequirementCategory editedRequirementCategory) {
+        requireNonNull(editedRequirementCategory);
+
+        requirementCategories.setRequirementCategory(target, editedRequirementCategory);
+    }
+
+    /**
+     * Removes {@code key} from this {@code RequirementCategoryList}.
+     * {@code key} must exist in the requirement list.
+     */
+    public void removeRequirementCategory(RequirementCategory key) {
+        requirementCategories.remove(key);
+    }
+
+    /**
+     * Adds module to the given requirement category.
+     * {@code requirementCategoryModule} must not already exist in the requirementCategoryList.
+     */
+    public void addModuleToRequirementCategory(RequirementCategory requirementCategoryModule) {
+        requireNonNull(requirementCategoryModule);
+        requirementCategories.addModuleToRequirementCategory(requirementCategoryModule);
+    }
+
+    /**
+     * Returns true if a module with the same identity as {@code requirementCategory} exists in the
+     * requirement category to be added to.
+     */
+    public boolean isModuleInRequirementCategory(RequirementCategory requirementCategory) {
+        requireNonNull(requirementCategory);
+        return requirementCategories.isModuleInRequirementCategory(requirementCategory);
+    }
+
+    /**
+     * Returns false if a module with the same identity as {@code requirementCategory} does not exists
+     * in the current moduleList.
+     */
+    //TODO refine this method to use methods in PR#91
+    public boolean doesModuleExistInApplication(RequirementCategory requirementCategory, Model model) {
+        requireNonNull(requirementCategory);
+        return requirementCategories.doesModuleExistInApplication(requirementCategory, model);
+    }
+
+    //// listener methods
 
     @Override
     public void addListener(InvalidationListener listener) {
@@ -121,7 +228,8 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     @Override
     public String toString() {
-        return modules.asUnmodifiableObservableList().size() + " modules";
+        return modules.asUnmodifiableObservableList().size() + " modules \n"
+                + requirementCategories.asUnmodifiableObservableList().size() + " requirementCategories";
         // TODO: refine later
     }
 
@@ -131,14 +239,20 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     @Override
+    public ObservableList<RequirementCategory> getRequirementCategoryList() {
+        return requirementCategories.asUnmodifiableObservableList();
+    }
+
+    @Override
     public boolean equals(Object other) {
         return other == this // short circuit if same object
                 || (other instanceof AddressBook // instanceof handles nulls
-                && modules.equals(((AddressBook) other).modules));
+                && modules.equals(((AddressBook) other).modules)
+                && requirementCategories.equals(((AddressBook) other).requirementCategories));
     }
 
     @Override
     public int hashCode() {
-        return modules.hashCode();
+        return Objects.hash(modules.hashCode(), requirementCategories.hashCode());
     }
 }

@@ -55,6 +55,34 @@ public class ParserUtil {
     }
 
     /**
+     * Parses a {@code String year} into an {@code Year}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code year} is invalid.
+     */
+    public static Code parseYear(String year) throws ParseException {
+        requireNonNull(year);
+        String trimmedYear = year.trim();
+            throw new ParseException(Year.MESSAGE_YEAR_CONSTRAINTS);
+        }
+        return new Year(trimmedYear);
+    }
+
+    /**
+     * Parses a {@code String semester} into an {@code Semester}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code semester} is invalid.
+     */
+    public static Code parseSemester(String semester) throws ParseException {
+        requireNonNull(semester);
+        String trimmedSemester = semester.trim();
+        throw new ParseException(Semester.MESSAGE_SEMESTER_CONSTRAINTS);
+    }
+        return new Semester(trimmedSemester);
+    }
+
+    /**
      * Parses a {@code String... name} into a {@code List<Name>}.
      * Leading and trailing whitespaces will be trimmed.
      *
@@ -169,32 +197,26 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String year} into a {@code Year}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code year} is invalid.
+     * Parses {@code Collection<String> codes} into a {@code Set<Code>}.
      */
-    public static Year parseYear(String year) throws ParseException {
-        requireNonNull(year);
-        String trimmedYear = year.trim();
-        if (!Code.isValidCode(trimmedYear)) {
-            throw new ParseException(Code.MESSAGE_CONSTRAINTS);
+    public static Set<Code> parseCodes(Collection<String> codes) throws ParseException {
+        requireNonNull(codes);
+        final Set<Code> codeList = new HashSet<>();
+        for (String code : codes) {
+            codeList.add(parseCode(code));
         }
-        return new Year(trimmedYear);
+        return codeList;
     }
 
     /**
-     * Parses a {@code String semester} into a {@code Semester}.
-     * Leading and trailing whitespaces will be trimmed.
-     *
-     * @throws ParseException if the given {@code semester} is invalid.
+     * Parses {@code Collection<String> corequisites} into a {@code Set<Code>}.
      */
-    public static Semester parseSemester(String semester) throws ParseException {
-        requireNonNull(semester);
-        String trimmedSemester = semester.trim();
-        if (!Code.isValidCode(trimmedSemester)) {
-            throw new ParseException(Code.MESSAGE_CONSTRAINTS);
+    public static Set<Code> parseCorequisites(Collection<String> corequisites) throws ParseException {
+        requireNonNull(corequisites);
+        final Set<Code> corequisitesSet = new HashSet<>();
+        for (String corequisite : corequisites) {
+            corequisitesSet.add(parseCode(corequisite));
         }
-        return new Semester(trimmedSemester);
+        return corequisitesSet;
     }
 }

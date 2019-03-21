@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
+import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 
 /**
@@ -17,12 +18,14 @@ public class ModuleCardHandle extends NodeHandle<Node> {
     private static final String CODE_FIELD_ID = "#code";
     private static final String CREDITS_FIELD_ID = "#credits";
     private static final String TAGS_FIELD_ID = "#tags";
+    private static final String COREQUISITES_FIELD_ID = "#corequisites";
 
     private final Label idLabel;
     private final Label nameLabel;
     private final Label codeLabel;
     private final Label creditsLabel;
     private final List<Label> tagLabels;
+    private final Label corequisitesLabel;
 
     public ModuleCardHandle(Node cardNode) {
         super(cardNode);
@@ -38,6 +41,8 @@ public class ModuleCardHandle extends NodeHandle<Node> {
                 .stream()
                 .map(Label.class::cast)
                 .collect(Collectors.toList());
+
+        corequisitesLabel = getChildNode(COREQUISITES_FIELD_ID);
     }
 
     public String getId() {
@@ -67,6 +72,18 @@ public class ModuleCardHandle extends NodeHandle<Node> {
                 .collect(Collectors.toList());
     }
 
+    public String getCorequisites() {
+        String corequisites = corequisitesLabel.getText();
+        if (corequisites.startsWith("Co-requisites: ")) {
+            corequisites = corequisites.substring("Co-requisites: ".length());
+        }
+
+        if (corequisites.equals("None")) {
+            corequisites = "";
+        }
+        return corequisites;
+    }
+
     /**
      * Returns true if this handle contains {@code module}.
      */
@@ -75,8 +92,10 @@ public class ModuleCardHandle extends NodeHandle<Node> {
                 && getCode().equals(module.getCode().value)
                 && getCredits().equals(module.getCredits().value)
                 && getTags().equals(module.getTags().stream()
-                        .map(tag -> tag.tagName)
-                        .sorted()
-                        .collect(Collectors.toList()));
+                    .map(tag -> tag.tagName)
+                    .sorted()
+                    .collect(Collectors.toList()))
+                && getCorequisites().equals(module.getCorequisites().stream().map(Code::toString)
+                    .collect(Collectors.joining(", ")));
     }
 }

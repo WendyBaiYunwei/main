@@ -10,8 +10,8 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Credits {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Credits should only contain numbers, and it should be at least 3 digits long";
-    public static final String VALIDATION_REGEX = "\\d{3,}";
+            "Credits should only contain numbers between 0 and 999.";
+    public static final String VALIDATION_REGEX = "0|([\\d&&[^0]]{1}[\\d]{0,2})";
     public final String value;
 
     /**

@@ -1,44 +1,39 @@
 package seedu.address.storage;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
-
+import javafx.collections.ObservableList;
 import seedu.address.commons.exceptions.IllegalValueException;
-
 import seedu.address.model.AddressBook;
-import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.module.Module;
+import seedu.address.model.requirement.RequirementCategory;
 
 /**
- * An Immutable AddressBook that is serializable to JSON format.
+ * A class to access the JsonSerializable files data stored as a json file on the hard disk.
  */
-@JsonRootName(value = "addressbook")
-class JsonSerializableAddressBook {
+public class JsonSerializableAddressBook {
 
-    public static final String MESSAGE_DUPLICATE_MODULE = "Modules list contains duplicate module(s).";
+    private ObservableList<Module> moduleObservableList;
+    private ObservableList<RequirementCategory> requirementCategoryObservableList;
 
-    private final List<JsonAdaptedModule> modules = new ArrayList<>();
-
-    /**
-     * Constructs a {@code JsonSerializableAddressBook} with the given modules.
-     */
-    @JsonCreator
-    public JsonSerializableAddressBook(@JsonProperty("modules") List<JsonAdaptedModule> modules) {
-        this.modules.addAll(modules);
+    public JsonSerializableAddressBook(ObservableList<Module> moduleObservableList,
+            ObservableList<RequirementCategory> requirementCategoryObservableList) {
+        this.moduleObservableList = moduleObservableList;
+        this.requirementCategoryObservableList = requirementCategoryObservableList;
     }
 
-    /**
-     * Converts a given {@code ReadOnlyAddressBook} into this class for Jackson use.
-     *
-     * @param source future changes to this will not affect the created {@code JsonSerializableAddressBook}.
-     */
-    public JsonSerializableAddressBook(ReadOnlyAddressBook source) {
-        modules.addAll(source.getModuleList().stream().map(JsonAdaptedModule::new).collect(Collectors.toList()));
+    public ObservableList<Module> getModuleObservableList() {
+        return moduleObservableList;
+    }
+
+    public ObservableList<RequirementCategory> getRequirementCategoryObservableList() {
+        return requirementCategoryObservableList;
+    }
+
+    public static Class getJsonSerializableModuleListClass() {
+        return JsonSerializableModuleList.class;
+    }
+
+    public static Class getJsonSerializableRequirementCategoryListClass() {
+        return JsonSerializableRequirementCategoryList.class;
     }
 
     /**
@@ -48,13 +43,8 @@ class JsonSerializableAddressBook {
      */
     public AddressBook toModelType() throws IllegalValueException {
         AddressBook addressBook = new AddressBook();
-        for (JsonAdaptedModule jsonAdaptedModule : modules) {
-            Module module = jsonAdaptedModule.toModelType();
-            if (addressBook.hasModule(module)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_MODULE);
-            }
-            addressBook.addModule(module);
-        }
+        addressBook.setModules(getModuleObservableList());
+        addressBook.setRequirementCategories(getRequirementCategoryObservableList());
         return addressBook;
     }
 

@@ -2,6 +2,7 @@ package seedu.address.logic.parser;
 
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_COREQUISITE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
@@ -29,7 +30,8 @@ public class AddCommandParser implements Parser<AddCommand> {
      */
     public AddCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_CREDITS, PREFIX_CODE, PREFIX_TAG);
+                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_CREDITS, PREFIX_CODE, PREFIX_TAG,
+                        PREFIX_COREQUISITE);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_CODE, PREFIX_CREDITS)
                 || !argMultimap.getPreamble().isEmpty()) {
@@ -40,8 +42,9 @@ public class AddCommandParser implements Parser<AddCommand> {
         Credits credits = ParserUtil.parseCredits(argMultimap.getValue(PREFIX_CREDITS).get());
         Code code = ParserUtil.parseCode(argMultimap.getValue(PREFIX_CODE).get());
         Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
+        Set<Code> corequisiteList = ParserUtil.parseCorequisites(argMultimap.getAllValues(PREFIX_COREQUISITE));
 
-        Module module = new Module(name, credits, code, tagList);
+        Module module = new Module(name, credits, code, tagList, corequisiteList);
 
         return new AddCommand(module);
     }

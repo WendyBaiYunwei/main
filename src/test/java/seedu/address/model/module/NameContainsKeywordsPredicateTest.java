@@ -69,7 +69,7 @@ public class NameContainsKeywordsPredicateTest {
 
         // Keywords match credits and code, but does not match name
         predicate = new NameContainsKeywordsPredicate(Arrays.asList("12345", "Main", "Street"));
-        assertFalse(predicate.test(new ModuleBuilder().withName("Alice").withCredits("12345")
+        assertFalse(predicate.test(new ModuleBuilder().withName("Alice").withCredits("123")
                 .withCode("CS1010").build()));
     }
 }

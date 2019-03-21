@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javafx.collections.ObservableList;
 import seedu.address.model.AddressBook;
 import seedu.address.model.module.Module;
 
@@ -24,27 +25,27 @@ public class TypicalModules {
 
     public static final Module ALICE = new ModuleBuilder().withName("Alice Pauline")
             .withCode("CS1010")
-            .withCredits("94351253")
+            .withCredits("0")
             .withTags("friends").build();
     public static final Module BENSON = new ModuleBuilder().withName("Benson Meier")
             .withCode("CS1231")
-            .withCredits("98765432")
+            .withCredits("1")
             .withTags("owesMoney", "friends").build();
-    public static final Module CARL = new ModuleBuilder().withName("Carl Kurz").withCredits("95352563")
+    public static final Module CARL = new ModuleBuilder().withName("Carl Kurz").withCredits("2")
             .withCode("CS2040C").build();
-    public static final Module DANIEL = new ModuleBuilder().withName("Daniel Meier").withCredits("87652533")
+    public static final Module DANIEL = new ModuleBuilder().withName("Daniel Meier").withCredits("3")
             .withCode("CS2100").withTags("friends").build();
-    public static final Module ELLE = new ModuleBuilder().withName("Elle Meyer").withCredits("9482224")
+    public static final Module ELLE = new ModuleBuilder().withName("Elle Meyer").withCredits("4")
             .withCode("CS2101").build();
-    public static final Module FIONA = new ModuleBuilder().withName("Fiona Kunz").withCredits("9482427")
-            .withCode("CS2102").build();
-    public static final Module GEORGE = new ModuleBuilder().withName("George Best").withCredits("9482442")
+    public static final Module FIONA = new ModuleBuilder().withName("Fiona Kunz").withCredits("5")
+            .withCode("CS2102").withCorequisites("CS1231").build();
+    public static final Module GEORGE = new ModuleBuilder().withName("George Best").withCredits("6")
             .withCode("CS2105").build();
 
     // Manually added
-    public static final Module HOON = new ModuleBuilder().withName("Hoon Meier").withCredits("8482424")
+    public static final Module HOON = new ModuleBuilder().withName("Hoon Meier").withCredits("7")
             .withCode("CS2106").build();
-    public static final Module IDA = new ModuleBuilder().withName("Ida Mueller").withCredits("8482131")
+    public static final Module IDA = new ModuleBuilder().withName("Ida Mueller").withCredits("8")
             .withCode("CS2107").build();
 
     // Manually added - Module's details found in {@code CommandTestUtil}
@@ -61,13 +62,14 @@ public class TypicalModules {
     /**
      * Returns an {@code AddressBook} with all the typical modules.
      */
-    public static AddressBook getTypicalAddressBook() {
-        AddressBook ab = new AddressBook();
+    public static ObservableList<Module> getTypicalModuleList() {
+        AddressBook moduleList = new AddressBook();
         for (Module module : getTypicalModules()) {
-            ab.addModule(module);
+            moduleList.addModule(module);
         }
-        return ab;
+        return moduleList.getModuleList();
     }
+
 
     public static List<Module> getTypicalModules() {
         return new ArrayList<>(Arrays.asList(ALICE, BENSON, CARL, DANIEL, ELLE, FIONA, GEORGE));

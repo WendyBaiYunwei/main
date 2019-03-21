@@ -65,14 +65,14 @@ public class FindCommandParserTest {
         FindCommand expectedFindCreditsCommand =
                 new FindCommand(new CreditsContainsKeywordsPredicate(Arrays.asList("999")));
         FindCommand expectedFindMultipleCreditsCommand =
-                new FindCommand(new CreditsContainsKeywordsPredicate(Arrays.asList("999", "004", "012")));
+                new FindCommand(new CreditsContainsKeywordsPredicate(Arrays.asList("999", "4", "12")));
         // single keyword
         assertParseSuccess(parser, "find " + PREFIX_CREDITS + "999", expectedFindCreditsCommand);
         // multiple keywords
-        assertParseSuccess(parser, "find " + PREFIX_CREDITS + "999 004 012",
+        assertParseSuccess(parser, "find " + PREFIX_CREDITS + "999 4 12",
                 expectedFindMultipleCreditsCommand);
         // multiple whitespaces keywords
-        assertParseSuccess(parser, "find " + PREFIX_CREDITS + "        999           004        012",
+        assertParseSuccess(parser, "find " + PREFIX_CREDITS + "        999           4        12",
                 expectedFindMultipleCreditsCommand);
     }
 

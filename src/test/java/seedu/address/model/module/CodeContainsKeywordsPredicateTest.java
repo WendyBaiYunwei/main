@@ -70,7 +70,7 @@ public class CodeContainsKeywordsPredicateTest {
 
         // Keywords match credits and name, but does not match code
         predicate = new CodeContainsKeywordsPredicate(Arrays.asList("CS0000", "CS1111"));
-        assertFalse(predicate.test(new ModuleBuilder().withName("Alice").withCredits("12345")
+        assertFalse(predicate.test(new ModuleBuilder().withName("Alice").withCredits("123")
                 .withCode("CS1010").build()));
     }
 }

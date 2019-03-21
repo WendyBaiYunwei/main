@@ -38,9 +38,9 @@ public class ModuleTest {
         Module editedAlice = new ModuleBuilder(ALICE).withCredits(VALID_CREDITS_BOB).withCode(VALID_CODE_BOB).build();
         assertFalse(ALICE.isSameModule(editedAlice));
 
-        // different name -> returns false
+        // different name but same code -> returns true
         editedAlice = new ModuleBuilder(ALICE).withName(VALID_NAME_BOB).build();
-        assertFalse(ALICE.isSameModule(editedAlice));
+        assertTrue(ALICE.isSameModule(editedAlice));
 
         // same name, same code, different attributes -> returns true
         editedAlice = new ModuleBuilder(ALICE)

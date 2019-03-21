@@ -10,6 +10,8 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.module.Module;
+import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.requirement.RequirementCategory;
 
 /**
  * API of the Logic component
@@ -17,10 +19,11 @@ import seedu.address.model.module.Module;
 public interface Logic {
     /**
      * Executes the command and returns the result.
+     *
      * @param commandText The command as entered by the user.
      * @return the result of the command execution.
      * @throws CommandException If an error occurs during command execution.
-     * @throws ParseException If an error occurs during parsing.
+     * @throws ParseException   If an error occurs during parsing.
      */
     CommandResult execute(String commandText) throws CommandException, ParseException;
 
@@ -33,6 +36,12 @@ public interface Logic {
 
     /** Returns an unmodifiable view of the filtered list of modules */
     ObservableList<Module> getFilteredModuleList();
+
+    /** Returns an unmodifiable view of the filtered degreePlanner list */
+    ObservableList<DegreePlanner> getFilteredDegreePlannerList();
+
+    /** Returns an unmodifiable view of the filtered list of modules */
+    ObservableList<RequirementCategory> getFilteredRequirementCategoryList();
 
     /**
      * Returns an unmodifiable view of the list of commands entered by the user.
@@ -69,4 +78,19 @@ public interface Logic {
      * @see seedu.address.model.Model#setSelectedModule(Module)
      */
     void setSelectedModule(Module module);
+
+    /**
+     * Selected module in the filtered module list.
+     * null if no module is selected.
+     *
+     * @see seedu.address.model.Model#selectedModuleProperty()
+     */
+    ReadOnlyProperty<RequirementCategory> selectedRequirementCategoryProperty();
+
+    /**
+     * Sets the selected module in the filtered module list.
+     *
+     * @see seedu.address.model.Model#setSelectedModule(Module)
+     */
+    void setSelectedRequirementCategory(RequirementCategory requirementCategory);
 }

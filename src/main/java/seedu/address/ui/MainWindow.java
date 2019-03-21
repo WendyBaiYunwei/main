@@ -32,12 +32,16 @@ public class MainWindow extends UiPart<Stage> {
 
     // Independent Ui parts residing in this Ui container
     private BrowserPanel browserPanel;
+    private DegreePlannerListPanel degreePlannerListPanel;
     private ModuleListPanel moduleListPanel;
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
 
     @FXML
     private StackPane browserPlaceholder;
+
+    @FXML
+    private StackPane degreePlannerListPanelPlaceholder;
 
     @FXML
     private StackPane commandBoxPlaceholder;
@@ -79,6 +83,7 @@ public class MainWindow extends UiPart<Stage> {
 
     /**
      * Sets the accelerator of a MenuItem.
+     *
      * @param keyCombination the KeyCombination value of the accelerator
      */
     private void setAccelerator(MenuItem menuItem, KeyCombination keyCombination) {
@@ -117,6 +122,9 @@ public class MainWindow extends UiPart<Stage> {
         moduleListPanel = new ModuleListPanel(logic.getFilteredModuleList(), logic.selectedModuleProperty(),
                 logic::setSelectedModule);
         moduleListPanelPlaceholder.getChildren().add(moduleListPanel.getRoot());
+
+        degreePlannerListPanel = new DegreePlannerListPanel(logic.getFilteredDegreePlannerList());
+        degreePlannerListPanelPlaceholder.getChildren().add(degreePlannerListPanel.getRoot());
 
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());
@@ -170,6 +178,10 @@ public class MainWindow extends UiPart<Stage> {
 
     public ModuleListPanel getModuleListPanel() {
         return moduleListPanel;
+    }
+
+    public DegreePlannerListPanel getDegreePlannerListPanel() {
+        return degreePlannerListPanel;
     }
 
     /**

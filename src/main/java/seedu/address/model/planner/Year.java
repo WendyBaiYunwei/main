@@ -10,13 +10,14 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Year {
 
     public static final String MESSAGE_YEAR_CONSTRAINTS =
-            "Year in an university should only be given in Y (e.g. 1) format and in valid form.";
+            "Year should be an integer greater than 0 and smaller than 5.";
 
     /*
      * The date should be valid and in the correct Year format.
      */
     public static final String YEAR_VALIDATION_REGEX =
             "[1-4]{1}";
+
 
     public final String year;
 

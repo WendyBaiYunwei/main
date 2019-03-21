@@ -13,20 +13,22 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showModuleAtIndex;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_MODULE;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_MODULE;
-import static seedu.address.testutil.TypicalModules.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalModules.getTypicalModuleList;
+import static seedu.address.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
 import org.junit.Test;
 
 import seedu.address.commons.core.Messages;
 import seedu.address.commons.core.index.Index;
+import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.EditCommand.EditModuleDescriptor;
 import seedu.address.model.DegreePlannerList;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
-import seedu.address.model.RequirementCategoryList;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.module.Module;
+import seedu.address.storage.JsonSerializableAddressBook;
 import seedu.address.testutil.EditModuleDescriptorBuilder;
 import seedu.address.testutil.ModuleBuilder;
 
@@ -37,9 +39,13 @@ public class EditCommandTest {
 
     //ToDo: Implement getTypicalDegreePlannerList for DegreePlannerList and update the codes below
     private Model model =
-            new ModelManager(getTypicalAddressBook(), new DegreePlannerList(), new RequirementCategoryList(),
+            new ModelManager(
+                    new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalRequirementCategoriesList())
+                            .toModelType(), new DegreePlannerList(),
                     new UserPrefs());
     private CommandHistory commandHistory = new CommandHistory();
+
+    public EditCommandTest() throws IllegalValueException {}
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
@@ -50,7 +56,7 @@ public class EditCommandTest {
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
 
         Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
-                model.getRequirementCategoryList(), new UserPrefs());
+                new UserPrefs());
 
         expectedModel.setModule(model.getFilteredModuleList().get(0), editedModule);
         expectedModel.commitAddressBook();
@@ -74,7 +80,7 @@ public class EditCommandTest {
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
 
         Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
-                model.getRequirementCategoryList(), new UserPrefs());
+                new UserPrefs());
         expectedModel.setModule(lastModule, editedModule);
         expectedModel.commitAddressBook();
 
@@ -89,7 +95,7 @@ public class EditCommandTest {
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
 
         Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
-                model.getRequirementCategoryList(), new UserPrefs());
+                new UserPrefs());
         expectedModel.commitAddressBook();
 
         assertCommandSuccess(editCommand, model, commandHistory, expectedMessage, expectedModel);
@@ -107,7 +113,7 @@ public class EditCommandTest {
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
 
         Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
-                model.getRequirementCategoryList(), new UserPrefs());
+                new UserPrefs());
         expectedModel.setModule(model.getFilteredModuleList().get(0), editedModule);
         expectedModel.commitAddressBook();
 
@@ -169,7 +175,7 @@ public class EditCommandTest {
         EditCommand.EditModuleDescriptor descriptor = new EditModuleDescriptorBuilder(editedModule).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, descriptor);
         Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
-                model.getRequirementCategoryList(), new UserPrefs());
+                new UserPrefs());
         expectedModel.setModule(moduleToEdit, editedModule);
         expectedModel.commitAddressBook();
 
@@ -213,7 +219,7 @@ public class EditCommandTest {
         EditModuleDescriptor descriptor = new EditModuleDescriptorBuilder(editedModule).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, descriptor);
         Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
-                model.getRequirementCategoryList(), new UserPrefs());
+                new UserPrefs());
 
         showModuleAtIndex(model, INDEX_SECOND_MODULE);
         Module moduleToEdit = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());

@@ -8,35 +8,39 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalModules.CARL;
 import static seedu.address.testutil.TypicalModules.ELLE;
 import static seedu.address.testutil.TypicalModules.FIONA;
-import static seedu.address.testutil.TypicalModules.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalModules.getTypicalModuleList;
+import static seedu.address.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
 
+import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.logic.CommandHistory;
 import seedu.address.model.DegreePlannerList;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
-import seedu.address.model.RequirementCategoryList;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.module.CodeContainsKeywordsPredicate;
 import seedu.address.model.module.CreditsContainsKeywordsPredicate;
 import seedu.address.model.module.NameContainsKeywordsPredicate;
+import seedu.address.storage.JsonSerializableAddressBook;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
  */
 public class FindCommandTest {
     //ToDo: Implement getTypicalDegreePlannerList for DegreePlannerList and update the codes below
-    private Model model =
-            new ModelManager(getTypicalAddressBook(), new DegreePlannerList(), new RequirementCategoryList(),
-                    new UserPrefs());
-    private Model expectedModel =
-            new ModelManager(getTypicalAddressBook(), new DegreePlannerList(), new RequirementCategoryList(),
-                    new UserPrefs());
+    private Model model = new ModelManager(
+            new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalRequirementCategoriesList())
+                    .toModelType(), new DegreePlannerList(), new UserPrefs());
+    private Model expectedModel = new ModelManager(
+            new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalRequirementCategoriesList())
+                    .toModelType(), new DegreePlannerList(), new UserPrefs());
     private CommandHistory commandHistory = new CommandHistory();
+
+    public FindCommandTest() throws IllegalValueException {}
 
     @Test
     public void equals() {
@@ -100,7 +104,7 @@ public class FindCommandTest {
     public void execute_multipleCreditsKeywords_multipleModulesFound() {
         String expectedMessage = String.format(MESSAGE_MODULES_LISTED_OVERVIEW, 3);
         // TODO: update the module credits after TypicalModule attribute are updated
-        CreditsContainsKeywordsPredicate predicate = prepareCreditsPredicate("95352563 9482224 9482427");
+        CreditsContainsKeywordsPredicate predicate = prepareCreditsPredicate("2 4 5");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredModuleList(predicate);
         assertCommandSuccess(command, model, commandHistory, expectedMessage, expectedModel);

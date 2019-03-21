@@ -23,8 +23,8 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyDegreePlannerList;
-import seedu.address.model.ReadOnlyRequirementCategoryList;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.planner.DegreePlanner;
 <<<<<<< HEAD
@@ -168,6 +168,11 @@ public class AddCommandTest {
         }
 
         @Override
+        public boolean hasModuleCode(Code code) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void deleteModule(Module target) {
             throw new AssertionError("This method should not be called.");
         }
@@ -288,11 +293,6 @@ public class AddCommandTest {
             //ToDo: implement error check
         }
 
-        @Override public ReadOnlyRequirementCategoryList getRequirementCategoryList() {
-            //ToDo: implement error check
-            return null;
-        }
-
         @Override public boolean hasRequirementCategory(RequirementCategory degreePlanner) {
             //ToDo: implement error check
             return false;
@@ -311,6 +311,21 @@ public class AddCommandTest {
             //ToDo: implement error check
         }
 
+        @Override
+        public boolean isModuleInRequirementCategory(RequirementCategory requirementCategoryModule) {
+            return false;
+        }
+
+        @Override
+        public void addModuleToRequirementCategory(RequirementCategory requirementCategoryModule) {
+            //ToDo: implement error check
+        }
+
+        @Override
+        public boolean doesModuleExistInApplication(RequirementCategory requirementCategory, Model model) {
+            return false;
+        }
+
         @Override public ObservableList<RequirementCategory> getFilteredRequirementCategoryList() {
             return null;
         }
@@ -319,27 +334,21 @@ public class AddCommandTest {
             //ToDo: implement error check
         }
 
-        @Override public boolean canUndoRequirementCategoryList() {
-            //ToDo: implement error check
-            return false;
+        @Override
+        public RequirementCategory getSelectedRequirementCategory() {
+            throw new AssertionError("This method should not be called.");
         }
 
-        @Override public boolean canRedoRequirementCategoryList() {
-            //ToDo: implement error check
-            return false;
+        @Override
+        public void setSelectedRequirementCategory(RequirementCategory requirementCategory) {
+            throw new AssertionError("This method should not be called.");
         }
 
-        @Override public void undoRequirementCategoryList() {
-            //ToDo: implement error check
+        @Override
+        public ReadOnlyProperty<RequirementCategory> selectedRequirementCategoryProperty() {
+            throw new AssertionError("This method should not be called.");
         }
 
-        @Override public void redoRequirementCategoryList() {
-            //ToDo: implement error check
-        }
-
-        @Override public void commitRequirementCategoryList() {
-            //ToDo: implement error check
-        }
     }
 
     /**

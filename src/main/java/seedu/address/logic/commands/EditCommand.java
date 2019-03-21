@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_COREQUISITE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
@@ -39,13 +40,18 @@ public class EditCommand extends Command {
             + "[" + PREFIX_NAME + "NAME] "
             + "[" + PREFIX_CODE + "CODE] "
             + "[" + PREFIX_CREDITS + "CREDITS] "
-            + "[" + PREFIX_TAG + "TAG]...\n"
+            + "[" + PREFIX_TAG + "TAG]... "
+            + "[" + PREFIX_COREQUISITE + "COREQUISITE]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
-            + PREFIX_CREDITS + "008 ";
+            + PREFIX_CREDITS + "8 ";
 
     public static final String MESSAGE_EDIT_MODULE_SUCCESS = "Edited Module: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_MODULE = "This module already exists in the address book.";
+    public static final String MESSAGE_INVALID_COREQUISITE =
+            "The module code (%1$s) cannot be a co-requisite of itself!";
+    public static final String MESSAGE_NON_EXISTENT_COREQUISITE =
+            "The corequisite module code (%1$s) does not exists in the module list";
 
     private final Index index;
     private final EditModuleDescriptor editModuleDescriptor;
@@ -77,6 +83,13 @@ public class EditCommand extends Command {
         if (!moduleToEdit.isSameModule(editedModule) && model.hasModule(editedModule)) {
             throw new CommandException(MESSAGE_DUPLICATE_MODULE);
         }
+        for (Code corequisite : editedModule.getCorequisites()) {
+            if (moduleToEdit.getCode().equals(corequisite)) {
+                throw new CommandException(String.format(MESSAGE_INVALID_COREQUISITE, corequisite));
+            } else if (!model.hasModuleCode(corequisite)) {
+                throw new CommandException(String.format(MESSAGE_NON_EXISTENT_COREQUISITE, corequisite));
+            }
+        }
 
         model.setModule(moduleToEdit, editedModule);
         model.updateFilteredModuleList(PREDICATE_SHOW_ALL_MODULES);
@@ -95,8 +108,9 @@ public class EditCommand extends Command {
         Credits updatedCredits = editModuleDescriptor.getCredits().orElse(moduleToEdit.getCredits());
         Code updatedCode = editModuleDescriptor.getCode().orElse(moduleToEdit.getCode());
         Set<Tag> updatedTags = editModuleDescriptor.getTags().orElse(moduleToEdit.getTags());
+        Set<Code> updatedCorequisites = editModuleDescriptor.getCorequisites().orElse(moduleToEdit.getCorequisites());
 
-        return new Module(updatedName, updatedCredits, updatedCode, updatedTags);
+        return new Module(updatedName, updatedCredits, updatedCode, updatedTags, updatedCorequisites);
     }
 
     @Override
@@ -126,6 +140,7 @@ public class EditCommand extends Command {
         private Credits credits;
         private Code code;
         private Set<Tag> tags;
+        private Set<Code> corequisites;
 
         public EditModuleDescriptor() {}
 
@@ -138,13 +153,14 @@ public class EditCommand extends Command {
             setCredits(toCopy.credits);
             setCode(toCopy.code);
             setTags(toCopy.tags);
+            setCorequisites(toCopy.corequisites);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, credits, code, tags);
+            return CollectionUtil.isAnyNonNull(name, credits, code, tags, corequisites);
         }
 
         public void setName(Name name) {
@@ -188,6 +204,23 @@ public class EditCommand extends Command {
             return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
         }
 
+        /**
+         * Sets {@code corequisites} to this object's {@code corequisites}.
+         * A defensive copy of {@code corequisites} is used internally.
+         */
+        public void setCorequisites(Set<Code> corequisites) {
+            this.corequisites = (corequisites != null) ? new HashSet<>(corequisites) : null;
+        }
+
+        /**
+         * Returns an unmodifiable {@code Code} set, which throws {@code UnsupportedOperationException}
+         * if modification is attempted.
+         * Returns {@code Optional#empty()} if {@code corequisites} is null.
+         */
+        public Optional<Set<Code>> getCorequisites() {
+            return (corequisites != null) ? Optional.of(Collections.unmodifiableSet(corequisites)) : Optional.empty();
+        }
+
         @Override
         public boolean equals(Object other) {
             // short circuit if same object
@@ -206,7 +239,8 @@ public class EditCommand extends Command {
             return getName().equals(e.getName())
                     && getCredits().equals(e.getCredits())
                     && getCode().equals(e.getCode())
-                    && getTags().equals(e.getTags());
+                    && getTags().equals(e.getTags())
+                    && getCorequisites().equals(e.getCorequisites());
         }
     }
 }

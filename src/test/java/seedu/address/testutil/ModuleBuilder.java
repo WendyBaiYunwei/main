@@ -16,19 +16,21 @@ import seedu.address.model.util.SampleDataUtil;
 public class ModuleBuilder {
 
     public static final String DEFAULT_NAME = "Alice Pauline";
-    public static final String DEFAULT_CREDITS = "85355255";
-    public static final String DEFAULT_CODE = "CS1010";
+    public static final String DEFAULT_CREDITS = "666";
+    public static final String DEFAULT_CODE = "ABC1234Z";
 
     private Name name;
     private Credits credits;
     private Code code;
     private Set<Tag> tags;
+    private Set<Code> corequisites;
 
     public ModuleBuilder() {
         name = new Name(DEFAULT_NAME);
         credits = new Credits(DEFAULT_CREDITS);
         code = new Code(DEFAULT_CODE);
         tags = new HashSet<>();
+        corequisites = new HashSet<>();
     }
 
     /**
@@ -39,6 +41,7 @@ public class ModuleBuilder {
         credits = moduleToCopy.getCredits();
         code = moduleToCopy.getCode();
         tags = new HashSet<>(moduleToCopy.getTags());
+        corequisites = new HashSet<>(moduleToCopy.getCorequisites());
     }
 
     /**
@@ -54,6 +57,14 @@ public class ModuleBuilder {
      */
     public ModuleBuilder withTags(String ... tags) {
         this.tags = SampleDataUtil.getTagSet(tags);
+        return this;
+    }
+
+    /**
+     * Parses the {@code corequisites} into a {@code Set<Code>} and set it to the {@code Module} that we are building.
+     */
+    public ModuleBuilder withCorequisites(String ... corequisites) {
+        this.corequisites = SampleDataUtil.getCodeSet(corequisites);
         return this;
     }
 
@@ -74,7 +85,7 @@ public class ModuleBuilder {
     }
 
     public Module build() {
-        return new Module(name, credits, code, tags);
+        return new Module(name, credits, code, tags, corequisites);
     }
 
 }

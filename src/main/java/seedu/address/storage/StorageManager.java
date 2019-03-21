@@ -5,13 +5,15 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import javafx.collections.ObservableList;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.DataConversionException;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyDegreePlannerList;
-import seedu.address.model.ReadOnlyRequirementCategoryList;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.module.Module;
+import seedu.address.model.requirement.RequirementCategory;
 
 /**
  * Manages storage of AddressBook data in local storage.
@@ -22,15 +24,12 @@ public class StorageManager implements Storage {
     private AddressBookStorage addressBookStorage;
     private UserPrefsStorage userPrefsStorage;
     private DegreePlannerListStorage degreePlannerListStorage;
-    private RequirementCategoryListStorage requirementCategoryListStorage;
 
-    public StorageManager(AddressBookStorage addressBookStorage,
-                          RequirementCategoryListStorage requirementCategoryListStorage,
-            DegreePlannerListStorage degreePlannerListStorage, UserPrefsStorage userPrefsStorage) {
+    public StorageManager(AddressBookStorage addressBookStorage, DegreePlannerListStorage degreePlannerListStorage,
+            UserPrefsStorage userPrefsStorage) {
         super();
         this.addressBookStorage = addressBookStorage;
         this.degreePlannerListStorage = degreePlannerListStorage;
-        this.requirementCategoryListStorage = requirementCategoryListStorage;
         this.userPrefsStorage = userPrefsStorage;
     }
 
@@ -51,34 +50,54 @@ public class StorageManager implements Storage {
         userPrefsStorage.saveUserPrefs(userPrefs);
     }
 
-
-    // ================ AddressBook methods ==============================
-
-    @Override
-    public Path getAddressBookFilePath() {
-        return addressBookStorage.getAddressBookFilePath();
-    }
-
     @Override
     public Optional<ReadOnlyAddressBook> readAddressBook() throws DataConversionException, IOException {
-        return readAddressBook(addressBookStorage.getAddressBookFilePath());
+        return readAddressBook(addressBookStorage.getModuleListFilePath(),
+                addressBookStorage.getRequirementCategoryListFilePath());
     }
 
     @Override
-    public Optional<ReadOnlyAddressBook> readAddressBook(Path filePath) throws DataConversionException, IOException {
-        logger.fine("Attempting to read data from file: " + filePath);
-        return addressBookStorage.readAddressBook(filePath);
+    public Optional<ReadOnlyAddressBook> readAddressBook(Path moduleListFilePath, Path requirementCategoryListFilePath)
+            throws DataConversionException, IOException {
+        logger.fine("Attempting to read data from file: " + moduleListFilePath);
+        logger.fine("Attempting to read data from file: " + requirementCategoryListFilePath);
+        return addressBookStorage.readAddressBook(moduleListFilePath, requirementCategoryListFilePath);
     }
 
     @Override
     public void saveAddressBook(ReadOnlyAddressBook addressBook) throws IOException {
-        saveAddressBook(addressBook, addressBookStorage.getAddressBookFilePath());
+        saveModuleList(addressBook, addressBookStorage.getModuleListFilePath());
+        saveRequirementCategoryList(addressBook, addressBookStorage.getRequirementCategoryListFilePath());
+    }
+
+
+    // ================ AddressBook methods ==============================
+
+    @Override
+    public Path getModuleListFilePath() {
+        return addressBookStorage.getModuleListFilePath();
     }
 
     @Override
-    public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
+    public Optional<ObservableList<Module>> readModuleList() throws DataConversionException, IOException {
+        return readModuleList(addressBookStorage.getModuleListFilePath());
+    }
+
+    @Override
+    public Optional<ObservableList<Module>> readModuleList(Path filePath) throws DataConversionException, IOException {
+        logger.fine("Attempting to read data from file: " + filePath);
+        return addressBookStorage.readModuleList(filePath);
+    }
+
+    @Override
+    public void saveModuleList(ReadOnlyAddressBook addressBook) throws IOException {
+        saveModuleList(addressBook, addressBookStorage.getModuleListFilePath());
+    }
+
+    @Override
+    public void saveModuleList(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
         logger.fine("Attempting to write to data file: " + filePath);
-        addressBookStorage.saveAddressBook(addressBook, filePath);
+        addressBookStorage.saveModuleList(addressBook, filePath);
     }
 
     // ================ DegreePlannerList methods ========================
@@ -115,34 +134,34 @@ public class StorageManager implements Storage {
 
     @Override
     public Path getRequirementCategoryListFilePath() {
-        return requirementCategoryListStorage.getRequirementCategoryListFilePath();
+        return addressBookStorage.getRequirementCategoryListFilePath();
     }
 
     @Override
-    public Optional<ReadOnlyRequirementCategoryList> readRequirementCategoryList()
+    public Optional<ObservableList<RequirementCategory>> readRequirementCategoryList()
             throws DataConversionException, IOException {
-        return readRequirementCategoryList(requirementCategoryListStorage.getRequirementCategoryListFilePath());
+        return readRequirementCategoryList(addressBookStorage.getRequirementCategoryListFilePath());
     }
 
     @Override
-    public Optional<ReadOnlyRequirementCategoryList> readRequirementCategoryList(Path filePath)
+    public Optional<ObservableList<RequirementCategory>> readRequirementCategoryList(Path filePath)
             throws DataConversionException, IOException {
         logger.fine("Attempting to read data from file: " + filePath);
-        return requirementCategoryListStorage.readRequirementCategoryList(filePath);
+        return addressBookStorage.readRequirementCategoryList(filePath);
     }
 
     @Override
-    public void saveRequirementCategoryList(ReadOnlyRequirementCategoryList requirementCategoryList)
+    public void saveRequirementCategoryList(ReadOnlyAddressBook requirementCategoryList)
             throws IOException {
         saveRequirementCategoryList(requirementCategoryList,
-                requirementCategoryListStorage.getRequirementCategoryListFilePath());
+                addressBookStorage.getRequirementCategoryListFilePath());
     }
 
     @Override
-    public void saveRequirementCategoryList(ReadOnlyRequirementCategoryList requirementCategoryList, Path filePath)
+    public void saveRequirementCategoryList(ReadOnlyAddressBook requirementCategoryList, Path filePath)
             throws IOException {
         logger.fine("Attempting to write to data file: " + filePath);
-        requirementCategoryListStorage.saveRequirementCategoryList(requirementCategoryList, filePath);
+        addressBookStorage.saveRequirementCategoryList(requirementCategoryList, filePath);
     }
 }
 

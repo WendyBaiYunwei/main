@@ -3,6 +3,7 @@ package seedu.address.logic.parser;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_COREQUISITE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
@@ -16,6 +17,7 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditModuleDescriptor;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.module.Code;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -31,7 +33,8 @@ public class EditCommandParser implements Parser<EditCommand> {
     public EditCommand parse(String args) throws ParseException {
         requireNonNull(args);
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_CREDITS, PREFIX_CODE, PREFIX_TAG);
+                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_CREDITS, PREFIX_CODE, PREFIX_TAG,
+                        PREFIX_COREQUISITE);
 
         Index index;
 
@@ -52,6 +55,8 @@ public class EditCommandParser implements Parser<EditCommand> {
             editModuleDescriptor.setCode(ParserUtil.parseCode(argMultimap.getValue(PREFIX_CODE).get()));
         }
         parseTagsForEdit(argMultimap.getAllValues(PREFIX_TAG)).ifPresent(editModuleDescriptor::setTags);
+        parseCorequisitesForEdit(argMultimap.getAllValues(PREFIX_COREQUISITE))
+                .ifPresent(editModuleDescriptor::setCorequisites);
 
         if (!editModuleDescriptor.isAnyFieldEdited()) {
             throw new ParseException(EditCommand.MESSAGE_NOT_EDITED);
@@ -75,4 +80,20 @@ public class EditCommandParser implements Parser<EditCommand> {
         return Optional.of(ParserUtil.parseTags(tagSet));
     }
 
+    /**
+     * Parses {@code Collection<String> corequisites} into a {@code Set<Code>} if {@code corequisites} is non-empty.
+     * If {@code corequisites} contain only one element which is an empty string, it will be parsed into a
+     * {@code Set<Code>} containing zero tags.
+     */
+    private Optional<Set<Code>> parseCorequisitesForEdit(Collection<String> corequisites) throws ParseException {
+        assert corequisites != null;
+
+        if (corequisites.isEmpty()) {
+            return Optional.empty();
+        }
+        Collection<String> corequisitesSet = (corequisites.size() == 1 && corequisites.contains(""))
+                ? Collections.emptySet()
+                : corequisites;
+        return Optional.of(ParserUtil.parseCorequisites(corequisitesSet));
+    }
 }

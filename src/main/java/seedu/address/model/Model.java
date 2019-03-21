@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.planner.DegreePlanner;
 import seedu.address.model.planner.DegreePlannerModule;
@@ -17,6 +18,9 @@ import seedu.address.model.requirement.RequirementCategory;
 public interface Model {
     /** {@code Predicate} that always evaluate to true */
     Predicate<Module> PREDICATE_SHOW_ALL_MODULES = unused -> true;
+
+    /** {@code Predicate} that always evaluate to true */
+    Predicate<RequirementCategory> PREDICATE_SHOW_ALL_REQUIREMENT_CATEGORIES = unused -> true;
 
     /**
      * Replaces user prefs data with the data in {@code userPrefs}.
@@ -80,6 +84,11 @@ public interface Model {
      * Returns true if a module with the same identity as {@code module} exists in the address book.
      */
     boolean hasModule(Module module);
+
+    /**
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the address book.
+     */
+    boolean hasModuleCode(Code code);
 
     /**
      * Deletes the given module.
@@ -223,10 +232,7 @@ public interface Model {
     void commitDegreePlannerList();
 
 
-    /**
-     * Returns the RequirementCategoryList
-     */
-    ReadOnlyRequirementCategoryList getRequirementCategoryList();
+    ///// RequirementCategory Methods
 
     /**
      * Returns true if a requirement with the code as {@code requirement} exists in the
@@ -256,6 +262,24 @@ public interface Model {
     void setRequirementCategory(RequirementCategory target, RequirementCategory editedRequirementCategory);
 
     /**
+     * Adds module to the given requirement category.
+     * {@code requirementCategoryModule} must not already exist in the requirementCategoryList.
+     */
+    void addModuleToRequirementCategory(RequirementCategory requirementCategoryModule);
+
+    /**
+     * Returns true if a module with the same identity as {@code requirementCategory} exists in the
+     * requirement category to be added to.
+     */
+    boolean isModuleInRequirementCategory(RequirementCategory requirementCategory);
+
+    /**
+     * Returns false if a module with the same identity as {@code requirementCategory} does not exists
+     * in the current moduleList.
+     */
+    boolean doesModuleExistInApplication(RequirementCategory requirementCategory, Model model);
+
+    /**
      * Returns an unmodifiable view of the filtered requirement list
      */
     ObservableList<RequirementCategory> getFilteredRequirementCategoryList();
@@ -267,29 +291,22 @@ public interface Model {
      */
     void updateFilteredRequirementCategoryList(Predicate<RequirementCategory> predicate);
 
-    /**
-     * Returns true if the model has previous requirement list states to restore.
-     */
-    boolean canUndoRequirementCategoryList();
 
     /**
-     * Returns true if the model has undone requirement list states to restore.
+     * Selected requirementCategory in the filtered requirementCategory list.
+     * null if no requirementCategory is selected.
      */
-    boolean canRedoRequirementCategoryList();
+    ReadOnlyProperty<RequirementCategory> selectedRequirementCategoryProperty();
 
     /**
-     * Restores the model's requirement list to its previous state.
+     * Returns the selected requirementCategory in the filtered requirementCategory list.
+     * null if no requirementCategory is selected.
      */
-    void undoRequirementCategoryList();
+    RequirementCategory getSelectedRequirementCategory();
 
     /**
-     * Restores the model's requirement list to its previously undone state.
+     * Sets the selected requirementCategory in the filtered requirementCategory list.
      */
-    void redoRequirementCategoryList();
-
-    /**
-     * Saves the current address book state for undo/redo.
-     */
-    void commitRequirementCategoryList();
+    void setSelectedRequirementCategory(RequirementCategory requirementCategory);
 
 }

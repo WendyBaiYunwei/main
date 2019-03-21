@@ -10,6 +10,7 @@ import static seedu.address.testutil.TypicalModules.AMY;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,16 +22,18 @@ import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.HistoryCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.PlannerListAllCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
+import seedu.address.model.planner.DegreePlanner;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonDegreePlannerListStorage;
-import seedu.address.storage.JsonRequirementCategoryListStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.StorageManager;
 import seedu.address.testutil.ModuleBuilder;
@@ -49,14 +52,13 @@ public class LogicManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(temporaryFolder.newFile().toPath());
+        JsonAddressBookStorage addressBookStorage =
+                new JsonAddressBookStorage(temporaryFolder.newFile().toPath(), temporaryFolder.newFile().toPath());
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.newFile().toPath());
         JsonDegreePlannerListStorage degreePlannerListStorage =
                 new JsonDegreePlannerListStorage(temporaryFolder.newFile().toPath());
-        JsonRequirementCategoryListStorage requirementCategoryListStorage =
-                new JsonRequirementCategoryListStorage(temporaryFolder.newFile().toPath());
         StorageManager storage =
-                new StorageManager(addressBookStorage, degreePlannerListStorage, requirementCategoryListStorage,
+                new StorageManager(addressBookStorage, degreePlannerListStorage,
                         userPrefsStorage);
         logic = new LogicManager(model, storage);
     }
@@ -83,17 +85,39 @@ public class LogicManagerTest {
     }
 
     @Test
+    public void execute_validPlannerListCommand_success() {
+        String plannerListCommand = PlannerListAllCommand.COMMAND_WORD;
+        StringBuilder degreePlannerListContent = new StringBuilder();
+        for (DegreePlanner degreePlanner : model.getFilteredDegreePlannerList()) {
+            degreePlannerListContent
+                    .append("Year: " + degreePlanner.getYear() + " Semester: " + degreePlanner.getSemester() + "\n");
+            if (degreePlanner.getCodes().isEmpty()) {
+                degreePlannerListContent.append("No module inside");
+            } else {
+                degreePlannerListContent
+                        .append("Modules: " + degreePlanner.getCodes().stream().map(Code::toString).collect(
+                                Collectors.joining(", ")));
+            }
+            degreePlannerListContent.append("\n\n");
+        }
+        String expectedMessage =
+                String.format(PlannerListAllCommand.MESSAGE_SUCCESS, degreePlannerListContent.toString());
+        assertCommandSuccess(plannerListCommand, expectedMessage, model);
+        assertHistoryCorrect(plannerListCommand);
+    }
+
+    @Test
     public void execute_storageThrowsIoException_throwsCommandException() throws Exception {
         // Setup LogicManager with JsonAddressBookIoExceptionThrowingStub
         JsonAddressBookStorage addressBookStorage =
-                new JsonAddressBookIoExceptionThrowingStub(temporaryFolder.newFile().toPath());
+                new JsonAddressBookIoExceptionThrowingStub(temporaryFolder.newFile().toPath(),
+                        temporaryFolder.newFile().toPath());
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.newFile().toPath());
         JsonDegreePlannerListStorage degreePlannerListStorage =
                 new JsonDegreePlannerListStorage(temporaryFolder.newFile().toPath());
-        JsonRequirementCategoryListStorage requirementCategoryListStorage =
-                new JsonRequirementCategoryListStorage(temporaryFolder.newFile().toPath());
+
         StorageManager storage =
-                new StorageManager(addressBookStorage, degreePlannerListStorage, requirementCategoryListStorage,
+                new StorageManager(addressBookStorage, degreePlannerListStorage,
                         userPrefsStorage);
         logic = new LogicManager(model, storage);
 
@@ -149,7 +173,7 @@ public class LogicManagerTest {
      */
     private void assertCommandFailure(String inputCommand, Class<?> expectedException, String expectedMessage) {
         Model expectedModel = new ModelManager(model.getAddressBook(), model.getDegreePlannerList(),
-                model.getRequirementCategoryList(), new UserPrefs());
+                new UserPrefs());
         assertCommandBehavior(expectedException, inputCommand, expectedMessage, expectedModel);
     }
 
@@ -193,12 +217,12 @@ public class LogicManagerTest {
      * A stub class to throw an {@code IOException} when the save method is called.
      */
     private static class JsonAddressBookIoExceptionThrowingStub extends JsonAddressBookStorage {
-        private JsonAddressBookIoExceptionThrowingStub(Path filePath) {
-            super(filePath);
+        private JsonAddressBookIoExceptionThrowingStub(Path moduleListFilePath, Path requirementCategoryListFilePath) {
+            super(moduleListFilePath, requirementCategoryListFilePath);
         }
 
         @Override
-        public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
+        public void saveModuleList(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
             throw DUMMY_IO_EXCEPTION;
         }
     }

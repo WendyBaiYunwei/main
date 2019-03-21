@@ -310,6 +310,43 @@ image::UndoRedoActivityDiagram.png[width="650"]
 ** Cons: Requires dealing with commands that have already been undone: We must remember to skip these commands. Violates Single Responsibility Principle and Separation of Concerns as `HistoryManager` now needs to do two different things.
 // end::undoredo[]
 
+// tag::corequisites[]
+=== Module co-requisites
+==== Current Implementation
+
+Module co-requisites are stored internally as `Set<Code>` within `Module`.
+
+A `Set<Code>` is used instead of a `List<Code>` to ensure uniqueness and prevents duplicate pre-requisites
+module codes.
+
+Notice that `Code` is used in place of `Module`. This is to prevent storage of duplicated information when
+serializing `UniqueModuleList`.
+
+`AddCommand` handles invalid cases by preventing adding a co-requisite module code that does not exists in the module
+list. +
+`EditCommand` handles invalid cases by ensuring that:
+
+* the edited co-requisite module code is not equivalent to the `Code` of the edited module +
+* the edited co-requisite module `Code` exists in the module listing
+
+When a module is deleted, it is cascaded down to other modules, and is removed from other modules' co-requisites.
+
+==== Design Considerations
+
+===== Aspect: How should deletion of a module be cascaded down to other modules
+
+* **Alternative 1 (current choice):** Delete module code from other modules' corequisites in `AddressBook` class
+** Pros: Implementing the cascading effect in `AddressBook#removeModule()` protects tampering of `AddressBook` data
+** Cons: Requires extra overhead to obtain an immutable list of modules to update and modify existing modules in the
+`UniqueModuleList`
+* **Alternative 2:** Delete module code from other modules' corequisites in `DeleteCommand` class
+** Pros: Convenient to implement.
+** Cons: Deleting a module via `AddressBook#removeModule()` does not have any cascading effect on other modules'
+corequisites. The user will have to delete the invalid co-requisite manually afterwards.
+** Cons: Can only interact with a filtered list of modules, and as such, the displayed list of modules need to be
+refreshed to display the full listing just to be able to iterate and delete modules co-requisites accordingly.
+// end::corequisites[]
+
 === Logging
 
 We are using `java.util.logging` package for logging. The `LogsCenter` class is used to manage the logging levels and logging destinations.

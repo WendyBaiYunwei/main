@@ -2,38 +2,45 @@
   "_comment": "AddressBook save file which contains the same Module values as in TypicalModules#getTypicalAddressBook()",
   "modules" : [ {
     "name" : "Alice Pauline",
-    "credits" : "94351253",
+    "credits" : "0",
     "code" : "CS1010",
-    "tagged" : [ "friends" ]
+    "tagged" : [ "friends" ],
+    "corequisites": [ ]
   }, {
     "name" : "Benson Meier",
-    "credits" : "98765432",
+    "credits" : "1",
     "code" : "CS1231",
-    "tagged" : [ "owesMoney", "friends" ]
+    "tagged" : [ "owesMoney", "friends" ],
+    "corequisites": [ ]
   }, {
     "name" : "Carl Kurz",
-    "credits" : "95352563",
+    "credits" : "2",
     "code" : "CS2040C",
-    "tagged" : [ ]
+    "tagged" : [ ],
+    "corequisites": [ ]
   }, {
     "name" : "Daniel Meier",
-    "credits" : "87652533",
+    "credits" : "3",
     "code" : "CS2100",
-    "tagged" : [ "friends" ]
+    "tagged" : [ "friends" ],
+    "corequisites": [ ]
   }, {
     "name" : "Elle Meyer",
-    "credits" : "9482224",
+    "credits" : "4",
     "code" : "CS2101",
-    "tagged" : [ ]
+    "tagged" : [ ],
+    "corequisites": [ ]
   }, {
     "name" : "Fiona Kunz",
-    "credits" : "9482427",
+    "credits" : "5",
     "code" : "CS2102",
-    "tagged" : [ ]
+    "tagged" : [ ],
+    "corequisites": [ "CS1231" ]
   }, {
     "name" : "George Best",
-    "credits" : "9482442",
+    "credits" : "6",
     "code" : "CS2105",
-    "tagged" : [ ]
+    "tagged" : [ ],
+    "corequisites": [  ]
   } ]
 }

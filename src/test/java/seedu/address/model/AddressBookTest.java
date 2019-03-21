@@ -5,7 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.TypicalModules.ALICE;
-import static seedu.address.testutil.TypicalModules.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalModules.getTypicalModuleList;
+import static seedu.address.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,8 +21,11 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.exceptions.DuplicateModuleException;
+import seedu.address.model.requirement.RequirementCategory;
+import seedu.address.storage.JsonSerializableAddressBook;
 import seedu.address.testutil.ModuleBuilder;
 
 public class AddressBookTest {
@@ -43,8 +47,10 @@ public class AddressBookTest {
     }
 
     @Test
-    public void resetData_withValidReadOnlyAddressBook_replacesData() {
-        AddressBook newData = getTypicalAddressBook();
+    public void resetData_withValidReadOnlyAddressBook_replacesData() throws IllegalValueException {
+        AddressBook newData =
+                new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalRequirementCategoriesList())
+                        .toModelType();
         addressBook.resetData(newData);
         assertEquals(newData, addressBook);
     }
@@ -116,6 +122,7 @@ public class AddressBookTest {
      */
     private static class AddressBookStub implements ReadOnlyAddressBook {
         private final ObservableList<Module> modules = FXCollections.observableArrayList();
+        private final ObservableList<RequirementCategory> requirementCategories = FXCollections.observableArrayList();
 
         AddressBookStub(Collection<Module> modules) {
             this.modules.setAll(modules);
@@ -124,6 +131,11 @@ public class AddressBookTest {
         @Override
         public ObservableList<Module> getModuleList() {
             return modules;
+        }
+
+        @Override
+        public ObservableList<RequirementCategory> getRequirementCategoryList() {
+            return requirementCategories;
         }
 
         @Override

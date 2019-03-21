@@ -18,7 +18,7 @@ public class SampleDegreePlannerUtil {
     public static DegreePlanner[] getSampleDegreePlanners() {
         return new DegreePlanner[] {
             new DegreePlanner(new Year("1"), new Semester("1"),
-                    getCodeSet()),
+                    getCodeSet("CS1010", "CS1231", "CS2040C", "CS2100", "CS2102")),
             new DegreePlanner(new Year("1"), new Semester("2"),
                     getCodeSet()),
             new DegreePlanner(new Year("2"), new Semester("1"),

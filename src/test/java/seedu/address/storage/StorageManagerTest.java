@@ -2,7 +2,8 @@ package seedu.address.storage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static seedu.address.testutil.TypicalModules.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalModules.getTypicalModuleList;
+import static seedu.address.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
 import java.nio.file.Path;
 
@@ -25,15 +26,14 @@ public class StorageManagerTest {
 
     @Before
     public void setUp() {
-        JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(getTempFilePath("ab"));
+        JsonAddressBookStorage addressBookStorage =
+                new JsonAddressBookStorage(getTempFilePath("ab"), getTempFilePath("reqCat"));
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(getTempFilePath("prefs"));
 
         JsonDegreePlannerListStorage degreePlannerListStorage =
                 new JsonDegreePlannerListStorage(getTempFilePath("planner"));
-        JsonRequirementCategoryListStorage requirementCategoryListStorage =
-                new JsonRequirementCategoryListStorage(getTempFilePath("reqCat"));
         storageManager =
-                new StorageManager(addressBookStorage, degreePlannerListStorage, requirementCategoryListStorage,
+                new StorageManager(addressBookStorage, degreePlannerListStorage,
                         userPrefsStorage);
     }
 
@@ -62,7 +62,9 @@ public class StorageManagerTest {
          * {@link JsonAddressBookStorage} class.
          * More extensive testing of UserPref saving/reading is done in {@link JsonAddressBookStorageTest} class.
          */
-        AddressBook original = getTypicalAddressBook();
+        AddressBook original =
+                new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalRequirementCategoriesList())
+                        .toModelType();
         storageManager.saveAddressBook(original);
         ReadOnlyAddressBook retrieved = storageManager.readAddressBook().get();
         assertEquals(original, new AddressBook(retrieved));
@@ -70,7 +72,7 @@ public class StorageManagerTest {
 
     @Test
     public void getAddressBookFilePath() {
-        assertNotNull(storageManager.getAddressBookFilePath());
+        assertNotNull(storageManager.getModuleListFilePath());
     }
 
 }

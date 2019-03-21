@@ -1,12 +1,14 @@
 package seedu.address.ui;
 
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 
 /**
@@ -37,6 +39,8 @@ public class ModuleCard extends UiPart<Region> {
     @FXML
     private Label code;
     @FXML
+    private Label corequisites;
+    @FXML
     private FlowPane tags;
 
     public ModuleCard(Module module, int displayedIndex) {
@@ -46,6 +50,14 @@ public class ModuleCard extends UiPart<Region> {
         name.setText(module.getName().fullName);
         credits.setText(module.getCredits().value + " Module Credits");
         code.setText(module.getCode().value);
+
+        String corequisitesText = module.getCorequisites().stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
+
+        if (corequisitesText.length() == 0) {
+            corequisitesText = "None";
+        }
+        corequisites.setText("Co-requisites: " + corequisitesText);
         module.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));

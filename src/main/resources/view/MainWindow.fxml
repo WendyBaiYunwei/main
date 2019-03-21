@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <fx:root type="javafx.stage.Stage" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-         title="PlanWithEase" minWidth="450" minHeight="600" onCloseRequest="#handleExit">
+         title="PlanWithEase" minWidth="900" minHeight="600" onCloseRequest="#handleExit">
   <icons>
     <Image url="@/images/address_book_32.png" />
   </icons>
@@ -54,13 +54,14 @@
             <StackPane fx:id="moduleListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
           </VBox>
 
-          <StackPane fx:id="browserPlaceholder" prefWidth="340" >
+          <StackPane fx:id="degreePlannerListPanelPlaceholder" prefWidth="340" >
             <padding>
               <Insets top="10" right="10" bottom="10" left="10" />
             </padding>
           </StackPane>
         </SplitPane>
-
+        <StackPane fx:id="browserPlaceholder" prefWidth="0" >
+        </StackPane>
         <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
       </VBox>
     </Scene>

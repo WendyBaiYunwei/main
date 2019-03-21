@@ -65,6 +65,6 @@ public class CreditsContainsKeywordsPredicateTest {
 
         // Non-matching keyword
         predicate = new CreditsContainsKeywordsPredicate(Arrays.asList("144"));
-        assertFalse(predicate.test(new ModuleBuilder().withCredits("1444").build()));
+        assertFalse(predicate.test(new ModuleBuilder().withCredits("441").build()));
     }
 }

@@ -2,17 +2,10 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_SEMESTER;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.module.Code;
-import seedu.address.model.module.Module;
-import seedu.address.model.planner.DegreePlanner;
 import seedu.address.model.planner.DegreePlannerModule;
-import seedu.address.model.planner.Semester;
-import seedu.address.model.planner.Year;
 
 /**
  * Adds a module to the address book.

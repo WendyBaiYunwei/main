@@ -8,24 +8,25 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
+import javafx.collections.ObservableList;
 import seedu.address.commons.exceptions.IllegalValueException;
-import seedu.address.model.ReadOnlyRequirementCategoryList;
-import seedu.address.model.RequirementCategoryList;
+import seedu.address.model.AddressBook;
+import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.requirement.RequirementCategory;
 
 /**
- * An Immutable RequirementList that is serializable to JSON format.
+ * An Immutable requirementCategoryList that is serializable to JSON format.
  */
 @JsonRootName(value = "requirementCategoryList")
 public class JsonSerializableRequirementCategoryList {
 
-    public static final String MESSAGE_DUPLICATE_REQUIREMENT =
-            "Requirement list contains duplicate requirements(s).";
+    public static final String MESSAGE_DUPLICATE_REQUIREMENT_CATEGORY =
+            "Requirement category list contains duplicate requirement categories.";
 
     private final List<JsonAdaptedRequirementCategoryList> requirementCategories = new ArrayList<>();
 
     /**
-     * Constructs a {@code JsonSerializableRequirementList} with the given requirements.
+     * Constructs a {@code JsonSerializableRequirementCategoryList} with the given requirementCategories.
      */
     @JsonCreator
     public JsonSerializableRequirementCategoryList(
@@ -34,30 +35,31 @@ public class JsonSerializableRequirementCategoryList {
     }
 
     /**
-     * Converts a given {@code ReadOnlyRequirementList} into this class for Jackson use.
+     * Converts a given {@code JsonSerializableRequirementCategoryList} into this class for Jackson use.
      *
-     * @param source future changes to this will not affect the created {@code JsonSerializableRequirementList}.
+     * @param source future changes to this will not affect the created {@code JsonSerializableRequirementCategoryList}.
      */
-    public JsonSerializableRequirementCategoryList(ReadOnlyRequirementCategoryList source) {
+
+    public JsonSerializableRequirementCategoryList(ReadOnlyAddressBook source) {
         requirementCategories
                 .addAll(source.getRequirementCategoryList().stream().map(JsonAdaptedRequirementCategoryList::new)
                         .collect(Collectors.toList()));
     }
 
     /**
-     * Converts this requirement list into the model's {@code RequirementList} object.
+     * Converts this requirementCategory list into the model's {@code JsonAdaptedRequirementCategoryList} object.
      *
      * @throws IllegalValueException if there were any data constraints violated.
      */
-    public RequirementCategoryList toModelType() throws IllegalValueException {
-        RequirementCategoryList requirementCategoryList = new RequirementCategoryList();
+    public ObservableList<RequirementCategory> toModelType() throws IllegalValueException {
+        AddressBook requirementCategoryList = new AddressBook();
         for (JsonAdaptedRequirementCategoryList jsonAdaptedRequirementCategoryList : requirementCategories) {
             RequirementCategory requirementCategory = jsonAdaptedRequirementCategoryList.toModelType();
             if (requirementCategoryList.hasRequirementCategory(requirementCategory)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_REQUIREMENT);
+                throw new IllegalValueException(MESSAGE_DUPLICATE_REQUIREMENT_CATEGORY);
             }
             requirementCategoryList.addRequirementCategory(requirementCategory);
         }
-        return requirementCategoryList;
+        return requirementCategoryList.getRequirementCategoryList();
     }
 }

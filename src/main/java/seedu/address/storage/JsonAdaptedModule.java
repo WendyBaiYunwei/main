@@ -27,18 +27,23 @@ class JsonAdaptedModule {
     private final String credits;
     private final String code;
     private final List<JsonAdaptedTag> tagged = new ArrayList<>();
+    private final List<JsonAdaptedCode> corequisites = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedModule} with the given module details.
      */
     @JsonCreator
     public JsonAdaptedModule(@JsonProperty("name") String name, @JsonProperty("credits") String credits,
-            @JsonProperty("code") String code, @JsonProperty("tagged") List<JsonAdaptedTag> tagged) {
+            @JsonProperty("code") String code, @JsonProperty("tagged") List<JsonAdaptedTag> tagged,
+            @JsonProperty("corequisites") List<JsonAdaptedCode> corequisites) {
         this.name = name;
         this.credits = credits;
         this.code = code;
         if (tagged != null) {
             this.tagged.addAll(tagged);
+        }
+        if (corequisites != null) {
+            this.corequisites.addAll(corequisites);
         }
     }
 
@@ -52,6 +57,9 @@ class JsonAdaptedModule {
         tagged.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
+        corequisites.addAll(source.getCorequisites().stream()
+                .map(JsonAdaptedCode::new)
+                .collect(Collectors.toList()));
     }
 
     /**
@@ -63,6 +71,11 @@ class JsonAdaptedModule {
         final List<Tag> moduleTags = new ArrayList<>();
         for (JsonAdaptedTag tag : tagged) {
             moduleTags.add(tag.toModelType());
+        }
+
+        final List<Code> moduleCorequisites = new ArrayList<>();
+        for (JsonAdaptedCode corequisite : corequisites) {
+            moduleCorequisites.add(corequisite.toModelType());
         }
 
         if (name == null) {
@@ -90,7 +103,8 @@ class JsonAdaptedModule {
         final Code modelCode = new Code(code);
 
         final Set<Tag> modelTags = new HashSet<>(moduleTags);
-        return new Module(modelName, modelCredits, modelCode, modelTags);
+        final Set<Code> modelCorequisites = new HashSet<>(moduleCorequisites);
+        return new Module(modelName, modelCredits, modelCode, modelTags, modelCorequisites);
     }
 
 }

@@ -67,18 +67,15 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
         expectedResultMessage = RedoCommand.MESSAGE_SUCCESS;
         assertCommandSuccess(command, model, expectedResultMessage);
 
-        /* Case: add a module with all fields same as another module in the address book except name -> added */
+        /* Case: add a module with all fields same as another module in the address book except name -> rejected */
         toAdd = new ModuleBuilder(AMY).withName(VALID_NAME_BOB).build();
-        command = AddCommand.COMMAND_WORD + NAME_DESC_BOB + CREDITS_DESC_AMY + CODE_DESC_AMY
-                + TAG_DESC_FRIEND;
-        assertCommandSuccess(command, toAdd);
+        command = ModuleUtil.getAddCommand(toAdd);
+        assertCommandFailure(command, AddCommand.MESSAGE_DUPLICATE_MODULE);
 
-        /* Case: add a module with all fields same as another module in the address book except credits
-         * -> added
-         */
+        /* Case: add a module with all fields same as another module in the address book except credits -> rejected */
         toAdd = new ModuleBuilder(AMY).withCredits(VALID_CREDITS_BOB).build();
         command = ModuleUtil.getAddCommand(toAdd);
-        assertCommandSuccess(command, toAdd);
+        assertCommandFailure(command, AddCommand.MESSAGE_DUPLICATE_MODULE);
 
         /* Case: add to empty address book -> added */
         deleteAllModules();

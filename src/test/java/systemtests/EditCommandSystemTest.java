@@ -15,8 +15,6 @@ import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_CREDITS_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
@@ -76,23 +74,19 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
                 + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
         assertCommandSuccess(command, index, BOB);
 
-        /* Case: edit a module with new values same as another module's values but with different name -> edited */
+        /* Case: edit a module with new values same as another module's values but with different name -> rejected */
         assertTrue(getModel().getAddressBook().getModuleList().contains(BOB));
         index = INDEX_SECOND_MODULE;
         assertNotEquals(getModel().getFilteredModuleList().get(index.getZeroBased()), BOB);
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + CREDITS_DESC_BOB
                 + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
-        editedModule = new ModuleBuilder(BOB).withName(VALID_NAME_AMY).build();
-        assertCommandSuccess(command, index, editedModule);
+        assertCommandFailure(command, EditCommand.MESSAGE_DUPLICATE_MODULE);
 
-        /* Case: edit a module with new values same as another module's values but with different credits
-         * -> edited
-         */
+        /* Case: edit a module with new values same as another module's values but with different credits -> rejected */
         index = INDEX_SECOND_MODULE;
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_AMY
                 + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
-        editedModule = new ModuleBuilder(BOB).withCredits(VALID_CREDITS_AMY).build();
-        assertCommandSuccess(command, index, editedModule);
+        assertCommandFailure(command, EditCommand.MESSAGE_DUPLICATE_MODULE);
 
         /* Case: clear tags -> cleared */
         index = INDEX_FIRST_MODULE;
