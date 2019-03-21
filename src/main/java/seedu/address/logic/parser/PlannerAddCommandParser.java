@@ -5,12 +5,13 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.PlannerAddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.module.Code;
-import seedu.address.model.planner.DegreePlannerModule;
+import seedu.address.model.planner.DegreePlanner;
 import seedu.address.model.planner.Semester;
 import seedu.address.model.planner.Year;
 
@@ -33,13 +34,13 @@ public class PlannerAddCommandParser implements Parser<PlannerAddCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, PlannerAddCommand.MESSAGE_USAGE));
         }
 
-        Code code = ParserUtil.parseCode(argMultimap.getValue(PREFIX_CODE).get());
+        Set<Code> codes = ParserUtil.parseCodes(argMultimap.getAllValues(PREFIX_CODE));
         Year year = ParserUtil.parseYear(argMultimap.getValue(PREFIX_YEAR).get());
         Semester semester = ParserUtil.parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
 
-        DegreePlannerModule plannerModule = new DegreePlannerModule(code, year, semester);
+        DegreePlanner plannerModules = new DegreePlanner(year, semester, codes);
 
-        return new PlannerAddCommand(plannerModule);
+        return new PlannerAddCommand(plannerModules);
     }
 
     /**
