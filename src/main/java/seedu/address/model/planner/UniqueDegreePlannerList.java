@@ -171,7 +171,6 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
      * checks if the modules are contained inside the entire degree planner
      */
     public boolean containsModules(DegreePlanner toCheck) {
-        int location = location(toCheck);
         boolean contains = false;
         Set<Code> modulesToCheck = toCheck.getCodes();
 
