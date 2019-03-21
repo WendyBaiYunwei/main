@@ -8,7 +8,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.planner.DegreePlannerModule;
+import seedu.address.model.planner.DegreePlanner;
 
 /**
  * Adds a module to the address book.
@@ -25,14 +25,14 @@ public class PlannerAddCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "New module added: %1$s";
     public static final String MESSAGE_DUPLICATE_MODULE = "This module already exists in the address book";
-    private DegreePlannerModule toAdd;
+    private DegreePlanner toAdd;
 
     /**
      * Creates a PlannerAddCommand to add the specified {@Code code Module} to the degree planner
      */
-    public PlannerAddCommand(DegreePlannerModule plannerModule) {
-        requireNonNull(plannerModule);
-        toAdd = plannerModule;
+    public PlannerAddCommand(DegreePlanner plannerModules) {
+        requireNonNull(plannerModules);
+        toAdd = plannerModules;
     }
 
     @Override

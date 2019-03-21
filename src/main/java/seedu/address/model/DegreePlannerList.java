@@ -68,6 +68,10 @@ public class DegreePlannerList implements ReadOnlyDegreePlannerList {
         degreePlanners.add(p);
     }
 
+    public void addDegreePlannerModule(DegreePlanner p) {
+        degreePlanners.addModules(p);
+    }
+
     /**
      * Replaces the given planner {@code target} in the list with {@code editedDegreePlanner}.
      * {@code target} must exist in the degreePlanner list.

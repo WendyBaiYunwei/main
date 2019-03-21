@@ -169,7 +169,7 @@ public interface Model {
      */
     boolean hasDegreePlanner(DegreePlanner degreePlanner);
 
-    boolean hasDegreePlannerModule(DegreePlannerModule plannerModule);
+    boolean hasDegreePlannerModule(DegreePlanner plannerModules);
 
     /**
      * Deletes the given degreePlanner.
@@ -187,7 +187,7 @@ public interface Model {
      * Adds the given module to the degree planner.
      * {@code plannerModule} must not already exist in the address book.
      */
-    void addDegreePlannerModule(DegreePlannerModule plannerModule);
+    void addDegreePlannerModule(DegreePlanner plannerModules);
     /**
      * Replaces the given degreePlanner {@code target} with {@code editedDegreePlanner}.
      * {@code target} must exist in the degreePlanner list.

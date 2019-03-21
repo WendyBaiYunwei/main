@@ -297,7 +297,7 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public boolean hasDegreePlannerModule(DegreePlannerModule plannerModule) {
+    public boolean hasDegreePlannerModule(DegreePlanner plannerModules) {
         return false;
     }
 
@@ -310,8 +310,8 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void addDegreePlannerModule(DegreePlannerModule degreePlannerModule) {
-
+    public void addDegreePlannerModule(DegreePlanner plannerModules) {
+        versionedDegreePlannerList.addDegreePlannerModule(plannerModules);
     }
 
     @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {

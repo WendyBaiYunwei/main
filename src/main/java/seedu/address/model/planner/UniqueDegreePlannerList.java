@@ -5,6 +5,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -49,19 +50,38 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
     }
 
     /**
-     * Adds a planner module to the list.
-     * The planner module must not already exist in the list.
+     * Returns location of the degree planner to add to in the internalList.
      */
-    public void addDegreePlannerModule(DegreePlannerModule toAdd) {
-        requireNonNull(toAdd);
-
-        String year = toAdd.getYear().toString();
-        String semester = toAdd.getSemester().toString();
-        Code code = toAdd.getCode();
-        int i = (Integer.valueOf(semester) == 2) ? 1 : 0;
-
-        internalList.get(Integer.valueOf(year) * 2 + i - 2).addModuleCode(code);
+    public int location(DegreePlanner toCheck) {
+        requireNonNull(toCheck);
+        int location = 0;
+        for (int i = 0; i < internalList.size(); i++) {
+            if (toCheck.getYear().equals(internalList.get(i).getYear())
+                    && toCheck.getYear().equals(internalList.get(i).getYear())) {
+                location = i;
+                i = internalList.size();
+            }
+        }
+        return location;
     }
+
+    public void addModules(DegreePlanner toAdd) {
+        requireNonNull(toAdd);
+        int location = location(toAdd);
+        Set<Code> currentDegreePlanner = internalList.get(location).getCodes();
+        Set<Code> inputList = toAdd.getCodes();
+
+        for (Code currentCode : currentDegreePlanner) {
+            inputList.add(currentCode);
+        }
+
+        DegreePlanner edited =
+                new DegreePlanner(toAdd.getYear(), toAdd.getSemester(),
+                        inputList);
+
+        setDegreePlanner(internalList.get(location), edited);
+    }
+
     /**
      * Replaces the degreePlanner {@code target} in the list with {@code editedDegreePlanner}.
      * {@code target} must exist in the list.

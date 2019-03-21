@@ -3,6 +3,8 @@ package seedu.address.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import seedu.address.model.planner.DegreePlanner;
+
 /**
  * {@code DegreePlannerList} that keeps track of its own history.
  */
@@ -89,6 +91,7 @@ public class VersionedDegreePlannerList extends DegreePlannerList {
                 && degreePlannerStateList.equals(otherVersionedPlannerList.degreePlannerStateList)
                 && currentStatePointer == otherVersionedPlannerList.currentStatePointer;
     }
+
 
     /**
      * Thrown when trying to {@code undo()} but can't.
