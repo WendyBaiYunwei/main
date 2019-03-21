@@ -175,8 +175,7 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
         Set<Code> modulesToCheck = toCheck.getCodes();
 
         requireNonNull(toCheck);
-        int i;
-        for (i = 0; i < internalList.size(); i++) {
+        for (int i = 0; i < internalList.size(); i++) {
             for (Code currentCode : internalList.get(i).getCodes()) {
                 for (Code codeToAdd : modulesToCheck) {
                     if (currentCode.equals(codeToAdd)) {
