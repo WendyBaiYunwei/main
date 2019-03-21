@@ -173,7 +173,6 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
     public boolean containsModules(DegreePlanner toCheck) {
         int location = location(toCheck);
         boolean contains = false;
-        Set<Code> currentDegreePlanner = internalList.get(location).getCodes();
         Set<Code> modulesToCheck = toCheck.getCodes();
 
         requireNonNull(toCheck);
