@@ -10,7 +10,9 @@ import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.model.Model;
 import seedu.address.model.module.Code;
+import seedu.address.model.module.Module;
 import seedu.address.model.planner.exceptions.DegreePlannerNotFoundException;
 import seedu.address.model.planner.exceptions.DuplicateDegreePlannerException;
 /**
@@ -185,5 +187,29 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
             }
         }
         return contains;
+    }
+    /**
+     * checks if the degree planner modules to add are valid modules existing in the application
+     */
+    public boolean existingPlannerModules(DegreePlanner toCheck, Model model) {
+        ObservableList<Module> existingModules = model.getFilteredModuleList();
+        Set<Code> inputList = new HashSet<>();
+        Set<Code> outputList = new HashSet<>();
+        boolean checker = true;
+
+        inputList.addAll(toCheck.getCodes());
+        for (Module existingModule : existingModules) {
+            for (Code newCode : inputList) {
+                if (existingModule.getCode().value.equals(newCode.value)) {
+                    outputList.add(newCode);
+                }
+            }
+        }
+
+        if (outputList.size() != inputList.size()) {
+            checker = false;
+        }
+
+        return checker;
     }
 }

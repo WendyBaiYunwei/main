@@ -168,7 +168,7 @@ public interface Model {
      */
     boolean hasDegreePlanner(DegreePlanner degreePlanner);
 
-    boolean hasDegreePlannerModule(DegreePlanner plannerModules);
+    boolean hasDegreePlannerModules(DegreePlanner plannerModules);
 
     /**
      * Deletes the given degreePlanner.
@@ -186,7 +186,7 @@ public interface Model {
      * Adds the given module to the degree planner.
      * {@code plannerModule} must not already exist in the address book.
      */
-    void addDegreePlannerModule(DegreePlanner plannerModules);
+    void addDegreePlannerModules(DegreePlanner plannerModules);
     /**
      * Replaces the given degreePlanner {@code target} with {@code editedDegreePlanner}.
      * {@code target} must exist in the degreePlanner list.
@@ -308,4 +308,5 @@ public interface Model {
      */
     void setSelectedRequirementCategory(RequirementCategory requirementCategory);
 
+    boolean existingPlannerModules(DegreePlanner toAdd, Model model);
 }

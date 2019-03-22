@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.commands.RequirementAddCommand.MESSAGE_MODULE_DOES_NOT_EXIST;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
@@ -39,11 +40,14 @@ public class PlannerAddCommand extends Command {
     public CommandResult execute(Model model, CommandHistory history) throws CommandException {
         requireNonNull(model);
 
-        if (model.hasDegreePlannerModule(toAdd)) {
+        if (model.hasDegreePlannerModules(toAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_MODULE);
         }
+        if (!model.existingPlannerModules(toAdd, model)) {
+            throw new CommandException(MESSAGE_MODULE_DOES_NOT_EXIST);
+        }
 
-        model.addDegreePlannerModule(toAdd);
+        model.addDegreePlannerModules(toAdd);
         model.commitDegreePlannerList();
         return new CommandResult(String.format(MESSAGE_SUCCESS, toAdd));
     }

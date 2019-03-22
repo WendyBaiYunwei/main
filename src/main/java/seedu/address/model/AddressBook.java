@@ -13,6 +13,7 @@ import seedu.address.commons.util.InvalidationListenerManager;
 import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.UniqueModuleList;
+import seedu.address.model.planner.DegreePlanner;
 import seedu.address.model.requirement.RequirementCategory;
 import seedu.address.model.requirement.UniqueRequirementCategoryList;
 

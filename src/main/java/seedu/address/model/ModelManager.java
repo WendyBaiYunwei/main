@@ -296,9 +296,9 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public boolean hasDegreePlannerModule(DegreePlanner plannerModules) {
+    public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
         requireNonNull(plannerModules);
-        return versionedDegreePlannerList.hasDegreePlannerModule(plannerModules);
+        return versionedDegreePlannerList.hasDegreePlannerModules(plannerModules);
     }
 
     @Override public void deleteDegreePlanner(DegreePlanner target) {
@@ -310,7 +310,7 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void addDegreePlannerModule(DegreePlanner plannerModules) {
+    public void addDegreePlannerModules(DegreePlanner plannerModules) {
         versionedDegreePlannerList.addDegreePlannerModule(plannerModules);
     }
 
@@ -417,6 +417,11 @@ public class ModelManager implements Model {
             throw new ModuleNotFoundException();
         }
         selectedRequirementCategory.setValue(requirementCategory);
+    }
+
+    public boolean existingPlannerModules(DegreePlanner toAdd, Model model) {
+        requireNonNull(toAdd);
+        return versionedDegreePlannerList.existingPlannerModules(toAdd, model);
     }
 
     /**

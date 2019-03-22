@@ -63,7 +63,7 @@ public class DegreePlannerList implements ReadOnlyDegreePlannerList {
     /**
      * Returns true if a module with the same identity as {@code degreePlanner} exists in the particular degreePlanner.
      */
-    public boolean hasDegreePlannerModule(DegreePlanner plannerModules) {
+    public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
         requireNonNull(plannerModules);
         return degreePlanners.containsModules(plannerModules);
     }
@@ -137,4 +137,9 @@ public class DegreePlannerList implements ReadOnlyDegreePlannerList {
     protected void indicateModified() {
         invalidationListenerManager.callListeners(this);
     }
+
+    public boolean existingPlannerModules(DegreePlanner toAdd, Model model) {
+        return degreePlanners.existingPlannerModules(toAdd, model);
+    }
+
 }
