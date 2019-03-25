@@ -33,6 +33,7 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
     private final ObservableList<DegreePlanner> internalList = FXCollections.observableArrayList();
     private final ObservableList<DegreePlanner> internalUnmodifiableList =
             FXCollections.unmodifiableObservableList(internalList);
+
     /**
      * Returns true if the list contains an equivalent planner module as the given argument.
      */

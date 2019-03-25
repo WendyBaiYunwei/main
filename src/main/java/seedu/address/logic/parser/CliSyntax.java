@@ -13,4 +13,5 @@ public class CliSyntax {
     public static final Prefix PREFIX_SEMESTER = new Prefix("sem/");
     public static final Prefix PREFIX_TAG = new Prefix("tag/");
     public static final Prefix PREFIX_COREQUISITE = new Prefix("coreq/");
+
 }

@@ -90,7 +90,6 @@ public class VersionedDegreePlannerList extends DegreePlannerList {
                 && currentStatePointer == otherVersionedPlannerList.currentStatePointer;
     }
 
-
     /**
      * Thrown when trying to {@code undo()} but can't.
      */
