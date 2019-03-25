@@ -18,7 +18,6 @@ public class Year {
     public static final String YEAR_VALIDATION_REGEX =
             "[1-4]{1}";
 
-
     public final String year;
 
     /**

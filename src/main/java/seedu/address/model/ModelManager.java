@@ -311,7 +311,7 @@ public class ModelManager implements Model {
 
     @Override
     public void addDegreePlannerModules(DegreePlanner plannerModules) {
-        versionedDegreePlannerList.addDegreePlannerModule(plannerModules);
+        versionedDegreePlannerList.addDegreePlannerModules(plannerModules);
     }
 
     @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
@@ -419,6 +419,9 @@ public class ModelManager implements Model {
         selectedRequirementCategory.setValue(requirementCategory);
     }
 
+    /**
+     * Ensures the new modules to add exist in the application.
+     */
     public boolean existingPlannerModules(DegreePlanner toAdd, Model model) {
         requireNonNull(toAdd);
         return versionedDegreePlannerList.existingPlannerModules(toAdd, model);

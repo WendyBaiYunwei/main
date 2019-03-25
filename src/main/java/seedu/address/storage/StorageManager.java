@@ -164,4 +164,3 @@ public class StorageManager implements Storage {
         addressBookStorage.saveRequirementCategoryList(requirementCategoryList, filePath);
     }
 }
-

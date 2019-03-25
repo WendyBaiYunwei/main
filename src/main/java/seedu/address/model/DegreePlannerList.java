@@ -76,8 +76,8 @@ public class DegreePlannerList implements ReadOnlyDegreePlannerList {
         degreePlanners.add(p);
     }
 
-    public void addDegreePlannerModule(DegreePlanner p) {
-        degreePlanners.addModules(p);
+    public void addDegreePlannerModules(DegreePlanner modules) {
+        degreePlanners.addModules(modules);
     }
 
     /**
