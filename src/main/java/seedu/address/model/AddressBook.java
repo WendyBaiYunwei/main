@@ -197,8 +197,11 @@ public class AddressBook implements ReadOnlyAddressBook {
         return degreePlanners.containsModules(plannerModules);
     }
 
-    public void addDegreePlannerModules(DegreePlanner p) {
-        degreePlanners.addModules(p);
+    /**
+     * adds new modules to degree planner.
+     */
+    public void addDegreePlannerModules(DegreePlanner plannerModules) {
+        degreePlanners.addModules(plannerModules);
         indicateModified();
     }
 
