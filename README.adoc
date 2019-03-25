@@ -43,5 +43,6 @@ Level 4 project] created by https://github.com/se-edu/[SE-EDU initiative]
 * Some parts of this sample application were inspired by the excellent http://code.makery.ch/library/javafx-8-tutorial/[Java FX tutorial] by
 _Marco Jakob_.
 * Libraries used: https://github.com/TestFX/TestFX[TestFX], https://github.com/FasterXML/jackson[Jackson], https://github.com/junit-team/junit5[JUnit5]
+* Modified icon from https://fontawesome.com[Font Awesome]
 
 == Licence : link:https://github.com/cs2113-ay1819s2-t09-1/main/blob/master/LICENSE[MIT]

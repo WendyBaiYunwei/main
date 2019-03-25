@@ -27,6 +27,8 @@ public class TestApp extends MainApp {
 
     public static final Path SAVE_LOCATION_FOR_MODULE_LIST_TESTING =
             TestUtil.getFilePathInSandboxFolder("sampleModuleListData.json");
+    public static final Path SAVE_LOCATION_FOR_DEGREE_PLANNER_LIST_TESTING =
+            TestUtil.getFilePathInSandboxFolder("sampleDegreePlannerListData.json");
     public static final Path SAVE_LOCATION_FOR_REQUIREMENT_CATEGORY_LIST_TESTING =
             TestUtil.getFilePathInSandboxFolder("sampleRequirementCategoryListData.json");
 
@@ -34,22 +36,25 @@ public class TestApp extends MainApp {
             TestUtil.getFilePathInSandboxFolder("pref_testing.json");
     protected Supplier<ReadOnlyAddressBook> initialDataSupplier = () -> null;
     protected Path saveModuleListFileLocation = SAVE_LOCATION_FOR_MODULE_LIST_TESTING;
+    protected Path saveDegreePlannerListFileLocation = SAVE_LOCATION_FOR_DEGREE_PLANNER_LIST_TESTING;
     protected Path saveRequirementCategoryListFileLocation = SAVE_LOCATION_FOR_REQUIREMENT_CATEGORY_LIST_TESTING;
 
     public TestApp() {
     }
 
     public TestApp(Supplier<ReadOnlyAddressBook> initialDataSupplier, Path saveModuleListFileLocation,
-            Path saveRequirementCategoryListFileLocation) {
+            Path saveDegreePlannerListFileLocation, Path saveRequirementCategoryListFileLocation) {
         super();
         this.initialDataSupplier = initialDataSupplier;
         this.saveModuleListFileLocation = saveModuleListFileLocation;
+        this.saveDegreePlannerListFileLocation = saveDegreePlannerListFileLocation;
         this.saveRequirementCategoryListFileLocation = saveRequirementCategoryListFileLocation;
 
         // If some initial local data has been provided, write those to the file
         if (initialDataSupplier.get() != null) {
             JsonAddressBookStorage jsonAddressBookStorage =
-                    new JsonAddressBookStorage(saveModuleListFileLocation, saveRequirementCategoryListFileLocation);
+                    new JsonAddressBookStorage(saveModuleListFileLocation, saveDegreePlannerListFileLocation,
+                            saveRequirementCategoryListFileLocation);
             try {
                 jsonAddressBookStorage.saveAddressBook(initialDataSupplier.get());
             } catch (IOException ioe) {
@@ -99,8 +104,7 @@ public class TestApp extends MainApp {
      * Returns a defensive copy of the model.
      */
     public Model getModel() {
-        Model copy = new ModelManager((model.getAddressBook()), model.getDegreePlannerList(),
-                new UserPrefs());
+        Model copy = new ModelManager((model.getAddressBook()), new UserPrefs());
         ModelHelper.setFilteredList(copy, model.getFilteredModuleList());
         return copy;
     }

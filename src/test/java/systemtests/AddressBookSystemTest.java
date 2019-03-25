@@ -4,6 +4,7 @@ import static guitests.guihandles.WebViewUtil.waitUntilBrowserLoaded;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static seedu.address.testutil.TypicalDegreePlanners.getTypicalDegreePlannerList;
 import static seedu.address.testutil.TypicalModules.getTypicalModuleList;
 import static seedu.address.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 import static seedu.address.ui.StatusBarFooter.SYNC_STATUS_INITIAL;
@@ -67,8 +68,9 @@ public abstract class AddressBookSystemTest {
     @Before
     public void setUp() {
         setupHelper = new SystemTestSetupHelper();
-        testApp = setupHelper.setupApplication(this::getInitialData, getModuleListFileLocation(),
-                getRequirementCategoryListFileLocation());
+        testApp = setupHelper
+                .setupApplication(this::getInitialData, getModuleListFileLocation(), getDegreePlannerListFileLocation(),
+                        getRequirementCategoryListFileLocation());
         mainWindowHandle = setupHelper.setupMainWindowHandle();
 
         waitUntilBrowserLoaded(getBrowserPanel());
@@ -88,7 +90,8 @@ public abstract class AddressBookSystemTest {
         AddressBook addressBook = new AddressBook();
         try {
             addressBook =
-                    new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalRequirementCategoriesList())
+                    new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalDegreePlannerList(),
+                            getTypicalRequirementCategoriesList())
                             .toModelType();
         } catch (IllegalValueException ive) {
             assertCommandBoxShowsErrorStyle();
@@ -101,6 +104,10 @@ public abstract class AddressBookSystemTest {
      */
     protected Path getModuleListFileLocation() {
         return TestApp.SAVE_LOCATION_FOR_MODULE_LIST_TESTING;
+    }
+
+    protected Path getDegreePlannerListFileLocation() {
+        return TestApp.SAVE_LOCATION_FOR_DEGREE_PLANNER_LIST_TESTING;
     }
 
     protected Path getRequirementCategoryListFileLocation() {

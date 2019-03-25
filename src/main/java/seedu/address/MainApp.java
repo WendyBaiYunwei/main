@@ -19,15 +19,11 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
-import seedu.address.model.ReadOnlyDegreePlannerList;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.util.SampleDataUtil;
-import seedu.address.model.util.SampleDegreePlannerUtil;
 import seedu.address.storage.AddressBookStorage;
-import seedu.address.storage.DegreePlannerListStorage;
 import seedu.address.storage.JsonAddressBookStorage;
-import seedu.address.storage.JsonDegreePlannerListStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.Storage;
 import seedu.address.storage.StorageManager;
@@ -60,14 +56,11 @@ public class MainApp extends Application {
 
         UserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(config.getUserPrefsFilePath());
         UserPrefs userPrefs = initPrefs(userPrefsStorage);
-        AddressBookStorage addressBookStorage = new JsonAddressBookStorage(userPrefs.getAddressBookFilePath(),
-                userPrefs.getRequirementCategoryListFilePath());
+        AddressBookStorage addressBookStorage =
+                new JsonAddressBookStorage(userPrefs.getAddressBookFilePath(), userPrefs.getDegreePlannerListFilePath(),
+                        userPrefs.getRequirementCategoryListFilePath());
 
-        DegreePlannerListStorage degreePlannerListStorage =
-                new JsonDegreePlannerListStorage(userPrefs.getDegreePlannerListFilePath());
-
-        storage = new StorageManager(addressBookStorage, degreePlannerListStorage,
-                userPrefsStorage);
+        storage = new StorageManager(addressBookStorage, userPrefsStorage);
 
         initLogging(config);
 
@@ -85,10 +78,8 @@ public class MainApp extends Application {
      */
     private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
         Optional<ReadOnlyAddressBook> addressBookOptional;
-        Optional<ReadOnlyDegreePlannerList> degreePlannerListOptional;
 
         ReadOnlyAddressBook initialData;
-        ReadOnlyDegreePlannerList initialDegreePlannerListData;
 
         try {
             addressBookOptional = storage.readAddressBook();
@@ -105,22 +96,7 @@ public class MainApp extends Application {
             initialData = new AddressBook();
         }
 
-        try {
-            degreePlannerListOptional = storage.readDegreePlannerList();
-            if (!degreePlannerListOptional.isPresent()) {
-                logger.info("Data file not found. Will be starting with a sample DegreePlannerList");
-            }
-            initialDegreePlannerListData =
-                    degreePlannerListOptional.orElseGet(SampleDegreePlannerUtil::getSampleDegreePlannerList);
-        } catch (DataConversionException e) {
-            logger.warning("Data file not in the correct format. Will be starting with a sample DegreePlannerList");
-            initialDegreePlannerListData = SampleDegreePlannerUtil.getSampleDegreePlannerList();
-        } catch (IOException e) {
-            logger.warning("Problem while reading from the file. Will be starting with a sample DegreePlannerList");
-            initialDegreePlannerListData = SampleDegreePlannerUtil.getSampleDegreePlannerList();
-        }
-
-        return new ModelManager(initialData, initialDegreePlannerListData, userPrefs);
+        return new ModelManager(initialData, userPrefs);
 
     }
 

@@ -22,11 +22,12 @@ public class SystemTestSetupHelper {
      * Sets up a new {@code TestApp} and returns it.
      */
     public TestApp setupApplication(Supplier<ReadOnlyAddressBook> addressBook, Path saveModuleListFileLocation,
-            Path saveRequirementCategoryListFileLocation) {
+            Path saveDegreePlannerListFileLocation, Path saveRequirementCategoryListFileLocation) {
         try {
             FxToolkit.registerStage(Stage::new);
             FxToolkit.setupApplication(() -> testApp =
-                    new TestApp(addressBook, saveModuleListFileLocation, saveRequirementCategoryListFileLocation));
+                    new TestApp(addressBook, saveModuleListFileLocation, saveDegreePlannerListFileLocation,
+                            saveRequirementCategoryListFileLocation));
         } catch (TimeoutException te) {
             throw new AssertionError("Application takes too long to set up.", te);
         }

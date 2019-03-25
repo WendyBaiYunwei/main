@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane fx:id="degreePlannerCardPane" styleClass="pane-with-border" xmlns="http://javafx.com/javafx/8.0.172-ea"
+<StackPane fx:id="degreePlannerCardPane" xmlns="http://javafx.com/javafx/8.0.172-ea"
            xmlns:fx="http://javafx.com/fxml/1">
     <VBox prefHeight="200" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
         <HBox>
@@ -15,6 +15,6 @@
                 <Label fx:id="semester"/>
             </children>
         </HBox>
-        <ListView fx:id="degreePlannerListView" VBox.vgrow="SOMETIMES"/>
+        <ListView styleClass="plannerCard" fx:id="degreePlannerListView" VBox.vgrow="SOMETIMES"/>
     </VBox>
 </StackPane>

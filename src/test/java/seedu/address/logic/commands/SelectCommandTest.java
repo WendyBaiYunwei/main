@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showModuleAtIndex;
+import static seedu.address.testutil.TypicalDegreePlanners.getTypicalDegreePlannerList;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_MODULE;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_MODULE;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_MODULE;
@@ -17,7 +18,6 @@ import seedu.address.commons.core.Messages;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.logic.CommandHistory;
-import seedu.address.model.DegreePlannerList;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -30,14 +30,12 @@ public class SelectCommandTest {
     //ToDo: Implement getTypicalDegreePlannerList for DegreePlannerList and update the codes below
     private Model model =
             new ModelManager(
-                    new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalRequirementCategoriesList())
-                            .toModelType(), new DegreePlannerList(),
-                    new UserPrefs());
+                    new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalDegreePlannerList(),
+                            getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
     private Model expectedModel =
             new ModelManager(
-                    new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalRequirementCategoriesList())
-                            .toModelType(), new DegreePlannerList(),
-                    new UserPrefs());
+                    new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalDegreePlannerList(),
+                            getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
     private CommandHistory commandHistory = new CommandHistory();
 
     public SelectCommandTest() throws IllegalValueException {}

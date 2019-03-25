@@ -6,11 +6,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import seedu.address.model.planner.DegreePlanner;
 
 /**
@@ -48,21 +46,8 @@ public class DegreePlannerCard extends UiPart<Region> {
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
 
         degreePlannerListView.setItems(modules);
-        degreePlannerListView.setCellFactory((ListView<String> l) -> new StyleFormatCell());
         degreePlannerCardPane.setOnMouseClicked(null);
-        degreePlannerCardPane.setPrefHeight(85);
-    }
-
-    /**
-     * Custom {@code ListCell} that customizes a color of a {@code String}.
-     */
-    public class StyleFormatCell extends ListCell<String> {
-        @Override
-        protected void updateItem(String item, boolean empty) {
-            super.updateItem(item, empty);
-            setText(item);
-            setTextFill(Color.WHITESMOKE);
-        }
+        degreePlannerCardPane.setPrefHeight(120);
     }
 
     @Override

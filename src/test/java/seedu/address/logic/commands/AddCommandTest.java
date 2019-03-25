@@ -227,17 +227,13 @@ public class AddCommandTest {
             throw new AssertionError("This method should not be called.");
         }
 
-        @Override
-        public ReadOnlyDegreePlannerList getDegreePlannerList() {
-            return null;
-        }
-
         @Override public boolean hasDegreePlanner(DegreePlanner degreePlanner) {
             return false;
         }
 
         @Override
         public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
+            return false;
             //ToDo: implement error check
         }
         @Override public void deleteDegreePlanner(DegreePlanner degreePlanner) {
@@ -262,28 +258,6 @@ public class AddCommandTest {
         }
 
         @Override public void updateFilteredDegreePlannerList(Predicate<DegreePlanner> predicate) {
-            //ToDo: implement error check
-        }
-
-        @Override public boolean canUndoDegreePlannerList() {
-            //ToDo: implement AssertionError
-            return false;
-        }
-
-        @Override public boolean canRedoDegreePlannerList() {
-            //ToDo: implement error check
-            return false;
-        }
-
-        @Override public void undoDegreePlannerList() {
-            //ToDo: implement error check
-        }
-
-        @Override public void redoDegreePlannerList() {
-            //ToDo: implement error check
-        }
-
-        @Override public void commitDegreePlannerList() {
             //ToDo: implement error check
         }
 
@@ -340,6 +314,7 @@ public class AddCommandTest {
 
         @Override
         public boolean existingPlannerModules(DegreePlanner toAdd, Model model) {
+            return false;
             //ToDo: implement error check
         }
 

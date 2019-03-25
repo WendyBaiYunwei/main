@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.exceptions.DataConversionException;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.module.Module;
+import seedu.address.model.planner.DegreePlanner;
 import seedu.address.model.requirement.RequirementCategory;
 
 /**
@@ -19,6 +20,8 @@ public interface AddressBookStorage {
      * Returns the file path of the data file.
      */
     Path getModuleListFilePath();
+
+    Path getDegreePlannerListFilePath();
 
     Path getRequirementCategoryListFilePath();
 
@@ -33,6 +36,7 @@ public interface AddressBookStorage {
 
     /**
      * @see #getModuleListFilePath()
+     * @see #getDegreePlannerListFilePath()
      */
     Optional<ObservableList<Module>> readModuleList(Path filePath) throws DataConversionException, IOException;
 
@@ -40,8 +44,10 @@ public interface AddressBookStorage {
 
     /**
      * @see #getModuleListFilePath()
+     * @see #getDegreePlannerListFilePath()
      */
-    Optional<ReadOnlyAddressBook> readAddressBook(Path moduleListFilePath, Path requirementCategoryListFilePath)
+    Optional<ReadOnlyAddressBook> readAddressBook(Path moduleListFilePath, Path degreePlannerListFilePath,
+            Path requirementCategoryListFilePath)
             throws DataConversionException, IOException;
 
     /**
@@ -64,6 +70,35 @@ public interface AddressBookStorage {
      * @see #saveAddressBook(ReadOnlyAddressBook)
      */
     void saveModuleList(ReadOnlyAddressBook addressBook, Path filePath) throws IOException;
+
+    /**
+     * Returns degree planner list data as a {@link ReadOnlyAddressBook}.
+     * Returns {@code Optional.empty()} if storage file is not found.
+     *
+     * @throws DataConversionException if the data in storage is not in the expected format.
+     * @throws IOException             if there was any problem when reading from the storage.
+     */
+    Optional<ObservableList<DegreePlanner>> readDegreePlannerList()
+            throws DataConversionException, IOException;
+
+    /**
+     * @see #getDegreePlannerListFilePath()
+     */
+    Optional<ObservableList<DegreePlanner>> readDegreePlannerList(Path filePath)
+            throws DataConversionException, IOException;
+
+    /**
+     * Saves the given {@link ReadOnlyAddressBook} to the storage.
+     *
+     * @param degreePlannerList cannot be null.
+     * @throws IOException if there was any problem writing to the file.
+     */
+    void saveDegreePlannerList(ReadOnlyAddressBook degreePlannerList) throws IOException;
+
+    /**
+     * @see #saveDegreePlannerList(ReadOnlyAddressBook)
+     */
+    void saveDegreePlannerList(ReadOnlyAddressBook addressBook, Path filePath) throws IOException;
 
     /**
      * Returns RequirementList data as a {@link ReadOnlyAddressBook}.

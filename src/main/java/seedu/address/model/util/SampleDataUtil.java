@@ -10,6 +10,9 @@ import seedu.address.model.module.Code;
 import seedu.address.model.module.Credits;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
+import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.Semester;
+import seedu.address.model.planner.Year;
 import seedu.address.model.requirement.RequirementCategory;
 import seedu.address.model.tag.Tag;
 
@@ -57,6 +60,54 @@ public class SampleDataUtil {
             getCodeSet()
     );
 
+    private static final DegreePlanner YEAR_1_SEMESTER_1 = new DegreePlanner(
+            new Year("1"),
+            new Semester("1"),
+            getCodeSet("CS1010", "CS1231", "CS2040C", "CS2100", "CS2102")
+    );
+
+    private static final DegreePlanner YEAR_1_SEMESTER_2 = new DegreePlanner(
+            new Year("1"),
+            new Semester("2"),
+            getCodeSet()
+    );
+
+    private static final DegreePlanner YEAR_2_SEMESTER_1 = new DegreePlanner(
+            new Year("2"),
+            new Semester("1"),
+            getCodeSet()
+    );
+
+    private static final DegreePlanner YEAR_2_SEMESTER_2 = new DegreePlanner(
+            new Year("2"),
+            new Semester("2"),
+            getCodeSet()
+    );
+
+    private static final DegreePlanner YEAR_3_SEMESTER_1 = new DegreePlanner(
+            new Year("3"),
+            new Semester("1"),
+            getCodeSet()
+    );
+
+    private static final DegreePlanner YEAR_3_SEMESTER_2 = new DegreePlanner(
+            new Year("3"),
+            new Semester("2"),
+            getCodeSet()
+    );
+
+    private static final DegreePlanner YEAR_4_SEMESTER_1 = new DegreePlanner(
+            new Year("4"),
+            new Semester("1"),
+            getCodeSet()
+    );
+
+    private static final DegreePlanner YEAR_4_SEMESTER_2 = new DegreePlanner(
+            new Year("4"),
+            new Semester("2"),
+            getCodeSet()
+    );
+
     private static final RequirementCategory COMPUTING_FOUNDATION = new RequirementCategory(
             new Name("Computing Foundation"), new Credits("36"),
             getCodeSet("CS1010", "CS1231", "CS2040C", "CS2100", "CS2102")
@@ -95,6 +146,19 @@ public class SampleDataUtil {
         };
     }
 
+    public static DegreePlanner[] getSampleDegreePlanners() {
+        return new DegreePlanner[] {
+            YEAR_1_SEMESTER_1,
+            YEAR_1_SEMESTER_2,
+            YEAR_2_SEMESTER_1,
+            YEAR_2_SEMESTER_2,
+            YEAR_3_SEMESTER_1,
+            YEAR_3_SEMESTER_2,
+            YEAR_4_SEMESTER_1,
+            YEAR_4_SEMESTER_2
+        };
+    }
+
     public static RequirementCategory[] getSampleRequirementCategories() {
         return new RequirementCategory[] {
             COMPUTING_FOUNDATION,
@@ -115,6 +179,9 @@ public class SampleDataUtil {
         }
         for (RequirementCategory sampleRequirementCategory : getSampleRequirementCategories()) {
             sampleAb.addRequirementCategory(sampleRequirementCategory);
+        }
+        for (DegreePlanner sampleDegreePlanner : getSampleDegreePlanners()) {
+            sampleAb.addDegreePlanner(sampleDegreePlanner);
         }
         return sampleAb;
     }

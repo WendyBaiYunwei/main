@@ -48,7 +48,7 @@ public class PlannerAddCommand extends Command {
         }
 
         model.addDegreePlannerModules(toAdd);
-        model.commitDegreePlannerList();
+        model.commitAddressBook();
         return new CommandResult(String.format(MESSAGE_SUCCESS, toAdd));
     }
 

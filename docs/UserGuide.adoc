@@ -13,7 +13,7 @@ ifdef::env-github[]
 :note-caption: :information_source:
 :warning-caption: :warning:
 endif::[]
-:repoURL: https://github.com/cs2113-ay1819s2-t09-1/main/tree/master
+:repoURL: https://github.com/CS2113-AY1819S2-T09-1/main
 
 By: `Team T09-1`      Since: `Feb 2019`      Licence: `MIT`
 

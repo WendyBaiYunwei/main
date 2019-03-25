@@ -13,6 +13,8 @@ import seedu.address.commons.util.InvalidationListenerManager;
 import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.UniqueModuleList;
+import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.UniqueDegreePlannerList;
 import seedu.address.model.requirement.RequirementCategory;
 import seedu.address.model.requirement.UniqueRequirementCategoryList;
 
@@ -23,6 +25,7 @@ import seedu.address.model.requirement.UniqueRequirementCategoryList;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniqueModuleList modules;
+    private final UniqueDegreePlannerList degreePlanners;
     private final UniqueRequirementCategoryList requirementCategories;
     private final InvalidationListenerManager invalidationListenerManager = new InvalidationListenerManager();
 
@@ -35,6 +38,7 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     {
         modules = new UniqueModuleList();
+        degreePlanners = new UniqueDegreePlannerList();
         requirementCategories = new UniqueRequirementCategoryList();
     }
 
@@ -54,6 +58,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     public void resetData(ReadOnlyAddressBook newData) {
         requireNonNull(newData);
         setModules(newData.getModuleList());
+        setDegreePlanners(newData.getDegreePlannerList());
         setRequirementCategories(newData.getRequirementCategoryList());
     }
 
@@ -65,6 +70,15 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void setModules(List<Module> modules) {
         this.modules.setModules(modules);
+        indicateModified();
+    }
+
+    /**
+     * Replaces the contents of the degree planner list with {@code degreePlanners}.
+     * {@code degreePlanners} must not contain duplicate degree planner.
+     */
+    public void setDegreePlanners(List<DegreePlanner> degreePlanners) {
+        this.degreePlanners.setDegreePlanners(degreePlanners);
         indicateModified();
     }
 
@@ -138,6 +152,61 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     //// planner-level operations
+
+    /**
+     * Returns true if a degree planner with the same identity as {@code degreePlanner} exists in the
+     * degree planner.
+     */
+    public boolean hasDegreePlanner(DegreePlanner degreePlanner) {
+        requireNonNull(degreePlanner);
+        return degreePlanners.contains(degreePlanner);
+    }
+
+    /**
+     * Adds a degree planner to the degree planner list.
+     * The degree planner must not already exist in the degree planner list.
+     */
+    public void addDegreePlanner(DegreePlanner degreePlanner) {
+        degreePlanners.add(degreePlanner);
+    }
+
+    /**
+     * Replaces the given degree planner {@code target} in the list with {@code editedDegreePlanner}.
+     * {@code target} must exist in the degree planner list.
+     * The identity of {@code editedDegreePlanner} must not be the same as another existing degree planner
+     * in the degree planner list.
+     */
+    public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
+        requireNonNull(editedDegreePlanner);
+        degreePlanners.setDegreePlanner(target, editedDegreePlanner);
+    }
+
+    /**
+     * Removes {@code key} from this {@code DegreePlannerList}.
+     * {@code key} must exist in the degree planner list.
+     */
+    public void removeDegreePlanner(DegreePlanner key) {
+        degreePlanners.remove(key);
+    }
+
+    /**
+     * Returns true if a module with the same identity as {@code degreePlanner} exists in the particular degreePlanner.
+     */
+    public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
+        requireNonNull(plannerModules);
+        return degreePlanners.containsModules(plannerModules);
+    }
+
+    public void addDegreePlannerModules(DegreePlanner p) {
+        degreePlanners.addModules(p);
+        indicateModified();
+    }
+
+    public boolean existingPlannerModules(DegreePlanner toAdd, Model model) {
+        return degreePlanners.existingPlannerModules(toAdd, model);
+    }
+
+    //// requirement-level operations
 
     /**
      * Returns true if an requirement with the same identity as {@code requirement} exists in the
@@ -229,13 +298,18 @@ public class AddressBook implements ReadOnlyAddressBook {
     @Override
     public String toString() {
         return modules.asUnmodifiableObservableList().size() + " modules \n"
+                + degreePlanners.asUnmodifiableObservableList().size() + " degree planners \n"
                 + requirementCategories.asUnmodifiableObservableList().size() + " requirementCategories";
-        // TODO: refine later
     }
 
     @Override
     public ObservableList<Module> getModuleList() {
         return modules.asUnmodifiableObservableList();
+    }
+
+    @Override
+    public ObservableList<DegreePlanner> getDegreePlannerList() {
+        return degreePlanners.asUnmodifiableObservableList();
     }
 
     @Override
@@ -248,11 +322,12 @@ public class AddressBook implements ReadOnlyAddressBook {
         return other == this // short circuit if same object
                 || (other instanceof AddressBook // instanceof handles nulls
                 && modules.equals(((AddressBook) other).modules)
+                && degreePlanners.equals(((AddressBook) other).degreePlanners)
                 && requirementCategories.equals(((AddressBook) other).requirementCategories));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(modules.hashCode(), requirementCategories.hashCode());
+        return Objects.hash(modules.hashCode(), degreePlanners.hashCode(), requirementCategories.hashCode());
     }
 }

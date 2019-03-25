@@ -21,6 +21,9 @@ public interface Model {
     /** {@code Predicate} that always evaluate to true */
     Predicate<RequirementCategory> PREDICATE_SHOW_ALL_REQUIREMENT_CATEGORIES = unused -> true;
 
+    /** {@code Predicate} that always evaluate to true */
+    Predicate<DegreePlanner> PREDICATE_SHOW_ALL_DEGREE_PLANNERS = unused -> true;
+
     /**
      * Replaces user prefs data with the data in {@code userPrefs}.
      */
@@ -160,8 +163,7 @@ public interface Model {
      */
     void setSelectedModule(Module module);
 
-    /** Returns the DegreePlannerList */
-    ReadOnlyDegreePlannerList getDegreePlannerList();
+    ///// DegreePlanner Methods
 
     /**
      * Returns true if a degreePlanner with the same identity as {@code degreePlanner} exists in the address book.
@@ -204,31 +206,6 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredDegreePlannerList(Predicate<DegreePlanner> predicate);
-
-    /**
-     * Returns true if the model has previous degreePlanner list states to restore.
-     */
-    boolean canUndoDegreePlannerList();
-
-    /**
-     * Returns true if the model has undone degreePlanner list states to restore.
-     */
-    boolean canRedoDegreePlannerList();
-
-    /**
-     * Restores the model's degreePlanner list to its previous state.
-     */
-    void undoDegreePlannerList();
-
-    /**
-     * Restores the model's degreePlanner list to its previously undone state.
-     */
-    void redoDegreePlannerList();
-
-    /**
-     * Saves the current degreePlanner list for undo/redo.
-     */
-    void commitDegreePlannerList();
 
 
     ///// RequirementCategory Methods
@@ -289,7 +266,6 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredRequirementCategoryList(Predicate<RequirementCategory> predicate);
-
 
     /**
      * Selected requirementCategory in the filtered requirementCategory list.

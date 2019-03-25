@@ -92,12 +92,14 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         UserPrefs o = (UserPrefs) other;
 
         return guiSettings.equals(o.guiSettings)
-                && addressBookFilePath.toAbsolutePath().equals(o.addressBookFilePath.toAbsolutePath());
+                && addressBookFilePath.toAbsolutePath().equals(o.addressBookFilePath.toAbsolutePath())
+                && degreePlannerListFilePath.toAbsolutePath().equals(o.degreePlannerListFilePath.toAbsolutePath());
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guiSettings, addressBookFilePath);
+        return Objects.hash(guiSettings, addressBookFilePath, degreePlannerListFilePath);
     }
 
     @Override
@@ -108,6 +110,9 @@ public class UserPrefs implements ReadOnlyUserPrefs {
                 .append('\n')
                 .append("Local data file location : ")
                 .append(Paths.get("").toAbsolutePath().relativize(addressBookFilePath.toAbsolutePath()))
+                .append('\n')
+                .append("Local data file location for degree planner list: ")
+                .append(Paths.get("").toAbsolutePath().relativize(degreePlannerListFilePath.toAbsolutePath()))
                 .toString();
     }
 

@@ -116,6 +116,32 @@
     -fx-border-width: 1;
 }
 
+.plannerPane .list-cell .label {
+    -fx-font-size: 18px;
+}
+
+.plannerPane .list-cell:filled:even {
+    -fx-background-color: #3c3e3f;
+    -fx-outer-border: 2px;
+}
+
+.plannerPane .list-cell:filled:odd {
+    -fx-background-color: #404344;
+}
+
+.plannerCard .list-cell:filled {
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+}
+
+.plannerCard .list-cell:filled:even {
+    -fx-background-color: #424d51;
+}
+
+.plannerCard .list-cell:filled:odd {
+    -fx-background-color: #586063;
+}
+
 .list-cell .label {
     -fx-text-fill: white;
 }

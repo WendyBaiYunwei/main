@@ -27,14 +27,29 @@ public class SampleDataTest extends AddressBookSystemTest {
      */
     @Override
     protected Path getModuleListFileLocation() {
-        Path filePath = TestUtil.getFilePathInSandboxFolder("SomeFileThatDoesNotExist1234567890.xml");
+        Path filePath = TestUtil.getFilePathInSandboxFolder("SomeModuleListFileThatDoesNotExist1234567890.xml");
         deleteFileIfExists(filePath);
         return filePath;
     }
 
+    /**
+     * Returns a non-existent file location to force test app to load sample data.
+     */
+    @Override
+    protected Path getDegreePlannerListFileLocation() {
+        Path filePath =
+                TestUtil.getFilePathInSandboxFolder("SomeDegreePlannerListFileThatDoesNotExist1234567890.xml");
+        deleteFileIfExists(filePath);
+        return filePath;
+    }
+
+    /**
+     * Returns a non-existent file location to force test app to load sample data.
+     */
     @Override
     protected Path getRequirementCategoryListFileLocation() {
-        Path filePath = TestUtil.getFilePathInSandboxFolder("SomeFileThatDoesNotExist1234567890.xml");
+        Path filePath =
+                TestUtil.getFilePathInSandboxFolder("SomeRequirementCategoryFileThatDoesNotExist1234567890.xml");
         deleteFileIfExists(filePath);
         return filePath;
     }

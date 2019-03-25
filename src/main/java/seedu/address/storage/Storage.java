@@ -10,14 +10,14 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.module.Module;
+import seedu.address.model.planner.DegreePlanner;
 import seedu.address.model.requirement.RequirementCategory;
 
 /**
  * API of the Storage component
  */
 
-public interface Storage
-        extends AddressBookStorage, UserPrefsStorage, DegreePlannerListStorage {
+public interface Storage extends AddressBookStorage, UserPrefsStorage {
 
     @Override
     Optional<UserPrefs> readUserPrefs() throws DataConversionException, IOException;
@@ -44,10 +44,10 @@ public interface Storage
     Path getDegreePlannerListFilePath();
 
     @Override
-    Optional<ReadOnlyDegreePlannerList> readDegreePlannerList() throws DataConversionException, IOException;
+    Optional<ObservableList<DegreePlanner>> readDegreePlannerList() throws DataConversionException, IOException;
 
     @Override
-    void saveDegreePlannerList(ReadOnlyDegreePlannerList degreePlannerList) throws IOException;
+    void saveDegreePlannerList(ReadOnlyAddressBook degreePlannerList) throws IOException;
 
     @Override
     Path getRequirementCategoryListFilePath();
@@ -58,6 +58,5 @@ public interface Storage
 
     @Override
     void saveRequirementCategoryList(ReadOnlyAddressBook requirementCategoryList) throws IOException;
-
 
 }

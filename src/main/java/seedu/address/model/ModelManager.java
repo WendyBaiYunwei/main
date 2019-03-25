@@ -31,21 +31,18 @@ public class ModelManager implements Model {
     private final UserPrefs userPrefs;
 
     private final FilteredList<Module> filteredModules;
+    private final FilteredList<DegreePlanner> filteredDegreePlanners;
     private final FilteredList<RequirementCategory> filteredRequirementCategory;
 
     private final SimpleObjectProperty<Module> selectedModule = new SimpleObjectProperty<>();
     private final SimpleObjectProperty<RequirementCategory> selectedRequirementCategory = new SimpleObjectProperty<>();
 
-    private final VersionedDegreePlannerList versionedDegreePlannerList;
-    private final FilteredList<DegreePlanner> filteredDegreePlanners;
-
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
-    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyDegreePlannerList degreePlannerList,
-            ReadOnlyUserPrefs userPrefs) {
+    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyUserPrefs userPrefs) {
         super();
-        requireAllNonNull(addressBook, degreePlannerList, userPrefs);
+        requireAllNonNull(addressBook, userPrefs);
 
         logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
 
@@ -53,10 +50,8 @@ public class ModelManager implements Model {
         this.userPrefs = new UserPrefs(userPrefs);
 
         filteredModules = new FilteredList<>(versionedAddressBook.getModuleList());
+        filteredDegreePlanners = new FilteredList<>((versionedAddressBook.getDegreePlannerList()));
         filteredRequirementCategory = new FilteredList<>(versionedAddressBook.getRequirementCategoryList());
-
-        versionedDegreePlannerList = new VersionedDegreePlannerList(degreePlannerList);
-        filteredDegreePlanners = new FilteredList<>((versionedDegreePlannerList.getDegreePlannerList()));
 
         filteredModules.addListener(this::ensureSelectedModuleIsValid);
         filteredRequirementCategory.addListener(this::ensureSelectedRequirementCategoryIsValid);
@@ -66,7 +61,7 @@ public class ModelManager implements Model {
      * ToDo: Add DegreePlannerList
      */
     public ModelManager() {
-        this(new AddressBook(), new DegreePlannerList(), new UserPrefs());
+        this(new AddressBook(), new UserPrefs());
     }
 
     //=========== UserPrefs ==================================================================================
@@ -285,39 +280,34 @@ public class ModelManager implements Model {
     //=========== DegreePlannerList Methods =================================================================
 
     @Override
-    public ReadOnlyDegreePlannerList getDegreePlannerList() {
-        return versionedDegreePlannerList;
-    }
-
-    @Override
     public boolean hasDegreePlanner(DegreePlanner planner) {
         requireNonNull(planner);
-        return versionedDegreePlannerList.hasDegreePlanner(planner);
+        return versionedAddressBook.hasDegreePlanner(planner);
     }
 
     @Override
     public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
         requireNonNull(plannerModules);
-        return versionedDegreePlannerList.hasDegreePlannerModules(plannerModules);
+        return versionedAddressBook.hasDegreePlannerModules(plannerModules);
     }
 
     @Override public void deleteDegreePlanner(DegreePlanner target) {
-        versionedDegreePlannerList.removeDegreePlanner(target);
+        versionedAddressBook.removeDegreePlanner(target);
     }
 
     @Override public void addDegreePlanner(DegreePlanner degreePlanner) {
-        versionedDegreePlannerList.addDegreePlanner(degreePlanner);
+        versionedAddressBook.addDegreePlanner(degreePlanner);
     }
 
     @Override
     public void addDegreePlannerModules(DegreePlanner plannerModules) {
-        versionedDegreePlannerList.addDegreePlannerModules(plannerModules);
+        versionedAddressBook.addDegreePlannerModules(plannerModules);
     }
 
     @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
         requireAllNonNull(target, editedDegreePlanner);
 
-        versionedDegreePlannerList.setDegreePlanner(target, editedDegreePlanner);
+        versionedAddressBook.setDegreePlanner(target, editedDegreePlanner);
     }
 
     @Override public ObservableList<DegreePlanner> getFilteredDegreePlannerList() {
@@ -327,27 +317,6 @@ public class ModelManager implements Model {
     @Override public void updateFilteredDegreePlannerList(Predicate<DegreePlanner> predicate) {
         requireNonNull(predicate);
         filteredDegreePlanners.setPredicate(predicate);
-    }
-
-    //=========== Undo/Redo =================================================================================
-    @Override public boolean canUndoDegreePlannerList() {
-        return versionedDegreePlannerList.canUndo();
-    }
-
-    @Override public boolean canRedoDegreePlannerList() {
-        return versionedDegreePlannerList.canRedo();
-    }
-
-    @Override public void undoDegreePlannerList() {
-        versionedDegreePlannerList.undo();
-    }
-
-    @Override public void redoDegreePlannerList() {
-        versionedDegreePlannerList.redo();
-    }
-
-    @Override public void commitDegreePlannerList() {
-        versionedDegreePlannerList.commit();
     }
 
     //=========== RequirementCategoryList Methods =================================================================
@@ -424,7 +393,7 @@ public class ModelManager implements Model {
      */
     public boolean existingPlannerModules(DegreePlanner toAdd, Model model) {
         requireNonNull(toAdd);
-        return versionedDegreePlannerList.existingPlannerModules(toAdd, model);
+        return versionedAddressBook.existingPlannerModules(toAdd, model);
     }
 
     /**

@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.deleteFirstModule;
+import static seedu.address.testutil.TypicalDegreePlanners.getTypicalDegreePlannerList;
 import static seedu.address.testutil.TypicalModules.getTypicalModuleList;
 import static seedu.address.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
@@ -11,7 +12,6 @@ import org.junit.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.logic.CommandHistory;
-import seedu.address.model.DegreePlannerList;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -22,14 +22,12 @@ public class UndoCommandTest {
     //ToDo: Implement getTypicalDegreePlannerList for DegreePlannerList and update the codes below
     private final Model model =
             new ModelManager(
-                    new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalRequirementCategoriesList())
-                            .toModelType(), new DegreePlannerList(),
-                    new UserPrefs());
+                    new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalDegreePlannerList(),
+                            getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
     private final Model expectedModel =
             new ModelManager(
-                    new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalRequirementCategoriesList())
-                            .toModelType(), new DegreePlannerList(),
-                    new UserPrefs());
+                    new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalDegreePlannerList(),
+                            getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
     private final CommandHistory commandHistory = new CommandHistory();
 
     public UndoCommandTest() throws IllegalValueException {}

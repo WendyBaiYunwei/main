@@ -2,6 +2,7 @@ package seedu.address.storage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static seedu.address.testutil.TypicalDegreePlanners.getTypicalDegreePlannerList;
 import static seedu.address.testutil.TypicalModules.getTypicalModuleList;
 import static seedu.address.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
@@ -27,14 +28,10 @@ public class StorageManagerTest {
     @Before
     public void setUp() {
         JsonAddressBookStorage addressBookStorage =
-                new JsonAddressBookStorage(getTempFilePath("ab"), getTempFilePath("reqCat"));
+                new JsonAddressBookStorage(getTempFilePath("ab"), getTempFilePath("dp"), getTempFilePath("reqCat"));
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(getTempFilePath("prefs"));
 
-        JsonDegreePlannerListStorage degreePlannerListStorage =
-                new JsonDegreePlannerListStorage(getTempFilePath("planner"));
-        storageManager =
-                new StorageManager(addressBookStorage, degreePlannerListStorage,
-                        userPrefsStorage);
+        storageManager = new StorageManager(addressBookStorage, userPrefsStorage);
     }
 
     private Path getTempFilePath(String fileName) {
@@ -63,7 +60,8 @@ public class StorageManagerTest {
          * More extensive testing of UserPref saving/reading is done in {@link JsonAddressBookStorageTest} class.
          */
         AddressBook original =
-                new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalRequirementCategoriesList())
+                new JsonSerializableAddressBook(getTypicalModuleList(), getTypicalDegreePlannerList(),
+                        getTypicalRequirementCategoriesList())
                         .toModelType();
         storageManager.saveAddressBook(original);
         ReadOnlyAddressBook retrieved = storageManager.readAddressBook().get();
