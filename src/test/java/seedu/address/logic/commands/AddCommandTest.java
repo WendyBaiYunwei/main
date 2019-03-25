@@ -366,7 +366,6 @@ public class AddCommandTest {
             // called by {@code AddCommand#execute()}
         }
 
-
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return new AddressBook();

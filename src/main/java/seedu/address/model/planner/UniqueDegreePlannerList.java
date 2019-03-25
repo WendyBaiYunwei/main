@@ -16,6 +16,7 @@ import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.planner.exceptions.DegreePlannerNotFoundException;
 import seedu.address.model.planner.exceptions.DuplicateDegreePlannerException;
+
 /**
  * A list of degreePlanners that enforces uniqueness between its elements and does not allow nulls.
  * A code is considered unique by comparing using {@code DegreePlanner#isSameDegreePlanner(DegreePlanner)}. As such,
