@@ -55,7 +55,7 @@ public class EditCommandTest {
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
 
-        expectedModel.setModule(model.getFilteredModuleList().get(0), editedModule);
+        expectedModel.editModule(model.getFilteredModuleList().get(0), editedModule);
         expectedModel.commitAddressBook();
 
         assertCommandSuccess(editCommand, model, commandHistory, expectedMessage, expectedModel);
@@ -77,7 +77,8 @@ public class EditCommandTest {
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.setModule(lastModule, editedModule);
+		
+        expectedModel.editModule(lastModule, editedModule);
         expectedModel.commitAddressBook();
 
         assertCommandSuccess(editCommand, model, commandHistory, expectedMessage, expectedModel);
@@ -108,7 +109,9 @@ public class EditCommandTest {
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.setModule(model.getFilteredModuleList().get(0), editedModule);
+
+        expectedModel.editModule(model.getFilteredModuleList().get(0), editedModule);
+
         expectedModel.commitAddressBook();
 
         assertCommandSuccess(editCommand, model, commandHistory, expectedMessage, expectedModel);
@@ -169,7 +172,7 @@ public class EditCommandTest {
         EditCommand.EditModuleDescriptor descriptor = new EditModuleDescriptorBuilder(editedModule).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, descriptor);
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.setModule(moduleToEdit, editedModule);
+        expectedModel.editModule(moduleToEdit, editedModule);
         expectedModel.commitAddressBook();
 
         // edit -> first module edited
@@ -208,14 +211,15 @@ public class EditCommandTest {
      */
     @Test
     public void executeUndoRedo_validIndexFilteredList_sameModuleEdited() throws Exception {
-        Module editedModule = new ModuleBuilder().build();
+        showModuleAtIndex(model, INDEX_SECOND_MODULE);
+        Module moduleToEdit = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
+
+        Module editedModule = new ModuleBuilder().withCorequisites(moduleToEdit.getCorequisites()).build();
         EditModuleDescriptor descriptor = new EditModuleDescriptorBuilder(editedModule).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, descriptor);
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
 
-        showModuleAtIndex(model, INDEX_SECOND_MODULE);
-        Module moduleToEdit = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
-        expectedModel.setModule(moduleToEdit, editedModule);
+        expectedModel.editModule(moduleToEdit, editedModule);
         expectedModel.commitAddressBook();
 
         // edit -> edits second module in unfiltered module list / first module in filtered module list

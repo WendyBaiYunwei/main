@@ -22,16 +22,16 @@ public class RequirementCategory {
 
     // Data fields
     private final Credits credits;
-    private final Set<Code> codeList = new HashSet<>();
+    private final Set<Code> codeSet = new HashSet<>();
 
     /**
      * Every field must be present and not null.
      */
-    public RequirementCategory(Name name, Credits credits, Set<Code> codeList) {
-        requireAllNonNull(name, credits, codeList);
+    public RequirementCategory(Name name, Credits credits, Set<Code> codeSet) {
+        requireAllNonNull(name, credits, codeSet);
         this.name = name;
         this.credits = credits;
-        this.codeList.addAll(codeList);
+        this.codeSet.addAll(codeSet);
     }
 
     public Name getName() {
@@ -43,11 +43,11 @@ public class RequirementCategory {
     }
 
     /**
-     * Returns an immutable codeList set, which throws {@code UnsupportedOperationException}
+     * Returns an immutable setCode, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
-    public Set<Code> getCodeList() {
-        return Collections.unmodifiableSet(codeList);
+    public Set<Code> getCodeSet() {
+        return Collections.unmodifiableSet(codeSet);
     }
 
     /**
@@ -61,6 +61,13 @@ public class RequirementCategory {
 
         return otherRequirementCategory != null
                 && otherRequirementCategory.getName().equals(getName());
+    }
+
+    /**
+     * Returns true if the current codeSet contains an equivalent code in the parameter toCheck
+     */
+    public boolean hasModuleCode(Set<Code> codeSetToCheck) {
+        return codeSetToCheck.stream().anyMatch(codeToCheck -> codeSet.contains(codeToCheck));
     }
 
     /**
@@ -80,12 +87,12 @@ public class RequirementCategory {
         RequirementCategory otherRequirementCategory = (RequirementCategory) other;
         return otherRequirementCategory.getName().equals(getName())
                 && otherRequirementCategory.getCredits().equals(getCredits())
-                && otherRequirementCategory.getCodeList().equals(getCodeList());
+                && otherRequirementCategory.getCodeSet().equals(getCodeSet());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, credits, codeList);
+        return Objects.hash(name, credits, codeSet);
     }
 
     @Override
@@ -96,7 +103,7 @@ public class RequirementCategory {
                 .append(" Credits: ")
                 .append(getCredits())
                 .append(" Module Codes: ")
-                .append(getCodeList());
+                .append(getCodeSet());
         return builder.toString();
     }
 

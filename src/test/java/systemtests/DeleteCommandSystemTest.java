@@ -84,6 +84,7 @@ public class DeleteCommandSystemTest extends AddressBookSystemTest {
         selectModule(selectedIndex);
         command = DeleteCommand.COMMAND_WORD + " " + selectedIndex.getOneBased();
         deletedModule = removeModule(expectedModel, selectedIndex);
+        expectedModel.updateFilteredModuleList(Model.PREDICATE_SHOW_ALL_MODULES);
         expectedResultMessage = String.format(MESSAGE_DELETE_MODULE_SUCCESS, deletedModule);
         assertCommandSuccess(command, expectedModel, expectedResultMessage, expectedIndex);
 

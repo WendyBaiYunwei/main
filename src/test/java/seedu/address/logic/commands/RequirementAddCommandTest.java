@@ -19,9 +19,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.module.Code;
-import seedu.address.model.module.Credits;
 import seedu.address.model.module.Name;
-import seedu.address.model.requirement.RequirementCategory;
 import seedu.address.storage.JsonSerializableAddressBook;
 
 public class RequirementAddCommandTest {
@@ -41,16 +39,32 @@ public class RequirementAddCommandTest {
 
     @Test public void constructor_nullModule_throwsNullPointerException() {
         thrown.expect(NullPointerException.class);
-        new RequirementAddCommand(null);
+        new RequirementAddCommand(null, null);
     }
 
-    @Test public void execute_moduleToBeAddedDoesNotExist_throwsCommandException() {
+    @Test public void execute_nonExistentRequirementCategory_throwsCommandException() {
+        codeList.clear();
+        Name nonExistentRequirementCategoryName = new Name("DOES NOT EXIST");
+        assertCommandFailure(new RequirementAddCommand(nonExistentRequirementCategoryName, codeList),
+                model, commandHistory, String.format(RequirementAddCommand.MESSAGE_NONEXISTENT_REQUIREMENT_CATEGORY,
+                        nonExistentRequirementCategoryName));
+    }
+
+    @Test public void execute_nonExistentCode_throwsCommandException() {
         codeList.clear();
         codeList.add(new Code("CS2010"));
-        RequirementCategory requirementCategory =
-                new RequirementCategory(new Name("Computing Foundation"), new Credits("0"), codeList);
-        assertCommandFailure(new RequirementAddCommand(requirementCategory), model, commandHistory,
-                RequirementAddCommand.MESSAGE_MODULE_DOES_NOT_EXIST);
+        Name requirementCategoryName = new Name("Computing Foundation");
+        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, codeList), model, commandHistory,
+                RequirementAddCommand.MESSAGE_NONEXISTENT_CODE);
+    }
+
+    @Test public void execute_duplicateCode_throwsCommandException() {
+        codeList.clear();
+        codeList.add(new Code("CS2100"));
+        Name requirementCategoryName = new Name("Computing Foundation");
+        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, codeList), model, commandHistory,
+                String.format(RequirementAddCommand.MESSAGE_DUPLICATE_CODE,
+                        requirementCategoryName));
     }
 
 }

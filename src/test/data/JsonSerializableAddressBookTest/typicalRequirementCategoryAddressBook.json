@@ -2,7 +2,7 @@
   "requirementCategories" : [ {
     "name" : "Computing Foundation",
     "credits" : "36",
-    "codeList" : [ ]
+    "codeList" : [ "CS2100" ]
   }, {
     "name" : "Information Security Requirements",
     "credits" : "32",

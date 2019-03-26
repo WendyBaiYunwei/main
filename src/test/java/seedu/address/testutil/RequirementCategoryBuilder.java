@@ -19,12 +19,12 @@ public class RequirementCategoryBuilder {
 
     private Name name;
     private Credits credits;
-    private Set<Code> codeList;
+    private Set<Code> codeSet;
 
     public RequirementCategoryBuilder() {
         name = new Name(DEFAULT_NAME);
         credits = new Credits(DEFAULT_CREDITS);
-        codeList = new HashSet<>();
+        codeSet = new HashSet<>();
     }
 
     /**
@@ -33,7 +33,7 @@ public class RequirementCategoryBuilder {
     public RequirementCategoryBuilder(RequirementCategory requirementCategoryToCopy) {
         name = requirementCategoryToCopy.getName();
         credits = requirementCategoryToCopy.getCredits();
-        codeList = new HashSet<>(requirementCategoryToCopy.getCodeList());
+        codeSet = new HashSet<>(requirementCategoryToCopy.getCodeSet());
     }
 
     /**
@@ -45,11 +45,11 @@ public class RequirementCategoryBuilder {
     }
 
     /**
-     * Parses the {@code codeList} into a {@code Set<Code>} and set it to the {@code RequirementCategory} that we are
+     * Parses the {@code codes} into a {@code Set<Code>} and set it to the {@code RequirementCategory} that we are
      * building.
      */
-    public RequirementCategoryBuilder withCodes(Set<Code> codeList) {
-        this.codeList = SampleDataUtil.getCodeSet();
+    public RequirementCategoryBuilder withCodes(String... codes) {
+        this.codeSet = SampleDataUtil.getCodeSet(codes);
         return this;
     }
 
@@ -62,7 +62,7 @@ public class RequirementCategoryBuilder {
     }
 
     public RequirementCategory build() {
-        return new RequirementCategory(name, credits, codeList);
+        return new RequirementCategory(name, credits, codeSet);
     }
 
 }

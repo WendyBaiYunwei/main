@@ -10,9 +10,7 @@ import java.util.stream.Stream;
 import seedu.address.logic.commands.RequirementAddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.module.Code;
-import seedu.address.model.module.Credits;
 import seedu.address.model.module.Name;
-import seedu.address.model.requirement.RequirementCategory;
 
 /**
  * Parses input arguments and creates a new AddCommand object
@@ -33,11 +31,9 @@ public class RequirementAddCommandParser {
         }
 
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
-        Credits credits = ParserUtil.parseCredits("0");
         Set<Code> codeList = ParserUtil.parseCodes(argMultimap.getAllValues(PREFIX_CODE));
 
-        RequirementCategory requirementCategory = new RequirementCategory(name, credits, codeList);
-        return new RequirementAddCommand(requirementCategory);
+        return new RequirementAddCommand(name, codeList);
     }
 
     /**

@@ -69,6 +69,14 @@ public class ModuleBuilder {
     }
 
     /**
+     * Sets the {@code corequisites} of the {@code Module} that we are building.
+     */
+    public ModuleBuilder withCorequisites(Set<Code> corequisites) {
+        this.corequisites = new HashSet<>(corequisites);
+        return this;
+    }
+
+    /**
      * Sets the {@code Code} of the {@code Module} that we are building.
      */
     public ModuleBuilder withCode(String code) {

@@ -66,7 +66,7 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         /* Case: redo editing the last module in the list -> last module edited again */
         command = RedoCommand.COMMAND_WORD;
         expectedResultMessage = RedoCommand.MESSAGE_SUCCESS;
-        model.setModule(getModel().getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased()), editedModule);
+        model.editModule(getModel().getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased()), editedModule);
         assertCommandSuccess(command, model, expectedResultMessage);
 
         /* Case: edit a module with new values same as existing values -> edited */
@@ -203,7 +203,7 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
     private void assertCommandSuccess(String command, Index toEdit, Module editedModule,
             Index expectedSelectedCardIndex) {
         Model expectedModel = getModel();
-        expectedModel.setModule(expectedModel.getFilteredModuleList().get(toEdit.getZeroBased()), editedModule);
+        expectedModel.editModule(expectedModel.getFilteredModuleList().get(toEdit.getZeroBased()), editedModule);
         expectedModel.updateFilteredModuleList(PREDICATE_SHOW_ALL_MODULES);
 
         assertCommandSuccess(command, expectedModel,

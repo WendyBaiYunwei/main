@@ -11,9 +11,10 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import javafx.collections.ObservableList;
 import seedu.address.commons.exceptions.IllegalValueException;
 
-import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.module.Code;
 import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.UniqueDegreePlannerList;
 
 /**
  * An Immutable DegreePlannerList that is serializable to JSON format.
@@ -23,6 +24,9 @@ public class JsonSerializableDegreePlannerList {
 
     public static final String MESSAGE_DUPLICATE_DEGREE_PLANNER =
             "DegreePlanner list contains duplicate degreePlanner(s).";
+
+    public static final String MESSAGE_DUPLICATE_DEGREE_PLANNER_CODE =
+            "The module code (%1$s) is added to more than one year/semester!";
 
     private final List<JsonAdaptedDegreePlannerList> degreePlanners = new ArrayList<>();
 
@@ -51,13 +55,28 @@ public class JsonSerializableDegreePlannerList {
      * @throws IllegalValueException if there were any data constraints violated.
      */
     public ObservableList<DegreePlanner> toModelType() throws IllegalValueException {
-        AddressBook degreePlannerList = new AddressBook();
+        UniqueDegreePlannerList uniqueDegreePlannerList = new UniqueDegreePlannerList();
         for (JsonAdaptedDegreePlannerList jsonAdaptedDegreePlannerList : degreePlanners) {
             DegreePlanner degreePlanner = jsonAdaptedDegreePlannerList.toModelType();
-            if (degreePlannerList.hasDegreePlanner(degreePlanner)) {
+            if (uniqueDegreePlannerList.contains(degreePlanner)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_DEGREE_PLANNER);
             }
-            degreePlannerList.addDegreePlanner(degreePlanner);
+            uniqueDegreePlannerList.add(degreePlanner);
+        }
+
+        ObservableList<DegreePlanner> degreePlannerList = uniqueDegreePlannerList.asUnmodifiableObservableList();
+
+        for (DegreePlanner degreePlanner : degreePlannerList) {
+            for (Code code : degreePlanner.getCodes()) {
+                long codeApperanceInDegreePlanners = degreePlannerList.stream()
+                        .map(DegreePlanner::getCodes)
+                        .filter(codes -> codes.contains(code))
+                        .count();
+
+                if (codeApperanceInDegreePlanners > 1) {
+                    throw new IllegalValueException(String.format(MESSAGE_DUPLICATE_DEGREE_PLANNER_CODE, code));
+                }
+            }
         }
         return degreePlannerList.getDegreePlannerList();
     }

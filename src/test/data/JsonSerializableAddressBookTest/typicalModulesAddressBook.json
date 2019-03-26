@@ -11,7 +11,7 @@
     "credits" : "1",
     "code" : "CS1231",
     "tagged" : [ "owesMoney", "friends" ],
-    "corequisites": [ ]
+    "corequisites": [ "CS2102" ]
   }, {
     "name" : "Carl Kurz",
     "credits" : "2",

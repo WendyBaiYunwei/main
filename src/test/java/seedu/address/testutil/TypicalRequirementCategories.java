@@ -15,7 +15,7 @@ public class TypicalRequirementCategories {
 
     public static final RequirementCategory COMPUTING_FOUNDATION =
             new RequirementCategoryBuilder().withName("Computing Foundation")
-                    .withCredits("36").build();
+                    .withCredits("36").withCodes("CS2100").build();
     public static final RequirementCategory INFORMATION_SECURITY_REQUIREMENTS =
             new RequirementCategoryBuilder().withName("Information Security Requirements")
                     .withCredits("32").build();

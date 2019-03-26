@@ -30,7 +30,9 @@ public class TypicalModules {
     public static final Module BENSON = new ModuleBuilder().withName("Benson Meier")
             .withCode("CS1231")
             .withCredits("1")
-            .withTags("owesMoney", "friends").build();
+            .withTags("owesMoney", "friends")
+            .withCorequisites("CS2102")
+            .build();
     public static final Module CARL = new ModuleBuilder().withName("Carl Kurz").withCredits("2")
             .withCode("CS2040C").build();
     public static final Module DANIEL = new ModuleBuilder().withName("Daniel Meier").withCredits("3")

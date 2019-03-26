@@ -16,6 +16,7 @@ import org.junit.rules.ExpectedException;
 
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.collections.ObservableList;
+
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -25,6 +26,7 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
+import seedu.address.model.module.Name;
 import seedu.address.model.planner.DegreePlanner;
 import seedu.address.model.requirement.RequirementCategory;
 import seedu.address.testutil.ModuleBuilder;
@@ -125,20 +127,24 @@ public class AddCommandTest {
             throw new AssertionError("This method should not be called.");
         }
 
-        @Override public Path getDegreePlannerListFilePath() {
+        @Override
+        public Path getDegreePlannerListFilePath() {
             //ToDo: implement error check
             return null;
         }
 
-        @Override public void setDegreePlannerListFilePath(Path degreePlannerListFilePath) {
+        @Override
+        public void setDegreePlannerListFilePath(Path degreePlannerListFilePath) {
             //ToDo: implement error check
         }
 
-        @Override public Path getRequirementCategoryListFilePath() {
+        @Override
+        public Path getRequirementCategoryListFilePath() {
             throw new AssertionError("This method should not be called.");
         }
 
-        @Override public void setRequirementCategoryListFilePath(Path requirementCategoryListFilePath) {
+        @Override
+        public void setRequirementCategoryListFilePath(Path requirementCategoryListFilePath) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -169,6 +175,11 @@ public class AddCommandTest {
 
         @Override
         public void deleteModule(Module target) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void editModule(Module target, Module editedModule) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -227,78 +238,70 @@ public class AddCommandTest {
             throw new AssertionError("This method should not be called.");
         }
 
-        @Override public boolean hasDegreePlanner(DegreePlanner degreePlanner) {
+        @Override
+        public boolean hasDegreePlanner(DegreePlanner degreePlanner) {
             return false;
         }
 
         @Override
-        public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
-            return false;
-            //ToDo: implement error check
-        }
-        @Override public void deleteDegreePlanner(DegreePlanner degreePlanner) {
+        public void deleteDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement AssertionError
         }
 
-        @Override public void addDegreePlanner(DegreePlanner degreePlanner) {
+        @Override
+        public void addDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement error check
         }
 
         @Override
-        public void addDegreePlannerModules(DegreePlanner plannerModules) {
+        public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
             //ToDo: implement error check
         }
 
-        @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
-            //ToDo: implement error check
-        }
-
-        @Override public ObservableList<DegreePlanner> getFilteredDegreePlannerList() {
+        @Override
+        public ObservableList<DegreePlanner> getFilteredDegreePlannerList() {
             return null;
         }
 
-        @Override public void updateFilteredDegreePlannerList(Predicate<DegreePlanner> predicate) {
-            //ToDo: implement error check
-        }
-
-        @Override public boolean hasRequirementCategory(RequirementCategory degreePlanner) {
-            //ToDo: implement error check
-            return false;
-        }
-
-        @Override public void deleteRequirementCategory(RequirementCategory degreePlanner) {
-            //ToDo: implement AssertionError
-        }
-
-        @Override public void addRequirementCategory(RequirementCategory degreePlanner) {
-            //ToDo: implement error check
-        }
-
-        @Override public void setRequirementCategory(RequirementCategory target,
-                RequirementCategory editedDegreePlanner) {
+        @Override
+        public void updateFilteredDegreePlannerList(Predicate<DegreePlanner> predicate) {
             //ToDo: implement error check
         }
 
         @Override
-        public boolean isModuleInRequirementCategory(RequirementCategory requirementCategoryModule) {
+        public boolean hasRequirementCategory(Name requirementCategoryName) {
             return false;
         }
 
         @Override
-        public void addModuleToRequirementCategory(RequirementCategory requirementCategoryModule) {
+        public boolean hasRequirementCategory(RequirementCategory requirementCategory) {
+            return false;
+        }
+
+        @Override
+        public RequirementCategory getRequirementCategory(Name requirementCategoryName) {
+            //ToDo: implement error check
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addRequirementCategory(RequirementCategory requirementCategory) {
             //ToDo: implement error check
         }
 
         @Override
-        public boolean doesModuleExistInApplication(RequirementCategory requirementCategory, Model model) {
-            return false;
+        public void setRequirementCategory(RequirementCategory target,
+                RequirementCategory editedRequirementCategory) {
+            //ToDo: implement error check
         }
 
-        @Override public ObservableList<RequirementCategory> getFilteredRequirementCategoryList() {
+        @Override
+        public ObservableList<RequirementCategory> getFilteredRequirementCategoryList() {
             return null;
         }
 
-        @Override public void updateFilteredRequirementCategoryList(Predicate<RequirementCategory> predicate) {
+        @Override
+        public void updateFilteredRequirementCategoryList(Predicate<RequirementCategory> predicate) {
             //ToDo: implement error check
         }
 

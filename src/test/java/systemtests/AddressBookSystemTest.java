@@ -300,8 +300,8 @@ public abstract class AddressBookSystemTest {
         assertEquals("", getResultDisplay().getText());
         assertListMatching(getModuleListPanel(), getModel().getFilteredModuleList());
         assertEquals(BrowserPanel.DEFAULT_PAGE, getBrowserPanel().getLoadedUrl());
-        assertEquals(Paths.get(".").resolve(testApp.getStorageSaveLocation()).toString(),
-                getStatusBarFooter().getSaveLocation());
+        assertEquals(Paths.get("").toAbsolutePath().relativize(testApp.getStorageSaveLocation().toAbsolutePath())
+                        .toString(), getStatusBarFooter().getSaveLocation());
         assertEquals(SYNC_STATUS_INITIAL, getStatusBarFooter().getSyncStatus());
     }
 

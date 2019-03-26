@@ -2,6 +2,7 @@ package seedu.address.storage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -10,10 +11,10 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.exceptions.IllegalValueException;
-import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
+import seedu.address.model.module.UniqueModuleList;
 
 /**
  * An Immutable AddressBook that is serializable to JSON format.
@@ -26,6 +27,8 @@ class JsonSerializableModuleList {
             "The module code (%1$s) cannot be a co-requisite of itself!";
     public static final String MESSAGE_NON_EXISTENT_COREQUISITE =
             "The corequisite module code (%1$s) does not exists in the module list";
+    public static final String MESSAGE_ONE_WAY_COREQUISITE =
+            "The module code (%1$s) is a corequisite of module code (%2$s), but not the other way round!";
 
     private final List<JsonAdaptedModule> modules = new ArrayList<>();
 
@@ -53,23 +56,37 @@ class JsonSerializableModuleList {
      * @throws IllegalValueException if there were any data constraints violated.
      */
     public ObservableList<Module> toModelType() throws IllegalValueException {
-        AddressBook addressBook = new AddressBook();
+        UniqueModuleList uniqueModuleList = new UniqueModuleList();
         for (JsonAdaptedModule jsonAdaptedModule : modules) {
             Module module = jsonAdaptedModule.toModelType();
-            if (addressBook.hasModule(module)) {
+            if (uniqueModuleList.contains(module)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_MODULE);
             }
+            uniqueModuleList.add(module);
+        }
 
+        ObservableList<Module> moduleList = uniqueModuleList.asUnmodifiableObservableList();
+
+        for (Module module : moduleList) {
             for (Code corequisite : module.getCorequisites()) {
                 if (module.getCode().equals(corequisite)) {
                     throw new IllegalValueException(String.format(MESSAGE_INVALID_COREQUISITE, corequisite));
-                } else if (!addressBook.hasModuleCode(corequisite)) {
+                }
+
+                Optional<Module> corequisiteModuleOptional = moduleList.stream()
+                        .filter(currentModule -> currentModule.getCode().equals(corequisite))
+                        .findFirst();
+
+                if (!corequisiteModuleOptional.isPresent()) {
                     throw new IllegalValueException(String.format(MESSAGE_NON_EXISTENT_COREQUISITE, corequisite));
                 }
+                if (!corequisiteModuleOptional.get().getCorequisites().contains(module.getCode())) {
+                    throw new IllegalValueException(String.format(MESSAGE_ONE_WAY_COREQUISITE, module.getCode(),
+                            corequisite));
+                }
             }
-            addressBook.addModule(module);
         }
-        return addressBook.getModuleList();
+        return moduleList;
     }
 
 }

@@ -347,6 +347,89 @@ corequisites. The user will have to delete the invalid co-requisite manually aft
 refreshed to display the full listing just to be able to iterate and delete modules co-requisites accordingly.
 // end::corequisites[]
 
+// tag::requirement-add[]
+=== Requirement Add command
+The `requirement_add` command in PWE is used to add module code(s) to a requirement category.
+
+==== Current implementation
+
+The `requirement_add` command requires the `RequirementAddCommandParser` class to parse the user input provided. The  parsed data will then be passed to  `RequirmentAddCommand` class. Currently, the details that are required by the user is the name of the requirement category and module code(s).
+
+`RequirementAddCommandParser` will throw an error if the user input does not match the command format.
+
+When `RequirementAddCommand` receives the parsed data, it will perform the following checks:
+
+- Check if the requirement category exists in PWE though `getRequirementCategory`
+- Check if the module codes provided exists in PWE through `model.hasModuleCode`
+- Check if the modules codes have already been added to this requirement category through `RequirementCategory.hasModuleCode`
+
+`RequirementAddCommand` will throw an error any of the above check fails.
+
+After passing the checks `RequirementAddCommand` updates the context in `ModelManager` through `setRequirementCategory`.
+
+In addition to adding module code(s) to a requirement category, the `RequirementAddCommand` class also does the following:
+
+- Saves the current database state through `commitAddressBook` (for undo/redo functions).
+
+==== Design Considerations
+===== Aspect: Choice of what is added to the requirement category
+
+- **Alternative 1 (current choice):** Storing module codes only
+  ** Pros: Requires less storage, easy to maintain
+  ** Cons: Requires extra overhead to obtain additional information related to the module when needed
+- **Alternative 2:** Storing all information related to the module
+  ** Pros: All information related to the module are easily obtainable
+  ** Cons: Information stored is duplicated, additional storage space is needed
+  ** Cons: Hard to maintain information, if a module information is updated have to update data in the requirement category
+//end::requirement-add[]
+
+// tag::planner-list[]
+=== Planner List Feature
+
+Planner list feature aims to help users to be able to locate any degree planner(s) based on certain condition(s) in our
+application easily. We support the listing of degree planners based on year and semester. This enable a user to be able
+to list any degree planner(s) with partial information.
+
+==== Overview
+
+When a user invokes the `planner_list` command. (e.g. planner_list y/YEAR s/SEMESTER), the following steps
+are taken by the program.
+
+1. Extract out the text related to `planner_list` command
+2. Parse the text related to each `PREFIX` individually.
+3. Return a composite predicate for all attributes.
+
+.PlannerList component interactions
+image::PlannerListComponentSequenceDiagram.png[width="650"]
+
+==== Current Implementation
+
+Planner List is able to:
+
+* list degree planner(s) by year
+i.e. `planner_list y/YEAR`
+returns degree planner(s) having its year matches the year given
+
+* list degree planner(s) by semester
+i.e. `planner_list s/SEMESTER`
+returns degree planner(s) having its semester matches the semester given
+
+* include `year` and `semester` attributes in one `planner_list` command and list degree planner(s)
+i.e. `planner_list y/YEAR s/SEMESTER`
+returns module having its year or semester matches the given year and semester
+
+==== Design Considerations
+===== Aspect: How to parse multiple attributes
+
+- Alternative 1 (current choice): Parse the text related to each `PREFIX` individually
+** Pros: User is able to have more flexible search
+** Cons: More time and work needed for developer to implement
+
+- Alternative 2: Parse the text related to each `PREFIX` at one go
+** Pros: Easy to implement
+** Cons: Additional overhead needed
+// end::planner-list[]
+
 === Logging
 
 We are using `java.util.logging` package for logging. The `LogsCenter` class is used to manage the logging levels and logging destinations.
@@ -366,6 +449,64 @@ We are using `java.util.logging` package for logging. The `LogsCenter` class is 
 === Configuration
 
 Certain properties of the application can be controlled (e.g user prefs file location, logging level) through the configuration file (default: `config.json`).
+
+===  Find Feature
+
+The find feature aims to help users to be able to locate any module in our application easily. We support
+the finding of module's name, code and credits. This enable our users to be able to find for any modules with partial
+ information.
+
+==== Overview
+
+When a user invokes the `find` command. (e.g. find name/Programming code/CS1231), the following steps are taken by
+the program.
+
+1. Extract out the text related to `find` command
+2. Parse the text related to each `PREFIX` individually.
+3. Return a composite predicate for all attributes.
+
+Step 1 is performed by the `AddressBookParser` class, and no special actions is needed for the `find` feature.
+
+Step 3 is performed by `FindCommandParser#getKeywordsPredicate`
+
+==== Current Implementation
+
+The `FindCommandParser` parses the strings of arguments provided by the user to retrieve a composite `Predicate`
+which is used by `FindCommand`. A `ParseException` is thrown when if the input provided by the user does not conform
+to the expected format.
+
+The sequence diagram below shows the interaction within the `Logic` components.
+
+.Find component interactions
+image::FindCommandSequenceDiagram.png[width="650"]
+
+==== Design Consideration
+
+===== Aspect: How to parse composite predicates
+
+[NOTE]
+Currently we have use choice 1 mainly because of time constrains. When there is sufficient time, Alternative 2 would
+be more preferred because it provide our user with a more robust find command.
+
+- Alternative 1 (current choice): Do an implicit boolean `OR` for every predicate.
+
+[cols="30%,<70%"]
+|======
+|*Pros*| Very easy implementation
+|*Cons*| User will not be able to do a very accurate search. e.g. Unable to find a module's name with Presentation
+Skill.
+|======
+
+- Alternative 2: Implement an algorithm that can parse complex boolean expression.
+
+[cols="30%,<70%"]
+|=====
+| *Pros* | User will have very flexible searching terms
+| *Cons* | Developer will take a very long time to implement.
+|=====
+
+
+
 
 == Documentation
 

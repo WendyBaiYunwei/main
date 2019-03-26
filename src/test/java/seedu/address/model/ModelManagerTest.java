@@ -125,7 +125,7 @@ public class ModelManagerTest {
         modelManager.addModule(ALICE);
         modelManager.setSelectedModule(ALICE);
         Module updatedAlice = new ModuleBuilder(ALICE).withCode(VALID_CODE_BOB).build();
-        modelManager.setModule(ALICE, updatedAlice);
+        modelManager.editModule(ALICE, updatedAlice);
         assertEquals(updatedAlice, modelManager.getSelectedModule());
     }
 

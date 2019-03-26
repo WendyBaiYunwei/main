@@ -91,7 +91,7 @@ public class EditCommand extends Command {
             }
         }
 
-        model.setModule(moduleToEdit, editedModule);
+        model.editModule(moduleToEdit, editedModule);
         model.updateFilteredModuleList(PREDICATE_SHOW_ALL_MODULES);
         model.commitAddressBook();
         return new CommandResult(String.format(MESSAGE_EDIT_MODULE_SUCCESS, editedModule));

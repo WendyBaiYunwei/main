@@ -119,6 +119,7 @@ public class JsonAddressBookStorageTest {
         original.addModule(HOON);
         original.removeModule(ALICE);
         jsonAddressBookStorage.saveModuleList(original, moduleListFilePath);
+        jsonAddressBookStorage.saveDegreePlannerList(original, degreePlannerListFilePath);
         readBack = jsonAddressBookStorage
                 .readAddressBook(moduleListFilePath, degreePlannerListFilePath, requirementCategoryListFilePath).get();
         assertEquals(original, new AddressBook(readBack));

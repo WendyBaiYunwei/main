@@ -72,6 +72,16 @@ public class EditModuleDescriptorBuilder {
         return this;
     }
 
+    /**
+     * Parses the {@code corequisites} into a {@code Set<Code>} and set it to the {@code EditModuleDescriptor}
+     * that we are building.
+     */
+    public EditModuleDescriptorBuilder withCorequisites(String... corequisites) {
+        Set<Code> corequisitesSet = Stream.of(corequisites).map(Code::new).collect(Collectors.toSet());
+        descriptor.setCorequisites(corequisitesSet);
+        return this;
+    }
+
     public EditCommand.EditModuleDescriptor build() {
         return descriptor;
     }

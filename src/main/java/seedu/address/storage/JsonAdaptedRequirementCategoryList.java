@@ -46,7 +46,7 @@ public class JsonAdaptedRequirementCategoryList {
     public JsonAdaptedRequirementCategoryList(RequirementCategory source) {
         name = source.getName().fullName;
         credits = source.getCredits().value;
-        codeList.addAll(source.getCodeList().stream().map(JsonAdaptedCode::new).collect(Collectors.toList()));
+        codeList.addAll(source.getCodeSet().stream().map(JsonAdaptedCode::new).collect(Collectors.toList()));
     }
 
     /**

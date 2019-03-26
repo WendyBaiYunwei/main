@@ -1,5 +1,6 @@
 package seedu.address.ui;
 
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
@@ -9,6 +10,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+
+import seedu.address.model.module.Code;
 import seedu.address.model.planner.DegreePlanner;
 
 /**
@@ -42,8 +45,9 @@ public class DegreePlannerCard extends UiPart<Region> {
         year.setStyle("-fx-text-fill: white;");
         semester.setStyle("-fx-text-fill: white;");
 
-        ObservableList<String> modules = degreePlanner.getCodes().stream().map(Object::toString)
-                .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        ObservableList<String> modules =
+                degreePlanner.getCodes().stream().sorted(Comparator.comparing(code -> code.value)).map(Code::toString)
+                        .collect(Collectors.toCollection(FXCollections::observableArrayList));
 
         degreePlannerListView.setItems(modules);
         degreePlannerCardPane.setOnMouseClicked(null);

@@ -40,7 +40,8 @@ public class StatusBarFooter extends UiPart<Region> {
         super(FXML);
         addressBook.addListener(observable -> updateSyncStatus());
         syncStatus.setText(SYNC_STATUS_INITIAL);
-        saveLocationStatus.setText(Paths.get(".").resolve(saveLocation).toString());
+        saveLocationStatus.setText(Paths.get("").toAbsolutePath().relativize(
+                saveLocation.toAbsolutePath()).toString());
     }
 
     /**

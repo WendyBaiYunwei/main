@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.util.InvalidationListenerManager;
 import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
+import seedu.address.model.module.Name;
 import seedu.address.model.module.UniqueModuleList;
 import seedu.address.model.planner.DegreePlanner;
 import seedu.address.model.planner.UniqueDegreePlannerList;
@@ -127,7 +128,110 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(editedModule);
 
         modules.setModule(target, editedModule);
+    }
+
+    /**
+     * Replaces the given module {@code target} in the list with {@code editedModule}.
+     * {@code target} must exist in the address book.
+     * The module identity of {@code editedModule} must not be the same as another existing module in the address book.
+     */
+    public void editModule(Module target, Module editedModule) {
+        requireNonNull(editedModule);
+
+        modules.setModule(target, editedModule);
+        if (!target.getCode().equals(editedModule.getCode())) {
+            cascadeEditedModuleCode(target.getCode(), editedModule.getCode());
+        }
         indicateModified();
+    }
+
+    /**
+     * Cascades the edited module code to {@code UniqueModuleList}, {@code UniqueDegreePlannerList},
+     * and {@code UniqueRequirementCategoryList}
+     * @param codeToEdit module code to edit/find
+     * @param editedCode module code to replace with
+     */
+    private void cascadeEditedModuleCode(Code codeToEdit, Code editedCode) {
+        cascadeEditedCodeInModules(codeToEdit, editedCode);
+        cascadeEditedCodeInDegreePlanners(codeToEdit, editedCode);
+        cascadeEditedCodeInRequirementCategories(codeToEdit, editedCode);
+    }
+
+    /**
+     * Cascades the edited module code by updating {@code UniqueModuleList} accordingly
+     * @param codeToEdit module code to edit/find
+     * @param editedCode module code to replace with
+     */
+    private void cascadeEditedCodeInModules(Code codeToEdit, Code editedCode) {
+        ObservableList<Module> modules = getModuleList();
+
+        for (Module module : modules) {
+            if (module.getCorequisites().contains(codeToEdit)) {
+                Set<Code> editedCorequisiteCodes = new HashSet<>(module.getCorequisites());
+                editedCorequisiteCodes.remove(codeToEdit);
+                editedCorequisiteCodes.add(editedCode);
+
+                Module editedModule = new Module(
+                        module.getName(),
+                        module.getCredits(),
+                        module.getCode(),
+                        module.getTags(),
+                        editedCorequisiteCodes
+                );
+
+                setModule(module, editedModule);
+            }
+        }
+    }
+
+    /**
+     * Cascades the edited module code by updating {@code UniqueDegreePlannerList} accordingly
+     * @param codeToEdit module code to edit/find
+     * @param editedCode module code to replace with
+     */
+    private void cascadeEditedCodeInDegreePlanners(Code codeToEdit, Code editedCode) {
+        ObservableList<DegreePlanner> degreePlanners = getDegreePlannerList();
+
+        for (DegreePlanner degreePlanner : degreePlanners) {
+            if (degreePlanner.getCodes().contains(codeToEdit)) {
+                Set<Code> editedDegreePlannerCodes = new HashSet<>(degreePlanner.getCodes());
+                editedDegreePlannerCodes.remove(codeToEdit);
+                editedDegreePlannerCodes.add(editedCode);
+
+                DegreePlanner editedDegreePlanner = new DegreePlanner(
+                        degreePlanner.getYear(),
+                        degreePlanner.getSemester(),
+                        editedDegreePlannerCodes
+                );
+
+                setDegreePlanner(degreePlanner, editedDegreePlanner);
+            }
+        }
+    }
+
+    /**
+     * Cascades the edited module code by updating {@code UniqueRequirementCategoryList} accordingly
+     * @param codeToEdit module code to edit/find
+     * @param editedCode module code to replace with
+     */
+    private void cascadeEditedCodeInRequirementCategories(Code codeToEdit, Code editedCode) {
+        ObservableList<RequirementCategory> requirementCategories = getRequirementCategoryList();
+
+        for (RequirementCategory requirementCategory : requirementCategories) {
+            if (requirementCategory.getCodeSet().contains(codeToEdit)) {
+                Set<Code> editedCodes = new HashSet<>(requirementCategory.getCodeSet());
+                editedCodes.remove(codeToEdit);
+                editedCodes.add(editedCode);
+
+                RequirementCategory editedRequirementCategory = new RequirementCategory(
+                        requirementCategory.getName(),
+                        requirementCategory.getCredits(),
+                        editedCodes
+                );
+
+                setRequirementCategory(requirementCategory, editedRequirementCategory);
+            }
+        }
     }
 
     /**
@@ -136,19 +240,88 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void removeModule(Module key) {
         modules.remove(key);
+        cascadeDeletedModuleCode(key.getCode());
+        indicateModified();
+    }
 
-        ObservableList<Module> moduleList = modules.asUnmodifiableObservableList();
-        for (Module module : moduleList) {
-            if (module.getCorequisites().contains(key.getCode())) {
-                Set<Code> editedCorequisites = new HashSet<>(module.getCorequisites());
-                editedCorequisites.remove(key.getCode());
+    /**
+     * Cascades the deleted module code to {@code UniqueModuleList}, {@code UniqueDegreePlannerList},
+     * and {@code UniqueRequirementCategoryList}.
+     * @param codeToDelete module code to delete
+     */
+    private void cascadeDeletedModuleCode(Code codeToDelete) {
+        cascadeDeletedCodeInModules(codeToDelete);
+        cascadeDeletedCodeInDegreePlanners(codeToDelete);
+        cascadeDeletedCodeInRequirementCategories(codeToDelete);
+    }
 
-                Module editedModule = new Module(module.getName(), module.getCredits(), module.getCode(),
-                        module.getTags(), editedCorequisites);
-                modules.setModule(module, editedModule);
+    /**
+     * Cascades the deleted module code by removing it from {@code UniqueModuleList} accordingly
+     * @param codeToDelete module code to delete
+     */
+    private void cascadeDeletedCodeInModules(Code codeToDelete) {
+        ObservableList<Module> modules = getModuleList();
+
+        for (Module module : modules) {
+            if (module.getCorequisites().contains(codeToDelete)) {
+                Set<Code> editedCorequisiteCodes = new HashSet<>(module.getCorequisites());
+                editedCorequisiteCodes.remove(codeToDelete);
+
+                Module editedModule = new Module(
+                        module.getName(),
+                        module.getCredits(),
+                        module.getCode(),
+                        module.getTags(),
+                        editedCorequisiteCodes
+                );
+
+                setModule(module, editedModule);
             }
         }
-        indicateModified();
+    }
+
+    /**
+     * Cascades the deleted module code by removing it from {@code UniqueDegreePlannerList} accordingly
+     * @param codeToDelete module code to delete
+     */
+    private void cascadeDeletedCodeInDegreePlanners(Code codeToDelete) {
+        ObservableList<DegreePlanner> degreePlanners = getDegreePlannerList();
+        for (DegreePlanner degreePlanner : degreePlanners) {
+            if (degreePlanner.getCodes().contains(codeToDelete)) {
+                Set<Code> editedCodes = new HashSet<>(degreePlanner.getCodes());
+                editedCodes.remove(codeToDelete);
+
+                DegreePlanner editedDegreePlanner = new DegreePlanner(
+                        degreePlanner.getYear(),
+                        degreePlanner.getSemester(),
+                        editedCodes
+                );
+
+                setDegreePlanner(degreePlanner, editedDegreePlanner);
+            }
+        }
+    }
+
+    /**
+     * Cascades the deleted module code by removing it from {@code UniqueRequirementCategoryList} accordingly
+     * @param codeToDelete module code to delete
+     */
+    private void cascadeDeletedCodeInRequirementCategories(Code codeToDelete) {
+        ObservableList<RequirementCategory> requirementCategories = getRequirementCategoryList();
+        for (RequirementCategory requirementCategory : requirementCategories) {
+            if (requirementCategory.getCodeSet().contains(codeToDelete)) {
+                Set<Code> editedCodes = new HashSet<>(requirementCategory.getCodeSet());
+                editedCodes.remove(codeToDelete);
+
+                RequirementCategory editedRequirementCategory = new RequirementCategory(
+                        requirementCategory.getName(),
+                        requirementCategory.getCredits(),
+                        editedCodes
+                );
+
+                setRequirementCategory(requirementCategory, editedRequirementCategory);
+            }
+        }
     }
 
     //// planner-level operations
@@ -189,39 +362,33 @@ public class AddressBook implements ReadOnlyAddressBook {
         degreePlanners.remove(key);
     }
 
-    /**
-     * Returns true if a module with the same identity as {@code degreePlanner} exists in the particular degreePlanner.
-     */
-    public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
-        requireNonNull(plannerModules);
-        return degreePlanners.containsModules(plannerModules);
-    }
-
-    /**
-     * adds new modules to degree planner.
-     */
-    public void addDegreePlannerModules(DegreePlanner plannerModules) {
-        degreePlanners.addModules(plannerModules);
-        indicateModified();
-    }
-
-    /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the degree planner.
-     */
-    public boolean existingPlannerModules(Code plannerCode) {
-        requireNonNull(plannerCode);
-        return modules.asUnmodifiableObservableList().stream().anyMatch((module) -> module.getCode().equals(plannerCode));
-    }
-
     //// requirement-level operations
+
+    /**
+     * Returns true if a requirement with the name as {@code requirement} exists in the
+     * requirement list.
+     */
+    public boolean hasRequirementCategory(Name requirementCategoryName) {
+        requireNonNull(requirementCategoryName);
+        return requirementCategories.contains(requirementCategoryName);
+    }
+
+    /**
+     * Returns true if a requirement object {@code requirement} exists in the
+     * requirement list.
+     */
+    public boolean hasRequirementCategory(RequirementCategory requirementCategory) {
+        requireNonNull(requirementCategory);
+        return requirementCategories.contains(requirementCategory);
+    }
 
     /**
      * Returns true if an requirement with the same identity as {@code requirement} exists in the
      * requirement.
      */
-    public boolean hasRequirementCategory(RequirementCategory requirementCategory) {
-        requireNonNull(requirementCategory);
-        return requirementCategories.contains(requirementCategory);
+    public RequirementCategory getRequirementCategory(Name requirementCategoryName) {
+        requireNonNull(requirementCategoryName);
+        return requirementCategories.getRequirementCategory(requirementCategoryName);
     }
 
     /**
@@ -251,34 +418,6 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void removeRequirementCategory(RequirementCategory key) {
         requirementCategories.remove(key);
-    }
-
-    /**
-     * Adds module to the given requirement category.
-     * {@code requirementCategoryModule} must not already exist in the requirementCategoryList.
-     */
-    public void addModuleToRequirementCategory(RequirementCategory requirementCategoryModule) {
-        requireNonNull(requirementCategoryModule);
-        requirementCategories.addModuleToRequirementCategory(requirementCategoryModule);
-    }
-
-    /**
-     * Returns true if a module with the same identity as {@code requirementCategory} exists in the
-     * requirement category to be added to.
-     */
-    public boolean isModuleInRequirementCategory(RequirementCategory requirementCategory) {
-        requireNonNull(requirementCategory);
-        return requirementCategories.isModuleInRequirementCategory(requirementCategory);
-    }
-
-    /**
-     * Returns false if a module with the same identity as {@code requirementCategory} does not exists
-     * in the current moduleList.
-     */
-    //TODO refine this method to use methods in PR#91
-    public boolean doesModuleExistInApplication(RequirementCategory requirementCategory, Model model) {
-        requireNonNull(requirementCategory);
-        return requirementCategories.doesModuleExistInApplication(requirementCategory, model);
     }
 
     //// listener methods

@@ -3,16 +3,12 @@ package seedu.address.model.requirement;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import seedu.address.model.Model;
-import seedu.address.model.module.Code;
-import seedu.address.model.module.Module;
+import seedu.address.model.module.Name;
 import seedu.address.model.requirement.exceptions.DuplicateRequirementCategoryException;
 import seedu.address.model.requirement.exceptions.RequirementCategoryNotFoundException;
 
@@ -40,7 +36,15 @@ public class UniqueRequirementCategoryList implements Iterable<RequirementCatego
             FXCollections.unmodifiableObservableList(internalList);
 
     /**
-     * Returns true if the list contains an equivalent requirement as the given argument.
+     * Returns true if the list contains an equivalent Name as the given argument.
+     */
+    public boolean contains(Name toCheck) {
+        requireNonNull(toCheck);
+        return internalList.stream().map(RequirementCategory::getName).anyMatch(toCheck::equals);
+    }
+
+    /**
+     * Returns true if the list contains an equivalent RequirementCategory as the given argument.
      */
     public boolean contains(RequirementCategory toCheck) {
         requireNonNull(toCheck);
@@ -48,18 +52,15 @@ public class UniqueRequirementCategoryList implements Iterable<RequirementCatego
     }
 
     /**
-     * Returns location of the requirementCategory in the internalList.
+     * Returns a RequirementCategory object of the requirementCategory in the internalList.
      */
-    public int location(RequirementCategory toCheck) {
+    public RequirementCategory getRequirementCategory(Name toCheck) {
         requireNonNull(toCheck);
-        int location = 0;
-        for (int i = 0; i < internalList.size(); i++) {
-            if (toCheck.getName().equals(internalList.get(i).getName())) {
-                location = i;
-                i = internalList.size();
-            }
-        }
-        return location;
+
+        return internalList.stream()
+                .filter(requirementCategory -> requirementCategory.getName().equals(toCheck))
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -72,70 +73,6 @@ public class UniqueRequirementCategoryList implements Iterable<RequirementCatego
             throw new DuplicateRequirementCategoryException();
         }
         internalList.add(toAdd);
-    }
-
-    /**
-     * Adds a module to a requirement category.
-     * The module must not already exist in the requirement category.
-     */
-    public void addModuleToRequirementCategory(RequirementCategory toAdd) {
-        requireNonNull(toAdd);
-        int location = location(toAdd);
-        Set<Code> currentListInRequirementCategory = internalList.get(location).getCodeList();
-        Set<Code> inputList = toAdd.getCodeList();
-
-        for (Code currentCode : currentListInRequirementCategory) {
-            inputList.add(currentCode);
-        }
-
-        RequirementCategory edited =
-                new RequirementCategory(internalList.get(location).getName(), internalList.get(location).getCredits(),
-                        inputList);
-
-        setRequirementCategory(internalList.get(location), edited);
-    }
-
-    /**
-     * Returns true if the list contains an equivalent requirement as the given argument.
-     */
-    public boolean isModuleInRequirementCategory(RequirementCategory toCheck) {
-        int location = location(toCheck);
-        Set<Code> currentList = internalList.get(location).getCodeList();
-        Set<Code> inputList = toCheck.getCodeList();
-
-        for (Code existingCode : currentList) {
-            for (Code newCode : inputList) {
-                if (existingCode.value.equals(newCode.value)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns true if the list contains an equivalent requirement as the given argument.
-     */
-    //TODO Refine the method so that it uses the implementation in PR #91
-    public boolean doesModuleExistInApplication(RequirementCategory toCheck, Model model) {
-        ObservableList<Module> existingModules = model.getFilteredModuleList();
-        Set<Code> inputList = toCheck.getCodeList();
-        Set<Code> outputList = new HashSet<>();
-        boolean checker = true;
-
-        for (Module existingModule : existingModules) {
-            for (Code newCode : inputList) {
-                if (existingModule.getCode().value.equals(newCode.value)) {
-                    outputList.add(newCode);
-                }
-            }
-        }
-
-        if (outputList.size() != inputList.size()) {
-            checker = false;
-        }
-
-        return checker;
     }
 
     /**
