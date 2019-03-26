@@ -77,7 +77,6 @@ public class EditCommandTest {
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-		
         expectedModel.editModule(lastModule, editedModule);
         expectedModel.commitAddressBook();
 
@@ -109,9 +108,7 @@ public class EditCommandTest {
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-
         expectedModel.editModule(model.getFilteredModuleList().get(0), editedModule);
-
         expectedModel.commitAddressBook();
 
         assertCommandSuccess(editCommand, model, commandHistory, expectedMessage, expectedModel);
