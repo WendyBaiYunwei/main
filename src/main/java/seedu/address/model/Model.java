@@ -284,5 +284,5 @@ public interface Model {
      */
     void setSelectedRequirementCategory(RequirementCategory requirementCategory);
 
-    boolean existingPlannerModules(DegreePlanner toAdd, Model model);
+    boolean existingPlannerModules(Code plannerCode);
 }

@@ -1,7 +1,6 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.commands.RequirementAddCommand.MESSAGE_MODULE_DOES_NOT_EXIST;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
@@ -25,7 +24,8 @@ public class PlannerAddCommand extends Command {
             + PREFIX_SEMESTER + "SEMESTER";
 
     public static final String MESSAGE_SUCCESS = "New module added: %1$s";
-    public static final String MESSAGE_DUPLICATE_MODULE = "This module already exists in the address book";
+    public static final String MESSAGE_DUPLICATE_MODULE = "This module already exists in the degree planner";
+    public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "The module code does not exist in the application";
     private DegreePlanner toAdd;
 
     /**
@@ -43,10 +43,9 @@ public class PlannerAddCommand extends Command {
         if (model.hasDegreePlannerModules(toAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_MODULE);
         }
-        if (!model.existingPlannerModules(toAdd, model)) {
+        if (toAdd.getCodes().stream().anyMatch(code -> !model.existingPlannerModules(code))) {
             throw new CommandException(MESSAGE_MODULE_DOES_NOT_EXIST);
         }
-
         model.addDegreePlannerModules(toAdd);
         model.commitAddressBook();
         return new CommandResult(String.format(MESSAGE_SUCCESS, toAdd));

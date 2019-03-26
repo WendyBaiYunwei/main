@@ -391,9 +391,9 @@ public class ModelManager implements Model {
     /**
      * Ensures the new modules to add exist in the application.
      */
-    public boolean existingPlannerModules(DegreePlanner toAdd, Model model) {
-        requireNonNull(toAdd);
-        return versionedAddressBook.existingPlannerModules(toAdd, model);
+    public boolean existingPlannerModules(Code plannerCode) {
+        requireNonNull(plannerCode);
+        return versionedAddressBook.existingPlannerModules(plannerCode);
     }
 
     /**

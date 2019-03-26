@@ -11,9 +11,7 @@ import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import seedu.address.model.Model;
 import seedu.address.model.module.Code;
-import seedu.address.model.module.Module;
 import seedu.address.model.planner.exceptions.DegreePlannerNotFoundException;
 import seedu.address.model.planner.exceptions.DuplicateDegreePlannerException;
 
@@ -60,15 +58,15 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
      */
     public int location(DegreePlanner toCheck) {
         requireNonNull(toCheck);
-        int location = 0;
         for (int i = 0; i < internalList.size(); i++) {
             if (toCheck.getYear().equals(internalList.get(i).getYear())
                     && toCheck.getSemester().equals(internalList.get(i).getSemester())) {
-                location = i;
-                break;
+                return i;
             }
         }
-        return location;
+        return -1; // Year and Semester input are guaranteed to be valid through previous checks.
+        // Meanwhile, internalList also has the matching year and semester. Thus this line is a dummy line for syntax
+        // purpose.
     }
 
     /**
@@ -173,10 +171,9 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
         return true;
     }
     /**
-     * checks if the modules are contained inside the entire degree planner
+     * Returns true if the modules to add are contained inside the entire degree planner.
      */
     public boolean containsModules(DegreePlanner toCheck) {
-        boolean contains = false;
         Set<Code> modulesToCheck = toCheck.getCodes();
 
         requireNonNull(toCheck);
@@ -184,35 +181,12 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
             for (Code currentCode : internalList.get(i).getCodes()) {
                 for (Code codeToAdd : modulesToCheck) {
                     if (currentCode.equals(codeToAdd)) {
-                        contains = true;
+                        return true;
                     }
                 }
             }
         }
-        return contains;
+        return false;
     }
-    /**
-     * checks if the degree planner modules to add are valid modules existing in the application
-     */
-    public boolean existingPlannerModules(DegreePlanner toCheck, Model model) {
-        ObservableList<Module> existingModules = model.getFilteredModuleList();
-        Set<Code> inputList = new HashSet<>();
-        Set<Code> outputList = new HashSet<>();
-        boolean checker = true;
 
-        inputList.addAll(toCheck.getCodes());
-        for (Module existingModule : existingModules) {
-            for (Code newCode : inputList) {
-                if (existingModule.getCode().value.equals(newCode.value)) {
-                    outputList.add(newCode);
-                }
-            }
-        }
-
-        if (outputList.size() != inputList.size()) {
-            checker = false;
-        }
-
-        return checker;
-    }
 }

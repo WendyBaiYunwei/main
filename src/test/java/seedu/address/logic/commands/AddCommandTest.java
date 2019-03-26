@@ -313,7 +313,7 @@ public class AddCommandTest {
         }
 
         @Override
-        public boolean existingPlannerModules(DegreePlanner toAdd, Model model) {
+        public boolean existingPlannerModules(Code plannerCode) {
             return false;
             //ToDo: implement error check
         }

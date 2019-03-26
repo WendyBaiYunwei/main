@@ -205,8 +205,12 @@ public class AddressBook implements ReadOnlyAddressBook {
         indicateModified();
     }
 
-    public boolean existingPlannerModules(DegreePlanner toAdd, Model model) {
-        return degreePlanners.existingPlannerModules(toAdd, model);
+    /**
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the degree planner.
+     */
+    public boolean existingPlannerModules(Code plannerCode) {
+        requireNonNull(plannerCode);
+        return modules.asUnmodifiableObservableList().stream().anyMatch((module) -> module.getCode().equals(plannerCode));
     }
 
     //// requirement-level operations
