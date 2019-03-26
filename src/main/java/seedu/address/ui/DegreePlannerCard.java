@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-
 import seedu.address.model.module.Code;
 import seedu.address.model.planner.DegreePlanner;
 

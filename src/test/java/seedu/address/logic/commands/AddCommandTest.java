@@ -16,7 +16,6 @@ import org.junit.rules.ExpectedException;
 
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.collections.ObservableList;
-
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -244,12 +243,23 @@ public class AddCommandTest {
         }
 
         @Override
+        public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
+            //ToDo: implement error check
+            return false;
+        }
+
+        @Override
         public void deleteDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement AssertionError
         }
 
         @Override
         public void addDegreePlanner(DegreePlanner degreePlanner) {
+            //ToDo: implement error check
+        }
+
+        @Override
+        public void addDegreePlannerModules(DegreePlanner plannerModules) {
             //ToDo: implement error check
         }
 
