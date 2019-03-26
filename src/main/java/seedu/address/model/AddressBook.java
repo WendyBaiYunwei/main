@@ -334,7 +334,13 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(degreePlanner);
         return degreePlanners.contains(degreePlanner);
     }
-
+    /**
+     * Returns true if a module with the same identity as {@code degreePlanner} exists in the particular degreePlanner.
+     */
+    public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
+        requireNonNull(plannerModules);
+        return degreePlanners.containsModules(plannerModules);
+    }
     /**
      * Adds a degree planner to the degree planner list.
      * The degree planner must not already exist in the degree planner list.
@@ -342,7 +348,22 @@ public class AddressBook implements ReadOnlyAddressBook {
     public void addDegreePlanner(DegreePlanner degreePlanner) {
         degreePlanners.add(degreePlanner);
     }
-
+    /**
+     * Adds modules to a specific degree planner.
+     * The modules to add must not already exist in the degree planner.
+     */
+    public void addDegreePlannerModules(DegreePlanner p) {
+        degreePlanners.addModules(p);
+        indicateModified();
+    }
+    /**
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the degree planner.
+     */
+    public boolean existingPlannerModules(Code plannerCode) {
+        requireNonNull(plannerCode);
+        return modules.asUnmodifiableObservableList().stream().anyMatch((module) ->
+                module.getCode().equals(plannerCode));
+    }
     /**
      * Replaces the given degree planner {@code target} in the list with {@code editedDegreePlanner}.
      * {@code target} must exist in the degree planner list.

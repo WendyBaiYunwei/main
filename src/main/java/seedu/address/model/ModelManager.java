@@ -293,12 +293,23 @@ public class ModelManager implements Model {
         return versionedAddressBook.hasDegreePlanner(planner);
     }
 
+    @Override
+    public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
+        requireNonNull(plannerModules);
+        return versionedAddressBook.hasDegreePlannerModules(plannerModules);
+    }
+
     @Override public void deleteDegreePlanner(DegreePlanner target) {
         versionedAddressBook.removeDegreePlanner(target);
     }
 
     @Override public void addDegreePlanner(DegreePlanner degreePlanner) {
         versionedAddressBook.addDegreePlanner(degreePlanner);
+    }
+
+    @Override
+    public void addDegreePlannerModules(DegreePlanner plannerModules) {
+        versionedAddressBook.addDegreePlannerModules(plannerModules);
     }
 
     @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {

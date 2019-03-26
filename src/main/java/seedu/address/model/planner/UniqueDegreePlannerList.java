@@ -70,7 +70,7 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
     }
 
     /**
-     * Adds the new module to the particular degree planner with matching year and semester
+     * Adds the new modules to the particular degree planner with matching year and semester.
      */
     public void addModules(DegreePlanner toAdd) {
         requireNonNull(toAdd);

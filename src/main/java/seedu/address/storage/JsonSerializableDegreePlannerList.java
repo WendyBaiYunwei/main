@@ -78,6 +78,6 @@ public class JsonSerializableDegreePlannerList {
                 }
             }
         }
-        return degreePlannerList.getDegreePlannerList();
+        return degreePlannerList;
     }
 }
