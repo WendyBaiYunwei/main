@@ -348,6 +348,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     public void addDegreePlanner(DegreePlanner degreePlanner) {
         degreePlanners.add(degreePlanner);
     }
+
     /**
      * Adds modules to a specific degree planner.
      * The modules to add must not already exist in the degree planner.

@@ -77,6 +77,7 @@ public class AddCommandTest {
 
         // same object -> returns true
         assertTrue(addAliceCommand.equals(addAliceCommand));
+
         // same values -> returns true
         AddCommand addAliceCommandCopy = new AddCommand(alice);
         assertTrue(addAliceCommand.equals(addAliceCommandCopy));
