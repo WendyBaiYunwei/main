@@ -243,23 +243,12 @@ public class AddCommandTest {
         }
 
         @Override
-        public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
-            //ToDo: implement error check
-            return false;
-        }
-
-        @Override
         public void deleteDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement AssertionError
         }
 
         @Override
         public void addDegreePlanner(DegreePlanner degreePlanner) {
-            //ToDo: implement error check
-        }
-
-        @Override
-        public void addDegreePlannerModules(DegreePlanner plannerModules) {
             //ToDo: implement error check
         }
 
@@ -323,12 +312,6 @@ public class AddCommandTest {
         @Override
         public void setSelectedRequirementCategory(RequirementCategory requirementCategory) {
             throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public boolean existingPlannerModules(Code plannerCode) {
-            return false;
-            //ToDo: implement error check
         }
 
         @Override
