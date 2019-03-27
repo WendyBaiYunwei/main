@@ -17,15 +17,16 @@ public class PlannerAddCommand extends Command {
 
     public static final String COMMAND_WORD = "planner_add";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a module to the degree planner. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Add modules to the degree planner. "
             + "Parameters: "
             + PREFIX_CODE + "CODE "
             + PREFIX_YEAR + "YEAR "
             + PREFIX_SEMESTER + "SEMESTER";
 
-    public static final String MESSAGE_SUCCESS = "New module added: %1$s";
-    public static final String MESSAGE_DUPLICATE_MODULE = "This module already exists in the degree planner";
-    public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "The module code does not exist in the application";
+    public static final String MESSAGE_SUCCESS = "New modules added to the degree planner: %1$s";
+    public static final String MESSAGE_DUPLICATE_MODULE = "Some of the modules already exist in the degree planner";
+    public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "Some of the module codes do"
+            + " not exist in the application";
     private DegreePlanner toAdd;
 
     /**
