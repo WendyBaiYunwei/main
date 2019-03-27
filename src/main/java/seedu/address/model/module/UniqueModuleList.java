@@ -3,8 +3,11 @@ package seedu.address.model.module;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,6 +49,56 @@ public class UniqueModuleList implements Iterable<Module> {
             throw new DuplicateModuleException();
         }
         internalList.add(toAdd);
+
+        cascadeAddModuleCorequisites(toAdd);
+    }
+
+    /**
+     * Combines all co-requisites linked to current module into one {@code Set<Code>}, and update all linked modules to
+     * have all-corequisites
+     *
+     * @param moduleToAdd
+     */
+    private void cascadeAddModuleCorequisites(Module moduleToAdd) {
+        // create a union Set<Code> of co-requisites
+        Code currentCode = moduleToAdd.getCode();
+        Set<Code> currentCorequisites = moduleToAdd.getCorequisites();
+        Set<Code> allCorequisites = new HashSet<>(currentCorequisites);
+
+        for (Code codeToAdd : currentCorequisites) {
+            Optional<Module> otherModuleOptional = internalUnmodifiableList.stream()
+                    .filter(module -> module.getCode().equals(codeToAdd))
+                    .findFirst();
+
+            if (otherModuleOptional.isPresent()) {
+                allCorequisites.addAll(otherModuleOptional.get().getCorequisites());
+            }
+        }
+
+        allCorequisites.add(currentCode);
+
+        // update all co-requisite modules with the union set excluding itself
+        for (Code codeToEditCorequisites : allCorequisites) {
+            Optional<Module> otherModuleOptional = internalUnmodifiableList.stream()
+                    .filter(module -> module.getCode().equals(codeToEditCorequisites))
+                    .findFirst();
+
+            if (otherModuleOptional.isPresent()) {
+                Module otherModule = otherModuleOptional.get();
+                Set<Code> editedOtherCorequisites = new HashSet<>(allCorequisites);
+                editedOtherCorequisites.remove(otherModule.getCode());
+
+                Module editedOtherModule = new Module(
+                        otherModule.getName(),
+                        otherModule.getCredits(),
+                        otherModule.getCode(),
+                        otherModule.getTags(),
+                        editedOtherCorequisites
+                );
+
+                setModule(otherModule, editedOtherModule, false);
+            }
+        }
     }
 
     /**
@@ -54,6 +107,16 @@ public class UniqueModuleList implements Iterable<Module> {
      * The module identity of {@code editedModule} must not be the same as another existing module in the list.
      */
     public void setModule(Module target, Module editedModule) {
+        setModule(target, editedModule, true);
+    }
+
+
+    /**
+     * Replaces the module {@code target} in the list with {@code editedModule}.
+     * {@code target} must exist in the list.
+     * The module identity of {@code editedModule} must not be the same as another existing module in the list.
+     */
+    private void setModule(Module target, Module editedModule, boolean cascade) {
         requireAllNonNull(target, editedModule);
 
         int index = internalList.indexOf(target);
@@ -66,6 +129,43 @@ public class UniqueModuleList implements Iterable<Module> {
         }
 
         internalList.set(index, editedModule);
+
+        if (cascade) {
+            if (!target.getCode().equals(editedModule.getCode())) {
+                cascadeEditModuleCorequisites(target, editedModule);
+            }
+            cascadeDeleteModuleCorequisites(target);
+            cascadeAddModuleCorequisites(editedModule);
+        }
+    }
+
+    /**
+     * Cascades the edited module code by updating {@code UniqueModuleList} accordingly
+     * @param target module code to edit/find
+     * @param editedModule module code to replace with
+     */
+    private void cascadeEditModuleCorequisites(Module target, Module editedModule) {
+        ObservableList<Module> modules = internalUnmodifiableList;
+        Code codeToEdit = target.getCode();
+        Code editedCode = editedModule.getCode();
+
+        for (Module module : modules) {
+            if (module.getCorequisites().contains(codeToEdit)) {
+                Set<Code> editedCorequisiteCodes = new HashSet<>(module.getCorequisites());
+                editedCorequisiteCodes.remove(codeToEdit);
+                editedCorequisiteCodes.add(editedCode);
+
+                Module editedCorequisiteModule = new Module(
+                        module.getName(),
+                        module.getCredits(),
+                        module.getCode(),
+                        module.getTags(),
+                        editedCorequisiteCodes
+                );
+
+                setModule(module, editedCorequisiteModule, false);
+            }
+        }
     }
 
     /**
@@ -76,6 +176,34 @@ public class UniqueModuleList implements Iterable<Module> {
         requireNonNull(toRemove);
         if (!internalList.remove(toRemove)) {
             throw new ModuleNotFoundException();
+        }
+
+        cascadeDeleteModuleCorequisites(toRemove);
+    }
+
+    /**
+     * Cascades the deleted module code by removing it from {@code UniqueModuleList} accordingly
+     * @param moduleToDelete module code to delete
+     */
+    private void cascadeDeleteModuleCorequisites(Module moduleToDelete) {
+        ObservableList<Module> modules = internalUnmodifiableList;
+        Code codeToDelete = moduleToDelete.getCode();
+
+        for (Module module : modules) {
+            if (module.getCorequisites().contains(codeToDelete)) {
+                Set<Code> editedCorequisiteCodes = new HashSet<>(module.getCorequisites());
+                editedCorequisiteCodes.remove(codeToDelete);
+
+                Module editedModule = new Module(
+                        module.getName(),
+                        module.getCredits(),
+                        module.getCode(),
+                        module.getTags(),
+                        editedCorequisiteCodes
+                );
+
+                setModule(module, editedModule, false);
+            }
         }
     }
 
