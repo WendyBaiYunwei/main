@@ -24,8 +24,8 @@ public class PlannerAddCommand extends Command {
             + PREFIX_SEMESTER + "SEMESTER";
 
     public static final String MESSAGE_SUCCESS = "New modules added to degree planner: %1$s";
-    public static final String MESSAGE_DUPLICATE_MODULE = "Some of the modules already exist in degree planner";
-    public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "Some of the module codes do"
+    public static final String MESSAGE_DUPLICATE_MODULE = "Some/one of the modules already exist in degree planner";
+    public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "Some/one of the module do"
             + " not exist in the application";
     private DegreePlanner toAdd;
 

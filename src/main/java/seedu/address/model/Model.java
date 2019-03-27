@@ -195,7 +195,7 @@ public interface Model {
 
     /**
      * Adds the given module to the degree planner.
-     * {@code plannerModule} must not already exist in the address book.
+     * {@code plannerModules} must not already exist in the address book.
      */
     void addDegreePlannerModules(DegreePlanner plannerModules);
     /**

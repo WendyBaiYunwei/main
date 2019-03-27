@@ -70,7 +70,8 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
     }
 
     /**
-     * Adds the new modules to the particular degree planner with matching year and semester.
+     * Adds a set of planner modules to the particular degree planner with matching year and semester.
+     * Any of the planner modules must not already exist in the list.
      */
     public void addModules(DegreePlanner toAdd) {
         requireNonNull(toAdd);
@@ -171,7 +172,7 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
         return true;
     }
     /**
-     * Returns true if the modules to add are contained inside the entire degree planner.
+     * Returns true if any of the modules to add are contained inside the entire degree planner.
      */
     public boolean containsModules(DegreePlanner toCheck) {
         Set<Code> modulesToCheck = toCheck.getCodes();
