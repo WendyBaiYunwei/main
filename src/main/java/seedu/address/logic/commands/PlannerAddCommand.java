@@ -15,7 +15,7 @@ import seedu.address.model.module.Code;
 import seedu.address.model.planner.DegreePlanner;
 
 /**
- * Adds a module to the address book.
+ * Adds modules to the degree planner.
  */
 public class PlannerAddCommand extends Command {
 

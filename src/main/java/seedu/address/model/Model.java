@@ -194,8 +194,8 @@ public interface Model {
     void addDegreePlanner(DegreePlanner degreePlanner);
 
     /**
-     * Returns true if a degree planner with the year as {@code year} and semester as {@code semester} exists in the
-     * degree planner list.
+     * Returns a degree planner with the same {@code year} and {@code semester} as those of the input degree
+     * planner modules.
      */
     DegreePlanner getDegreePlanner(DegreePlanner plannerModules);
 
