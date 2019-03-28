@@ -3,7 +3,6 @@ package seedu.address.model.planner;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -54,34 +53,16 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
     }
 
     /**
-     * Returns location of the degree planner to add to in the internalList.
+     * Returns a DegreePlanner object of the input year and semester in the internalList.
      */
-    public int location(DegreePlanner toCheck) {
+    public DegreePlanner getDegreePlanner(DegreePlanner toCheck) {
         requireNonNull(toCheck);
-        for (int i = 0; i < internalList.size(); i++) {
-            if (toCheck.getYear().equals(internalList.get(i).getYear())
-                    && toCheck.getSemester().equals(internalList.get(i).getSemester())) {
-                return i;
-            }
-        }
-        return -1; // Year and Semester input are guaranteed to be valid through previous checks.
-        // Meanwhile, internalList also has the matching year and semester. Thus this line is a dummy line for syntax
-        // purpose.
-    }
 
-    /**
-     * Adds a set of planner modules to the particular degree planner with matching year and semester.
-     * Any of the planner modules must not already exist in the list.
-     */
-    public void addModules(DegreePlanner toAdd) {
-        requireNonNull(toAdd);
-        int location = location(toAdd);
-        Set<Code> inputList = new HashSet<>();
-        inputList.addAll(toAdd.getCodes());
-        Set<Code> currentDegreePlanner = internalList.get(location).getCodes();
-        inputList.addAll(currentDegreePlanner);
-        DegreePlanner edited = new DegreePlanner(toAdd.getYear(), toAdd.getSemester(), inputList);
-        setDegreePlanner(internalList.get(location), edited);
+        return internalList.stream()
+                .filter(degreePlanner -> (degreePlanner.getYear().equals(toCheck.getYear())
+                        && degreePlanner.getSemester().equals(toCheck.getSemester())))
+                .findFirst()
+                .orElse(null);
     }
 
     /**

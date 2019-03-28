@@ -194,10 +194,11 @@ public interface Model {
     void addDegreePlanner(DegreePlanner degreePlanner);
 
     /**
-     * Adds the given module to the degree planner.
-     * {@code plannerModules} must not already exist in the address book.
+     * Returns true if a degree planner with the year as {@code year} and semester as {@code semester} exists in the
+     * degree planner list.
      */
-    void addDegreePlannerModules(DegreePlanner plannerModules);
+    DegreePlanner getDegreePlanner(DegreePlanner plannerModules);
+
     /**
      * Replaces the given degreePlanner {@code target} with {@code editedDegreePlanner}.
      * {@code target} must exist in the degreePlanner list.

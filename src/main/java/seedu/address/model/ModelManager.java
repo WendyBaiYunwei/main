@@ -308,8 +308,8 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void addDegreePlannerModules(DegreePlanner plannerModules) {
-        versionedAddressBook.addDegreePlannerModules(plannerModules);
+    public DegreePlanner getDegreePlanner(DegreePlanner plannerModules) {
+        return versionedAddressBook.getDegreePlanner(plannerModules);
     }
 
     @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {

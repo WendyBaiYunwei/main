@@ -5,9 +5,13 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.module.Code;
 import seedu.address.model.planner.DegreePlanner;
 
 /**
@@ -25,7 +29,7 @@ public class PlannerAddCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "New modules added to degree planner: %1$s";
     public static final String MESSAGE_DUPLICATE_MODULE = "Some/one of the modules already exist in degree planner";
-    public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "Some/one of the module do"
+    public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "Some/one of the modules do"
             + " not exist in the application";
     private DegreePlanner toAdd;
 
@@ -41,13 +45,21 @@ public class PlannerAddCommand extends Command {
     public CommandResult execute(Model model, CommandHistory history) throws CommandException {
         requireNonNull(model);
 
+        DegreePlanner currentDegreePlanner = model.getDegreePlanner(toAdd);
+
         if (model.hasDegreePlannerModules(toAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_MODULE);
         }
         if (toAdd.getCodes().stream().anyMatch(code -> !model.existingPlannerModules(code))) {
             throw new CommandException(MESSAGE_MODULE_DOES_NOT_EXIST);
         }
-        model.addDegreePlannerModules(toAdd);
+
+        Set<Code> newCodeSet = new HashSet<>(currentDegreePlanner.getCodes());
+        newCodeSet.addAll(toAdd.getCodes());
+
+        DegreePlanner editedDegreePlanner = new DegreePlanner(
+                currentDegreePlanner.getYear(), currentDegreePlanner.getSemester(), newCodeSet);
+        model.setDegreePlanner(currentDegreePlanner, editedDegreePlanner);
         model.commitAddressBook();
         return new CommandResult(String.format(MESSAGE_SUCCESS, toAdd));
     }

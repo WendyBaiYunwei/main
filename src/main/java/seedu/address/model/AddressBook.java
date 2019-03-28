@@ -264,11 +264,12 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Returns true if a module with the same identity as {@code degreePlanner} exists in the particular degreePlanner.
+     * Returns true if a degree planner with the same identity as {@code degreePlanner} exists in the
+     * degree planner.
      */
-    public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
-        requireNonNull(plannerModules);
-        return degreePlanners.containsModules(plannerModules);
+    public boolean hasDegreePlannerModules(DegreePlanner degreePlanner) {
+        requireNonNull(degreePlanner);
+        return degreePlanners.containsModules(degreePlanner);
     }
 
     /**
@@ -277,15 +278,6 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void addDegreePlanner(DegreePlanner degreePlanner) {
         degreePlanners.add(degreePlanner);
-    }
-
-    /**
-     * Adds modules to a specific degree planner.
-     * The modules to add must not already exist in the degree planner.
-     */
-    public void addDegreePlannerModules(DegreePlanner p) {
-        degreePlanners.addModules(p);
-        indicateModified();
     }
 
     /**
@@ -314,6 +306,14 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void removeDegreePlanner(DegreePlanner key) {
         degreePlanners.remove(key);
+    }
+
+    /**
+     * Gets the degree planner based on year and semester.
+     */
+    public DegreePlanner getDegreePlanner(DegreePlanner degreePlanner) {
+        requireNonNull(degreePlanner);
+        return degreePlanners.getDegreePlanner(degreePlanner);
     }
 
     //// requirement-level operations
