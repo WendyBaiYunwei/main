@@ -267,15 +267,6 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Returns true if a degree planner with the same identity as {@code degreePlanner} exists in the
-     * degree planner.
-     */
-    public boolean hasDegreePlannerModules(DegreePlanner degreePlanner) {
-        requireNonNull(degreePlanner);
-        return degreePlanners.containsModules(degreePlanner);
-    }
-
-    /**
      * Adds a degree planner to the degree planner list.
      * The degree planner must not already exist in the degree planner list.
      */

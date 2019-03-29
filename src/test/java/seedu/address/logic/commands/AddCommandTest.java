@@ -243,12 +243,6 @@ public class AddCommandTest {
         }
 
         @Override
-        public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
-            //ToDo: implement error check
-            return false;
-        }
-
-        @Override
         public void deleteDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement AssertionError
         }
@@ -259,8 +253,8 @@ public class AddCommandTest {
         }
 
         @Override
-        public void addDegreePlannerModules(DegreePlanner plannerModules) {
-            //ToDo: implement error check
+        public DegreePlanner getDegreePlanner(DegreePlanner plannerModules) {
+            return null;
         }
 
         @Override
@@ -327,6 +321,12 @@ public class AddCommandTest {
 
         @Override
         public boolean existingPlannerModules(Code plannerCode) {
+            return false;
+            //ToDo: implement error check
+        }
+
+        @Override
+        public boolean existingApplicationModules(Code plannerModules) {
             return false;
             //ToDo: implement error check
         }
