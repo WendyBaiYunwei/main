@@ -294,9 +294,15 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public boolean hasDegreePlannerModules(DegreePlanner plannerModules) {
-        requireNonNull(plannerModules);
-        return versionedAddressBook.hasDegreePlannerModules(plannerModules);
+    public boolean existingPlannerModules(Code plannerCode) {
+        requireNonNull(plannerCode);
+        return versionedAddressBook.existingPlannerModules(plannerCode);
+    }
+
+    @Override
+    public boolean existingApplicationModules(Code plannerCode) {
+        requireNonNull(plannerCode);
+        return versionedAddressBook.existingApplicationModules(plannerCode);
     }
 
     @Override public void deleteDegreePlanner(DegreePlanner target) {
@@ -386,13 +392,6 @@ public class ModelManager implements Model {
         selectedRequirementCategory.setValue(requirementCategory);
     }
 
-    /**
-     * Ensures the new modules to add exist in the application.
-     */
-    public boolean existingPlannerModules(Code plannerCode) {
-        requireNonNull(plannerCode);
-        return versionedAddressBook.existingPlannerModules(plannerCode);
-    }
 
     /**
      * Ensures {@code selectedRequirementCategory} is a valid module in {@code selectedRequirementCategory}.

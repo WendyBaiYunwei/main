@@ -21,13 +21,13 @@ public class PlannerAddCommand extends Command {
 
     public static final String COMMAND_WORD = "planner_add";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds modules to degree planner. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds modules to the entire degree planner. "
             + "Parameters: "
             + PREFIX_CODE + "CODE "
             + PREFIX_YEAR + "YEAR "
             + PREFIX_SEMESTER + "SEMESTER";
 
-    public static final String MESSAGE_SUCCESS = "New modules added to degree planner: %1$s";
+    public static final String MESSAGE_SUCCESS = "The new module/modules added to degree planner: %1$s";
     public static final String MESSAGE_DUPLICATE_MODULE = "Some/one of the modules already exist in degree planner";
     public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "Some/one of the modules do"
             + " not exist in the application";
@@ -47,10 +47,11 @@ public class PlannerAddCommand extends Command {
 
         DegreePlanner currentDegreePlanner = model.getDegreePlanner(toAdd);
 
-        if (model.hasDegreePlannerModules(toAdd)) {
+        if (toAdd.getCodes().stream().anyMatch(code -> model.existingPlannerModules(code))) {
             throw new CommandException(MESSAGE_DUPLICATE_MODULE);
         }
-        if (toAdd.getCodes().stream().anyMatch(code -> !model.existingPlannerModules(code))) {
+
+        if (toAdd.getCodes().stream().anyMatch(code -> !model.existingApplicationModules(code))) {
             throw new CommandException(MESSAGE_MODULE_DOES_NOT_EXIST);
         }
 

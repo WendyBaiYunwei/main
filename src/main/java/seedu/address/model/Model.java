@@ -179,7 +179,15 @@ public interface Model {
      */
     boolean hasDegreePlanner(DegreePlanner degreePlanner);
 
-    boolean hasDegreePlannerModules(DegreePlanner plannerModules);
+    /**
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the entire degree planner.
+     */
+    boolean existingPlannerModules(Code plannerModules);
+
+    /**
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the application.
+     */
+    boolean existingApplicationModules(Code plannerModules);
 
     /**
      * Deletes the given degreePlanner.
@@ -281,6 +289,4 @@ public interface Model {
      * Sets the selected requirementCategory in the filtered requirementCategory list.
      */
     void setSelectedRequirementCategory(RequirementCategory requirementCategory);
-
-    boolean existingPlannerModules(Code plannerCode);
 }

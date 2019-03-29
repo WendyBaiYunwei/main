@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javafx.beans.InvalidationListener;
 import javafx.collections.ObservableList;
@@ -281,12 +284,27 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the degree planner.
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the application.
      */
-    public boolean existingPlannerModules(Code plannerCode) {
+    public boolean existingApplicationModules(Code plannerCode) {
         requireNonNull(plannerCode);
         return modules.asUnmodifiableObservableList().stream().anyMatch((module) ->
                 module.getCode().equals(plannerCode));
+    }
+
+    /**
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the entire degree planner.
+     */
+    public boolean existingPlannerModules(Code plannerCode) {
+        requireNonNull(plannerCode);
+        Set<Code> existingCodes = new HashSet<>();
+
+        Stream<DegreePlanner> stream = StreamSupport.stream(degreePlanners.spliterator(), false);
+        Set<DegreePlanner> streamSet = stream.collect(Collectors.toSet());;
+        for (DegreePlanner existingCode : streamSet) {
+            existingCodes.addAll(existingCode.getCodes());
+        }
+        return existingCodes.stream().anyMatch((existingCode) -> existingCode.equals(plannerCode));
     }
 
     /**
