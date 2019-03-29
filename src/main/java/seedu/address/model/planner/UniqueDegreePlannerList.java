@@ -5,12 +5,10 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import seedu.address.model.module.Code;
 import seedu.address.model.planner.exceptions.DegreePlannerNotFoundException;
 import seedu.address.model.planner.exceptions.DuplicateDegreePlannerException;
 
@@ -152,23 +150,4 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
         }
         return true;
     }
-    /**
-     * Returns true if any of the modules to add are contained inside the entire degree planner.
-     */
-    public boolean containsModules(DegreePlanner toCheck) {
-        Set<Code> modulesToCheck = toCheck.getCodes();
-
-        requireNonNull(toCheck);
-        for (int i = 0; i < internalList.size(); i++) {
-            for (Code currentCode : internalList.get(i).getCodes()) {
-                for (Code codeToAdd : modulesToCheck) {
-                    if (currentCode.equals(codeToAdd)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
 }
