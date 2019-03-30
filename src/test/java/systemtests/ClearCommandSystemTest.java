@@ -1,6 +1,7 @@
 package systemtests;
 
 import static seedu.address.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
+import static seedu.address.model.util.InitialDataUtil.getInitialAddressBook;
 import static seedu.address.testutil.TypicalModules.KEYWORD_MATCHING_MEIER;
 
 import org.junit.Test;
@@ -31,9 +32,10 @@ public class ClearCommandSystemTest extends AddressBookSystemTest {
         assertSelectedCardUnchanged();
 
         /* Case: redo clearing address book -> cleared */
+        Model expectedModel = new ModelManager(getInitialAddressBook());
         command = RedoCommand.COMMAND_WORD;
         expectedResultMessage = RedoCommand.MESSAGE_SUCCESS;
-        assertCommandSuccess(command, expectedResultMessage, new ModelManager());
+        assertCommandSuccess(command, expectedResultMessage, expectedModel);
         assertSelectedCardUnchanged();
 
         /* Case: selects first card in module list and clears address book -> cleared and no card selected */
@@ -65,7 +67,8 @@ public class ClearCommandSystemTest extends AddressBookSystemTest {
      * @see AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)
      */
     private void assertCommandSuccess(String command) {
-        assertCommandSuccess(command, ClearCommand.MESSAGE_SUCCESS, new ModelManager());
+        Model expectedModel = new ModelManager(getInitialAddressBook());
+        assertCommandSuccess(command, ClearCommand.MESSAGE_SUCCESS, expectedModel);
     }
 
     /**

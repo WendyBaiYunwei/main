@@ -137,6 +137,23 @@ public class StringUtilTest {
         assertTrue(StringUtil.containsWordIgnoreCase("AAA bBb ccc  bbb", "bbB"));
     }
 
+    @Test
+    public void compareEqualsIgnoreCase_validInputs_correctResult() {
+
+        // empty sentence
+
+        // exact match
+        assertTrue(StringUtil.compareEqualsIgnoreCase("xyz", "xyz"));
+
+        // different cases
+        assertTrue(StringUtil.compareEqualsIgnoreCase("XyZ", "xYz"));
+        assertTrue(StringUtil.compareEqualsIgnoreCase("XYZ", "xyz"));
+
+        // with trailing spaces
+        assertTrue(StringUtil.compareEqualsIgnoreCase("        xyz", "xyz          "));
+
+    }
+
     //---------------- Tests for getDetails --------------------------------------
 
     /*

@@ -1,8 +1,8 @@
 package seedu.address.logic.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_INDEX;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_MODULE;
 
@@ -178,5 +178,19 @@ public class ParserUtilTest {
         Set<Tag> expectedTagSet = new HashSet<Tag>(Arrays.asList(new Tag(VALID_TAG_1), new Tag(VALID_TAG_2)));
 
         assertEquals(expectedTagSet, actualTagSet);
+    }
+
+    @Test
+    public void parseKeyword() {
+        String keyword = "abc";
+        String actualWord = "abc xyz 123";
+        String sentence = "abc xyz";
+        assertTrue(ParserUtil.parseKeyword(keyword, actualWord));
+
+        String sentence_keyword = "abc xyz";
+        assertFalse(ParserUtil.parseKeyword(sentence_keyword, actualWord));
+
+        assertTrue(ParserUtil.parseKeyword(sentence_keyword, sentence));
+
     }
 }

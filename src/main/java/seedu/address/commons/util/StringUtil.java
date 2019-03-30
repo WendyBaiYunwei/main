@@ -39,6 +39,24 @@ public class StringUtil {
     }
 
     /**
+     * Compare one string with another while ignoring cases and leading/trailing spaces.
+     * @param stringA first string to compare
+     * @param stringB second string to compare with
+     * @return true if both strings are equal; false otherwise
+     */
+    public static boolean compareEqualsIgnoreCase(String stringA, String stringB) {
+        requireNonNull(stringA);
+        requireNonNull(stringB);
+
+        String preppedStringA = stringA.trim();
+        checkArgument(!preppedStringA.isEmpty(), "stringA parameter cannot be empty");
+        String preppedStringB = stringB.trim();
+        checkArgument(!preppedStringB.isEmpty(), "stringB parameter cannot be empty");
+
+        return preppedStringA.equalsIgnoreCase(preppedStringB);
+    }
+
+    /**
      * Returns a detailed message of the t, including the stack trace.
      */
     public static String getDetails(Throwable t) {

@@ -60,11 +60,12 @@ public class ModelManager implements Model {
         filteredRequirementCategory.addListener(this::ensureSelectedRequirementCategoryIsValid);
     }
 
-    /**
-     * ToDo: Add DegreePlannerList
-     */
     public ModelManager() {
         this(new AddressBook(), new UserPrefs());
+    }
+
+    public ModelManager(ReadOnlyAddressBook addressBook) {
+        this(addressBook, new UserPrefs());
     }
 
     //=========== UserPrefs ==================================================================================

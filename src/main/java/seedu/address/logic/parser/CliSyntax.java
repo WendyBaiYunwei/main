@@ -1,5 +1,7 @@
 package seedu.address.logic.parser;
 
+import java.util.List;
+
 /**
  * Contains Command Line Interface (CLI) syntax definitions common to multiple commands
  */
@@ -14,4 +16,15 @@ public class CliSyntax {
     public static final Prefix PREFIX_TAG = new Prefix("tag/");
     public static final Prefix PREFIX_COREQUISITE = new Prefix("coreq/");
 
+    public static final String OPERATOR_OR = "||";
+    public static final String OPERATOR_AND = "&&";
+    public static final String OPERATOR_LEFT_BRACKET = "(";
+    public static final String OPERATOR_RIGHT_BRACKET = ")";
+
+    public static final List<String> OPERATORS = List.of(
+            OPERATOR_AND,
+            OPERATOR_OR,
+            OPERATOR_LEFT_BRACKET,
+            OPERATOR_RIGHT_BRACKET
+    );
 }

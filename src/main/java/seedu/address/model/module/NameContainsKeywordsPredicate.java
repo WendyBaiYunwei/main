@@ -2,7 +2,7 @@ package seedu.address.model.module;
 
 import java.util.List;
 
-import seedu.address.commons.util.StringUtil;
+import seedu.address.logic.parser.ParserUtil;
 
 /**
  * Tests that a {@code Module}'s {@code Name} matches any of the keywords given.
@@ -16,8 +16,9 @@ public class NameContainsKeywordsPredicate implements KeywordsPredicate {
 
     @Override
     public boolean test(Module module) {
+        String moduleName = module.getName().toString();
         return keywords.stream()
-                .anyMatch(keyword -> StringUtil.containsWordIgnoreCase(module.getName().fullName, keyword));
+                .anyMatch(keyword -> ParserUtil.parseKeyword(keyword, moduleName));
     }
 
     @Override

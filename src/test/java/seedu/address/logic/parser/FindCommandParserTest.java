@@ -1,6 +1,10 @@
 package seedu.address.logic.parser;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.OPERATOR_AND;
+import static seedu.address.logic.parser.CliSyntax.OPERATOR_OR;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
@@ -12,26 +16,28 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import seedu.address.logic.commands.FindCommand;
+import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.module.Code;
 import seedu.address.model.module.CodeContainsKeywordsPredicate;
+import seedu.address.model.module.Credits;
 import seedu.address.model.module.CreditsContainsKeywordsPredicate;
+import seedu.address.model.module.Name;
 import seedu.address.model.module.NameContainsKeywordsPredicate;
 
 public class FindCommandParserTest {
 
+    private static final String WHITESPACE = " ";
     private FindCommandParser parser = new FindCommandParser();
 
     @Test
     public void parse_emptyArg_throwsParseException() {
         assertParseFailure(parser, "     ", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         // No name argument -> assertFailure
-        assertParseFailure(parser, PREFIX_NAME + "     ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, PREFIX_NAME + "     ", Name.MESSAGE_CONSTRAINTS);
         // No code argument -> assertFailure
-        assertParseFailure(parser, PREFIX_CODE + "     ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, PREFIX_CODE + "     ", Code.MESSAGE_CONSTRAINTS);
         // No credits argument -> assertFailure
-        assertParseFailure(parser, PREFIX_CREDITS + "     ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, PREFIX_CREDITS + "     ", Credits.MESSAGE_CONSTRAINTS);
     }
 
     @Test
@@ -39,41 +45,74 @@ public class FindCommandParserTest {
         // no leading and trailing whitespaces
         FindCommand expectedFindNameCommand =
                 new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList("Alice")));
-        FindCommand expectedFindMultipleNameCommand =
-                new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList("Alice", "Bob")));
         // single keyword
-        assertParseSuccess(parser, "find " + PREFIX_NAME + "Alice", expectedFindNameCommand);
-        // multiple keywords
-        assertParseSuccess(parser, "find " + PREFIX_NAME + "Alice Bob", expectedFindMultipleNameCommand);
-        // multiple whitespaces between keywords
-        assertParseSuccess(parser, "find " + PREFIX_NAME + "  Alice       Bob     ", expectedFindMultipleNameCommand);
+        assertParseSuccess(parser, PREFIX_NAME + "Alice", expectedFindNameCommand);
 
         FindCommand expectedFindCodeCommand =
                 new FindCommand(new CodeContainsKeywordsPredicate(Arrays.asList("CS1231")));
-        FindCommand expectedFindMultipleCodeCommand =
-                new FindCommand(new CodeContainsKeywordsPredicate(Arrays.asList("CS1231", "GET1004")));
         // single keyword
-        assertParseSuccess(parser, "find " + PREFIX_CODE + "CS1231", expectedFindCodeCommand);
-        // multiple keywords
-        assertParseSuccess(parser, "find " + PREFIX_CODE + "CS1231 GET1004", expectedFindMultipleCodeCommand);
-        // multiple whitespaces keywords
-        assertParseSuccess(parser, "find " + PREFIX_CODE + "          CS1231           GET1004          ",
-                expectedFindMultipleCodeCommand);
+        assertParseSuccess(parser, PREFIX_CODE + "CS1231", expectedFindCodeCommand);
 
-        /* TODO: Due to the regex `Credits` have now, the test case does not reflect an actual Module Credits
-         This will be update after proper regex is done. */
         FindCommand expectedFindCreditsCommand =
                 new FindCommand(new CreditsContainsKeywordsPredicate(Arrays.asList("999")));
-        FindCommand expectedFindMultipleCreditsCommand =
-                new FindCommand(new CreditsContainsKeywordsPredicate(Arrays.asList("999", "4", "12")));
         // single keyword
-        assertParseSuccess(parser, "find " + PREFIX_CREDITS + "999", expectedFindCreditsCommand);
-        // multiple keywords
-        assertParseSuccess(parser, "find " + PREFIX_CREDITS + "999 4 12",
-                expectedFindMultipleCreditsCommand);
-        // multiple whitespaces keywords
-        assertParseSuccess(parser, "find " + PREFIX_CREDITS + "        999           4        12",
-                expectedFindMultipleCreditsCommand);
+        assertParseSuccess(parser, PREFIX_CREDITS + "999", expectedFindCreditsCommand);
+    }
+
+    @Test
+    public void parse_validArgs() {
+        // test for boolean OR
+        // name/NAME || name/NAME
+        assertParserSuccess(parser, PREFIX_NAME + "Programming " + WHITESPACE + OPERATOR_OR + WHITESPACE
+                + PREFIX_NAME + "Discrete");
+        // code/CODE || code/CODE
+        assertParserSuccess(parser, PREFIX_CODE + "CS1231 " + WHITESPACE + OPERATOR_OR + WHITESPACE
+                + PREFIX_CODE + "CS2040C");
+        // credits/CREDITS || credits/CREDITS
+        assertParserSuccess(parser, PREFIX_CREDITS + "4 " + WHITESPACE + OPERATOR_OR + WHITESPACE
+                + PREFIX_CREDITS + "999");
+
+        // test for boolean AND
+        // name/NAME && name/NAME
+        assertParserSuccess(parser, PREFIX_NAME + "Programming " + WHITESPACE + OPERATOR_AND + WHITESPACE
+                + PREFIX_NAME + "Methodology");
+        // code/CODE && code/CODE
+        assertParserSuccess(parser, PREFIX_CODE + "CS1231 " + WHITESPACE + OPERATOR_AND + WHITESPACE
+                + PREFIX_CODE + "CS2040C");
+        // credits/CREDITS && credits/CREDITS
+        assertParserSuccess(parser, PREFIX_CREDITS + "4 " + WHITESPACE + OPERATOR_AND + WHITESPACE
+                + PREFIX_CREDITS + "999");
+
+    }
+
+    @Test
+    public void parseInvalidArgs() {
+        assertParseThrowsException(parser, "invalid/DoesNotExists");
+    }
+
+    /**
+     * Assert if a parse is successful. This does not check if {@code FindCommand} is the same
+     * Rather it check if a parser return a FindCommand.
+     */
+    private void assertParserSuccess(FindCommandParser parser, String input) {
+        try {
+            FindCommand command = parser.parse(input);
+            assertNotNull("Expecting not null", command);
+        } catch (ParseException e) {
+            fail("Expecting no parser error");
+        }
+    }
+
+    /**
+     * Assert if a parse return an exception.
+     */
+    private void assertParseThrowsException(FindCommandParser parser, String str) {
+        try {
+            parser.parse(str);
+            fail("Expected a parse error");
+        } catch (ParseException ignore) {
+            // we want the exception to be thrown.
+        }
     }
 
 }
