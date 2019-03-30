@@ -260,15 +260,6 @@ public class AddressBook implements ReadOnlyAddressBook {
     //// planner-level operations
 
     /**
-     * Returns true if a degree planner with the same identity as {@code degreePlanner} exists in the
-     * degree planner.
-     */
-    public boolean hasDegreePlanner(DegreePlanner degreePlanner) {
-        requireNonNull(degreePlanner);
-        return degreePlanners.contains(degreePlanner);
-    }
-
-    /**
      * Adds a degree planner to the degree planner list.
      * The degree planner must not already exist in the degree planner list.
      */

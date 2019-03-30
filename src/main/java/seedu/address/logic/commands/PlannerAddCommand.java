@@ -17,13 +17,13 @@ import seedu.address.model.planner.Semester;
 import seedu.address.model.planner.Year;
 
 /**
- * Adds modules to the degree planner.
+ * Adds one/multiple modules to the degree planner.
  */
 public class PlannerAddCommand extends Command {
 
     public static final String COMMAND_WORD = "planner_add";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds modules to the degree plan. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds one/multiple modules to the degree plan. "
             + "Parameters: "
             + PREFIX_CODE + "CODE "
             + PREFIX_YEAR + "YEAR "

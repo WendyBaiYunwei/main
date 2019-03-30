@@ -1,7 +1,6 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import javafx.beans.property.ReadOnlyProperty;
@@ -176,11 +175,6 @@ public interface Model {
     void setSelectedModule(Module module);
 
     ///// DegreePlanner Methods
-
-    /**
-     * Returns true if a degreePlanner with the same identity as {@code degreePlanner} exists in the address book.
-     */
-    boolean hasDegreePlanner(DegreePlanner degreePlanner);
 
     /**
      * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.

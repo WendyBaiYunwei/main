@@ -290,12 +290,6 @@ public class ModelManager implements Model {
     //=========== DegreePlannerList Methods =================================================================
 
     @Override
-    public boolean hasDegreePlanner(DegreePlanner planner) {
-        requireNonNull(planner);
-        return versionedAddressBook.hasDegreePlanner(planner);
-    }
-
-    @Override
     public boolean existingPlannerModules(Code plannerCode) {
         requireNonNull(plannerCode);
         return versionedAddressBook.existingPlannerModules(plannerCode);
@@ -393,7 +387,6 @@ public class ModelManager implements Model {
         }
         selectedRequirementCategory.setValue(requirementCategory);
     }
-
 
     /**
      * Ensures {@code selectedRequirementCategory} is a valid module in {@code selectedRequirementCategory}.
