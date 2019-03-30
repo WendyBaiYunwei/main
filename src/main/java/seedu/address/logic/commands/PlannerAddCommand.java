@@ -26,8 +26,15 @@ public class PlannerAddCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds one/multiple modules to the degree plan. "
             + "Parameters: "
             + PREFIX_CODE + "CODE "
+            + "[" + PREFIX_CODE + "CODE]... "
             + PREFIX_YEAR + "YEAR "
-            + PREFIX_SEMESTER + "SEMESTER";
+            + PREFIX_SEMESTER + "SEMESTER\n"
+            + "Example: " + COMMAND_WORD + " "
+            + PREFIX_CODE + "CS2040C "
+            + PREFIX_CODE + "CS2113T "
+            + PREFIX_CODE + "CS2100 "
+            + PREFIX_YEAR + "2 "
+            + PREFIX_SEMESTER + "2 ";
 
     public static final String MESSAGE_SUCCESS = "The new module/modules added to degree plan: %1$s";
     public static final String MESSAGE_DUPLICATE_MODULE = "Some/one of the modules already exist in degree plan";
