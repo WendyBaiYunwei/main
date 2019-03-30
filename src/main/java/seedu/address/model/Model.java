@@ -177,6 +177,12 @@ public interface Model {
     ///// DegreePlanner Methods
 
     /**
+     * Returns true if a degreePlanner with the same identity as {@code degreePlanner} exists in the address book.
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
+     */
+    boolean hasDegreePlanner(DegreePlanner degreePlanner);
+
+    /**
      * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
      */
     boolean existingPlannerModules(Code plannerModules);
