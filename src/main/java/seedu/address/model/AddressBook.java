@@ -311,7 +311,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Gets the degree planner based on year and semester.
+     * Returns a degree planner whose year and semester matches the input year and semester.
      */
     public DegreePlanner getDegreePlanner(Year year, Semester semester) {
         requireNonNull(year);
