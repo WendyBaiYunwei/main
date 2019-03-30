@@ -10,7 +10,8 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Year {
 
     public static final String MESSAGE_YEAR_CONSTRAINTS =
-            "Year should be greater than 0 and less than 5.";
+            "Year should only contain numbers between 1 and 4. "
+                    + "Year should not be blank";
 
     /*
      * The date should be valid and in the correct Year format.
