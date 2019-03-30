@@ -324,12 +324,6 @@ public class AddCommandTest {
         }
 
         @Override
-        public boolean existingModuleListModules(Code plannerModules) {
-            return false;
-            //ToDo: implement error check
-        }
-
-        @Override
         public ReadOnlyProperty<RequirementCategory> selectedRequirementCategoryProperty() {
             throw new AssertionError("This method should not be called.");
         }

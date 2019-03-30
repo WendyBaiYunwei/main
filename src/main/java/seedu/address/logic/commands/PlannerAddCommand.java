@@ -59,7 +59,7 @@ public class PlannerAddCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_MODULE);
         }
 
-        if (codesToAdd.stream().anyMatch(code -> !model.existingModuleListModules(code))) {
+        if (codesToAdd.stream().anyMatch(code -> !model.hasModuleCode(code))) {
             throw new CommandException(MESSAGE_MODULE_DOES_NOT_EXIST);
         }
 

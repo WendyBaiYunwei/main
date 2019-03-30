@@ -268,15 +268,6 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the module list.
-     */
-    public boolean existingModuleListModules(Code plannerCode) {
-        requireNonNull(plannerCode);
-        return modules.asUnmodifiableObservableList().stream().anyMatch((module) ->
-                module.getCode().equals(plannerCode));
-    }
-
-    /**
      * Returns true if a {@code Module} with the specified {@code Code} exists in the entire degree plan.
      */
     public boolean existingPlannerModules(Code plannerCode) {

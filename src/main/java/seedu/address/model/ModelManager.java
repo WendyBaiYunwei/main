@@ -295,12 +295,6 @@ public class ModelManager implements Model {
         return versionedAddressBook.existingPlannerModules(plannerCode);
     }
 
-    @Override
-    public boolean existingModuleListModules(Code plannerCode) {
-        requireNonNull(plannerCode);
-        return versionedAddressBook.existingModuleListModules(plannerCode);
-    }
-
     @Override public void deleteDegreePlanner(DegreePlanner target) {
         versionedAddressBook.removeDegreePlanner(target);
     }
