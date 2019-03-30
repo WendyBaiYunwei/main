@@ -240,6 +240,11 @@ public class AddCommandTest {
         }
 
         @Override
+        public boolean hasDegreePlanner(DegreePlanner degreePlanner) {
+            return false;
+        }
+
+        @Override
         public void deleteDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement AssertionError
         }

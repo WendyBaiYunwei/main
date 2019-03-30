@@ -294,6 +294,7 @@ public class ModelManager implements Model {
     public boolean hasDegreePlanner(DegreePlanner planner) {
         requireNonNull(planner);
         return versionedAddressBook.hasDegreePlanner(planner);
+    }
 
     @Override
     public boolean existingPlannerModules(Code plannerCode) {
