@@ -45,7 +45,7 @@ public class PlannerAddCommand extends Command {
     private Set<Code> codesToAdd;
 
     /**
-     * Creates a PlannerAddCommand to add the specified {@Code code Module} to the degree plan.
+     * Creates a PlannerAddCommand to add the specified {@Code code} to the degree plan.
      */
     public PlannerAddCommand(Year year, Semester semester, Set<Code> codes) {
         requireNonNull(year);

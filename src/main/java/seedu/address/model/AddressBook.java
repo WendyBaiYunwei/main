@@ -277,7 +277,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the entire degree plan.
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
      */
     public boolean existingPlannerModules(Code plannerCode) {
         requireNonNull(plannerCode);
@@ -311,7 +311,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Returns a degree planner whose year and semester matches the input year and semester.
+     * Returns a degree planner whose year and semester match the input year and semester.
      */
     public DegreePlanner getDegreePlanner(Year year, Semester semester) {
         requireNonNull(year);

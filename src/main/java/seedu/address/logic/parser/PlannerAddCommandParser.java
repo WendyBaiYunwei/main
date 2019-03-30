@@ -15,14 +15,14 @@ import seedu.address.model.planner.Semester;
 import seedu.address.model.planner.Year;
 
 /**
- * Parses input arguments and creates a new PlannerAddCommand object
+ * Parses input arguments and creates a new PlannerAddCommand object.
  */
 public class PlannerAddCommandParser implements Parser<PlannerAddCommand> {
 
     /**
      * Parses the given {@code String} of arguments in the context of the PlannerAddCommand
      * and returns an PlannerAddCommand object for execution.
-     * @throws ParseException if the user input does not conform the expected format
+     * @throws ParseException if the user input does not conform the expected format.
      */
     public PlannerAddCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =

@@ -199,7 +199,7 @@ public interface Model {
     void addDegreePlanner(DegreePlanner degreePlanner);
 
     /**
-     * Returns a degree planner whose {@code year} and {@code semester} matches the input {@code year}
+     * Returns a degree planner whose {@code year} and {@code semester} match the input {@code year}
      * and {@code semester}.
      */
     DegreePlanner getDegreePlanner(Year year, Semester semester);
