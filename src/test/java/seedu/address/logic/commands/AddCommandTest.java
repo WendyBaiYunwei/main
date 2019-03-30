@@ -27,6 +27,8 @@ import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
 import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.Semester;
+import seedu.address.model.planner.Year;
 import seedu.address.model.requirement.RequirementCategory;
 import seedu.address.testutil.ModuleBuilder;
 
@@ -238,11 +240,6 @@ public class AddCommandTest {
         }
 
         @Override
-        public boolean hasDegreePlanner(DegreePlanner degreePlanner) {
-            return false;
-        }
-
-        @Override
         public void deleteDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement AssertionError
         }
@@ -253,7 +250,8 @@ public class AddCommandTest {
         }
 
         @Override
-        public DegreePlanner getDegreePlanner(DegreePlanner plannerModules) {
+        public DegreePlanner getDegreePlanner(Year year, Semester semester) {
+            //ToDo: implement error check
             return null;
         }
 
@@ -326,7 +324,7 @@ public class AddCommandTest {
         }
 
         @Override
-        public boolean existingApplicationModules(Code plannerModules) {
+        public boolean existingModuleListModules(Code plannerModules) {
             return false;
             //ToDo: implement error check
         }
