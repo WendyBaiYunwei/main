@@ -200,7 +200,7 @@ public interface Model {
 
     /**
      * Returns a degree planner with the same {@code year} and {@code semester} as those of the input degree
-     * planner modules.
+     * planner module/modules.
      */
     DegreePlanner getDegreePlanner(Year year, Semester semester);
 
@@ -286,4 +286,5 @@ public interface Model {
      * Sets the selected requirementCategory in the filtered requirementCategory list.
      */
     void setSelectedRequirementCategory(RequirementCategory requirementCategory);
+
 }
