@@ -20,6 +20,8 @@ import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
 import seedu.address.model.module.exceptions.ModuleNotFoundException;
 import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.Semester;
+import seedu.address.model.planner.Year;
 import seedu.address.model.requirement.RequirementCategory;
 
 /**
@@ -300,9 +302,9 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public boolean existingApplicationModules(Code plannerCode) {
+    public boolean existingModuleListModules(Code plannerCode) {
         requireNonNull(plannerCode);
-        return versionedAddressBook.existingApplicationModules(plannerCode);
+        return versionedAddressBook.existingModuleListModules(plannerCode);
     }
 
     @Override public void deleteDegreePlanner(DegreePlanner target) {
@@ -314,8 +316,8 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public DegreePlanner getDegreePlanner(DegreePlanner plannerModules) {
-        return versionedAddressBook.getDegreePlanner(plannerModules);
+    public DegreePlanner getDegreePlanner(Year year, Semester semester) {
+        return versionedAddressBook.getDegreePlanner(year, semester);
     }
 
     @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {

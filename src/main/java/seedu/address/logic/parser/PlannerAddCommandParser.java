@@ -38,9 +38,7 @@ public class PlannerAddCommandParser implements Parser<PlannerAddCommand> {
         Year year = ParserUtil.parseYear(argMultimap.getValue(PREFIX_YEAR).get());
         Semester semester = ParserUtil.parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
 
-        DegreePlanner plannerModules = new DegreePlanner(year, semester, codes);
-
-        return new PlannerAddCommand(plannerModules);
+        return new PlannerAddCommand(year, semester, codes);
     }
 
     /**

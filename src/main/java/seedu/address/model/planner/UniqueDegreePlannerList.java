@@ -51,19 +51,6 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
     }
 
     /**
-     * Returns a DegreePlanner object of the input year and semester in the internalList.
-     */
-    public DegreePlanner getDegreePlanner(DegreePlanner toCheck) {
-        requireNonNull(toCheck);
-
-        return internalList.stream()
-                .filter(degreePlanner -> (degreePlanner.getYear().equals(toCheck.getYear())
-                        && degreePlanner.getSemester().equals(toCheck.getSemester())))
-                .findFirst()
-                .orElse(null);
-    }
-
-    /**
      * Replaces the degreePlanner {@code target} in the list with {@code editedDegreePlanner}.
      * {@code target} must exist in the list.
      * The planner module identity of {@code editedDegreePlanner} must not be the same as another existing degreePlanner

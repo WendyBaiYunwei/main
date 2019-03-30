@@ -18,7 +18,9 @@ import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
 import seedu.address.model.module.UniqueModuleList;
 import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.Semester;
 import seedu.address.model.planner.UniqueDegreePlannerList;
+import seedu.address.model.planner.Year;
 import seedu.address.model.requirement.RequirementCategory;
 import seedu.address.model.requirement.UniqueRequirementCategoryList;
 
@@ -275,23 +277,23 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the application.
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the module list.
      */
-    public boolean existingApplicationModules(Code plannerCode) {
+    public boolean existingModuleListModules(Code plannerCode) {
         requireNonNull(plannerCode);
         return modules.asUnmodifiableObservableList().stream().anyMatch((module) ->
                 module.getCode().equals(plannerCode));
     }
 
     /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the entire degree planner.
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the entire degree plan.
      */
     public boolean existingPlannerModules(Code plannerCode) {
         requireNonNull(plannerCode);
         Set<Code> existingCodes = new HashSet<>();
 
         Stream<DegreePlanner> stream = StreamSupport.stream(degreePlanners.spliterator(), false);
-        Set<DegreePlanner> streamSet = stream.collect(Collectors.toSet());;
+        Set<DegreePlanner> streamSet = stream.collect(Collectors.toSet());
         for (DegreePlanner existingCode : streamSet) {
             existingCodes.addAll(existingCode.getCodes());
         }
@@ -320,9 +322,15 @@ public class AddressBook implements ReadOnlyAddressBook {
     /**
      * Gets the degree planner based on year and semester.
      */
-    public DegreePlanner getDegreePlanner(DegreePlanner degreePlanner) {
-        requireNonNull(degreePlanner);
-        return degreePlanners.getDegreePlanner(degreePlanner);
+    public DegreePlanner getDegreePlanner(Year year, Semester semester) {
+        requireNonNull(year);
+        requireNonNull(semester);
+
+        return degreePlanners.asUnmodifiableObservableList().stream()
+                .filter(degreePlanner -> (degreePlanner.getYear().equals(year)
+                        && degreePlanner.getSemester().equals(semester)))
+                .findFirst()
+                .orElse(null);
     }
 
     //// requirement-level operations

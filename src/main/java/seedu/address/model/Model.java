@@ -1,6 +1,7 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import javafx.beans.property.ReadOnlyProperty;
@@ -10,6 +11,8 @@ import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
 import seedu.address.model.planner.DegreePlanner;
+import seedu.address.model.planner.Semester;
+import seedu.address.model.planner.Year;
 import seedu.address.model.requirement.RequirementCategory;
 
 /**
@@ -180,14 +183,14 @@ public interface Model {
     boolean hasDegreePlanner(DegreePlanner degreePlanner);
 
     /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the entire degree planner.
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
      */
     boolean existingPlannerModules(Code plannerModules);
 
     /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the application.
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the module list.
      */
-    boolean existingApplicationModules(Code plannerModules);
+    boolean existingModuleListModules(Code plannerModules);
 
     /**
      * Deletes the given degreePlanner.
@@ -205,7 +208,7 @@ public interface Model {
      * Returns a degree planner with the same {@code year} and {@code semester} as those of the input degree
      * planner modules.
      */
-    DegreePlanner getDegreePlanner(DegreePlanner plannerModules);
+    DegreePlanner getDegreePlanner(Year year, Semester semester);
 
     /**
      * Replaces the given degreePlanner {@code target} with {@code editedDegreePlanner}.
