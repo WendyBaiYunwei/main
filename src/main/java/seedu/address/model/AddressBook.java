@@ -6,9 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import javafx.beans.InvalidationListener;
 import javafx.collections.ObservableList;
@@ -18,9 +15,7 @@ import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
 import seedu.address.model.module.UniqueModuleList;
 import seedu.address.model.planner.DegreePlanner;
-import seedu.address.model.planner.Semester;
 import seedu.address.model.planner.UniqueDegreePlannerList;
-import seedu.address.model.planner.Year;
 import seedu.address.model.requirement.RequirementCategory;
 import seedu.address.model.requirement.UniqueRequirementCategoryList;
 

@@ -27,8 +27,6 @@ import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
 import seedu.address.model.planner.DegreePlanner;
-import seedu.address.model.planner.Semester;
-import seedu.address.model.planner.Year;
 import seedu.address.model.requirement.RequirementCategory;
 import seedu.address.testutil.ModuleBuilder;
 
@@ -130,6 +128,12 @@ public class AddCommandTest {
 
         @Override
         public Path getDegreePlannerListFilePath() {
+            //ToDo: implement error check
+            return null;
+        }
+
+        @Override
+        public ObservableList<DegreePlanner> getDegreePlannerList() {
             //ToDo: implement error check
             return null;
         }
@@ -255,12 +259,6 @@ public class AddCommandTest {
         }
 
         @Override
-        public DegreePlanner getDegreePlanner(Year year, Semester semester) {
-            //ToDo: implement error check
-            return null;
-        }
-
-        @Override
         public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
             //ToDo: implement error check
         }
@@ -323,9 +321,9 @@ public class AddCommandTest {
         }
 
         @Override
-        public boolean existingPlannerModules(Code plannerCode) {
-            return false;
+        public boolean hasPlannerModule(Code plannerCode) {
             //ToDo: implement error check
+            return false;
         }
 
         @Override

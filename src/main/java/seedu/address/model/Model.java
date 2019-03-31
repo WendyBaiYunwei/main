@@ -10,8 +10,6 @@ import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
 import seedu.address.model.planner.DegreePlanner;
-import seedu.address.model.planner.Semester;
-import seedu.address.model.planner.Year;
 import seedu.address.model.requirement.RequirementCategory;
 
 /**
@@ -188,7 +186,7 @@ public interface Model {
     /**
      * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
      */
-    boolean hasPlannerModule(Code plannerModules);
+    boolean hasPlannerModule(Code plannerModule);
 
     /**
      * Deletes the given degreePlanner.
