@@ -1,9 +1,9 @@
 package seedu.address.logic.commands;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
-import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalDegreePlanners.getTypicalDegreePlannerList;
 import static seedu.address.testutil.TypicalModules.getTypicalModuleList;
 import static seedu.address.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
@@ -22,9 +22,10 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.module.Code;
-import seedu.address.model.module.Name;
+import seedu.address.model.planner.DegreePlanner;
 import seedu.address.model.planner.Semester;
 import seedu.address.model.planner.Year;
+import seedu.address.model.util.SampleDataUtil;
 import seedu.address.storage.JsonSerializableAddressBook;
 
 public class PlannerAddCommandTest {
@@ -34,6 +35,8 @@ public class PlannerAddCommandTest {
     private CommandHistory commandHistory = new CommandHistory();
     private Model model;
     private Set<Code> codeList = new HashSet<>();
+    private Year year = new Year("1");
+    private Semester semester = new Semester("1");
 
     @Before public void setUp() throws IllegalValueException {
         model = new ModelManager(
@@ -42,36 +45,45 @@ public class PlannerAddCommandTest {
                         .toModelType(), new UserPrefs());
     }
 
-    public PlannerAddCommandTest() throws IllegalValueException {}
-
     @Test public void constructor_nullParameters_throwsNullPointerException() {
         thrown.expect(NullPointerException.class);
         new PlannerAddCommand(null, null, null);
     }
 
-    @Test public void execute_nonExistentCode_throwsCommandException() {
+    @Test
+    public void execute_plannerCodesAcceptedByModel_addSuccessful() throws Exception {
+        codeList.clear();
+        codeList.addAll(SampleDataUtil.getCodeSet());
+        CommandResult commandResult = new PlannerAddCommand(year, semester, codeList).execute(model, commandHistory);
+        DegreePlanner currentDegreePlanner = model.getDegreePlannerList().stream()
+                .filter(degreePlanner -> (degreePlanner.getYear().equals(year)
+                        && degreePlanner.getSemester().equals(semester)))
+                .findFirst()
+                .orElse(null);
+        assertEquals(String.format(PlannerAddCommand.MESSAGE_SUCCESS, codeList), commandResult.getFeedbackToUser());
+        assertEquals(codeList, currentDegreePlanner.getCodes());
+        assertEquals(commandHistory, commandHistory);
+    }
+
+    @Test public void execute_nonExistentModuleListCode_throwsCommandException() {
         codeList.clear();
         codeList.add(new Code("CS2010"));
-        Name requirementCategoryName = new Name("Computing Foundation");
-        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, codeList), model, commandHistory,
-                RequirementAddCommand.MESSAGE_NONEXISTENT_CODE);
+        assertCommandFailure(new PlannerAddCommand(year, semester, codeList), model, commandHistory,
+                PlannerAddCommand.MESSAGE_MODULE_DOES_NOT_EXIST);
     }
 
     @Test public void execute_duplicatePlannerCode_throwsCommandException() {
         codeList.clear();
-        codeList.add(new Code("CS2100"));
-        Year year = new Year("1");
-        Semester semester = new Semester("2");
+        Code code = new Code("CS1010");
+        codeList.add(code);
+        codeList.add(code);
         assertCommandFailure(new PlannerAddCommand(year, semester, codeList), model, commandHistory,
-                String.format(PlannerAddCommand.MESSAGE_DUPLICATE_MODULE,
-                        year, semester, codeList));
+                PlannerAddCommand.MESSAGE_DUPLICATE_MODULE);
     }
 
     @Test
     public void equals() {
         Set<Code> codeListCopy = new HashSet<>();
-        Year year = new Year("1");
-        Semester semester = new Semester("2");
         Code code = new Code("CS2040C");
         Code codeCopy = new Code("CS2107");
         codeList.clear();
@@ -85,7 +97,7 @@ public class PlannerAddCommandTest {
         assertTrue(plannerAddACommand.equals(plannerAddACommand));
 
         // same values -> returns true
-        PlannerAddCommand plannerAddACommandCopy = new PlannerAddCommand(alice);
+        PlannerAddCommand plannerAddACommandCopy = new PlannerAddCommand(year, semester, codeList);
         assertTrue(plannerAddACommand.equals(plannerAddACommandCopy));
 
         // different types -> returns false
@@ -97,5 +109,4 @@ public class PlannerAddCommandTest {
         // different module -> returns false
         assertFalse(plannerAddACommand.equals(plannerAddBCommand));
     }
-
 }
