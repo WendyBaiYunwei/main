@@ -40,10 +40,9 @@ public class PlannerAddCommand extends Command {
     public static final String MESSAGE_DUPLICATE_MODULE = "Some/one of the modules already exist in degree plan";
     public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "Some/one of the modules do"
             + " not exist in the module list";
-    private Year yearToAdd;
-    private Semester semToAdd;
+    private Year yearToAddTo;
+    private Semester semesterToAddTo;
     private Set<Code> codesToAdd;
-
     /**
      * Creates a PlannerAddCommand to add the specified {@Code code} to the degree plan.
      */
@@ -51,8 +50,8 @@ public class PlannerAddCommand extends Command {
         requireNonNull(year);
         requireNonNull(semester);
         requireNonNull(codes);
-        yearToAdd = year;
-        semToAdd = semester;
+        yearToAddTo = year;
+        semesterToAddTo = semester;
         codesToAdd = codes;
     }
 
@@ -60,9 +59,13 @@ public class PlannerAddCommand extends Command {
     public CommandResult execute(Model model, CommandHistory history) throws CommandException {
         requireNonNull(model);
 
-        DegreePlanner currentDegreePlanner = model.getDegreePlanner(yearToAdd, semToAdd);
+        DegreePlanner currentDegreePlanner = model.getDegreePlannerList().stream()
+                .filter(degreePlanner -> (degreePlanner.getYear().equals(yearToAddTo)
+                        && degreePlanner.getSemester().equals(semesterToAddTo)))
+                .findFirst()
+                .orElse(null);
 
-        if (codesToAdd.stream().anyMatch(code -> model.hasPlannerModules(code))) {
+        if (codesToAdd.stream().anyMatch(code -> model.hasPlannerModule(code))) {
             throw new CommandException(MESSAGE_DUPLICATE_MODULE);
         }
 
@@ -73,8 +76,7 @@ public class PlannerAddCommand extends Command {
         Set<Code> newCodeSet = new HashSet<>(currentDegreePlanner.getCodes());
         newCodeSet.addAll(codesToAdd);
 
-        DegreePlanner editedDegreePlanner = new DegreePlanner(
-                currentDegreePlanner.getYear(), currentDegreePlanner.getSemester(), newCodeSet);
+        DegreePlanner editedDegreePlanner = new DegreePlanner(yearToAddTo, semesterToAddTo, newCodeSet);
         model.setDegreePlanner(currentDegreePlanner, editedDegreePlanner);
         model.commitAddressBook();
         return new CommandResult(String.format(MESSAGE_SUCCESS, codesToAdd));
@@ -84,8 +86,8 @@ public class PlannerAddCommand extends Command {
     public boolean equals(Object other) {
         return other == this // short circuit if same object
                 || (other instanceof PlannerAddCommand // instanceof handles nulls
-                && yearToAdd.equals(((PlannerAddCommand) other).yearToAdd)
-                && semToAdd.equals(((PlannerAddCommand) other).semToAdd)
+                && yearToAddTo.equals(((PlannerAddCommand) other).yearToAddTo)
+                && semesterToAddTo.equals(((PlannerAddCommand) other).semesterToAddTo)
                 && codesToAdd.equals(((PlannerAddCommand) other).codesToAdd));
     }
 }

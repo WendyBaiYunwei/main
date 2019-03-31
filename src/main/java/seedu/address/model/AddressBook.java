@@ -279,7 +279,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     /**
      * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
      */
-    public boolean hasPlannerModules(Code plannerCode) {
+    public boolean hasPlannerModule(Code plannerCode) {
         requireNonNull(plannerCode);
         Set<Code> existingCodes = new HashSet<>();
 
@@ -308,20 +308,6 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void removeDegreePlanner(DegreePlanner key) {
         degreePlanners.remove(key);
-    }
-
-    /**
-     * Returns a degree planner whose year and semester match the input year and semester.
-     */
-    public DegreePlanner getDegreePlanner(Year year, Semester semester) {
-        requireNonNull(year);
-        requireNonNull(semester);
-
-        return degreePlanners.asUnmodifiableObservableList().stream()
-                .filter(degreePlanner -> (degreePlanner.getYear().equals(year)
-                        && degreePlanner.getSemester().equals(semester)))
-                .findFirst()
-                .orElse(null);
     }
 
     //// requirement-level operations

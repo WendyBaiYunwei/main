@@ -297,9 +297,9 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public boolean hasPlannerModules(Code plannerCode) {
+    public boolean hasPlannerModule(Code plannerCode) {
         requireNonNull(plannerCode);
-        return versionedAddressBook.hasPlannerModules(plannerCode);
+        return versionedAddressBook.hasPlannerModule(plannerCode);
     }
 
     @Override public void deleteDegreePlanner(DegreePlanner target) {
@@ -311,8 +311,8 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public DegreePlanner getDegreePlanner(Year year, Semester semester) {
-        return versionedAddressBook.getDegreePlanner(year, semester);
+    public ObservableList<DegreePlanner> getDegreePlannerList() {
+        return versionedAddressBook.getDegreePlannerList();
     }
 
     @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {

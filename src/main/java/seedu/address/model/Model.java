@@ -63,6 +63,10 @@ public interface Model {
     Path getDegreePlannerListFilePath();
 
     /**
+     * Returns the degree planner list.
+     */
+    ObservableList<DegreePlanner> getDegreePlannerList();
+    /**
      * Sets the user prefs' degreePlanner list file path.
      */
     void setDegreePlannerListFilePath(Path degreePlannerListFilePath);
@@ -184,7 +188,7 @@ public interface Model {
     /**
      * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
      */
-    boolean hasPlannerModules(Code plannerModules);
+    boolean hasPlannerModule(Code plannerModules);
 
     /**
      * Deletes the given degreePlanner.
@@ -197,12 +201,6 @@ public interface Model {
      * {@code degreePlanner} must not already exist in the address book.
      */
     void addDegreePlanner(DegreePlanner degreePlanner);
-
-    /**
-     * Returns a degree planner whose {@code year} and {@code semester} match the input {@code year}
-     * and {@code semester}.
-     */
-    DegreePlanner getDegreePlanner(Year year, Semester semester);
 
     /**
      * Replaces the given degreePlanner {@code target} with {@code editedDegreePlanner}.
