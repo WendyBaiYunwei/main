@@ -281,14 +281,8 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public boolean hasPlannerModule(Code plannerCode) {
         requireNonNull(plannerCode);
-        Set<Code> existingCodes = new HashSet<>();
-
-        Stream<DegreePlanner> stream = StreamSupport.stream(degreePlanners.spliterator(), false);
-        Set<DegreePlanner> streamSet = stream.collect(Collectors.toSet());
-        for (DegreePlanner existingCode : streamSet) {
-            existingCodes.addAll(existingCode.getCodes());
-        }
-        return existingCodes.stream().anyMatch((existingCode) -> existingCode.equals(plannerCode));
+        return getDegreePlannerList().stream().map(DegreePlanner::getCodes)
+                .anyMatch(codes -> codes.contains(plannerCode));
     }
 
     /**
