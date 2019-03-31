@@ -10,8 +10,6 @@ import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
 import seedu.address.model.planner.DegreePlanner;
-import seedu.address.model.planner.Semester;
-import seedu.address.model.planner.Year;
 import seedu.address.model.requirement.RequirementCategory;
 
 /**
@@ -62,6 +60,10 @@ public interface Model {
      */
     Path getDegreePlannerListFilePath();
 
+    /**
+     * Returns the degree planner list.
+     */
+    ObservableList<DegreePlanner> getDegreePlannerList();
     /**
      * Sets the user prefs' degreePlanner list file path.
      */
@@ -178,14 +180,13 @@ public interface Model {
 
     /**
      * Returns true if a degreePlanner with the same identity as {@code degreePlanner} exists in the address book.
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
      */
     boolean hasDegreePlanner(DegreePlanner degreePlanner);
 
     /**
      * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
      */
-    boolean existingPlannerModules(Code plannerModules);
+    boolean hasPlannerModule(Code plannerModule);
 
     /**
      * Deletes the given degreePlanner.
@@ -198,12 +199,6 @@ public interface Model {
      * {@code degreePlanner} must not already exist in the address book.
      */
     void addDegreePlanner(DegreePlanner degreePlanner);
-
-    /**
-     * Returns a degree planner with the same {@code year} and {@code semester} as those of the input degree
-     * planner module/modules.
-     */
-    DegreePlanner getDegreePlanner(Year year, Semester semester);
 
     /**
      * Replaces the given degreePlanner {@code target} with {@code editedDegreePlanner}.

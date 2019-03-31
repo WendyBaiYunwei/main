@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalDegreePlanners.getTypicalDegreePlannerList;
 import static seedu.address.testutil.TypicalModules.getTypicalModuleList;
 import static seedu.address.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
@@ -40,6 +41,8 @@ public class PlannerAddCommandTest {
                         getTypicalRequirementCategoriesList())
                         .toModelType(), new UserPrefs());
     }
+
+    public PlannerAddCommandTest() throws IllegalValueException {}
 
     @Test public void constructor_nullParameters_throwsNullPointerException() {
         thrown.expect(NullPointerException.class);

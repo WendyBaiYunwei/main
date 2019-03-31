@@ -27,8 +27,6 @@ import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 import seedu.address.model.module.Name;
 import seedu.address.model.planner.DegreePlanner;
-import seedu.address.model.planner.Semester;
-import seedu.address.model.planner.Year;
 import seedu.address.model.requirement.RequirementCategory;
 import seedu.address.testutil.ModuleBuilder;
 
@@ -257,12 +255,6 @@ public class AddCommandTest {
         @Override
         public void addDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement error check
-        }
-
-        @Override
-        public DegreePlanner getDegreePlanner(Year year, Semester semester) {
-            //ToDo: implement error check
-            return null;
         }
 
         @Override
