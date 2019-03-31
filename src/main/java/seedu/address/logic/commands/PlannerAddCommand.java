@@ -62,7 +62,7 @@ public class PlannerAddCommand extends Command {
 
         DegreePlanner currentDegreePlanner = model.getDegreePlanner(yearToAdd, semToAdd);
 
-        if (codesToAdd.stream().anyMatch(code -> model.existingPlannerModules(code))) {
+        if (codesToAdd.stream().anyMatch(code -> model.hasPlannerModules(code))) {
             throw new CommandException(MESSAGE_DUPLICATE_MODULE);
         }
 

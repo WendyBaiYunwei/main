@@ -297,9 +297,9 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public boolean existingPlannerModules(Code plannerCode) {
+    public boolean hasPlannerModules(Code plannerCode) {
         requireNonNull(plannerCode);
-        return versionedAddressBook.existingPlannerModules(plannerCode);
+        return versionedAddressBook.hasPlannerModules(plannerCode);
     }
 
     @Override public void deleteDegreePlanner(DegreePlanner target) {

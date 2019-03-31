@@ -184,7 +184,7 @@ public interface Model {
     /**
      * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
      */
-    boolean existingPlannerModules(Code plannerModules);
+    boolean hasPlannerModules(Code plannerModules);
 
     /**
      * Deletes the given degreePlanner.

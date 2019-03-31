@@ -279,7 +279,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     /**
      * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
      */
-    public boolean existingPlannerModules(Code plannerCode) {
+    public boolean hasPlannerModules(Code plannerCode) {
         requireNonNull(plannerCode);
         Set<Code> existingCodes = new HashSet<>();
 
