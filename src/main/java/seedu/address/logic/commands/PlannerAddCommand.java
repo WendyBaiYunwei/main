@@ -17,34 +17,34 @@ import seedu.address.model.planner.Semester;
 import seedu.address.model.planner.Year;
 
 /**
- * Adds one/multiple modules to the degree plan.
+ * Adds module(s) to the degree plan.
  */
 public class PlannerAddCommand extends Command {
 
     public static final String COMMAND_WORD = "planner_add";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds one/multiple modules to the degree plan. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds module(s) to the degree plan. "
             + "Parameters: "
-            + PREFIX_CODE + "CODE "
-            + "[" + PREFIX_CODE + "CODE]... "
             + PREFIX_YEAR + "YEAR "
-            + PREFIX_SEMESTER + "SEMESTER\n"
+            + PREFIX_SEMESTER + "SEMESTER "
+            + PREFIX_CODE + "CODE "
+            + "[" + PREFIX_CODE + "CODE]...\n"
             + "Example: " + COMMAND_WORD + " "
+            + PREFIX_YEAR + "2 "
+            + PREFIX_SEMESTER + "2 "
             + PREFIX_CODE + "CS2040C "
             + PREFIX_CODE + "CS2113T "
-            + PREFIX_CODE + "CS2100 "
-            + PREFIX_YEAR + "2 "
-            + PREFIX_SEMESTER + "2 ";
+            + PREFIX_CODE + "CS2100";
 
-    public static final String MESSAGE_SUCCESS = "The new module/modules added to degree plan: %1$s";
-    public static final String MESSAGE_DUPLICATE_MODULE = "Some/one of the modules already exist in degree plan";
-    public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "Some/one of the modules do"
+    public static final String MESSAGE_SUCCESS = "The new module(s) added to degree plan: %1$s";
+    public static final String MESSAGE_DUPLICATE_MODULE = "Some/one of the module(s) already exist in degree plan";
+    public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "Some/one of the module(s) do"
             + " not exist in the module list";
     private Year yearToAddTo;
     private Semester semesterToAddTo;
     private Set<Code> codesToAdd;
     /**
-     * Creates a PlannerAddCommand to add the specified {@Code code} to the degree plan.
+     * Creates a PlannerAddCommand to add the specified {@Code code(s)} to the degree plan.
      */
     public PlannerAddCommand(Year year, Semester semester, Set<Code> codes) {
         requireNonNull(year);
