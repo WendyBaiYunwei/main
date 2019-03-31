@@ -135,6 +135,11 @@ public class AddCommandTest {
         }
 
         @Override
+        public ObservableList<DegreePlanner> getDegreePlannerList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void setDegreePlannerListFilePath(Path degreePlannerListFilePath) {
             //ToDo: implement error check
         }
@@ -323,9 +328,8 @@ public class AddCommandTest {
         }
 
         @Override
-        public boolean existingPlannerModules(Code plannerCode) {
-            return false;
-            //ToDo: implement error check
+        public boolean hasPlannerModule(Code plannerCode) {
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
