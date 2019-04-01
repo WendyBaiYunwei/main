@@ -133,12 +133,6 @@ public class AddCommandTest {
         }
 
         @Override
-        public ObservableList<DegreePlanner> getDegreePlannerList() {
-            //ToDo: implement error check
-            return null;
-        }
-
-        @Override
         public void setDegreePlannerListFilePath(Path degreePlannerListFilePath) {
             //ToDo: implement error check
         }
@@ -328,12 +322,6 @@ public class AddCommandTest {
         @Override
         public void setSelectedRequirementCategory(RequirementCategory requirementCategory) {
             throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public boolean hasPlannerModule(Code plannerCode) {
-            //ToDo: implement error check
-            return false;
         }
 
         @Override

@@ -67,8 +67,9 @@ public class PlannerAddCommand extends Command {
                 .findFirst()
                 .orElse(null);
 
-        Set<Code> existingPlannerCodes = codesToAdd.stream().filter(code -> model.hasPlannerCode(code))
-                .collect(Collectors.toSet());
+        Set<Code> existingPlannerCodes = codesToAdd.stream().filter(code -> model.getAddressBook()
+                .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
+                .anyMatch(codes -> codes.contains(code))).collect(Collectors.toSet());
 
         Set<Code> absentModuleCodes = codesToAdd.stream().filter(code -> !model.hasModuleCode(code))
                 .collect(Collectors.toSet());

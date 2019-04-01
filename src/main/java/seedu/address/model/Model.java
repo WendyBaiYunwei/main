@@ -185,11 +185,6 @@ public interface Model {
     boolean hasDegreePlanner(DegreePlanner degreePlanner);
 
     /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
-     */
-    boolean hasPlannerCode(Code plannerCode);
-
-    /**
      * Return the degree planner which contains the given {@code code}, otherwise returns null.
      */
     DegreePlanner getDegreePlannerByCode(Code code);

@@ -300,12 +300,6 @@ public class ModelManager implements Model {
         return versionedAddressBook.hasDegreePlanner(planner);
     }
 
-    @Override
-    public boolean hasPlannerCode(Code plannerCode) {
-        requireNonNull(plannerCode);
-        return versionedAddressBook.hasPlannerCode(plannerCode);
-    }
-
     @Override public void deleteDegreePlanner(DegreePlanner target) {
         versionedAddressBook.removeDegreePlanner(target);
     }
