@@ -46,7 +46,7 @@ public class PlannerAddCommand extends Command {
     private Set<Code> codesToAdd;
 
     /**
-     * Creates a PlannerAddCommand to add the specified {@Code code(s)} to the degree plan.
+     * Creates a PlannerAddCommand to add the specified {@code code(s)} to the degree plan.
      */
     public PlannerAddCommand(Year year, Semester semester, Set<Code> codes) {
         requireNonNull(year);
@@ -69,18 +69,16 @@ public class PlannerAddCommand extends Command {
         Set<Code> existingPlannerCodes = codesToAdd.stream().filter(code -> model.getAddressBook()
                 .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                 .anyMatch(codes -> codes.contains(code))).collect(Collectors.toSet());
-
-        Set<Code> absentModuleCodes = codesToAdd.stream().filter(code -> !model.hasModuleCode(code))
-                .collect(Collectors.toSet());
-
         if (existingPlannerCodes.size() > 0) {
             throw new CommandException(String.format(MESSAGE_DUPLICATE_CODE, existingPlannerCodes));
         }
-        if (absentModuleCodes.size() > 0) {
-            throw new CommandException(String.format(MESSAGE_MODULE_DOES_NOT_EXIST, absentModuleCodes));
+        Set<Code> nonExistentModuleCodes = codesToAdd.stream().filter(code -> !model.hasModuleCode(code))
+                .collect(Collectors.toSet());
+        if (nonExistentModuleCodes.size() > 0) {
+            throw new CommandException(String.format(MESSAGE_MODULE_DOES_NOT_EXIST, nonExistentModuleCodes));
         }
-
         Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
+
         newCodeSet.addAll(codesToAdd);
 
         DegreePlanner editedDegreePlanner = new DegreePlanner(yearToAddTo, semesterToAddTo, newCodeSet);
