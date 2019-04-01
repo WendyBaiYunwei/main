@@ -36,7 +36,8 @@ public class PlannerAddCommand extends Command {
             + PREFIX_CODE + "CS2113T "
             + PREFIX_CODE + "CS2100";
 
-    public static final String MESSAGE_SUCCESS = "The new module(s) added to degree plan: %1$s";
+    public static final String MESSAGE_SUCCESS = "Added new module(s) to the year %2$s semester %3$s of"
+            + " the degree plan: %1$s";
     public static final String MESSAGE_DUPLICATE_MODULE = "Some/one of the module(s) already exist in degree plan";
     public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "Some/one of the module(s) do"
             + " not exist in the module list";
@@ -59,13 +60,13 @@ public class PlannerAddCommand extends Command {
     public CommandResult execute(Model model, CommandHistory history) throws CommandException {
         requireNonNull(model);
 
-        DegreePlanner currentDegreePlanner = model.getDegreePlannerList().stream()
+        DegreePlanner selectedDegreePlanner = model.getAddressBook().getDegreePlannerList().stream()
                 .filter(degreePlanner -> (degreePlanner.getYear().equals(yearToAddTo)
                         && degreePlanner.getSemester().equals(semesterToAddTo)))
                 .findFirst()
                 .orElse(null);
 
-        if (codesToAdd.stream().anyMatch(code -> model.hasPlannerModule(code))) {
+        if (codesToAdd.stream().anyMatch(code -> model.hasPlannerCode(code))) {
             throw new CommandException(MESSAGE_DUPLICATE_MODULE);
         }
 
@@ -73,11 +74,11 @@ public class PlannerAddCommand extends Command {
             throw new CommandException(MESSAGE_MODULE_DOES_NOT_EXIST);
         }
 
-        Set<Code> newCodeSet = new HashSet<>(currentDegreePlanner.getCodes());
+        Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
         newCodeSet.addAll(codesToAdd);
 
         DegreePlanner editedDegreePlanner = new DegreePlanner(yearToAddTo, semesterToAddTo, newCodeSet);
-        model.setDegreePlanner(currentDegreePlanner, editedDegreePlanner);
+        model.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
         model.commitAddressBook();
         return new CommandResult(String.format(MESSAGE_SUCCESS, codesToAdd));
     }

@@ -274,7 +274,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     /**
      * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
      */
-    public boolean hasPlannerModule(Code plannerCode) {
+    public boolean hasPlannerCode(Code plannerCode) {
         requireNonNull(plannerCode);
         return getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                 .anyMatch(codes -> codes.contains(plannerCode));
