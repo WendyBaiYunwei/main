@@ -64,8 +64,7 @@ public class PlannerAddCommand extends Command {
         DegreePlanner selectedDegreePlanner = model.getAddressBook().getDegreePlannerList().stream()
                 .filter(degreePlanner -> (degreePlanner.getYear().equals(yearToAddTo)
                         && degreePlanner.getSemester().equals(semesterToAddTo)))
-                .findFirst()
-                .orElse(null);
+                .findFirst().orElse(null);
 
         Set<Code> existingPlannerCodes = codesToAdd.stream().filter(code -> model.getAddressBook()
                 .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
@@ -80,6 +79,7 @@ public class PlannerAddCommand extends Command {
         if (absentModuleCodes.size() > 0) {
             throw new CommandException(String.format(MESSAGE_MODULE_DOES_NOT_EXIST, absentModuleCodes));
         }
+
         Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
         newCodeSet.addAll(codesToAdd);
 
