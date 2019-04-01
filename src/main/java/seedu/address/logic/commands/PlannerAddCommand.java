@@ -7,6 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -36,14 +37,14 @@ public class PlannerAddCommand extends Command {
             + PREFIX_CODE + "CS2113T "
             + PREFIX_CODE + "CS2100";
 
-    public static final String MESSAGE_SUCCESS = "Added new module(s) to the year %2$s semester %3$s of"
-            + " the degree plan: %1$s";
-    public static final String MESSAGE_DUPLICATE_MODULE = "Some/one of the module(s) already exist in degree plan";
-    public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "Some/one of the module(s) do"
-            + " not exist in the module list";
+    public static final String MESSAGE_SUCCESS = "Added new module(s) to year %1$s semester %2$s of"
+            + " the degree plan: \n%3$s";
+    public static final String MESSAGE_DUPLICATE_CODE = "The module(s) %1$s already exist in the degree plan.";
+    public static final String MESSAGE_MODULE_DOES_NOT_EXIST = "The module(s) %1$s do not exist in the module list.";
     private Year yearToAddTo;
     private Semester semesterToAddTo;
     private Set<Code> codesToAdd;
+
     /**
      * Creates a PlannerAddCommand to add the specified {@Code code(s)} to the degree plan.
      */
@@ -66,21 +67,25 @@ public class PlannerAddCommand extends Command {
                 .findFirst()
                 .orElse(null);
 
-        if (codesToAdd.stream().anyMatch(code -> model.hasPlannerCode(code))) {
-            throw new CommandException(MESSAGE_DUPLICATE_MODULE);
-        }
+        Set<Code> existingPlannerCodes = codesToAdd.stream().filter(code -> model.hasPlannerCode(code))
+                .collect(Collectors.toSet());
 
-        if (codesToAdd.stream().anyMatch(code -> !model.hasModuleCode(code))) {
-            throw new CommandException(MESSAGE_MODULE_DOES_NOT_EXIST);
-        }
+        Set<Code> absentModuleCodes = codesToAdd.stream().filter(code -> !model.hasModuleCode(code))
+                .collect(Collectors.toSet());
 
+        if (existingPlannerCodes.size() > 0) {
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_CODE, existingPlannerCodes));
+        }
+        if (absentModuleCodes.size() > 0) {
+            throw new CommandException(String.format(MESSAGE_MODULE_DOES_NOT_EXIST, absentModuleCodes));
+        }
         Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
         newCodeSet.addAll(codesToAdd);
 
         DegreePlanner editedDegreePlanner = new DegreePlanner(yearToAddTo, semesterToAddTo, newCodeSet);
         model.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
         model.commitAddressBook();
-        return new CommandResult(String.format(MESSAGE_SUCCESS, codesToAdd));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo, codesToAdd));
     }
 
     @Override
