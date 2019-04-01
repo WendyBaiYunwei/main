@@ -50,7 +50,8 @@ public class AddCommandIntegrationTest {
     public void execute_duplicateModule_throwsCommandException() {
         Module moduleInList = model.getAddressBook().getModuleList().get(0);
         assertCommandFailure(new AddCommand(moduleInList), model, commandHistory,
-                AddCommand.MESSAGE_DUPLICATE_MODULE);
+                String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, moduleInList.getCode())
+        );
     }
 
 }

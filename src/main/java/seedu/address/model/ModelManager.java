@@ -142,6 +142,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public Module getModuleByCode(Code code) {
+        requireNonNull(code);
+        return versionedAddressBook.getModuleByCode(code);
+    }
+
+    @Override
     public boolean hasModuleCode(Code code) {
         requireNonNull(code);
         return versionedAddressBook.hasModuleCode(code);
@@ -306,6 +312,12 @@ public class ModelManager implements Model {
 
     @Override public void addDegreePlanner(DegreePlanner degreePlanner) {
         versionedAddressBook.addDegreePlanner(degreePlanner);
+    }
+
+    @Override
+    public DegreePlanner getDegreePlannerByCode(Code code) {
+        requireNonNull(code);
+        return versionedAddressBook.getDegreePlannerByCode(code);
     }
 
     @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {

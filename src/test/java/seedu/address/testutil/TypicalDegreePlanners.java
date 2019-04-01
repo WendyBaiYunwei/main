@@ -26,10 +26,6 @@ public class TypicalDegreePlanners {
             new DegreePlannerBuilder().withYear("3").withSemester("1").build();
     private static final DegreePlanner YEAR_3_SEMESTER_2 =
             new DegreePlannerBuilder().withYear("3").withSemester("2").build();
-    private static final DegreePlanner YEAR_4_SEMESTER_1 =
-            new DegreePlannerBuilder().withYear("4").withSemester("1").build();
-    private static final DegreePlanner YEAR_4_SEMESTER_2 =
-            new DegreePlannerBuilder().withYear("4").withSemester("2").build();
 
     /**
      * Returns an {@code AddressBook} with all the typical degree planners.
@@ -44,6 +40,6 @@ public class TypicalDegreePlanners {
 
     public static List<DegreePlanner> getTypicalDegreePlanners() {
         return new ArrayList<>(Arrays.asList(YEAR_1_SEMESTER_1, YEAR_1_SEMESTER_2, YEAR_2_SEMESTER_1, YEAR_2_SEMESTER_2,
-                YEAR_3_SEMESTER_1, YEAR_3_SEMESTER_2, YEAR_4_SEMESTER_1, YEAR_4_SEMESTER_2));
+                YEAR_3_SEMESTER_1, YEAR_3_SEMESTER_2));
     }
 }

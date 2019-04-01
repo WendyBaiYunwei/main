@@ -161,7 +161,7 @@ public class SampleDataUtil {
             getCodeSet("CS1010", "CS1231", "CS2040C", "CS2100", "CS2102")
     );
     private static final RequirementCategory INFORMATION_SECURITY_REQUIREMENTS = new RequirementCategory(
-            new Name("Information Security Requirements"), new Credits("32"), getCodeSet()
+            new Name("Information Security Requirements"), new Credits("20"), getCodeSet()
     );
 
     private static final RequirementCategory INFORMATION_SECURITY_ELECTIVES = new RequirementCategory(

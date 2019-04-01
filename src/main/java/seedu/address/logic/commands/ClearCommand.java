@@ -7,13 +7,14 @@ import seedu.address.logic.CommandHistory;
 import seedu.address.model.Model;
 
 /**
- * Clears the address book.
+ * Clears all existing data in {@link seedu.address.model.AddressBook}, and populates the initial (empty)
+ * degree planners and requirement categories.
  */
 public class ClearCommand extends Command {
 
     public static final String COMMAND_WORD = "clear";
-    public static final String MESSAGE_SUCCESS = "Module list has been cleared!";
-
+    public static final String MESSAGE_SUCCESS = "Successfully cleared all data!\n"
+            + "[Tip] If you unintentionally used this command, do use the undo command to revert back the changes!";
 
     @Override
     public CommandResult execute(Model model, CommandHistory history) {

@@ -1,16 +1,18 @@
 package seedu.address.ui;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import seedu.address.model.module.Code;
+import javafx.scene.layout.VBox;
+import seedu.address.model.module.Credits;
+import seedu.address.model.module.Module;
 import seedu.address.model.planner.DegreePlanner;
 
 /**
@@ -19,6 +21,8 @@ import seedu.address.model.planner.DegreePlanner;
 public class DegreePlannerCard extends UiPart<Region> {
 
     private static final String FXML = "DegreePlannerListCard.fxml";
+    private static final Integer MINIMUM_LOAD = 18;
+    private static final Integer OVER_LOAD = 24;
 
     public final DegreePlanner degreePlanner;
 
@@ -32,25 +36,50 @@ public class DegreePlannerCard extends UiPart<Region> {
     private Label semester;
 
     @FXML
-    private ListView<String> degreePlannerListView;
+    private Label credits;
 
-    public DegreePlannerCard(DegreePlanner degreePlanner) {
+    @FXML
+    private VBox degreePlannerListView;
+
+    public DegreePlannerCard(DegreePlanner degreePlanner, ObservableList<Module> moduleList) {
         super(FXML);
         this.degreePlanner = degreePlanner;
 
+
         year.setText("Year: " + degreePlanner.getYear().year);
+        year.setPadding(new Insets(0, 0, 0, 5));
         semester.setText(" Semester: " + degreePlanner.getSemester().plannerSemester);
 
-        year.setStyle("-fx-text-fill: white;");
-        semester.setStyle("-fx-text-fill: white;");
+        List<Module> modulesInDegreePlanner = degreePlanner.getCodes().stream()
+                .map(code -> moduleList.stream().filter(module -> module.getCode().equals(code))
+                        .findFirst().get()).collect(Collectors.toList());
 
-        ObservableList<String> modules =
-                degreePlanner.getCodes().stream().sorted(Comparator.comparing(code -> code.value)).map(Code::toString)
-                        .collect(Collectors.toCollection(FXCollections::observableArrayList));
 
-        degreePlannerListView.setItems(modules);
+        int currentCredits = modulesInDegreePlanner.stream().map(Module::getCredits).map(Credits::toString)
+                .map(Integer::parseInt).reduce(0, (totalCredits, credit) -> totalCredits + credit);
+
+        credits.setText("Total Credits: " + currentCredits + " MCs");
+        credits.setPadding(new Insets(0, 0, 0, 5));
+        credits.getStyleClass().clear();
+        if (currentCredits < MINIMUM_LOAD) {
+            credits.getStyleClass().add("orange");
+        } else if (currentCredits < OVER_LOAD) {
+            credits.getStyleClass().add("green");
+        } else {
+            credits.getStyleClass().add("red");
+        }
+
+        modulesInDegreePlanner.stream().sorted(Comparator.comparing(module -> module.getCode().toString()))
+                .forEach(module -> {
+                    VBox vbox = new VBox();
+                    VBox.setMargin(vbox, new Insets(1, 1, 1, 1));
+                    vbox.getChildren().add(new Label(
+                            module.getCode().value + " " + module.getName().toString()));
+                    vbox.getStyleClass().add("myModule");
+                    degreePlannerListView.getChildren().add(vbox);
+                });
+
         degreePlannerCardPane.setOnMouseClicked(null);
-        degreePlannerCardPane.setPrefHeight(120);
     }
 
     @Override

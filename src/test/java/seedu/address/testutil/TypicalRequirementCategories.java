@@ -18,7 +18,7 @@ public class TypicalRequirementCategories {
                     .withCredits("36").withCodes("CS2100").build();
     public static final RequirementCategory INFORMATION_SECURITY_REQUIREMENTS =
             new RequirementCategoryBuilder().withName("Information Security Requirements")
-                    .withCredits("32").build();
+                    .withCredits("20").build();
     public static final RequirementCategory INFORMATION_SECURITY_ELECTIVES =
             new RequirementCategoryBuilder().withName("Information Security Electives")
                     .withCredits("12").build();

@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-
 <StackPane fx:id="degreePlannerCardPane" xmlns="http://javafx.com/javafx/8.0.172-ea"
            xmlns:fx="http://javafx.com/fxml/1">
-    <VBox prefHeight="200" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
-        <HBox>
-            <children>
-                <Label fx:id="year"/>
-                <Label fx:id="semester"/>
-            </children>
-        </HBox>
-        <ListView styleClass="plannerCard" fx:id="degreePlannerListView" VBox.vgrow="SOMETIMES"/>
+    <VBox prefHeight="150" prefWidth="150" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+        <VBox>
+            <HBox>
+                <Label fx:id="year" styleClass="cell_big_label"/>
+                <Label fx:id="semester" styleClass="cell_big_label"/>
+            </HBox>
+            <VBox>
+                <Label fx:id="credits" styleClass="cell_small_label"/>
+            </VBox>
+        </VBox>
+        <VBox fx:id="degreePlannerListView" alignment="CENTER_LEFT">
+        </VBox>
     </VBox>
 </StackPane>

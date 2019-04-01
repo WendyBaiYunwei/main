@@ -15,6 +15,12 @@ import seedu.address.model.tag.Tag;
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
 public class Module {
+    /**
+     * The format string representation of a {@link Module} object used by {@link Module#toString()}.
+      */
+    private static final String STRING_REPRESENTATION = "%1$s %2$s (%3$s Modular Credits)\n"
+            + "Co-requisites: %4$s\n"
+            + "Tags: %5$s";
 
     // Identity fields
     private final Code code;
@@ -107,28 +113,15 @@ public class Module {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append(getName())
-                .append(" Credits: ")
-                .append(getCredits())
-                .append(" Code: ")
-                .append(getCode())
-                .append(" Tags: ");
+        final String allCorequisites = corequisites.isEmpty()
+                ? "None"
+                : corequisites.stream().map(Code::toString).collect(Collectors.joining(", "));
 
-        if (getTags().isEmpty()) {
-            builder.append("None");
-        } else {
-            getTags().forEach(builder::append);
-        }
+        final String allTags = tags.isEmpty()
+                ? "None"
+                : tags.stream().map(Tag::toString).collect(Collectors.joining(", "));
 
-        builder.append(" Co-requisites: ");
-        if (getCorequisites().isEmpty()) {
-            builder.append("None");
-        } else {
-            builder.append(getCorequisites().stream().map(Code::toString).collect(Collectors.joining(", ")));
-        }
-
-        return builder.toString();
+        return String.format(STRING_REPRESENTATION, code, name, credits, allCorequisites, allTags);
     }
 
 }

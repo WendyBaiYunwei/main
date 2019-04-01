@@ -40,6 +40,17 @@ public class UniqueModuleList implements Iterable<Module> {
     }
 
     /**
+     * Returns a module object if the list contains an equivalent module code as the given argument.
+     */
+    public Module getModuleByCode(Code toCheck) {
+        requireNonNull(toCheck);
+        return internalList.stream()
+                .filter(module -> module.getCode().equals(toCheck))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
      * Adds a module to the list.
      * The module must not already exist in the list.
      */

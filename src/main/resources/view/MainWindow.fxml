@@ -12,18 +12,18 @@
 <?import javafx.scene.layout.VBox?>
 
 <fx:root type="javafx.stage.Stage" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-         title="PlanWithEase" minWidth="900" minHeight="600" onCloseRequest="#handleExit">
+         title="PlanWithEase" minWidth="930" minHeight="600" onCloseRequest="#handleExit">
   <icons>
     <Image url="@/images/plan_with_ease_32.png" />
   </icons>
   <scene>
     <Scene>
       <stylesheets>
-        <URL value="@DarkTheme.css" />
+        <URL value="@WhiteTheme.css" />
         <URL value="@Extensions.css" />
       </stylesheets>
 
-      <VBox>
+      <VBox styleClass="background">
         <MenuBar fx:id="menuBar" VBox.vgrow="NEVER">
           <Menu mnemonicParsing="false" text="File">
             <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
@@ -47,18 +47,27 @@
         </StackPane>
 
         <SplitPane id="splitPane" fx:id="splitPane" dividerPositions="0.4" VBox.vgrow="ALWAYS">
-          <VBox fx:id="moduleList" minWidth="340" prefWidth="340" SplitPane.resizableWithParent="false">
+          <VBox fx:id="moduleList" minWidth="300" prefWidth="310">
             <padding>
               <Insets top="10" right="10" bottom="10" left="10" />
             </padding>
             <StackPane fx:id="moduleListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
           </VBox>
 
-          <StackPane id="plannerStackPane" fx:id="degreePlannerListPanelPlaceholder" prefWidth="340" >
+          <VBox fx:id="requirementCategories" minWidth="300" prefWidth="310" VBox.vgrow="ALWAYS">
             <padding>
               <Insets top="10" right="10" bottom="10" left="10" />
             </padding>
-          </StackPane>
+            <StackPane fx:id="requirementCategoryListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+          </VBox>
+
+          <VBox fx:id="degreePlan" minWidth="300" prefWidth="310" VBox.vgrow="ALWAYS">
+              <StackPane id="plannerStackPane" fx:id="degreePlannerListPanelPlaceholder"  VBox.vgrow="ALWAYS">
+                <padding>
+                  <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
+              </StackPane>
+          </VBox>
         </SplitPane>
         <StackPane fx:id="browserPlaceholder" prefWidth="0" >
         </StackPane>

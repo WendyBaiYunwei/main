@@ -10,6 +10,8 @@ import static seedu.address.testutil.TypicalModules.AMY;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import org.junit.Before;
@@ -199,7 +201,11 @@ public class LogicManagerTest {
         try {
             CommandResult result = logic.execute(HistoryCommand.COMMAND_WORD);
             String expectedMessage = String.format(
-                    HistoryCommand.MESSAGE_SUCCESS, String.join("\n", expectedCommands));
+                    HistoryCommand.MESSAGE_SUCCESS, Arrays.stream(expectedCommands)
+                            .sorted(Collections.reverseOrder())
+                            .map(command -> "- " + command)
+                            .collect(Collectors.joining("\n"))
+            );
             assertEquals(expectedMessage, result.getFeedbackToUser());
         } catch (ParseException | CommandException e) {
             throw new AssertionError("Parsing and execution of HistoryCommand.COMMAND_WORD should succeed.", e);

@@ -14,32 +14,45 @@ import seedu.address.model.module.Code;
 import seedu.address.model.module.Module;
 
 /**
- * Adds a module to the address book.
+ * Adds a {@link Module} to the {@link seedu.address.model.AddressBook#modules module list}.
  */
 public class AddCommand extends Command {
 
     public static final String COMMAND_WORD = "add";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a module to module list. "
-            + "Parameters: "
-            + PREFIX_NAME + "NAME "
+    // This is declared before MESSAGE_USAGE to prevent illegal forward reference
+    public static final String FORMAT_AND_EXAMPLES = "Format: " + COMMAND_WORD + ' '
             + PREFIX_CODE + "CODE "
+            + PREFIX_NAME + "NAME "
             + PREFIX_CREDITS + "CREDITS "
-            + "[" + PREFIX_TAG + "TAG]... "
-            + "[" + PREFIX_COREQUISITE + "COREQUISITE]...\n"
+            + "[" + PREFIX_COREQUISITE + "COREQUISITE]... "
+            + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_NAME + "Data Structures and Algorithms "
-            + PREFIX_CODE + "CS2040C "
+            + PREFIX_CODE + "CS2113T "
+            + PREFIX_NAME + "Software Engineering and Object-Oriented Programming "
             + PREFIX_CREDITS + "4 "
-            + PREFIX_TAG + "linkedlist "
-            + PREFIX_TAG + "stack "
-            + PREFIX_TAG + "queue "
-            + PREFIX_COREQUISITE + "CS1010";
+            + PREFIX_COREQUISITE + "CS2101 "
+            + PREFIX_TAG + "OOP "
+            + PREFIX_TAG + "RCS "
+            + PREFIX_TAG + "UML";
 
-    public static final String MESSAGE_SUCCESS = "New module added: %1$s";
-    public static final String MESSAGE_DUPLICATE_MODULE = "This module already exists in the module list";
+    // General command help details
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a new module to the module list.\n"
+            + FORMAT_AND_EXAMPLES;
+
+    // Command success message
+    public static final String MESSAGE_SUCCESS = "Successfully added a new module:\n%1$s";
+
+    // Command failure messages
+    public static final String MESSAGE_DUPLICATE_MODULE =
+            "You cannot add a new module (%1$s), as the module code %1$s already exists in the module list!";
+
     public static final String MESSAGE_NON_EXISTENT_COREQUISITE =
-            "The corequisite module code (%1$s) does not exists in the module list";
+            "You cannot add a new module (%1$s) that has a co-requisite module (%2$s) "
+            + "which does not exists in the module list!\n"
+            + "[Tip] You can try adding the module (%1$s) without specifying the co-requisite module (%2$s) first.\n"
+            + "Afterwards, add the module (%2$s) and specify the module (%1$s) as a co-requisite.\n"
+            + "This will make both modules (%1$s & %2$s) co-requisites!";
 
     private final Module toAdd;
 
@@ -56,12 +69,14 @@ public class AddCommand extends Command {
         requireNonNull(model);
 
         if (model.hasModule(toAdd)) {
-            throw new CommandException(MESSAGE_DUPLICATE_MODULE);
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_MODULE, toAdd.getCode()));
         }
 
         for (Code corequisite : toAdd.getCorequisites()) {
             if (!model.hasModuleCode(corequisite)) {
-                throw new CommandException(String.format(MESSAGE_NON_EXISTENT_COREQUISITE, corequisite));
+                throw new CommandException(String.format(
+                        MESSAGE_NON_EXISTENT_COREQUISITE, toAdd.getCode(), corequisite)
+                );
             }
         }
 

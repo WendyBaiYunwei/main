@@ -15,6 +15,7 @@ import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_CODE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
@@ -80,18 +81,26 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         assertNotEquals(getModel().getFilteredModuleList().get(index.getZeroBased()), BOB);
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + CREDITS_DESC_BOB
                 + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
-        assertCommandFailure(command, EditCommand.MESSAGE_DUPLICATE_MODULE);
+        Module moduleToEdit = getModel().getFilteredModuleList().get(index.getZeroBased());
+        expectedResultMessage = String.format(
+                EditCommand.MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(), VALID_CODE_BOB
+        );
+        assertCommandFailure(command, expectedResultMessage);
 
         /* Case: edit a module with new values same as another module's values but with different credits -> rejected */
         index = INDEX_SECOND_MODULE;
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_AMY
                 + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
-        assertCommandFailure(command, EditCommand.MESSAGE_DUPLICATE_MODULE);
+        moduleToEdit = getModel().getFilteredModuleList().get(index.getZeroBased());
+        expectedResultMessage = String.format(
+                EditCommand.MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(), VALID_CODE_BOB
+        );
+        assertCommandFailure(command, expectedResultMessage);
 
         /* Case: clear tags -> cleared */
         index = INDEX_FIRST_MODULE;
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + " " + PREFIX_TAG.getPrefix();
-        Module moduleToEdit = getModel().getFilteredModuleList().get(index.getZeroBased());
+        moduleToEdit = getModel().getFilteredModuleList().get(index.getZeroBased());
         editedModule = new ModuleBuilder(moduleToEdit).withTags().build();
         assertCommandSuccess(command, index, editedModule);
 
@@ -174,12 +183,19 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         assertFalse(getModel().getFilteredModuleList().get(index.getZeroBased()).equals(BOB));
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_BOB
                 + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
-        assertCommandFailure(command, EditCommand.MESSAGE_DUPLICATE_MODULE);
+        moduleToEdit = getModel().getFilteredModuleList().get(index.getZeroBased());
+        expectedResultMessage = String.format(
+                EditCommand.MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(), VALID_CODE_BOB
+        );
+        assertCommandFailure(command, expectedResultMessage);
 
         /* Case: edit a module with new values same as another module's values but with different tags -> rejected */
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_BOB
                 + CODE_DESC_BOB + TAG_DESC_HUSBAND;
-        assertCommandFailure(command, EditCommand.MESSAGE_DUPLICATE_MODULE);
+        expectedResultMessage = String.format(
+                EditCommand.MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(), VALID_CODE_BOB
+        );
+        assertCommandFailure(command, expectedResultMessage);
     }
 
     /**
@@ -203,11 +219,14 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
     private void assertCommandSuccess(String command, Index toEdit, Module editedModule,
             Index expectedSelectedCardIndex) {
         Model expectedModel = getModel();
+        Module originalModule = expectedModel.getFilteredModuleList().get(toEdit.getZeroBased());
+        String expectedMessage = String.format(
+                EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, originalModule.getCode(), editedModule
+        );
         expectedModel.editModule(expectedModel.getFilteredModuleList().get(toEdit.getZeroBased()), editedModule);
         expectedModel.updateFilteredModuleList(PREDICATE_SHOW_ALL_MODULES);
 
-        assertCommandSuccess(command, expectedModel,
-                String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule), expectedSelectedCardIndex);
+        assertCommandSuccess(command, expectedModel, expectedMessage, expectedSelectedCardIndex);
     }
 
     /**
