@@ -69,8 +69,10 @@ which can be used as `add name/Programming Methodology`.
 .. `{nbsp}` (i.e. 0 times)
 .. `name/Programming` (i.e. 1 time)
 .. `name/Programming Methodology`, etc.  (i.e. many times)
-* Prefixed-parameters can be arranged in any order
-.. e.g. if the command specifies `name/NAME code/CODE`, entering `code/CODE name/NAME` is also acceptable.
+* Prefixed-parameters can be arranged in any order after all non-prefixed parameters (if any)
+** e.g. if the command specifies `INDEX name/NAME code/CODE`:
+.. entering `INDEX code/CODE name/NAME` is also acceptable
+.. entering `name/NAME INDEX code/CODE` is not acceptable
 ====
 
 === Viewing help : `help`
@@ -80,37 +82,49 @@ Format: `help`
 === Adding a module: `add`
 
 Adds a module to the module list. +
-Format: `add name/NAME code/CODE credits/CREDITS [tag/TAG]… [coreq/COREQUISITE]…`
+Format: `add code/CODE name/NAME credits/CREDITS [coreq/COREQUISITE]… [tag/TAG]…`
 
-* `NAME` indicates the name of the module (e.g. `Programming Methodology`).
 * `CODE` indicates the module code (e.g. `CS1010`).
+* `NAME` indicates the name of the module (e.g. `Programming Methodology`).
 * `CREDITS` indicates the modular credits assigned to the module (e.g. `004`).
-* `TAG` indicates the extra information to associate the module with (e.g. `programming`, `loops`).
 * `COREQUISITE` indicates the module code that is a co-requisite of the module to be added.
+* `TAG` indicates the extra information to associate the module with (e.g. `programming`, `loops`).
 
 [WARNING]
 ====
-`NAME` should only contain alphanumeric characters and spaces, and it should not be blank. +
+`CODE`, `NAME`, `CREDITS`, and `TAG`/`COREQUISITE` (if specified) must not be empty. +
 `CODE` should begin with two alphabets, followed by four digits, and may optionally end with an alphabet. +
-In addition, `CODE` should not be be blank. +
-`CREDITS` should only contain numbers between 0 and 999. +
-If the amount of modular credits is not 3 digit long (e.g. 4), prepend the value with `0` (i.e. 004) +
-`TAG` should only contain alphanumeric characters, and it should not be blank. +
+`CODE` is case insensitive, and is treated as uppercase (e.g. `cs1010` is treated as `CS1010`), and should be unique. +
+`NAME` should only contain alphanumeric characters and spaces +
+`CREDITS` should only contain whole numbers between 0 and 999 (both inclusive). +
+`TAG` should only a single word containing alphanumeric characters. +
 `COREQUISITE` follows the same format as `CODE`.
 ====
 
-Examples:
+Example:
 
-* `add name/Programming Methodology code/CS1010 credits/4 tag/programming tag/algorithms tag/c tag/imperative`
-* `add code/CS1231 name/Discrete Structures credits/4 tag/logic tag/math tag/proving`
-* `add code/CS2113T name/Software Engineering & Object-Oriented Programming credits/4 tag/sweng tag/java coreq/CS2101`
+* `add code/CS1010 name/Programming Methodology credits/4 tag/programming tag/algorithms tag/c tag/imperative` +
+Adds a module named `Programming Methodology` with module code `CS1010`, which is assigned `4` modular credits, to the module list. This module also has the tags `programming`, `algorithms`, `c`, `imperative`.
 
 [TIP]
 A module can have any number of tags (including 0)
 
-Examples: +
+Example: +
 
-* `add code/CS1231 credits/004 name/Discrete Structures`
+* `add code/CS1231 credits/4 name/Discrete Structures`
+
+[WARNING]
+====
+When adding a module with a corequisite, if the module is added successfully, the co-requisite modules will be updated as well.
+====
+
+Example: +
+
+* `add code/CS2113T name/Software Engineering and Object-Oriented Programming credits/4 coreq/CS2101` +
+Adds a module named `Software Engineering and Object-Oriented Programming` with module code `CS2113T`, which is
+assigned `4` modular credits and has module code `CS2101` as a corequisite, to the module list. This module also has
+the tags `sweng`, `java`. +
+Both `CS2113T` and `CS2101` will be updated to be co-requisites.
 
 === Listing all modules : `list`
 
@@ -124,8 +138,8 @@ Format: `edit INDEX [name/NAME] [code/CODE] [credits/CREDITS] [tag/TAG]… [core
 
 [NOTE]
 ====
-* Edits the module at the specified `INDEX`. The index refers to the index number shown in the displayed module list. The index *must be a positive integer* 1, 2, 3, …
-* At least one of the optional fields must be provided.
+* Edits the module at the specified `INDEX`. The index refers to the index number (beside the module code) shown in the displayed module list.
+* You need to provide at least one of the optional fields to edit.
 * Existing values will be updated to the input values.
 * When editing tags/corequisites, the existing tags/corequisites of the module will be removed (i.e adding of tags is not cumulative.)
 * You can remove all the module's tags by typing `tag/` without specifying any tags after it.
@@ -189,7 +203,8 @@ Format: `delete INDEX`
 
 [WARNING]
 ====
-When deleting a module, any modules with the deleted module as its co-requisite will be updated
+* The deleted module will be removed from both the requirement category assigned and (where applicable).
+* When deleting a module, any modules with the deleted module as its co-requisite will be updated
 accordingly (i.e. deleted module is removed from the respective module's co-requisite list).
 ====
 
