@@ -8,6 +8,7 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.model.module.Code;
 import seedu.address.model.planner.exceptions.DegreePlannerNotFoundException;
 import seedu.address.model.planner.exceptions.DuplicateDegreePlannerException;
 
@@ -30,11 +31,23 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
             FXCollections.unmodifiableObservableList(internalList);
 
     /**
-     * Returns true if the list contains an equivalent planner module as the given argument.
+     * Returns true if the list contains an equivalent degree planner as the given argument.
      */
     public boolean contains(DegreePlanner toCheck) {
         requireNonNull(toCheck);
         return internalList.stream().anyMatch(toCheck::isSameDegreePlanner);
+    }
+
+    /**
+     * Returns a DegreePlanner object of the degree planner in the internalList if degree planner contains the given
+     * code.
+     */
+    public DegreePlanner getDegreePlannerByCode(Code toCheck) {
+        requireNonNull(toCheck);
+        return internalList.stream()
+                .filter(degreePlanner -> degreePlanner.getCodes().contains(toCheck))
+                .findFirst()
+                .orElse(null);
     }
 
     /**

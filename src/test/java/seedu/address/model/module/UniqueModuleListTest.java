@@ -33,6 +33,12 @@ public class UniqueModuleListTest {
     }
 
     @Test
+    public void getModuleByCode_nullCode_throwsNullPointerException() {
+        thrown.expect(NullPointerException.class);
+        uniqueModuleList.getModuleByCode(null);
+    }
+
+    @Test
     public void contains_moduleNotInList_returnsFalse() {
         assertFalse(uniqueModuleList.contains(ALICE));
     }

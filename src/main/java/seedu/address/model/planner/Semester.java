@@ -10,8 +10,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Semester {
 
     public static final String MESSAGE_SEMESTER_CONSTRAINTS =
-            "Semester should only be either 1, 2, 3 or 4. "
-                    + "Semester should not be blank";
+            "Semester should only be either 1, 2, 3 or 4. Semester should not be blank";
 
     /*
      * The semester should be valid and in the correct S format.

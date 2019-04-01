@@ -103,6 +103,14 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Returns a module if there is a module with the same module code as {@code code}
+     */
+    public Module getModuleByCode(Code code) {
+        requireNonNull(code);
+        return modules.getModuleByCode(code);
+    }
+
+    /**
      * Returns true if a {@code Module} with the specified {@code Code} exists in the address book.
      */
     public boolean hasModuleCode(Code code) {
@@ -264,20 +272,19 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Return the degree planner which contains the given {@code code}, otherwise returns null.
+     */
+    public DegreePlanner getDegreePlannerByCode(Code code) {
+        requireNonNull(code);
+        return degreePlanners.getDegreePlannerByCode(code);
+    }
+
+    /**
      * Adds a degree planner to the degree planner list.
      * The degree planner must not already exist in the degree planner list.
      */
     public void addDegreePlanner(DegreePlanner degreePlanner) {
         degreePlanners.add(degreePlanner);
-    }
-
-    /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
-     */
-    public boolean hasPlannerModule(Code plannerCode) {
-        requireNonNull(plannerCode);
-        return getDegreePlannerList().stream().map(DegreePlanner::getCodes)
-                .anyMatch(codes -> codes.contains(plannerCode));
     }
 
     /**

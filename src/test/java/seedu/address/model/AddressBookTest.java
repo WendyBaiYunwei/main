@@ -75,6 +75,12 @@ public class AddressBookTest {
     }
 
     @Test
+    public void getModuleByCode_nullCode_throwsNullPointerException() {
+        thrown.expect(NullPointerException.class);
+        addressBook.getModuleByCode(null);
+    }
+
+    @Test
     public void hasModule_moduleNotInAddressBook_returnsFalse() {
         assertFalse(addressBook.hasModule(ALICE));
     }

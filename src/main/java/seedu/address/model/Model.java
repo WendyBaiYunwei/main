@@ -61,10 +61,6 @@ public interface Model {
     Path getDegreePlannerListFilePath();
 
     /**
-     * Returns the degree planner list.
-     */
-    ObservableList<DegreePlanner> getDegreePlannerList();
-    /**
      * Sets the user prefs' degreePlanner list file path.
      */
     void setDegreePlannerListFilePath(Path degreePlannerListFilePath);
@@ -88,12 +84,17 @@ public interface Model {
     void setAddressBook(ReadOnlyAddressBook addressBook);
 
     /**
-     * Returns true if a module with the same identity as {@code module} exists in the address book.
+     * Returns true if a module with the same identity as {@code module} exists in the application.
      */
     boolean hasModule(Module module);
 
     /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the address book.
+     * Returns a module object if a module with the same module code as {@code code} exists in the application.
+     */
+    Module getModuleByCode(Code code);
+
+    /**
+     * Returns true if a {@code Module} with the specified {@code Code} exists in the application.
      */
     boolean hasModuleCode(Code code);
 
@@ -184,9 +185,9 @@ public interface Model {
     boolean hasDegreePlanner(DegreePlanner degreePlanner);
 
     /**
-     * Returns true if a {@code Module} with the specified {@code Code} exists in the degree plan.
+     * Return the degree planner which contains the given {@code code}, otherwise returns null.
      */
-    boolean hasPlannerModule(Code plannerModule);
+    DegreePlanner getDegreePlannerByCode(Code code);
 
     /**
      * Deletes the given degreePlanner.

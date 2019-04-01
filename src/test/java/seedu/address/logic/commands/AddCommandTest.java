@@ -64,7 +64,7 @@ public class AddCommandTest {
         ModelStub modelStub = new ModelStubWithModule(validModule);
 
         thrown.expect(CommandException.class);
-        thrown.expectMessage(AddCommand.MESSAGE_DUPLICATE_MODULE);
+        thrown.expectMessage(String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, validModule.getCode()));
         addCommand.execute(modelStub, commandHistory);
     }
 
@@ -133,11 +133,6 @@ public class AddCommandTest {
         }
 
         @Override
-        public ObservableList<DegreePlanner> getDegreePlannerList() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
         public void setDegreePlannerListFilePath(Path degreePlannerListFilePath) {
             //ToDo: implement error check
         }
@@ -169,6 +164,11 @@ public class AddCommandTest {
 
         @Override
         public boolean hasModule(Module module) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public Module getModuleByCode(Code code) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -248,6 +248,11 @@ public class AddCommandTest {
         }
 
         @Override
+        public DegreePlanner getDegreePlannerByCode(Code toCheck) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void deleteDegreePlanner(DegreePlanner degreePlanner) {
             //ToDo: implement AssertionError
         }
@@ -316,11 +321,6 @@ public class AddCommandTest {
 
         @Override
         public void setSelectedRequirementCategory(RequirementCategory requirementCategory) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public boolean hasPlannerModule(Code plannerCode) {
             throw new AssertionError("This method should not be called.");
         }
 

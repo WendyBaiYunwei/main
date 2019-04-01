@@ -47,11 +47,14 @@ public class EditCommandTest {
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
+        Module moduleInFilteredList = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
         Module editedModule = new ModuleBuilder().build();
         EditCommand.EditModuleDescriptor descriptor = new EditModuleDescriptorBuilder(editedModule).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, descriptor);
 
-        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
+        String expectedMessage = String.format(
+                EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, moduleInFilteredList.getCode(), editedModule
+        );
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
 
@@ -74,7 +77,9 @@ public class EditCommandTest {
                 .withCredits(VALID_CREDITS_BOB).withTags(VALID_TAG_HUSBAND).build();
         EditCommand editCommand = new EditCommand(indexLastModule, descriptor);
 
-        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
+        String expectedMessage = String.format(
+                EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, lastModule.getCode(), editedModule
+        );
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.editModule(lastModule, editedModule);
@@ -85,10 +90,13 @@ public class EditCommandTest {
 
     @Test
     public void execute_noFieldSpecifiedUnfilteredList_success() {
+        Module firstModule = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
         EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, new EditCommand.EditModuleDescriptor());
         Module editedModule = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
 
-        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
+        String expectedMessage = String.format(
+                EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, firstModule.getCode(), editedModule
+        );
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.commitAddressBook();
@@ -105,7 +113,9 @@ public class EditCommandTest {
         EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE,
                 new EditModuleDescriptorBuilder().withName(VALID_NAME_BOB).build());
 
-        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, editedModule);
+        String expectedMessage = String.format(
+                EditCommand.MESSAGE_EDIT_MODULE_SUCCESS, moduleInFilteredList.getCode(), editedModule
+        );
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.editModule(model.getFilteredModuleList().get(0), editedModule);
@@ -117,10 +127,15 @@ public class EditCommandTest {
     @Test
     public void execute_duplicateModuleUnfilteredList_failure() {
         Module firstModule = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
+        Module secondModule = model.getFilteredModuleList().get(INDEX_SECOND_MODULE.getZeroBased());
         EditModuleDescriptor descriptor = new EditModuleDescriptorBuilder(firstModule).build();
         EditCommand editCommand = new EditCommand(INDEX_SECOND_MODULE, descriptor);
 
-        assertCommandFailure(editCommand, model, commandHistory, EditCommand.MESSAGE_DUPLICATE_MODULE);
+        String expectedMessage = String.format(
+                EditCommand.MESSAGE_DUPLICATE_MODULE, secondModule.getCode(), firstModule.getCode()
+        );
+
+        assertCommandFailure(editCommand, model, commandHistory, expectedMessage);
     }
 
     @Test
@@ -128,11 +143,14 @@ public class EditCommandTest {
         showModuleAtIndex(model, INDEX_FIRST_MODULE);
 
         // edit module in filtered list into a duplicate in address book
-        Module moduleInList = model.getAddressBook().getModuleList().get(INDEX_SECOND_MODULE.getZeroBased());
+        Module moduleToEdit = model.getAddressBook().getModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
+        Module moduleToClone = model.getAddressBook().getModuleList().get(INDEX_SECOND_MODULE.getZeroBased());
         EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE,
-                new EditModuleDescriptorBuilder(moduleInList).build());
+                new EditModuleDescriptorBuilder(moduleToClone).build());
+        String expectedMessage = String.format(EditCommand.MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(),
+                moduleToClone.getCode());
 
-        assertCommandFailure(editCommand, model, commandHistory, EditCommand.MESSAGE_DUPLICATE_MODULE);
+        assertCommandFailure(editCommand, model, commandHistory, expectedMessage);
     }
 
     @Test

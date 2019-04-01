@@ -13,17 +13,25 @@ import seedu.address.model.module.Module;
 
 /**
  * Deletes a module identified using it's displayed index from the address book.
+ * Deletes a {@link Module} identified using it's displayed {@link Index} in the
+ * {@link seedu.address.model.AddressBook#modules module list}.
  */
 public class DeleteCommand extends Command {
 
     public static final String COMMAND_WORD = "delete";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Deletes the module identified by the index number used in the displayed module list.\n"
-            + "Parameters: INDEX (must be a positive integer)\n"
-            + "Example: " + COMMAND_WORD + " 1";
+    // This is declared before MESSAGE_USAGE to prevent illegal forward reference
+    public static final String FORMAT_AND_EXAMPLES = "Format: " + COMMAND_WORD + " INDEX \n"
+            + "Example: To delete the first module in the displayed module list below, you can enter: "
+            + COMMAND_WORD + " 1";
 
-    public static final String MESSAGE_DELETE_MODULE_SUCCESS = "Deleted Module: %1$s";
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Deletes a module in the displayed module list.\n"
+            + "To choose which module you want to delete, please include the index number "
+            + "(beside the module code) in the displayed module list.\n"
+            + FORMAT_AND_EXAMPLES;
+
+    public static final String MESSAGE_DELETE_MODULE_SUCCESS = "Successfully deleted the module:\n%1$s";
 
     private final Index targetIndex;
 

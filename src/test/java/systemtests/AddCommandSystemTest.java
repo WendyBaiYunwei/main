@@ -70,12 +70,14 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
         /* Case: add a module with all fields same as another module in the address book except name -> rejected */
         toAdd = new ModuleBuilder(AMY).withName(VALID_NAME_BOB).build();
         command = ModuleUtil.getAddCommand(toAdd);
-        assertCommandFailure(command, AddCommand.MESSAGE_DUPLICATE_MODULE);
+        expectedResultMessage = String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, toAdd.getCode());
+        assertCommandFailure(command, expectedResultMessage);
 
         /* Case: add a module with all fields same as another module in the address book except credits -> rejected */
         toAdd = new ModuleBuilder(AMY).withCredits(VALID_CREDITS_BOB).build();
         command = ModuleUtil.getAddCommand(toAdd);
-        assertCommandFailure(command, AddCommand.MESSAGE_DUPLICATE_MODULE);
+        expectedResultMessage = String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, toAdd.getCode());
+        assertCommandFailure(command, expectedResultMessage);
 
         /* Case: add to empty address book -> added */
         deleteAllModules();
@@ -106,23 +108,26 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
 
         /* Case: add a duplicate module -> rejected */
         command = ModuleUtil.getAddCommand(HOON);
-        assertCommandFailure(command, AddCommand.MESSAGE_DUPLICATE_MODULE);
+        expectedResultMessage = String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, HOON.getCode());
+        assertCommandFailure(command, expectedResultMessage);
 
         /* Case: add a duplicate module except with different tags -> rejected */
         command = ModuleUtil.getAddCommand(HOON) + " " + PREFIX_TAG.getPrefix() + "friends";
-        assertCommandFailure(command, AddCommand.MESSAGE_DUPLICATE_MODULE);
+        expectedResultMessage = String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, HOON.getCode());
+        assertCommandFailure(command, expectedResultMessage);
 
         /* Case: missing name -> rejected */
         command = AddCommand.COMMAND_WORD + CREDITS_DESC_AMY + CODE_DESC_AMY;
-        assertCommandFailure(command, String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
+        expectedResultMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE);
+        assertCommandFailure(command, expectedResultMessage);
 
         /* Case: missing credits -> rejected */
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + CODE_DESC_AMY;
-        assertCommandFailure(command, String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
+        assertCommandFailure(command, expectedResultMessage);
 
         /* Case: missing code -> rejected */
         command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + CREDITS_DESC_AMY;
-        assertCommandFailure(command, String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
+        assertCommandFailure(command, expectedResultMessage);
 
         /* Case: invalid keyword -> rejected */
         command = "adds " + ModuleUtil.getModuleDetails(toAdd);

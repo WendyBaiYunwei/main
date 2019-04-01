@@ -48,7 +48,7 @@ public class ModuleCard extends UiPart<Region> {
         this.module = module;
         id.setText(displayedIndex + ". ");
         name.setText(module.getName().fullName);
-        credits.setText(module.getCredits().value + " Module Credits");
+        credits.setText("Modular Credits: " + module.getCredits().value);
         code.setText(module.getCode().value);
 
         String corequisitesText = module.getCorequisites().stream().map(Code::toString)

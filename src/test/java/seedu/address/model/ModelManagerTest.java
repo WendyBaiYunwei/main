@@ -92,6 +92,12 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void getModuleByCode_nullCode_throwsNullPointerException() {
+        thrown.expect(NullPointerException.class);
+        modelManager.getModuleByCode(null);
+    }
+
+    @Test
     public void hasModule_moduleNotInAddressBook_returnsFalse() {
         assertFalse(modelManager.hasModule(ALICE));
     }
