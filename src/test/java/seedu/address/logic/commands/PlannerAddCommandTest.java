@@ -55,7 +55,7 @@ public class PlannerAddCommandTest {
         codeList.clear();
         codeList.addAll(SampleDataUtil.getCodeSet());
         CommandResult commandResult = new PlannerAddCommand(year, semester, codeList).execute(model, commandHistory);
-        DegreePlanner currentDegreePlanner = model.getDegreePlannerList().stream()
+        DegreePlanner currentDegreePlanner = model.getAddressBook().getDegreePlannerList().stream()
                 .filter(degreePlanner -> (degreePlanner.getYear().equals(year)
                         && degreePlanner.getSemester().equals(semester)))
                 .findFirst()
@@ -78,7 +78,7 @@ public class PlannerAddCommandTest {
         codeList.add(code);
         codeList.add(code);
         assertCommandFailure(new PlannerAddCommand(year, semester, codeList), model, commandHistory,
-                PlannerAddCommand.MESSAGE_DUPLICATE_MODULE);
+                PlannerAddCommand.MESSAGE_DUPLICATE_CODE);
     }
 
     @Test

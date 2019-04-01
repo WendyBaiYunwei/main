@@ -72,13 +72,14 @@ public class PlannerAddCommand extends Command {
         if (existingPlannerCodes.size() > 0) {
             throw new CommandException(String.format(MESSAGE_DUPLICATE_CODE, existingPlannerCodes));
         }
+
         Set<Code> nonExistentModuleCodes = codesToAdd.stream().filter(code -> !model.hasModuleCode(code))
                 .collect(Collectors.toSet());
         if (nonExistentModuleCodes.size() > 0) {
             throw new CommandException(String.format(MESSAGE_MODULE_DOES_NOT_EXIST, nonExistentModuleCodes));
         }
-        Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
 
+        Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
         newCodeSet.addAll(codesToAdd);
 
         DegreePlanner editedDegreePlanner = new DegreePlanner(yearToAddTo, semesterToAddTo, newCodeSet);
