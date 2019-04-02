@@ -62,8 +62,8 @@ public class PlannerRemoveCommand extends Command {
             for (Code codeToRemove : codesToRemove) {
                 newCodeSet.remove(codeToRemove);
                 for (Module module : modules) {
-                    //Removes the Co-requisite(s) of modules that exist in the degree plan.
-                    //Related Co-requisite(s) that do not exist in the degree plan will be skipped.
+                    //Removes the Co-requisite(s) of module(s) that exists in the degree plan.
+                    //Related Co-requisite(s) that does not exist in the degree plan will be skipped.
                     if (codeToRemove.equals(module.getCode()) && module.getCorequisites().size() > 0) {
                         coreqRemoved.addAll(module.getCorequisites().stream()
                                 .filter(newCodeSet::contains).collect(Collectors.toSet()));
