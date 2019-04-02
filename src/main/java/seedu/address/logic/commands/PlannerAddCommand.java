@@ -83,13 +83,17 @@ public class PlannerAddCommand extends Command {
             throw new CommandException(String.format(MESSAGE_MODULE_DOES_NOT_EXIST, nonExistentModuleCodes));
         }
 
-        Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
+        Set<Code> newCodeSet = new HashSet<>();
+        if (selectedDegreePlanner != null) {
+            newCodeSet.addAll(selectedDegreePlanner.getCodes());
+        }
+
         ObservableList<Module> modules = model.getFilteredModuleList();
         Set<Code> coreqAdded = new HashSet<>();
-
         newCodeSet.addAll(codesToAdd);
         for (Code codeToAdd :codesToAdd) {
             newCodeSet.add(codeToAdd);
+            //adds Co-requisites
             for (Module module : modules) {
                 if (codeToAdd.equals(module.getCode()) && module.getCorequisites().size() > 0) {
                     coreqAdded.addAll(module.getCorequisites());
