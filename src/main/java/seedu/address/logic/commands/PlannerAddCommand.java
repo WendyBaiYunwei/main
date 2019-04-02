@@ -65,13 +65,12 @@ public class PlannerAddCommand extends Command {
     public CommandResult execute(Model model, CommandHistory history) throws CommandException {
         requireNonNull(model);
 
-        DegreePlanner selectedDegreePlanner = model.getFilteredDegreePlannerList().stream()
-                .filter(degreePlanner -> (degreePlanner.getYear().equals(yearToAddTo)
-                        && degreePlanner.getSemester().equals(semesterToAddTo)))
-                .findFirst().orElse(null);
+        DegreePlanner selectedDegreePlanner = model.getAddressBook()
+                .getDegreePlannerList().stream().filter(degreePlanner -> (degreePlanner.getYear().equals(yearToAddTo)
+                        && degreePlanner.getSemester().equals(semesterToAddTo))).findFirst().orElse(null);
 
-        Set<Code> existingPlannerCodes = codesToAdd.stream().filter(code -> model.getFilteredDegreePlannerList()
-                .stream().map(DegreePlanner::getCodes)
+        Set<Code> existingPlannerCodes = codesToAdd.stream().filter(code -> model.getAddressBook()
+                .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                 .anyMatch(codes -> codes.contains(code))).collect(Collectors.toSet());
         if (existingPlannerCodes.size() > 0) {
             throw new CommandException(String.format(MESSAGE_DUPLICATE_CODE, existingPlannerCodes));
@@ -93,7 +92,7 @@ public class PlannerAddCommand extends Command {
         newCodeSet.addAll(codesToAdd);
         for (Code codeToAdd :codesToAdd) {
             newCodeSet.add(codeToAdd);
-            //adds Co-requisites
+            //adds Co-requisite(s)
             for (Module module : modules) {
                 if (codeToAdd.equals(module.getCode()) && module.getCorequisites().size() > 0) {
                     coreqAdded.addAll(module.getCorequisites());
