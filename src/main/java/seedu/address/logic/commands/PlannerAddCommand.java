@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
@@ -10,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
+
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -69,6 +71,9 @@ public class PlannerAddCommand extends Command {
         DegreePlanner selectedDegreePlanner = model.getAddressBook()
                 .getDegreePlannerList().stream().filter(degreePlanner -> (degreePlanner.getYear().equals(yearToAddTo)
                         && degreePlanner.getSemester().equals(semesterToAddTo))).findFirst().orElse(null);
+        if (selectedDegreePlanner == null) {
+            throw new CommandException(MESSAGE_PLAN_DOES_NOT_EXIST);
+        }
 
         Set<Code> existingPlannerCodes = codesToAdd.stream().filter(code -> model.getAddressBook()
                 .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
@@ -81,10 +86,6 @@ public class PlannerAddCommand extends Command {
                 .collect(Collectors.toSet());
         if (nonExistentModuleCodes.size() > 0) {
             throw new CommandException(String.format(MESSAGE_MODULE_DOES_NOT_EXIST, nonExistentModuleCodes));
-        }
-
-        if (selectedDegreePlanner == null) {
-            throw new CommandException(MESSAGE_PLAN_DOES_NOT_EXIST);
         }
 
         Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
@@ -125,4 +126,3 @@ public class PlannerAddCommand extends Command {
                 && codesToAdd.equals(((PlannerAddCommand) other).codesToAdd));
     }
 }
-
