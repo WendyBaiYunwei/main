@@ -47,7 +47,8 @@ public class PlannerAddCommand extends Command {
     private static final String COREQ_MESSAGE_SUCCESS = "\nCo-requisite(s) added:\n%1$s";
     private static final String MESSAGE_DUPLICATE_CODE = "The module(s) %1$s already exists in the degree plan.";
     private static final String MESSAGE_MODULE_DOES_NOT_EXIST = "The module(s) %1$s does not exist in the module list.";
-    private static final String MESSAGE_PLAN_DOES_NOT_EXIST = "The selected section of the degree plan does not exist.";
+    private static final String MESSAGE_PLAN_DOES_NOT_EXIST = "The degree plan of year %1$s and semester"
+            + "%2$s does not exist.";
     private Year yearToAddTo;
     private Semester semesterToAddTo;
     private Set<Code> codesToAdd;
@@ -72,7 +73,7 @@ public class PlannerAddCommand extends Command {
                 .getDegreePlannerList().stream().filter(degreePlanner -> (degreePlanner.getYear().equals(yearToAddTo)
                         && degreePlanner.getSemester().equals(semesterToAddTo))).findFirst().orElse(null);
         if (selectedDegreePlanner == null) {
-            throw new CommandException(MESSAGE_PLAN_DOES_NOT_EXIST);
+            throw new CommandException(String.format(MESSAGE_PLAN_DOES_NOT_EXIST, yearToAddTo, semesterToAddTo));
         }
 
         Set<Code> existingPlannerCodes = codesToAdd.stream().filter(code -> model.getAddressBook()
