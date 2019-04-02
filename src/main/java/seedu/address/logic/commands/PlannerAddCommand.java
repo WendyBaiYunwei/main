@@ -82,10 +82,7 @@ public class PlannerAddCommand extends Command {
             throw new CommandException(String.format(MESSAGE_MODULE_DOES_NOT_EXIST, nonExistentModuleCodes));
         }
 
-        Set<Code> newCodeSet = new HashSet<>();
-        if (selectedDegreePlanner != null) {
-            newCodeSet.addAll(selectedDegreePlanner.getCodes());
-        }
+        Set<Code> newCodeSet = new HashSet<>(requireNonNull(selectedDegreePlanner).getCodes());
 
         ObservableList<Module> modules = model.getFilteredModuleList();
         Set<Code> coreqAdded = new HashSet<>();
