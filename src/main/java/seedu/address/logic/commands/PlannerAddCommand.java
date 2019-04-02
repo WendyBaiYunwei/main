@@ -45,6 +45,7 @@ public class PlannerAddCommand extends Command {
     private static final String COREQ_MESSAGE_SUCCESS = "\nCo-requisite(s) added:\n%1$s";
     private static final String MESSAGE_DUPLICATE_CODE = "The module(s) %1$s already exists in the degree plan.";
     private static final String MESSAGE_MODULE_DOES_NOT_EXIST = "The module(s) %1$s does not exist in the module list.";
+    private static final String MESSAGE_PLAN_DOES_NOT_EXIST = "The selected section of the degree plan does not exist.";
     private Year yearToAddTo;
     private Semester semesterToAddTo;
     private Set<Code> codesToAdd;
@@ -82,8 +83,11 @@ public class PlannerAddCommand extends Command {
             throw new CommandException(String.format(MESSAGE_MODULE_DOES_NOT_EXIST, nonExistentModuleCodes));
         }
 
-        Set<Code> newCodeSet = new HashSet<>(requireNonNull(selectedDegreePlanner).getCodes());
+        if (selectedDegreePlanner == null) {
+            throw new CommandException(MESSAGE_PLAN_DOES_NOT_EXIST);
+        }
 
+        Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
         ObservableList<Module> modules = model.getFilteredModuleList();
         Set<Code> coreqAdded = new HashSet<>();
         newCodeSet.addAll(codesToAdd);
