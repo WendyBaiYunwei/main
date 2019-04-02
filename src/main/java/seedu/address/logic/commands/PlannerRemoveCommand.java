@@ -17,7 +17,7 @@ import seedu.address.model.planner.DegreePlanner;
 
 /**
  * Removes module(s) from the degree plan.
- * Related Co-requisites are removed as well.
+ * Related Co-requisite(s) are removed as well.
  */
 public class PlannerRemoveCommand extends Command {
 
@@ -36,7 +36,7 @@ public class PlannerRemoveCommand extends Command {
 
     /**
      * Creates a PlannerRemoveCommand to remove the specified {@code codes} from the degree planner
-     * Related Co-requisites are removed as well.
+     * Related Co-requisite(s) are removed as well.
      */
     public PlannerRemoveCommand(Set<Code> plannerCodes) {
         codesToRemove = plannerCodes;
@@ -62,8 +62,8 @@ public class PlannerRemoveCommand extends Command {
             for (Code codeToRemove : codesToRemove) {
                 newCodeSet.remove(codeToRemove);
                 for (Module module : modules) {
-                    //Removes the Co-requisites of modules that exist in the degree plan.
-                    //Related Co-requisites that do not exist in the degree plan will be skipped.
+                    //Removes the Co-requisite(s) of modules that exist in the degree plan.
+                    //Related Co-requisite(s) that do not exist in the degree plan will be skipped.
                     if (codeToRemove.equals(module.getCode()) && module.getCorequisites().size() > 0) {
                         coreqRemoved.addAll(module.getCorequisites().stream()
                                 .filter(newCodeSet::contains).collect(Collectors.toSet()));
