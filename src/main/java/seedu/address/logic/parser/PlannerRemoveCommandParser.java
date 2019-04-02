@@ -6,7 +6,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import seedu.address.logic.commands.PlannerAddCommand;
 import seedu.address.logic.commands.PlannerRemoveCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.module.Code;
@@ -27,7 +26,7 @@ public class PlannerRemoveCommandParser implements Parser<PlannerRemoveCommand> 
 
         if (!arePrefixesPresent(argMultimap, PREFIX_CODE)
                 || !argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, PlannerAddCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, PlannerRemoveCommand.MESSAGE_USAGE));
         }
 
         Set<Code> codes = ParserUtil.parseCodes(argMultimap.getAllValues(PREFIX_CODE));

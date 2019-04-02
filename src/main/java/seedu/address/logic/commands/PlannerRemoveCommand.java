@@ -22,24 +22,24 @@ import seedu.address.model.planner.DegreePlanner;
 public class PlannerRemoveCommand extends Command {
 
     public static final String COMMAND_WORD = "planner_remove";
-    //add in example
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Removes module(s) from the degree plan.\n"
             + "Parameters: "
             + PREFIX_CODE + "CODE "
+            + "[" + PREFIX_CODE + "CODE]...\n"
             + "Example: " + COMMAND_WORD + " code/CS1010 code/CS2040C";
 
-    public static final String MESSAGE_SUCCESS = "Removed module(s) from the degree plan:\n%1$s";
-    public static final String COREQ_MESSAGE_SUCCESS = "\nCo-requisite(s) removed:\n%1$s";
-    public static final String MESSAGE_CODE_DOES_NOT_EXIST = "The module(s) %1$s does not exist in the degree plan.";
+    private static final String MESSAGE_SUCCESS = "Removed module(s) from the degree plan:\n%1$s";
+    private static final String COREQ_MESSAGE_SUCCESS = "\nCo-requisite(s) removed:\n%1$s";
+    private static final String MESSAGE_CODE_DOES_NOT_EXIST = "The module(s) %1$s does not exist in the degree plan.";
     private Set<Code> codesToRemove;
 
     /**
      * Creates a PlannerRemoveCommand to remove the specified {@code codes} from the degree planner
      * Related Co-requisites are removed as well.
      */
-    public PlannerRemoveCommand(Set<Code> plannerModules) {
-        codesToRemove = plannerModules;
+    public PlannerRemoveCommand(Set<Code> plannerCodes) {
+        codesToRemove = plannerCodes;
     }
 
     @Override
