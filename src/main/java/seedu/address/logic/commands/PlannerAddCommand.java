@@ -10,8 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javafx.collections.ObservableList;
-
 import seedu.address.logic.CommandHistory;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -90,17 +88,15 @@ public class PlannerAddCommand extends Command {
         }
 
         Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
-        ObservableList<Module> modules = model.getFilteredModuleList();
         Set<Code> coreqAdded = new HashSet<>();
         newCodeSet.addAll(codesToAdd);
         for (Code codeToAdd :codesToAdd) {
             newCodeSet.add(codeToAdd);
             //adds Co-requisite(s)
-            for (Module module : modules) {
-                if (codeToAdd.equals(module.getCode()) && module.getCorequisites().size() > 0) {
-                    coreqAdded.addAll(module.getCorequisites());
-                    newCodeSet.addAll(module.getCorequisites());
-                }
+            Module module = model.getModuleByCode(codeToAdd);
+            if (module.getCorequisites().size() > 0) {
+                coreqAdded.addAll(module.getCorequisites());
+                newCodeSet.addAll(module.getCorequisites());
             }
         }
 
