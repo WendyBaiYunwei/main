@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
@@ -22,6 +23,15 @@ import seedu.address.model.tag.Tag;
 public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
+
+
+    /**
+     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
+     * {@code ArgumentMultimap}.
+     */
+    public static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
+        return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
+    }
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
@@ -66,7 +76,6 @@ public class ParserUtil {
         }
         return new Credits(trimmedCredits);
     }
-
 
     /**
      * Parses a {@code String code} into an {@code Code}.
@@ -153,15 +162,11 @@ public class ParserUtil {
     }
 
     /**
-     * Parses {@code Collection<String> corequisites} into a {@code Set<Code>}.
+     * Parses {@code Collection<String> corequisites} into a {@code Set<Code>}.<br>
+     * Syntactic sugar for {@link #parseCodes} method.
      */
     public static Set<Code> parseCorequisites(Collection<String> corequisites) throws ParseException {
-        requireNonNull(corequisites);
-        final Set<Code> corequisitesSet = new HashSet<>();
-        for (String corequisite : corequisites) {
-            corequisitesSet.add(parseCode(corequisite));
-        }
-        return corequisitesSet;
+        return parseCodes(corequisites);
     }
 
     /**
