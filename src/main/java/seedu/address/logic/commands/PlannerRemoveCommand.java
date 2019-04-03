@@ -58,21 +58,20 @@ public class PlannerRemoveCommand extends Command {
         ObservableList<Module> modules = model.getAddressBook().getModuleList();
 
         for (DegreePlanner selectedDegreePlanner : degreePlannerList) {
-            Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
+            Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
             for (Code codeToRemove : codesToRemove) {
-                newCodeSet.remove(codeToRemove);
-                for (Module module : modules) {
-                    //Removes the Co-requisite(s) of module(s) that exists in the degree plan.
-                    //Related Co-requisite(s) that does not exist in the degree plan will be skipped.
-                    if (codeToRemove.equals(module.getCode()) && module.getCorequisites().size() > 0) {
-                        coreqRemoved.addAll(module.getCorequisites().stream()
-                                .filter(newCodeSet::contains).collect(Collectors.toSet()));
-                        newCodeSet.removeAll(coreqRemoved);
-                    }
+                selectedCodeSet.remove(codeToRemove);
+                Module module = model.getModuleByCode(codeToRemove);
+                //Removes the Co-requisite(s) of module(s) that exists in the degree plan.
+                //Related Co-requisite(s) that does not exist in the degree plan will be skipped.
+                if (module.getCorequisites().size() > 0) {
+                    coreqRemoved.addAll(module.getCorequisites().stream()
+                            .filter(selectedCodeSet::contains).collect(Collectors.toSet()));
+                    selectedCodeSet.removeAll(coreqRemoved);
                 }
             }
             DegreePlanner editedDegreePlanner = new DegreePlanner(selectedDegreePlanner.getYear(),
-                    selectedDegreePlanner.getSemester(), newCodeSet);
+                    selectedDegreePlanner.getSemester(), selectedCodeSet);
             model.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
         }
 
