@@ -87,22 +87,22 @@ public class PlannerAddCommand extends Command {
             throw new CommandException(String.format(MESSAGE_MODULE_DOES_NOT_EXIST, nonExistentModuleCodes));
         }
 
-        Set<Code> newCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
+        Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
         Set<Code> coreqAdded = new HashSet<>();
-        newCodeSet.addAll(codesToAdd);
+        selectedCodeSet.addAll(codesToAdd);
         for (Code codeToAdd :codesToAdd) {
-            newCodeSet.add(codeToAdd);
+            selectedCodeSet.add(codeToAdd);
             //adds Co-requisite(s)
             Module module = model.getModuleByCode(codeToAdd);
             if (module.getCorequisites().size() > 0) {
                 coreqAdded.addAll(module.getCorequisites());
-                newCodeSet.addAll(module.getCorequisites());
+                selectedCodeSet.addAll(module.getCorequisites());
             }
         }
 
         coreqAdded.removeAll(codesToAdd);
 
-        DegreePlanner editedDegreePlanner = new DegreePlanner(yearToAddTo, semesterToAddTo, newCodeSet);
+        DegreePlanner editedDegreePlanner = new DegreePlanner(yearToAddTo, semesterToAddTo, selectedCodeSet);
         model.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
         model.commitAddressBook();
 
