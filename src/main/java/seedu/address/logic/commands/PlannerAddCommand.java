@@ -41,9 +41,9 @@ public class PlannerAddCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Added new module(s) to year %1$s semester %2$s of"
             + " the degree plan: \n%3$s\nCo-requisite(s) added:\n%4$s";
-    private static final String MESSAGE_DUPLICATE_CODE = "The module(s) %1$s already exists in the degree plan.";
-    private static final String MESSAGE_NONEXISTENT_MODULES = "The module(s) %1$s does not exist in the module list.";
-    private static final String MESSAGE_NONEXISTENT_DEGREE_PLANNER = "The degree plan of year %1$s and semester"
+    public static final String MESSAGE_DUPLICATE_CODE = "The module(s) %1$s already exists in the degree plan.";
+    public static final String MESSAGE_NONEXISTENT_MODULES = "The module(s) %1$s does not exist in the module list.";
+    public static final String MESSAGE_NONEXISTENT_DEGREE_PLANNER = "The degree plan of year %1$s and semester"
             + "%2$s does not exist.";
     private Year yearToAddTo;
     private Semester semesterToAddTo;
