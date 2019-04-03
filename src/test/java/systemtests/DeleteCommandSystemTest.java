@@ -1,28 +1,28 @@
 package systemtests;
 
-import static seedu.address.commons.core.Messages.MESSAGE_INVALID_MODULE_DISPLAYED_INDEX;
-import static seedu.address.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
-import static seedu.address.logic.commands.DeleteCommand.MESSAGE_DELETE_MODULE_SUCCESS;
-import static seedu.address.testutil.TestUtil.getLastIndex;
-import static seedu.address.testutil.TestUtil.getMidIndex;
-import static seedu.address.testutil.TestUtil.getModule;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_MODULE;
-import static seedu.address.testutil.TypicalModules.KEYWORD_MATCHING_MEIER;
+import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_MODULE_DISPLAYED_INDEX;
+import static pwe.planner.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
+import static pwe.planner.logic.commands.DeleteCommand.MESSAGE_DELETE_MODULE_SUCCESS;
+import static pwe.planner.testutil.TestUtil.getLastIndex;
+import static pwe.planner.testutil.TestUtil.getMidIndex;
+import static pwe.planner.testutil.TestUtil.getModule;
+import static pwe.planner.testutil.TypicalIndexes.INDEX_FIRST_MODULE;
+import static pwe.planner.testutil.TypicalModules.KEYWORD_MATCHING_MEIER;
 
 import org.junit.Test;
 
-import seedu.address.commons.core.Messages;
-import seedu.address.commons.core.index.Index;
-import seedu.address.logic.commands.DeleteCommand;
-import seedu.address.logic.commands.RedoCommand;
-import seedu.address.logic.commands.UndoCommand;
-import seedu.address.model.Model;
-import seedu.address.model.module.Module;
+import pwe.planner.commons.core.index.Index;
+import pwe.planner.logic.commands.DeleteCommand;
+import pwe.planner.logic.commands.RedoCommand;
+import pwe.planner.logic.commands.UndoCommand;
+import pwe.planner.model.Model;
+import pwe.planner.model.module.Module;
 
-public class DeleteCommandSystemTest extends AddressBookSystemTest {
+public class DeleteCommandSystemTest extends ApplicationSystemTest {
 
     private static final String MESSAGE_INVALID_DELETE_COMMAND_FORMAT =
-            String.format(Messages.MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE);
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE);
 
     @Test
     public void delete() {
@@ -57,7 +57,7 @@ public class DeleteCommandSystemTest extends AddressBookSystemTest {
 
         /* ------------------ Performing delete operation while a filtered list is being shown ---------------------- */
 
-        /* Case: filtered module list, delete index within bounds of address book and module list -> deleted */
+        /* Case: filtered module list, delete index within bounds of application and module list -> deleted */
         // TODO: revisit this unit test due to a strange bug with Travis CI. Where assertion returned false at line 65
         /*
         showModulesWithName(KEYWORD_MATCHING_MEIER);
@@ -66,11 +66,11 @@ public class DeleteCommandSystemTest extends AddressBookSystemTest {
         assertCommandSuccess(index);
         */
 
-        /* Case: filtered module list, delete index within bounds of address book but out of bounds of module list
+        /* Case: filtered module list, delete index within bounds of application but out of bounds of module list
          * -> rejected
          */
         showModulesWithName(KEYWORD_MATCHING_MEIER);
-        int invalidIndex = getModel().getAddressBook().getModuleList().size();
+        int invalidIndex = getModel().getApplication().getModuleList().size();
         command = DeleteCommand.COMMAND_WORD + " " + invalidIndex;
         assertCommandFailure(command, MESSAGE_INVALID_MODULE_DISPLAYED_INDEX);
 
@@ -100,7 +100,7 @@ public class DeleteCommandSystemTest extends AddressBookSystemTest {
 
         /* Case: invalid index (size + 1) -> rejected */
         Index outOfBoundsIndex = Index.fromOneBased(
-                getModel().getAddressBook().getModuleList().size() + 1);
+                getModel().getApplication().getModuleList().size() + 1);
         command = DeleteCommand.COMMAND_WORD + " " + outOfBoundsIndex.getOneBased();
         assertCommandFailure(command, MESSAGE_INVALID_MODULE_DISPLAYED_INDEX);
 
@@ -115,7 +115,7 @@ public class DeleteCommandSystemTest extends AddressBookSystemTest {
     }
 
     /**
-     * Removes the {@code Module} at the specified {@code index} in {@code model}'s address book.
+     * Removes the {@code Module} at the specified {@code index} in {@code model}'s application.
      *
      * @return the removed module
      */
@@ -148,9 +148,9 @@ public class DeleteCommandSystemTest extends AddressBookSystemTest {
      * 4. Asserts that the status bar's sync status changes.<br>
      * 5. Asserts that the command box has the default style class.<br>
      * Verifications 1 and 2 are performed by
-     * {@code AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.
+     * {@code ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.
      *
-     * @see AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)
+     * @see ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)
      */
     private void assertCommandSuccess(String command, Model expectedModel, String expectedResultMessage) {
         assertCommandSuccess(command, expectedModel, expectedResultMessage, null);
@@ -161,7 +161,7 @@ public class DeleteCommandSystemTest extends AddressBookSystemTest {
      * and selected card are expected to update accordingly depending on the card at {@code expectedSelectedCardIndex}.
      *
      * @see DeleteCommandSystemTest#assertCommandSuccess(String, Model, String)
-     * @see AddressBookSystemTest#assertSelectedCardChanged(Index)
+     * @see ApplicationSystemTest#assertSelectedCardChanged(Index)
      */
     private void assertCommandSuccess(String command, Model expectedModel, String expectedResultMessage,
             Index expectedSelectedCardIndex) {
@@ -185,9 +185,9 @@ public class DeleteCommandSystemTest extends AddressBookSystemTest {
      * 3. Asserts that the browser url, selected card and status bar remain unchanged.<br>
      * 4. Asserts that the command box has the error style.<br>
      * Verifications 1 and 2 are performed by
-     * {@code AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.<br>
+     * {@code ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.<br>
      *
-     * @see AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)
+     * @see ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)
      */
     private void assertCommandFailure(String command, String expectedResultMessage) {
         Model expectedModel = getModel();

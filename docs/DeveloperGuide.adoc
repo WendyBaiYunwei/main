@@ -45,14 +45,14 @@ Do not disable them. If you have disabled them, go to `File` > `Settings` > `Plu
 . Click `OK` to accept the default settings
 . Open a console and run the command `gradlew processResources` (Mac/Linux: `./gradlew processResources`). It should finish with the `BUILD SUCCESSFUL` message. +
 This will generate all resources required by the application and tests.
-. Open link:{repoURL}/src/main/java/seedu/address/ui/MainWindow.java[`MainWindow.java`] and check for any code errors
+. Open link:{repoURL}/src/main/java/pwe/planner/ui/MainWindow.java[`MainWindow.java`] and check for any code errors
 .. Due to an ongoing https://youtrack.jetbrains.com/issue/IDEA-189060[issue] with some of the newer versions of IntelliJ, code errors may be detected even if the project can be built and run successfully
 .. To resolve this, place your cursor over any of the code section highlighted in red. Press kbd:[ALT + ENTER], and select `Add '--add-modules=...' to module compiler options` for each error
-. Repeat this for the test folder as well (e.g. check link:{repoURL}/src/test/java/seedu/address/ui/HelpWindowTest.java[`HelpWindowTest.java`] for code errors, and if so, resolve it the same way)
+. Repeat this for the test folder as well (e.g. check link:{repoURL}/src/test/java/pwe/planner/ui/HelpWindowTest.java[`HelpWindowTest.java`] for code errors, and if so, resolve it the same way)
 
 === Verifying the setup
 
-. Run the `seedu.address.MainApp` and try a few commands
+. Run the `pwe.planner.MainApp` and try a few commands
 . <<Testing,Run the tests>> to ensure they all pass.
 
 === Configurations to do before writing code
@@ -113,7 +113,8 @@ The *_Architecture Diagram_* given above explains the high-level design of the A
 [TIP]
 The `.pptx` files used to create diagrams in this document can be found in the link:{repoURL}/docs/diagrams/[diagrams] folder. To update a diagram, modify the diagram in the pptx file, select the objects of the diagram, and choose `Save as picture`.
 
-`Main` has only one class called link:{repoURL}/src/main/java/seedu/address/MainApp.java[`MainApp`]. It is responsible for,
+`Main` has only one class called link:{repoURL}/src/main/java/pwe/planner/MainApp.java[`MainApp`]. It is responsible
+for,
 
 * At app launch: Initializes the components in the correct sequence, and connects them up with each other.
 * At shut down: Shuts down the components and invokes cleanup method where necessary.
@@ -156,11 +157,14 @@ The sections below give more details of each component.
 .Structure of the UI Component
 image::UiClassDiagram.png[width="800"]
 
-*API* : link:{repoURL}/src/main/java/seedu/address/ui/Ui.java[`Ui.java`]
+*API* : link:{repoURL}/src/main/java/pwe/planner/ui/Ui.java[`Ui.java`]
 
 The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `ModuleListPanel`, `StatusBarFooter`, `BrowserPanel` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class.
 
-The `UI` component uses JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the link:{repoURL}/src/main/java/seedu/address/ui/MainWindow.java[`MainWindow`] is specified in link:{repoURL}/src/main/resources/view/MainWindow.fxml[`MainWindow.fxml`]
+The `UI` component uses JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files that
+are in the `src/main/resources/view` folder. For example, the layout of the
+link:{repoURL}/src/main/java/pwe/planner/ui/MainWindow.java[`MainWindow`] is specified in
+link:{repoURL}/src/main/resources/view/MainWindow.fxml[`MainWindow.fxml`]
 
 The `UI` component,
 
@@ -175,9 +179,9 @@ The `UI` component,
 image::LogicClassDiagram.png[width="800"]
 
 *API* :
-link:{repoURL}/src/main/java/seedu/address/logic/Logic.java[`Logic.java`]
+link:{repoURL}/src/main/java/pwe/planner/logic/Logic.java[`Logic.java`]
 
-.  `Logic` uses the `AddressBookParser` class to parse the user command.
+.  `Logic` uses the `ApplicationParser` class to parse the user command.
 .  This results in a `Command` object which is executed by the `LogicManager`.
 .  The command execution can affect the `Model` (e.g. adding a module).
 .  The result of the command execution is encapsulated as a `CommandResult` object which is passed back to the `Ui`.
@@ -194,12 +198,12 @@ image::DeleteModuleSdForLogic.png[width="800"]
 .Structure of the Model Component
 image::ModelClassDiagram.png[width="800"]
 
-*API* : link:{repoURL}/src/main/java/seedu/address/model/Model.java[`Model.java`]
+*API* : link:{repoURL}/src/main/java/pwe/planner/model/Model.java[`Model.java`]
 
 The `Model`,
 
 * stores a `UserPref` object that represents the user's preferences.
-* stores the Address Book data.
+* stores the Application data.
 * exposes an unmodifiable `ObservableList<Module>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * does not depend on any of the other three components.
 
@@ -209,17 +213,17 @@ The `Model`,
 .Structure of the Storage Component
 image::StorageClassDiagram.png[width="800"]
 
-*API* : link:{repoURL}/src/main/java/seedu/address/storage/Storage.java[`Storage.java`]
+*API* : link:{repoURL}/src/main/java/pwe/planner/storage/Storage.java[`Storage.java`]
 
 The `Storage` component,
 
 * can save `UserPref` objects in json format and read it back.
-* can save the Address Book data in json format and read it back.
+* can save the Application data in json format and read it back.
 
 [[Design-Commons]]
 === Common classes
 
-Classes used by multiple components are in the `seedu.addressbook.commons` package.
+Classes used by multiple components are in the `pwe.planner.commons` package.
 
 == Implementation
 
@@ -229,54 +233,64 @@ This section describes some noteworthy details on how certain features are imple
 === Undo/Redo Feature
 ==== Current Implementation
 
-The undo/redo mechanism is facilitated by `VersionedAddressBook`.
-It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`.
+The undo/redo mechanism is facilitated by `VersionedApplication`.
+It extends `application` with an undo/redo history, stored internally as an `applicationStateList` and `currentStatePointer`.
 Additionally, it implements the following operations:
 
-* `VersionedAddressBook#commit()` -- Saves the current address book state in its history.
-* `VersionedAddressBook#undo()` -- Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()` -- Restores a previously undone address book state from its history.
+* `VersionedApplication#commit()` -- Saves the current application state in its history.
+* `VersionedApplication#undo()` -- Restores the previous application state from its history.
+* `VersionedApplication#redo()` -- Restores a previously undone application state from its history.
 
-These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
+These operations are exposed in the `Model` interface as `Model#commitApplication()`, `Model#undoApplication()` and
+`Model#redoApplication()` respectively.
 
 Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
 
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
+Step 1. The user launches the application for the first time. The `VersionedApplication` will be initialized with the
+ initial application state, and the `currentStatePointer` pointing to that single application state.
 
 image::UndoRedoStartingStateListDiagram.png[width="800"]
 
-Step 2. The user executes `delete 5` command to delete the 5th module in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
+Step 2. The user executes `delete 5` command to delete the 5th module in the application. The `delete` command calls
+ `Model#commitApplication()`, causing the modified state of the application after the `delete 5` command executes to be saved in the `applicationStateList`, and the `currentStatePointer` is shifted to the newly inserted application state.
 
 image::UndoRedoNewCommand1StateListDiagram.png[width="800"]
 
-Step 3. The user executes `add n/David ...` to add a new module. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
+Step 3. The user executes `add n/David ...` to add a new module. The `add` command also calls
+`Model#commitApplication()`, causing another modified application state to be saved into the `applicationStateList`.
 
 image::UndoRedoNewCommand2StateListDiagram.png[width="800"]
 
 [NOTE]
-If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
+If a command fails its execution, it will not call `Model#commitApplication()`, so the application state will not be
+ saved into the `applicationStateList`.
 
-Step 4. The user now decides that adding the module was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
+Step 4. The user now decides that adding the module was a mistake, and decides to undo that action by executing the
+`undo` command. The `undo` command will call `Model#undoApplication()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous application state, and restores the application to that state.
 
 image::UndoRedoExecuteUndoStateListDiagram.png[width="800"]
 
 [NOTE]
-If the `currentStatePointer` is at index 0, pointing to the initial address book state, then there are no previous address book states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the undo.
+If the `currentStatePointer` is at index 0, pointing to the initial application state, then there are no previous
+application states to restore. The `undo` command uses `Model#canUndoApplication()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the undo.
 
 The following sequence diagram shows how the undo operation works:
 
 image::UndoRedoSequenceDiagram.png[width="800"]
 
-The `redo` command does the opposite -- it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
+The `redo` command does the opposite -- it calls `Model#redoApplication()`, which shifts the `currentStatePointer`
+once to the right, pointing to the previously undone state, and restores the application to that state.
 
 [NOTE]
-If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone address book states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
+If the `currentStatePointer` is at index `applicationStateList.size() - 1`, pointing to the latest application
+state, then there are no undone application states to restore. The `redo` command uses `Model#canRedoapplication()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
 
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
+Step 5. The user then decides to execute the command `list`. Commands that do not modify the application, such as `list`, will usually not call `Model#commitapplication()`, `Model#undoapplication()` or `Model#redoapplication()`. Thus, the `applicationStateList` remains unchanged.
 
 image::UndoRedoNewCommand3StateListDiagram.png[width="800"]
 
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. We designed it this way because it no longer makes sense to redo the `add n/David ...` command. This is the behavior that most modern desktop applications follow.
+Step 6. The user executes `clear`, which calls `Model#commitApplication()`. Since the `currentStatePointer` is not
+pointing at the end of the `applicationStateList`, all application states after the `currentStatePointer` will be purged. We designed it this way because it no longer makes sense to redo the `add n/David ...` command. This is the behavior that most modern desktop applications follow.
 
 image::UndoRedoNewCommand4StateListDiagram.png[width="800"]
 
@@ -288,7 +302,7 @@ image::UndoRedoActivityDiagram.png[width="650"]
 
 ===== Aspect: How undo & redo executes
 
-* **Alternative 1 (current choice):** Saves the entire address book.
+* **Alternative 1 (current choice):** Saves the entire application.
 ** Pros: Easy to implement.
 ** Cons: May have performance issues in terms of memory usage.
 * **Alternative 2:** Individual command knows how to undo/redo by itself.
@@ -297,9 +311,10 @@ image::UndoRedoActivityDiagram.png[width="650"]
 
 ===== Aspect: Data structure to support the undo/redo commands
 
-* **Alternative 1 (current choice):** Use a list to store the history of address book states.
+* **Alternative 1 (current choice):** Use a list to store the history of application states.
 ** Pros: Easy for new Computer Science student undergraduates to understand, who are likely to be the new incoming developers of our project.
-** Cons: Logic is duplicated twice. For example, when a new command is executed, we must remember to update both `HistoryManager` and `VersionedAddressBook`.
+** Cons: Logic is duplicated twice. For example, when a new command is executed, we must remember to update both
+`HistoryManager` and `VersionedApplication`.
 * **Alternative 2:** Use `HistoryManager` for undo/redo
 ** Pros: We do not need to maintain a separate list, and just reuse what is already in the codebase.
 ** Cons: Requires dealing with commands that have already been undone: We must remember to skip these commands. Violates Single Responsibility Principle and Separation of Concerns as `HistoryManager` now needs to do two different things.
@@ -330,13 +345,13 @@ When a module is deleted, it is cascaded down to other modules, and is removed f
 
 ===== Aspect: How should deletion of a module be cascaded down to other modules
 
-* **Alternative 1 (current choice):** Delete module code from other modules' corequisites in `AddressBook` class
-** Pros: Implementing the cascading effect in `AddressBook#removeModule()` protects tampering of `AddressBook` data
+* **Alternative 1 (current choice):** Delete module code from other modules' corequisites in `application` class
+** Pros: Implementing the cascading effect in `Application#removeModule()` protects tampering of `application` data
 ** Cons: Requires extra overhead to obtain an immutable list of modules to update and modify existing modules in the
 `UniqueModuleList`
 * **Alternative 2:** Delete module code from other modules' corequisites in `DeleteCommand` class
 ** Pros: Convenient to implement.
-** Cons: Deleting a module via `AddressBook#removeModule()` does not have any cascading effect on other modules'
+** Cons: Deleting a module via `Application#removeModule()` does not have any cascading effect on other modules'
 corequisites. The user will have to delete the invalid co-requisite manually afterwards.
 ** Cons: Can only interact with a filtered list of modules, and as such, the displayed list of modules need to be
 refreshed to display the full listing just to be able to iterate and delete modules co-requisites accordingly.
@@ -358,7 +373,7 @@ the program.
 2. Parse the text related to each `PREFIX` individually.
 3. Return a composite predicate for all attributes.
 
-Step 1 is performed by the `AddressBookParser` class, and no special actions is needed for the `find` feature.
+Step 1 is performed by the `ApplicationParser` class, and no special actions is needed for the `find` feature.
 
 Step 3 is performed by `BooleanExpression#parse`
 
@@ -381,7 +396,7 @@ The main implementation of this feature is split into two components. The `Token
 
 ==== Tokenizer
 
-This is represented by the class `seedu.address.logic.parser.BooleanExpressionTokenizer` and is designed to extract
+This is represented by the class `pwe.planner.logic.parser.BooleanExpressionTokenizer` and is designed to extract
 all argument with `PREFIX` and `OPERATOR` as a token.
 
 This class is initialized with the input argument and prefixes and can be queried for token multiple times. +
@@ -390,7 +405,7 @@ This is similar to how `java.util.Scanner` works.
 
 ==== Operator
 
-This is represented by the class `seedu.address.logic.parser.Operator` and define all valid operators to be used in
+This is represented by the class `pwe.planner.logic.parser.Operator` and define all valid operators to be used in
 `BooleanExpressionParser`.
 
 To support more operators for our `BooleanExpressionParser`. The following steps should be done.
@@ -402,7 +417,7 @@ To support more operators for our `BooleanExpressionParser`. The following steps
 
 ==== Boolean Expression Parser
 
-This is represented by the class `seedu.address.logic.parser.BooleanExpressionParser` and is designed to map user
+This is represented by the class `pwe.planner.logic.parser.BooleanExpressionParser` and is designed to map user
 provided input into composite `Predicate<Module>`.
 
 The following table shows the operators currently supported by `BooleanExpressionParser`(Highest precedence
@@ -474,7 +489,7 @@ After passing all of the above checks, `RequirementAddCommand` updates the conte
 `setRequirementCategory`.
 
 In addition to adding module code(s) to the requirement category, the `RequirementAddCommand` class also saves the
-current database state through `commitAddressBook` (for undo/redo functions).
+current database state through `commitApplication` (for undo/redo functions).
 
 .RequirementAddCommand component interactions
 image::RequirementAddCommandSequenceDiagram.png[width="650"]
@@ -573,7 +588,7 @@ If the last check fails, `PlannerMoveCommand` will not update the degree plan si
 
 If all checks pass, `PlannerMoveCommand` will update the context in `ModelManager` through `setDegreePlanner`.
 
-In addition, the `PlannerMoveCommand` class also saves the current database state through `commitAddressBook` (for
+In addition, the `PlannerMoveCommand` class also saves the current database state through `commitApplication` (for
 undo/redo functions).
 
 .PlannerMove component interactions
@@ -596,7 +611,7 @@ the semester provided.
 
 [cols="30%,<70%"]
 |======
-|*Cons*| The method will create unnecessary couplings between `AddressBook` and `Year` as well as between `AddressBook`
+|*Cons*| The method will create unnecessary couplings between `Application` and `Year` as well as between `Application`
  and `Semester`.
 |======
 
@@ -828,14 +843,14 @@ We have two types of tests:
 
 .  *GUI Tests* - These are tests involving the GUI. They include,
 .. _System Tests_ that test the entire App by simulating user actions on the GUI. These are in the `systemtests` package.
-.. _Unit tests_ that test the individual components. These are in `seedu.address.ui` package.
+.. _Unit tests_ that test the individual components. These are in `pwe.planner.ui` package.
 .  *Non-GUI Tests* - These are tests not involving the GUI. They include,
 ..  _Unit tests_ targeting the lowest level methods/classes. +
-e.g. `seedu.address.commons.StringUtilTest`
+e.g. `pwe.planner.commons.StringUtilTest`
 ..  _Integration tests_ that are checking the integration of multiple code units (those code units are assumed to be working). +
-e.g. `seedu.address.storage.StorageManagerTest`
+e.g. `pwe.planner.storage.StorageManagerTest`
 ..  Hybrids of unit and integration tests. These test are checking multiple code units as well as how the are connected together. +
-e.g. `seedu.address.logic.LogicManagerTest`
+e.g. `pwe.planner.logic.LogicManagerTest`
 
 
 === Troubleshooting Testing
@@ -865,14 +880,14 @@ When a pull request has changes to asciidoc files, you can use https://www.netli
 
 Here are the steps to create a new release.
 
-.  Update the version number in link:{repoURL}/src/main/java/seedu/address/MainApp.java[`MainApp.java`].
+.  Update the version number in link:{repoURL}/src/main/java/pwe/planner/MainApp.java[`MainApp.java`].
 .  Generate a JAR file <<UsingGradle#creating-the-jar-file, using Gradle>>.
 .  Tag the repo with the version number. e.g. `v0.1`
 .  https://help.github.com/articles/creating-releases/[Create a new release using GitHub] and upload the JAR file you created.
 
 === Managing Dependencies
 
-A project often depends on third-party libraries. For example, Address Book depends on the https://github.com/FasterXML/jackson[Jackson library] for JSON parsing. Managing these _dependencies_ can be automated using Gradle. For example, Gradle can download the dependencies automatically, which is better than these alternatives:
+A project often depends on third-party libraries. For example, PlanWithEase depends on the https://github.com/FasterXML/jackson[Jackson library] for JSON parsing. Managing these _dependencies_ can be automated using Gradle. For example, Gradle can download the dependencies automatically, which is better than these alternatives:
 
 [loweralpha]
 . Include those libraries in the repo (this bloats the repo size)

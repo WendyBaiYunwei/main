@@ -1,46 +1,46 @@
 package systemtests;
 
-import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.commands.CommandTestUtil.CODE_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.CODE_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.CREDITS_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.CREDITS_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_CODE_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_CREDITS_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
-import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_CREDITS_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.testutil.TypicalModules.ALICE;
-import static seedu.address.testutil.TypicalModules.AMY;
-import static seedu.address.testutil.TypicalModules.BOB;
-import static seedu.address.testutil.TypicalModules.CARL;
-import static seedu.address.testutil.TypicalModules.HOON;
-import static seedu.address.testutil.TypicalModules.IDA;
-import static seedu.address.testutil.TypicalModules.KEYWORD_MATCHING_MEIER;
+import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static pwe.planner.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
+import static pwe.planner.logic.commands.CommandTestUtil.CODE_DESC_AMY;
+import static pwe.planner.logic.commands.CommandTestUtil.CODE_DESC_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.CREDITS_DESC_AMY;
+import static pwe.planner.logic.commands.CommandTestUtil.CREDITS_DESC_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.INVALID_CODE_DESC;
+import static pwe.planner.logic.commands.CommandTestUtil.INVALID_CREDITS_DESC;
+import static pwe.planner.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
+import static pwe.planner.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
+import static pwe.planner.logic.commands.CommandTestUtil.NAME_DESC_AMY;
+import static pwe.planner.logic.commands.CommandTestUtil.NAME_DESC_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
+import static pwe.planner.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
+import static pwe.planner.logic.commands.CommandTestUtil.VALID_CREDITS_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
+import static pwe.planner.testutil.TypicalModules.ALICE;
+import static pwe.planner.testutil.TypicalModules.AMY;
+import static pwe.planner.testutil.TypicalModules.BOB;
+import static pwe.planner.testutil.TypicalModules.CARL;
+import static pwe.planner.testutil.TypicalModules.HOON;
+import static pwe.planner.testutil.TypicalModules.IDA;
+import static pwe.planner.testutil.TypicalModules.KEYWORD_MATCHING_MEIER;
 
 import org.junit.Test;
 
-import seedu.address.commons.core.Messages;
-import seedu.address.commons.core.index.Index;
-import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.RedoCommand;
-import seedu.address.logic.commands.UndoCommand;
-import seedu.address.model.Model;
-import seedu.address.model.module.Code;
-import seedu.address.model.module.Credits;
-import seedu.address.model.module.Module;
-import seedu.address.model.module.Name;
-import seedu.address.model.tag.Tag;
-import seedu.address.testutil.ModuleBuilder;
-import seedu.address.testutil.ModuleUtil;
+import pwe.planner.commons.core.index.Index;
+import pwe.planner.logic.commands.AddCommand;
+import pwe.planner.logic.commands.RedoCommand;
+import pwe.planner.logic.commands.UndoCommand;
+import pwe.planner.model.Model;
+import pwe.planner.model.module.Code;
+import pwe.planner.model.module.Credits;
+import pwe.planner.model.module.Module;
+import pwe.planner.model.module.Name;
+import pwe.planner.model.tag.Tag;
+import pwe.planner.testutil.ModuleBuilder;
+import pwe.planner.testutil.ModuleUtil;
 
-public class AddCommandSystemTest extends AddressBookSystemTest {
+public class AddCommandSystemTest extends ApplicationSystemTest {
 
     @Test
     public void add() {
@@ -48,7 +48,7 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
 
         /* ------------------------ Perform add operations on the shown unfiltered list ----------------------------- */
 
-        /* Case: add a module without tags to a non-empty address book, command with leading spaces and trailing spaces
+        /* Case: add a module without tags to a non-empty application, command with leading spaces and trailing spaces
          * -> added
          */
         Module toAdd = AMY;
@@ -67,19 +67,19 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
         expectedResultMessage = RedoCommand.MESSAGE_SUCCESS;
         assertCommandSuccess(command, model, expectedResultMessage);
 
-        /* Case: add a module with all fields same as another module in the address book except name -> rejected */
+        /* Case: add a module with all fields same as another module in the application except name -> rejected */
         toAdd = new ModuleBuilder(AMY).withName(VALID_NAME_BOB).build();
         command = ModuleUtil.getAddCommand(toAdd);
         expectedResultMessage = String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, toAdd.getCode());
         assertCommandFailure(command, expectedResultMessage);
 
-        /* Case: add a module with all fields same as another module in the address book except credits -> rejected */
+        /* Case: add a module with all fields same as another module in the application except credits -> rejected */
         toAdd = new ModuleBuilder(AMY).withCredits(VALID_CREDITS_BOB).build();
         command = ModuleUtil.getAddCommand(toAdd);
         expectedResultMessage = String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, toAdd.getCode());
         assertCommandFailure(command, expectedResultMessage);
 
-        /* Case: add to empty address book -> added */
+        /* Case: add to empty application -> added */
         deleteAllModules();
         assertCommandSuccess(ALICE);
 
@@ -131,7 +131,7 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
 
         /* Case: invalid keyword -> rejected */
         command = "adds " + ModuleUtil.getModuleDetails(toAdd);
-        assertCommandFailure(command, Messages.MESSAGE_UNKNOWN_COMMAND);
+        assertCommandFailure(command, MESSAGE_UNKNOWN_COMMAND);
 
         /* Case: invalid name -> rejected */
         command = AddCommand.COMMAND_WORD + INVALID_NAME_DESC + CREDITS_DESC_AMY + CODE_DESC_AMY;
@@ -162,8 +162,8 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
      * 5. Browser url and selected card remain unchanged.<br>
      * 6. Status bar's sync status changes.<br>
      * Verifications 1, 3 and 4 are performed by
-     * {@code AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.<br>
-     * @see AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)
+     * {@code ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.<br>
+     * @see ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)
      */
     private void assertCommandSuccess(Module toAdd) {
         assertCommandSuccess(ModuleUtil.getAddCommand(toAdd), toAdd);
@@ -206,8 +206,8 @@ public class AddCommandSystemTest extends AddressBookSystemTest {
      * 4. {@code Storage} and {@code ModuleListPanel} remain unchanged.<br>
      * 5. Browser url, selected card and status bar remain unchanged.<br>
      * Verifications 1, 3 and 4 are performed by
-     * {@code AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.<br>
-     * @see AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)
+     * {@code ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.<br>
+     * @see ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)
      */
     private void assertCommandFailure(String command, String expectedResultMessage) {
         Model expectedModel = getModel();

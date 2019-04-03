@@ -8,8 +8,8 @@ import org.testfx.api.FxToolkit;
 
 import guitests.guihandles.MainWindowHandle;
 import javafx.stage.Stage;
-import seedu.address.TestApp;
-import seedu.address.model.ReadOnlyAddressBook;
+import pwe.planner.TestApp;
+import pwe.planner.model.ReadOnlyApplication;
 
 /**
  * Contains helper methods that system tests require.
@@ -21,12 +21,12 @@ public class SystemTestSetupHelper {
     /**
      * Sets up a new {@code TestApp} and returns it.
      */
-    public TestApp setupApplication(Supplier<ReadOnlyAddressBook> addressBook, Path saveModuleListFileLocation,
+    public TestApp setupApplication(Supplier<ReadOnlyApplication> application, Path saveModuleListFileLocation,
             Path saveDegreePlannerListFileLocation, Path saveRequirementCategoryListFileLocation) {
         try {
             FxToolkit.registerStage(Stage::new);
             FxToolkit.setupApplication(() -> testApp =
-                    new TestApp(addressBook, saveModuleListFileLocation, saveDegreePlannerListFileLocation,
+                    new TestApp(application, saveModuleListFileLocation, saveDegreePlannerListFileLocation,
                             saveRequirementCategoryListFileLocation));
         } catch (TimeoutException te) {
             throw new AssertionError("Application takes too long to set up.", te);
