@@ -55,7 +55,6 @@ public class PlannerRemoveCommand extends Command {
 
         Set<Code> coreqRemoved = new HashSet<>();
         ObservableList<DegreePlanner> degreePlannerList = model.getAddressBook().getDegreePlannerList();
-        ObservableList<Module> modules = model.getAddressBook().getModuleList();
 
         for (DegreePlanner selectedDegreePlanner : degreePlannerList) {
             Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
