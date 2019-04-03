@@ -21,8 +21,7 @@ public class PlannerRemoveCommandParser implements Parser<PlannerRemoveCommand> 
      * @throws ParseException if the user input does not conform the expected format.
      */
     public PlannerRemoveCommand parse(String args) throws ParseException {
-        ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_CODE);
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_CODE);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_CODE)
                 || !argMultimap.getPreamble().isEmpty()) {
