@@ -1,7 +1,6 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR;
@@ -40,12 +39,11 @@ public class PlannerAddCommand extends Command {
             + PREFIX_CODE + "CS2113T "
             + PREFIX_CODE + "CS2100";
 
-    private static final String MESSAGE_SUCCESS = "Added new module(s) to year %1$s semester %2$s of"
-            + " the degree plan: \n%3$s";
-    private static final String COREQ_MESSAGE_SUCCESS = "\nCo-requisite(s) added:\n%1$s";
+    public static final String MESSAGE_SUCCESS = "Added new module(s) to year %1$s semester %2$s of"
+            + " the degree plan: \n%3$s\nCo-requisite(s) added:\n%4$s";
     private static final String MESSAGE_DUPLICATE_CODE = "The module(s) %1$s already exists in the degree plan.";
-    private static final String MESSAGE_MODULE_DOES_NOT_EXIST = "The module(s) %1$s does not exist in the module list.";
-    private static final String MESSAGE_PLAN_DOES_NOT_EXIST = "The degree plan of year %1$s and semester"
+    private static final String MESSAGE_NONEXISTENT_MODULES = "The module(s) %1$s does not exist in the module list.";
+    private static final String MESSAGE_NONEXISTENT_DEGREE_PLANNER = "The degree plan of year %1$s and semester"
             + "%2$s does not exist.";
     private Year yearToAddTo;
     private Semester semesterToAddTo;
@@ -71,7 +69,7 @@ public class PlannerAddCommand extends Command {
                 .getDegreePlannerList().stream().filter(degreePlanner -> (degreePlanner.getYear().equals(yearToAddTo)
                         && degreePlanner.getSemester().equals(semesterToAddTo))).findFirst().orElse(null);
         if (selectedDegreePlanner == null) {
-            throw new CommandException(String.format(MESSAGE_PLAN_DOES_NOT_EXIST, yearToAddTo, semesterToAddTo));
+            throw new CommandException(String.format(MESSAGE_NONEXISTENT_DEGREE_PLANNER, yearToAddTo, semesterToAddTo));
         }
 
         Set<Code> existingPlannerCodes = codesToAdd.stream().filter(code -> model.getAddressBook()
@@ -84,22 +82,19 @@ public class PlannerAddCommand extends Command {
         Set<Code> nonExistentModuleCodes = codesToAdd.stream().filter(code -> !model.hasModuleCode(code))
                 .collect(Collectors.toSet());
         if (nonExistentModuleCodes.size() > 0) {
-            throw new CommandException(String.format(MESSAGE_MODULE_DOES_NOT_EXIST, nonExistentModuleCodes));
+            throw new CommandException(String.format(MESSAGE_NONEXISTENT_MODULES, nonExistentModuleCodes));
         }
 
         Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
-        Set<Code> coreqAdded = new HashSet<>();
         selectedCodeSet.addAll(codesToAdd);
-        for (Code codeToAdd :codesToAdd) {
+        for (Code codeToAdd : codesToAdd) {
             selectedCodeSet.add(codeToAdd);
             //adds Co-requisite(s)
             Module module = model.getModuleByCode(codeToAdd);
-            if (module.getCorequisites().size() > 0) {
-                coreqAdded.addAll(module.getCorequisites());
-                selectedCodeSet.addAll(module.getCorequisites());
-            }
+            selectedCodeSet.addAll(module.getCorequisites());
         }
 
+        Set<Code> coreqAdded = new HashSet<>(selectedCodeSet);
         coreqAdded.removeAll(codesToAdd);
 
         DegreePlanner editedDegreePlanner = new DegreePlanner(yearToAddTo, semesterToAddTo, selectedCodeSet);
@@ -108,9 +103,9 @@ public class PlannerAddCommand extends Command {
 
         if (coreqAdded.size() > 0) {
             return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo,
-                    codesToAdd) + String.format(COREQ_MESSAGE_SUCCESS, coreqAdded));
+                    codesToAdd, coreqAdded));
         } else {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo, codesToAdd));
+            return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo, codesToAdd, "None"));
         }
     }
 
