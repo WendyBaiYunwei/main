@@ -19,7 +19,7 @@ import pwe.planner.logic.commands.ListCommand;
 import pwe.planner.logic.commands.PlannerAddCommand;
 import pwe.planner.logic.commands.PlannerListAllCommand;
 import pwe.planner.logic.commands.PlannerMoveCommand;
-import seedu.address.logic.commands.PlannerRemoveCommand;
+import pwe.planner.logic.commands.PlannerRemoveCommand;
 import pwe.planner.logic.commands.RedoCommand;
 import pwe.planner.logic.commands.RequirementAddCommand;
 import pwe.planner.logic.commands.RequirementListCommand;

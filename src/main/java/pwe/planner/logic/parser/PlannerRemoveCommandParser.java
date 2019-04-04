@@ -1,14 +1,14 @@
-package seedu.address.logic.parser;
+package pwe.planner.logic.parser;
 
-import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_CODE;
+import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
-import seedu.address.logic.commands.PlannerRemoveCommand;
-import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.module.Code;
+import pwe.planner.logic.commands.PlannerRemoveCommand;
+import pwe.planner.logic.parser.exceptions.ParseException;
+import pwe.planner.model.module.Code;
 
 /**
  * Parses input arguments and creates a new PlannerRemoveCommand object.
@@ -42,4 +42,3 @@ public class PlannerRemoveCommandParser implements Parser<PlannerRemoveCommand> 
     }
 
 }
-
