@@ -28,6 +28,7 @@ public class Semester {
     public Semester(String semester) {
         requireNonNull(semester);
         checkArgument(isValidSemester(semester), MESSAGE_SEMESTER_CONSTRAINTS);
+
         plannerSemester = semester;
     }
 
@@ -35,6 +36,8 @@ public class Semester {
      * Returns true if a given string is a valid date.
      */
     public static boolean isValidSemester(String test) {
+        requireNonNull(test);
+
         return test.matches(SEMESTER_VALIDATION_REGEX);
     }
 

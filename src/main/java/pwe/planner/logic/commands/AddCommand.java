@@ -62,6 +62,7 @@ public class AddCommand extends Command {
      */
     public AddCommand(Module module) {
         requireNonNull(module);
+
         toAdd = module;
     }
 

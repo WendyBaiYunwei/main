@@ -1,6 +1,7 @@
 package pwe.planner.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
@@ -49,9 +50,8 @@ public class PlannerAddCommand extends Command {
      * Creates a PlannerAddCommand to add the specified {@code codes} to the degree plan.
      */
     public PlannerAddCommand(Year year, Semester semester, Set<Code> codes) {
-        requireNonNull(year);
-        requireNonNull(semester);
-        requireNonNull(codes);
+        requireAllNonNull(year, semester, codes);
+
         yearToAddTo = year;
         semesterToAddTo = semester;
         codesToAdd = codes;

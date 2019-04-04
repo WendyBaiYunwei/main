@@ -36,6 +36,7 @@ public class Module {
      */
     public Module(Name name, Credits credits, Code code, Set<Tag> tags, Set<Code> corequisites) {
         requireAllNonNull(name, credits, code, tags, corequisites);
+
         this.name = name;
         this.credits = credits;
         this.code = code;

@@ -1,6 +1,7 @@
 package pwe.planner.storage;
 
 import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -31,6 +32,8 @@ public class JsonApplicationStorage implements ApplicationStorage {
 
     public JsonApplicationStorage(Path moduleListFilePath, Path degreePlannerListFilePath,
             Path requirementCategoryListFilePath) {
+        requireAllNonNull(moduleListFilePath, degreePlannerListFilePath, requirementCategoryListFilePath);
+
         this.moduleListFilePath = moduleListFilePath;
         this.degreePlannerListFilePath = degreePlannerListFilePath;
         this.requirementCategoryListFilePath = requirementCategoryListFilePath;
@@ -50,6 +53,8 @@ public class JsonApplicationStorage implements ApplicationStorage {
 
     @Override
     public void saveApplication(ReadOnlyApplication application) throws IOException {
+        requireNonNull(application);
+
         saveModuleList(application, getModuleListFilePath());
         saveDegreePlannerList(application, getDegreePlannerListFilePath());
         saveRequirementCategoryList(application, getRequirementCategoryListFilePath());
@@ -68,9 +73,8 @@ public class JsonApplicationStorage implements ApplicationStorage {
     public Optional<ReadOnlyApplication> readApplication(Path moduleListFilePath, Path degreePlannerListFilePath,
             Path requirementCategoryListFilePath)
             throws DataConversionException {
-        requireNonNull(moduleListFilePath);
-        requireNonNull(degreePlannerListFilePath);
-        requireNonNull(requirementCategoryListFilePath);
+        requireAllNonNull(moduleListFilePath, degreePlannerListFilePath, requirementCategoryListFilePath);
+
         Optional<ObservableList<Module>> optionalModuleObservableList = readModuleList(moduleListFilePath);
         Optional<ObservableList<DegreePlanner>> optionalDegreePlannerObservableList =
                 readDegreePlannerList(degreePlannerListFilePath);
@@ -110,6 +114,7 @@ public class JsonApplicationStorage implements ApplicationStorage {
      */
     public Optional<ObservableList<Module>> readModuleList(Path filePath) throws DataConversionException {
         requireNonNull(filePath);
+
         Optional<JsonSerializableModuleList> jsonAppliction = JsonUtil.readJsonFile(
                 filePath, JsonSerializableApplication.getJsonSerializableModuleListClass());
         if (!jsonAppliction.isPresent()) {
@@ -126,6 +131,8 @@ public class JsonApplicationStorage implements ApplicationStorage {
 
     @Override
     public void saveModuleList(ReadOnlyApplication application) throws IOException {
+        requireNonNull(application);
+
         saveModuleList(application, moduleListFilePath);
     }
 
@@ -133,8 +140,8 @@ public class JsonApplicationStorage implements ApplicationStorage {
      * @param filePath location of the data. Cannot be null.
      */
     public void saveModuleList(ReadOnlyApplication application, Path filePath) throws IOException {
-        requireNonNull(application);
-        requireNonNull(filePath);
+        requireAllNonNull(application, filePath);
+
         FileUtil.createIfMissing(filePath);
         JsonUtil.saveJsonFile(new JsonSerializableModuleList(application), filePath);
     }
@@ -150,6 +157,7 @@ public class JsonApplicationStorage implements ApplicationStorage {
     public Optional<ObservableList<DegreePlanner>> readDegreePlannerList(Path filePath)
             throws DataConversionException {
         requireNonNull(filePath);
+
         Optional<JsonSerializableDegreePlannerList> jsonApplication = JsonUtil.readJsonFile(
                 filePath, JsonSerializableApplication.getJsonSerializableDegreePlannerListClass());
         if (!jsonApplication.isPresent()) {
@@ -167,6 +175,8 @@ public class JsonApplicationStorage implements ApplicationStorage {
     @Override
     public void saveDegreePlannerList(ReadOnlyApplication degreePlannerList)
             throws IOException {
+        requireNonNull(degreePlannerList);
+
         saveDegreePlannerList(degreePlannerList, degreePlannerListFilePath);
     }
 
@@ -175,8 +185,8 @@ public class JsonApplicationStorage implements ApplicationStorage {
      */
     public void saveDegreePlannerList(ReadOnlyApplication application, Path filePath)
             throws IOException {
-        requireNonNull(application);
-        requireNonNull(filePath);
+        requireAllNonNull(application, filePath);
+
         FileUtil.createIfMissing(filePath);
         JsonUtil.saveJsonFile(new JsonSerializableDegreePlannerList(application), filePath);
     }
@@ -192,6 +202,7 @@ public class JsonApplicationStorage implements ApplicationStorage {
     public Optional<ObservableList<RequirementCategory>> readRequirementCategoryList(Path filePath)
             throws DataConversionException {
         requireNonNull(filePath);
+
         Optional<JsonSerializableRequirementCategoryList> jsonApplication = JsonUtil.readJsonFile(
                 filePath, JsonSerializableApplication.getJsonSerializableRequirementCategoryListClass());
         if (!jsonApplication.isPresent()) {
@@ -209,6 +220,8 @@ public class JsonApplicationStorage implements ApplicationStorage {
     @Override
     public void saveRequirementCategoryList(ReadOnlyApplication requirementCategoryList)
             throws IOException {
+        requireNonNull(requirementCategoryList);
+
         saveRequirementCategoryList(requirementCategoryList, requirementCategoryListFilePath);
     }
 
@@ -217,8 +230,8 @@ public class JsonApplicationStorage implements ApplicationStorage {
      */
     public void saveRequirementCategoryList(ReadOnlyApplication application, Path filePath)
             throws IOException {
-        requireNonNull(application);
-        requireNonNull(filePath);
+        requireAllNonNull(application, filePath);
+
         FileUtil.createIfMissing(filePath);
         JsonUtil.saveJsonFile(new JsonSerializableRequirementCategoryList(application), filePath);
     }

@@ -1,9 +1,9 @@
 package pwe.planner.model.module;
 
+import static java.util.Objects.requireNonNull;
+import static pwe.planner.logic.parser.ParserUtil.parseKeyword;
+
 import java.util.List;
-
-import pwe.planner.logic.parser.ParserUtil;
-
 /**
  * Tests that a {@code Module}'s {@code Credit} matches any of the keywords given.
  */
@@ -11,14 +11,17 @@ public class CreditsContainsKeywordsPredicate implements KeywordsPredicate {
     private final List<String> keywords;
 
     public CreditsContainsKeywordsPredicate(List<String> keywords) {
+        requireNonNull(keywords);
+
         this.keywords = keywords;
     }
 
     @Override
     public boolean test(Module module) {
+        requireNonNull(module);
+
         String moduleCredits = module.getCredits().toString();
-        return keywords.stream()
-                .anyMatch(keyword -> ParserUtil.parseKeyword(keyword, moduleCredits));
+        return keywords.stream().anyMatch(keyword -> parseKeyword(keyword, moduleCredits));
     }
 
     @Override

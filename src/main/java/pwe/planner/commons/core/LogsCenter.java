@@ -1,5 +1,7 @@
 package pwe.planner.commons.core;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.ConsoleHandler;
@@ -31,6 +33,8 @@ public class LogsCenter {
      * is requested again from the LogsCenter.
      */
     public static void init(Config config) {
+        requireNonNull(config);
+
         currentLogLevel = config.getLogLevel();
         logger.info("currentLogLevel: " + currentLogLevel);
     }
@@ -39,6 +43,8 @@ public class LogsCenter {
      * Creates a logger with the given name.
      */
     public static Logger getLogger(String name) {
+        requireNonNull(name);
+
         Logger logger = Logger.getLogger(name);
         logger.setUseParentHandlers(false);
 
@@ -53,6 +59,8 @@ public class LogsCenter {
      * Creates a Logger for the given class name.
      */
     public static <T> Logger getLogger(Class<T> clazz) {
+        requireNonNull(clazz);
+
         if (clazz == null) {
             return Logger.getLogger("");
         }
@@ -64,6 +72,8 @@ public class LogsCenter {
      * Creates the {@code consoleHandler} if it is null.
      */
     private static void addConsoleHandler(Logger logger) {
+        assert logger != null;
+
         if (consoleHandler == null) {
             consoleHandler = createConsoleHandler();
         }
@@ -74,6 +84,8 @@ public class LogsCenter {
      * Remove all the handlers from {@code logger}.
      */
     private static void removeHandlers(Logger logger) {
+        assert logger != null;
+
         Arrays.stream(logger.getHandlers())
                 .forEach(logger::removeHandler);
     }
@@ -83,6 +95,8 @@ public class LogsCenter {
      * Creates {@code fileHandler} if it is null.
      */
     private static void addFileHandler(Logger logger) {
+        assert logger != null;
+
         try {
             if (fileHandler == null) {
                 fileHandler = createFileHandler();

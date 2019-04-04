@@ -29,6 +29,7 @@ public class Code {
     public Code(String code) {
         requireNonNull(code);
         checkArgument(isValidCode(code), MESSAGE_CONSTRAINTS);
+
         value = code;
     }
 
@@ -36,6 +37,8 @@ public class Code {
      * Returns true if a given string is a valid code.
      */
     public static boolean isValidCode(String test) {
+        requireNonNull(test);
+
         return test.matches(VALIDATION_REGEX);
     }
 

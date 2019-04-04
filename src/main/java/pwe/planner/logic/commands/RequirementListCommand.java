@@ -22,6 +22,7 @@ public class RequirementListCommand extends Command {
 
     @Override public CommandResult execute(Model model, CommandHistory history) {
         requireNonNull(model);
+
         model.updateFilteredRequirementCategoryList(PREDICATE_SHOW_ALL_REQUIREMENT_CATEGORIES);
         StringBuilder requirementListContent = new StringBuilder();
 

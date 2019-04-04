@@ -29,6 +29,8 @@ public class UserPrefs implements ReadOnlyUserPrefs {
      */
     public UserPrefs(ReadOnlyUserPrefs userPrefs) {
         this();
+        requireNonNull(userPrefs);
+
         resetData(userPrefs);
     }
 
@@ -37,6 +39,7 @@ public class UserPrefs implements ReadOnlyUserPrefs {
      */
     public void resetData(ReadOnlyUserPrefs newUserPrefs) {
         requireNonNull(newUserPrefs);
+
         setGuiSettings(newUserPrefs.getGuiSettings());
         setModuleListFilePath(newUserPrefs.getModuleListFilePath());
         setDegreePlannerListFilePath(newUserPrefs.getDegreePlannerListFilePath());
@@ -50,6 +53,7 @@ public class UserPrefs implements ReadOnlyUserPrefs {
 
     public void setGuiSettings(GuiSettings guiSettings) {
         requireNonNull(guiSettings);
+
         this.guiSettings = guiSettings;
     }
 
@@ -59,6 +63,7 @@ public class UserPrefs implements ReadOnlyUserPrefs {
 
     public void setModuleListFilePath(Path moduleListFilePath) {
         requireNonNull(moduleListFilePath);
+
         this.moduleListFilePath = moduleListFilePath;
     }
 
@@ -68,6 +73,7 @@ public class UserPrefs implements ReadOnlyUserPrefs {
 
     public void setDegreePlannerListFilePath(Path degreePlannerListFilePath) {
         requireNonNull(degreePlannerListFilePath);
+
         this.degreePlannerListFilePath = degreePlannerListFilePath;
     }
 
@@ -77,6 +83,7 @@ public class UserPrefs implements ReadOnlyUserPrefs {
 
     public void setRequirementCategoryListFilePath(Path requirementCategoryListFilePath) {
         requireNonNull(requirementCategoryListFilePath);
+
         this.requirementCategoryListFilePath = requirementCategoryListFilePath;
     }
 

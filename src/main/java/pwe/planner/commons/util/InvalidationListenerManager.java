@@ -21,6 +21,8 @@ public class InvalidationListenerManager {
      * @param observable The {@code Observable} that became invalid.
      */
     public void callListeners(Observable observable) {
+        requireNonNull(observable);
+
         // Make a copy of listeners such that any modifications to the listeners list during
         // the invocation of this method will only take effect on the next invocation of this method.
         ArrayList<InvalidationListener> listenersCopy = new ArrayList<>(listeners);
@@ -36,6 +38,7 @@ public class InvalidationListenerManager {
      */
     public void addListener(InvalidationListener listener) {
         requireNonNull(listener);
+
         listeners.add(listener);
     }
 
@@ -46,6 +49,7 @@ public class InvalidationListenerManager {
      */
     public void removeListener(InvalidationListener listener) {
         requireNonNull(listener);
+
         listeners.remove(listener);
     }
 

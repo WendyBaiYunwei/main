@@ -27,6 +27,7 @@ public class DegreePlanner {
      */
     public DegreePlanner(Year year, Semester semester, Set<Code> codes) {
         requireAllNonNull(year, semester, codes);
+
         this.year = year;
         this.semester = semester;
         this.codes.addAll(codes);

@@ -1,6 +1,7 @@
 package pwe.planner.commons.util;
 
 import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -45,6 +46,8 @@ public class JsonUtil {
 
     static <T> T deserializeObjectFromJsonFile(Path jsonFile, Class<T> classOfObjectToDeserialize)
             throws IOException {
+        requireAllNonNull(jsonFile, classOfObjectToDeserialize);
+
         return fromJsonString(FileUtil.readFromFile(jsonFile), classOfObjectToDeserialize);
     }
 
@@ -57,7 +60,7 @@ public class JsonUtil {
      */
     public static <T> Optional<T> readJsonFile(
             Path filePath, Class<T> classOfObjectToDeserialize) throws DataConversionException {
-        requireNonNull(filePath);
+        requireAllNonNull(filePath, classOfObjectToDeserialize);
 
         if (!Files.exists(filePath)) {
             logger.info("Json file " + filePath + " not found");
@@ -84,8 +87,7 @@ public class JsonUtil {
      * @throws IOException if there was an error during writing to the file
      */
     public static <T> void saveJsonFile(T jsonFile, Path filePath) throws IOException {
-        requireNonNull(filePath);
-        requireNonNull(jsonFile);
+        requireAllNonNull(filePath, jsonFile);
 
         serializeObjectToJsonFile(filePath, jsonFile);
     }
@@ -97,6 +99,8 @@ public class JsonUtil {
      * @return The instance of T with the specified values in the JSON string
      */
     public static <T> T fromJsonString(String json, Class<T> instanceClass) throws IOException {
+        requireAllNonNull(json, instanceClass);
+
         return objectMapper.readValue(json, instanceClass);
     }
 
@@ -107,6 +111,8 @@ public class JsonUtil {
      * @return JSON data representation of the given class instance, in string
      */
     public static <T> String toJsonString(T instance) throws JsonProcessingException {
+        requireNonNull(instance);
+
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(instance);
     }
 
@@ -121,6 +127,8 @@ public class JsonUtil {
 
         @Override
         protected Level _deserialize(String value, DeserializationContext ctxt) {
+            requireNonNull(value);
+
             return getLoggingLevel(value);
         }
 
@@ -131,6 +139,8 @@ public class JsonUtil {
          *
          */
         private Level getLoggingLevel(String loggingLevelString) {
+            requireNonNull(loggingLevelString);
+
             return Level.parse(loggingLevelString);
         }
 

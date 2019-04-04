@@ -51,6 +51,7 @@ public class PlannerMoveCommand extends Command {
      */
     public PlannerMoveCommand(Year year, Semester semester, Code code) {
         requireAllNonNull(year, semester, code);
+
         this.destinationYear = year;
         this.destinationSemester = semester;
         this.toMove = code;
@@ -59,6 +60,7 @@ public class PlannerMoveCommand extends Command {
     @Override
     public CommandResult execute(Model model, CommandHistory history) throws CommandException {
         requireNonNull(model);
+
         DegreePlanner toFind = new DegreePlanner(destinationYear, destinationSemester, Collections.emptySet());
         DegreePlanner sourcePlanner = model.getDegreePlannerByCode(toMove);
         DegreePlanner destinationPlanner = model.getApplication().getDegreePlannerList().stream()

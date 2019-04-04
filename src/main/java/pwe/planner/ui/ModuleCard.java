@@ -1,5 +1,7 @@
 package pwe.planner.ui;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -44,6 +46,8 @@ public class ModuleCard extends UiPart<Region> {
 
     public ModuleCard(Module module, int displayedIndex) {
         super(FXML);
+        requireNonNull(module);
+
         this.module = module;
         id.setText(displayedIndex + ". ");
         name.setText(module.getName().fullName);

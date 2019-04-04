@@ -1,5 +1,6 @@
 package pwe.planner.logic.parser;
 
+import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static pwe.planner.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
 
@@ -31,7 +32,7 @@ import pwe.planner.logic.parser.exceptions.ParseException;
 /**
  * Parses user input.
  */
-public class ApplicationParser {
+public class CommandParser {
 
     /**
      * Used for initial separation of command word and args.
@@ -46,6 +47,8 @@ public class ApplicationParser {
      * @throws ParseException if the user input does not conform the expected format
      */
     public Command parseCommand(String userInput) throws ParseException {
+        requireNonNull(userInput);
+
         final Matcher matcher = BASIC_COMMAND_FORMAT.matcher(userInput.trim());
         if (!matcher.matches()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE));
@@ -116,5 +119,4 @@ public class ApplicationParser {
             throw new ParseException(MESSAGE_UNKNOWN_COMMAND);
         }
     }
-
 }

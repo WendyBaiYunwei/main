@@ -1,5 +1,7 @@
 package pwe.planner.ui;
 
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.util.Comparator;
 import java.util.stream.Stream;
 
@@ -37,6 +39,8 @@ public class RequirementCategoryCard extends UiPart<Region> {
 
     public RequirementCategoryCard(RequirementCategory requirementCategory, ObservableList<Module> moduleList) {
         super(FXML);
+        requireAllNonNull(requirementCategory, moduleList);
+
         this.requirementCategory = requirementCategory;
 
         requirementCategoryName.setText(requirementCategory.getName().fullName);

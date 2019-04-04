@@ -1,5 +1,7 @@
 package pwe.planner.commons.core;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,6 +54,8 @@ public class Version implements Comparable<Version> {
      */
     @JsonCreator
     public static Version fromString(String versionString) throws IllegalArgumentException {
+        requireNonNull(versionString);
+
         Matcher versionMatcher = VERSION_PATTERN.matcher(versionString);
 
         if (!versionMatcher.find()) {
@@ -71,6 +75,8 @@ public class Version implements Comparable<Version> {
 
     @Override
     public int compareTo(Version other) {
+        requireNonNull(other);
+
         if (major != other.major) {
             return major - other.major;
         }

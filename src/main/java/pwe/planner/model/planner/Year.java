@@ -28,6 +28,7 @@ public class Year {
     public Year(String year) {
         requireNonNull(year);
         checkArgument(isValidYear(year), MESSAGE_YEAR_CONSTRAINTS);
+
         this.year = year;
     }
 
@@ -35,6 +36,8 @@ public class Year {
      * Returns true if a given string is a valid year.
      */
     public static boolean isValidYear(String test) {
+        requireNonNull(test);
+
         return test.matches(YEAR_VALIDATION_REGEX);
     }
 

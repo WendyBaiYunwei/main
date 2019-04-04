@@ -21,6 +21,7 @@ public class HistoryCommand extends Command {
     @Override
     public CommandResult execute(Model model, CommandHistory history) {
         requireNonNull(history);
+
         ObservableList<String> commandHistory = history.getHistory();
 
         if (commandHistory.isEmpty()) {

@@ -1,7 +1,10 @@
 package pwe.planner.logic.parser;
 
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +27,8 @@ public class ArgumentTokenizer {
      * @return           ArgumentMultimap object that maps prefixes to their arguments
      */
     public static ArgumentMultimap tokenize(String argsString, Prefix... prefixes) {
+        requireAllNonNull(argsString, prefixes);
+
         List<PrefixPosition> positions = findAllPrefixPositions(argsString, prefixes);
         return extractArguments(argsString, positions);
     }
@@ -36,6 +41,9 @@ public class ArgumentTokenizer {
      * @return           List of zero-based prefix positions in the given arguments string
      */
     private static List<PrefixPosition> findAllPrefixPositions(String argsString, Prefix... prefixes) {
+        assert argsString != null;
+        assert prefixes != null;
+
         return Arrays.stream(prefixes)
                 .flatMap(prefix -> findPrefixPositions(argsString, prefix).stream())
                 .collect(Collectors.toList());
@@ -45,6 +53,9 @@ public class ArgumentTokenizer {
      * {@see findAllPrefixPositions}
      */
     private static List<PrefixPosition> findPrefixPositions(String argsString, Prefix prefix) {
+        assert argsString != null;
+        assert prefix != null;
+
         List<PrefixPosition> positions = new ArrayList<>();
 
         int prefixPosition = findPrefixPosition(argsString, prefix.getPrefix(), 0);
@@ -70,6 +81,9 @@ public class ArgumentTokenizer {
      * {@code fromIndex} = 0, this method returns 5.
      */
     private static int findPrefixPosition(String argsString, String prefix, int fromIndex) {
+        assert argsString != null;
+        assert prefix != null;
+
         int prefixIndex = argsString.indexOf(" " + prefix, fromIndex);
         return prefixIndex == -1 ? -1
                 : prefixIndex + 1; // +1 as offset for whitespace
@@ -85,9 +99,11 @@ public class ArgumentTokenizer {
      * @return                ArgumentMultimap object that maps prefixes to their arguments
      */
     private static ArgumentMultimap extractArguments(String argsString, List<PrefixPosition> prefixPositions) {
+        assert argsString != null;
+        assert prefixPositions != null;
 
         // Sort by start position
-        prefixPositions.sort((prefix1, prefix2) -> prefix1.getStartPosition() - prefix2.getStartPosition());
+        prefixPositions.sort(Comparator.comparingInt(PrefixPosition::getStartPosition));
 
         // Insert a PrefixPosition to represent the preamble
         PrefixPosition preambleMarker = new PrefixPosition(new Prefix(""), 0);
@@ -116,6 +132,10 @@ public class ArgumentTokenizer {
     private static String extractArgumentValue(String argsString,
                                         PrefixPosition currentPrefixPosition,
                                         PrefixPosition nextPrefixPosition) {
+        assert argsString != null;
+        assert currentPrefixPosition != null;
+        assert nextPrefixPosition != null;
+
         Prefix prefix = currentPrefixPosition.getPrefix();
 
         int valueStartPos = currentPrefixPosition.getStartPosition() + prefix.getPrefix().length();
@@ -132,6 +152,8 @@ public class ArgumentTokenizer {
         private final Prefix prefix;
 
         PrefixPosition(Prefix prefix, int startPosition) {
+            requireAllNonNull(prefix, startPosition);
+
             this.prefix = prefix;
             this.startPosition = startPosition;
         }

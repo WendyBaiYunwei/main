@@ -6,6 +6,9 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
 import static pwe.planner.logic.parser.ParserUtil.arePrefixesPresent;
+import static pwe.planner.logic.parser.ParserUtil.parseCode;
+import static pwe.planner.logic.parser.ParserUtil.parseSemester;
+import static pwe.planner.logic.parser.ParserUtil.parseYear;
 
 import pwe.planner.logic.commands.PlannerMoveCommand;
 import pwe.planner.logic.parser.exceptions.ParseException;
@@ -25,6 +28,7 @@ public class PlannerMoveCommandParser implements Parser<PlannerMoveCommand> {
      */
     public PlannerMoveCommand parse(String args) throws ParseException {
         requireNonNull(args);
+
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_YEAR, PREFIX_SEMESTER, PREFIX_CODE);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_YEAR, PREFIX_SEMESTER, PREFIX_CODE)
@@ -32,9 +36,9 @@ public class PlannerMoveCommandParser implements Parser<PlannerMoveCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, PlannerMoveCommand.MESSAGE_USAGE));
         }
 
-        Year year = ParserUtil.parseYear(argMultimap.getValue(PREFIX_YEAR).get());
-        Semester semester = ParserUtil.parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
-        Code code = ParserUtil.parseCode(argMultimap.getValue(PREFIX_CODE).get());
+        Year year = parseYear(argMultimap.getValue(PREFIX_YEAR).get());
+        Semester semester = parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
+        Code code = parseCode(argMultimap.getValue(PREFIX_CODE).get());
 
         return new PlannerMoveCommand(year, semester, code);
     }

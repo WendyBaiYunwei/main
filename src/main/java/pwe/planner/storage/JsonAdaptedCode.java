@@ -1,5 +1,7 @@
 package pwe.planner.storage;
 
+import static java.util.Objects.requireNonNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -18,6 +20,8 @@ public class JsonAdaptedCode {
      */
     @JsonCreator
     public JsonAdaptedCode(String codeValue) {
+        requireNonNull(codeValue);
+
         this.codeValue = codeValue;
     }
 
@@ -25,6 +29,8 @@ public class JsonAdaptedCode {
      * Converts a given {@code Tag} into this class for Jackson use.
      */
     public JsonAdaptedCode(Code source) {
+        requireNonNull(source);
+
         codeValue = source.value;
     }
 

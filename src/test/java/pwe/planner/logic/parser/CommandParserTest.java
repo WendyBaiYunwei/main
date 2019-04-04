@@ -48,11 +48,11 @@ import pwe.planner.testutil.ModuleBuilder;
 import pwe.planner.testutil.ModuleUtil;
 import pwe.planner.testutil.RequirementUtil;
 
-public class ApplicationParserTest {
+public class CommandParserTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private final ApplicationParser parser = new ApplicationParser();
+    private final CommandParser parser = new CommandParser();
 
     @Test
     public void parseCommand_add() throws Exception {

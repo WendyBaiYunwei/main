@@ -22,6 +22,7 @@ public class Credits {
     public Credits(String credits) {
         requireNonNull(credits);
         checkArgument(isValidCredits(credits), MESSAGE_CONSTRAINTS);
+
         value = credits;
     }
 
@@ -29,6 +30,8 @@ public class Credits {
      * Returns true if a given string is a valid amount of credits.
      */
     public static boolean isValidCredits(String test) {
+        requireNonNull(test);
+
         return test.matches(VALIDATION_REGEX);
     }
 

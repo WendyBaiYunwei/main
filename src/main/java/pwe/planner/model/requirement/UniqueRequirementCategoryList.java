@@ -40,6 +40,7 @@ public class UniqueRequirementCategoryList implements Iterable<RequirementCatego
      */
     public boolean contains(Name toCheck) {
         requireNonNull(toCheck);
+
         return internalList.stream().map(RequirementCategory::getName).anyMatch(toCheck::equals);
     }
 
@@ -48,6 +49,7 @@ public class UniqueRequirementCategoryList implements Iterable<RequirementCatego
      */
     public boolean contains(RequirementCategory toCheck) {
         requireNonNull(toCheck);
+
         return internalList.stream().anyMatch(toCheck::isSameRequirementCategory);
     }
 
@@ -69,6 +71,7 @@ public class UniqueRequirementCategoryList implements Iterable<RequirementCatego
      */
     public void add(RequirementCategory toAdd) {
         requireNonNull(toAdd);
+
         if (contains(toAdd)) {
             throw new DuplicateRequirementCategoryException();
         }
@@ -103,6 +106,7 @@ public class UniqueRequirementCategoryList implements Iterable<RequirementCatego
      */
     public void remove(RequirementCategory toRemove) {
         requireNonNull(toRemove);
+
         if (!internalList.remove(toRemove)) {
             throw new RequirementCategoryNotFoundException();
         }
@@ -110,6 +114,7 @@ public class UniqueRequirementCategoryList implements Iterable<RequirementCatego
 
     public void setRequirementCategories(UniqueRequirementCategoryList replacement) {
         requireNonNull(replacement);
+
         internalList.setAll(replacement.internalList);
     }
 
@@ -119,6 +124,7 @@ public class UniqueRequirementCategoryList implements Iterable<RequirementCatego
      */
     public void setRequirementCategories(List<RequirementCategory> requirementCategories) {
         requireAllNonNull(requirementCategories);
+
         if (!requirementCategoriesAreUnique(requirementCategories)) {
             throw new DuplicateRequirementCategoryException();
         }

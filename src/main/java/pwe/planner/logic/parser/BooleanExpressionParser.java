@@ -1,11 +1,15 @@
 package pwe.planner.logic.parser;
 
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
 import static pwe.planner.logic.parser.Operator.applyOperator;
 import static pwe.planner.logic.parser.Operator.getOperatorFromString;
+import static pwe.planner.logic.parser.ParserUtil.parseCode;
+import static pwe.planner.logic.parser.ParserUtil.parseCredits;
+import static pwe.planner.logic.parser.ParserUtil.parseName;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -29,21 +33,21 @@ public class BooleanExpressionParser {
     private static final String WHITESPACE = " ";
 
     private static KeywordsPredicate getKeywordsPredicate(String args) throws ParseException {
-        ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_CODE, PREFIX_CREDITS);
+        assert args != null;
+
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_CODE, PREFIX_CREDITS);
         KeywordsPredicate predicate = null;
         if (argMultimap.getValue(PREFIX_NAME).isPresent()) {
-            String nameKeyword = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get()).toString();
+            String nameKeyword = parseName(argMultimap.getValue(PREFIX_NAME).get()).toString();
             predicate = new NameContainsKeywordsPredicate(List.of(nameKeyword));
         } else if (argMultimap.getValue(PREFIX_CODE).isPresent()) {
-            String codeKeyword = ParserUtil.parseCode(argMultimap.getValue(PREFIX_CODE).get()).toString();
+            String codeKeyword = parseCode(argMultimap.getValue(PREFIX_CODE).get()).toString();
             predicate = new CodeContainsKeywordsPredicate(List.of(codeKeyword));
         } else if (argMultimap.getValue(PREFIX_CREDITS).isPresent()) {
-            String creditKeyword = ParserUtil.parseCredits(argMultimap.getValue(PREFIX_CREDITS).get()).toString();
+            String creditKeyword = parseCredits(argMultimap.getValue(PREFIX_CREDITS).get()).toString();
             predicate = new CreditsContainsKeywordsPredicate(List.of(creditKeyword));
         } else {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
         return predicate;
     }
@@ -57,6 +61,8 @@ public class BooleanExpressionParser {
      * @return a composite predicate
      */
     public static Predicate<Module> parse(String stringToTokenize, List<Prefix> prefixes) throws ParseException {
+        requireAllNonNull(stringToTokenize, prefixes);
+
         BooleanExpressionTokenizer tokenizer = new BooleanExpressionTokenizer(stringToTokenize, prefixes);
 
         Deque<Predicate<Module>> output = new ArrayDeque<>();
@@ -120,8 +126,7 @@ public class BooleanExpressionParser {
         // Output stack cannot have more than 1 predicate after shunting yard.
         // i.e. There is 2 predicate in an expression without a operator.
         if (output.size() > 1) {
-            throw new ParseException(
-                    String.format(FindCommand.MESSAGE_INVALID_EXPRESSION, FindCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(FindCommand.MESSAGE_INVALID_EXPRESSION, FindCommand.MESSAGE_USAGE));
         }
 
         assert output.size() == 1 : "output.size() should be 1.";

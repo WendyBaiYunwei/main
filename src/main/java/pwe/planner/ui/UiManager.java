@@ -1,13 +1,15 @@
 package pwe.planner.ui;
 
+import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.AppUtil.getImage;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.util.logging.Logger;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import pwe.planner.MainApp;
 import pwe.planner.commons.core.LogsCenter;
 import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.Logic;
@@ -27,11 +29,15 @@ public class UiManager implements Ui {
 
     public UiManager(Logic logic) {
         super();
+        requireNonNull(logic);
+
         this.logic = logic;
     }
 
     @Override
     public void start(Stage primaryStage) {
+        requireNonNull(primaryStage);
+
         logger.info("Starting UI...");
 
         //Set the application icon.
@@ -48,11 +54,9 @@ public class UiManager implements Ui {
         }
     }
 
-    private Image getImage(String imagePath) {
-        return new Image(MainApp.class.getResourceAsStream(imagePath));
-    }
-
     void showAlertDialogAndWait(Alert.AlertType type, String title, String headerText, String contentText) {
+        requireAllNonNull(type, title, headerText, contentText);
+
         showAlertDialogAndWait(mainWindow.getPrimaryStage(), type, title, headerText, contentText);
     }
 
@@ -62,6 +66,11 @@ public class UiManager implements Ui {
      */
     private static void showAlertDialogAndWait(Stage owner, AlertType type, String title, String headerText,
             String contentText) {
+        assert owner != null;
+        assert type != null;
+        assert title != null;
+        assert headerText != null;
+
         final Alert alert = new Alert(type);
         alert.getDialogPane().getStylesheets().add("view/DarkTheme.css");
         alert.initOwner(owner);
@@ -77,6 +86,9 @@ public class UiManager implements Ui {
      * and exits the application after the user has closed the alert dialog.
      */
     private void showFatalErrorDialogAndShutdown(String title, Throwable e) {
+        assert title != null;
+        assert e != null;
+
         logger.severe(title + " " + e.getMessage() + StringUtil.getDetails(e));
         showAlertDialogAndWait(Alert.AlertType.ERROR, title, e.getMessage(), e.toString());
         Platform.exit();

@@ -1,6 +1,7 @@
 package pwe.planner.logic.parser;
 
 import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,12 +25,13 @@ public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
 
-
     /**
      * Returns true if none of the prefixes contains empty {@code Optional} values in the given
      * {@code ArgumentMultimap}.
      */
     public static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
+        requireAllNonNull(argumentMultimap, prefixes);
+
         return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
     }
 
@@ -40,6 +42,8 @@ public class ParserUtil {
      * @throws ParseException if the specified index is invalid (not non-zero unsigned integer).
      */
     public static Index parseIndex(String oneBasedIndex) throws ParseException {
+        requireNonNull(oneBasedIndex);
+
         String trimmedIndex = oneBasedIndex.trim();
         if (!StringUtil.isNonZeroUnsignedInteger(trimmedIndex)) {
             throw new ParseException(MESSAGE_INVALID_INDEX);
@@ -55,6 +59,7 @@ public class ParserUtil {
      */
     public static Name parseName(String name) throws ParseException {
         requireNonNull(name);
+
         String trimmedName = name.trim();
         if (!Name.isValidName(trimmedName)) {
             throw new ParseException(Name.MESSAGE_CONSTRAINTS);
@@ -70,6 +75,7 @@ public class ParserUtil {
      */
     public static Credits parseCredits(String credits) throws ParseException {
         requireNonNull(credits);
+
         String trimmedCredits = credits.trim();
         if (!Credits.isValidCredits(trimmedCredits)) {
             throw new ParseException(Credits.MESSAGE_CONSTRAINTS);
@@ -85,6 +91,7 @@ public class ParserUtil {
      */
     public static Code parseCode(String code) throws ParseException {
         requireNonNull(code);
+
         String trimmedCode = code.trim();
         if (!Code.isValidCode(trimmedCode)) {
             throw new ParseException(Code.MESSAGE_CONSTRAINTS);
@@ -100,6 +107,7 @@ public class ParserUtil {
      */
     public static Year parseYear(String year) throws ParseException {
         requireNonNull(year);
+
         String trimmedYear = year.trim();
         if (!Year.isValidYear(trimmedYear)) {
             throw new ParseException(Year.MESSAGE_YEAR_CONSTRAINTS);
@@ -115,6 +123,7 @@ public class ParserUtil {
      */
     public static Semester parseSemester(String semester) throws ParseException {
         requireNonNull(semester);
+
         String trimmedSemester = semester.trim();
         if (!Semester.isValidSemester(trimmedSemester)) {
             throw new ParseException(Semester.MESSAGE_SEMESTER_CONSTRAINTS);
@@ -130,6 +139,7 @@ public class ParserUtil {
      */
     public static Tag parseTag(String tag) throws ParseException {
         requireNonNull(tag);
+
         String trimmedTag = tag.trim();
         if (!Tag.isValidTagName(trimmedTag)) {
             throw new ParseException(Tag.MESSAGE_CONSTRAINTS);
@@ -142,6 +152,7 @@ public class ParserUtil {
      */
     public static Set<Tag> parseTags(Collection<String> tags) throws ParseException {
         requireNonNull(tags);
+
         final Set<Tag> tagSet = new HashSet<>();
         for (String tagName : tags) {
             tagSet.add(parseTag(tagName));
@@ -154,6 +165,7 @@ public class ParserUtil {
      */
     public static Set<Code> parseCodes(Collection<String> codes) throws ParseException {
         requireNonNull(codes);
+
         final Set<Code> codeList = new HashSet<>();
         for (String code : codes) {
             codeList.add(parseCode(code));
@@ -183,6 +195,8 @@ public class ParserUtil {
      * </pre>
      */
     public static boolean parseKeyword(String keyword, String compareTo) {
+        requireAllNonNull(keyword, compareTo);
+
         if (keyword.split("\\s+").length == 1) {
             return StringUtil.containsWordIgnoreCase(compareTo, keyword);
         } else {

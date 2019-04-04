@@ -1,5 +1,7 @@
 package pwe.planner.ui;
 
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
@@ -26,6 +28,8 @@ public class ModuleListPanel extends UiPart<Region> {
     public ModuleListPanel(ObservableList<Module> moduleList, ObservableValue<Module> selectedModule,
             Consumer<Module> onSelectedModuleChange) {
         super(FXML);
+        requireAllNonNull(moduleList, selectedModule, onSelectedModuleChange);
+
         moduleListView.setItems(moduleList);
         moduleListView.setCellFactory(listView -> new ModuleListViewCell());
         moduleListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
