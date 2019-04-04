@@ -74,53 +74,54 @@ public class PlannerAddCommand extends Command {
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_DEGREE_PLANNER, yearToAddTo, semesterToAddTo));
         }
 
-        Set<Code> duplicatePlannerCodes = codesToAdd.stream().filter(code -> model.getApplication()
-                .getDegreePlannerList().stream()
-                .map(DegreePlanner::getCodes).anyMatch(codes -> codes.contains(code))).collect(Collectors.toSet());
+        Set<Code> duplicatePlannerCodes = codesToAdd.stream().filter(codesToCheck -> model.getApplication()
+                .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
+                .anyMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(codesToCheck)))
+                .collect(Collectors.toSet());
         if (duplicatePlannerCodes.size() > 0) {
             throw new CommandException(String.format(MESSAGE_DUPLICATE_CODE, duplicatePlannerCodes));
         }
 
-        Set<Code> nonExistentModuleCodes = codesToAdd.stream().filter(code -> !model.hasModuleCode(code))
-                .collect(Collectors.toSet());
+        Set<Code> nonExistentModuleCodes = codesToAdd.stream()
+                .filter(codesToCheck -> !model.hasModuleCode(codesToCheck)).collect(Collectors.toSet());
         if (nonExistentModuleCodes.size() > 0) {
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_MODULES, nonExistentModuleCodes));
         }
 
         Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
-        Set<Code> coreqAdded = new HashSet<>();
+        Set<Code> coreqsAdded = new HashSet<>();
         for (Code codeToAdd : codesToAdd) {
             selectedCodeSet.add(codeToAdd);
-            // Adds Co-requisite(s)
+            // Adds Co-requisite(s).
             Module module = model.getModuleByCode(codeToAdd);
-            // Returns relevant Co-requisite(s) that already exists in the entire degree plan.
-            Set<Code> duplicateCoreq = module.getCorequisites().stream().filter(code -> model.getApplication()
+            // Returns the relevant duplicate Co-requisite(s) in the entire degree plan.
+            Set<Code> duplicateCoreqs = module.getCorequisites().stream().filter(coreqToCheck -> model.getApplication()
                     .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
-                    .anyMatch(codes -> codes.contains(code))).collect(Collectors.toSet());
-            Set<Code> duplicateCoreqCopy = new HashSet<>(duplicateCoreq);
-            // Returns the relevant Co-requisite(s) that exists in a different section.
-            duplicateCoreqCopy.removeAll(selectedDegreePlanner.getCodes());
-            if (duplicateCoreqCopy.size() > 0) {
-                throw new CommandException(String.format(MESSAGE_DUPLICATE_COREQ, duplicateCoreqCopy, codesToAdd));
+                    .anyMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(coreqToCheck)))
+                    .collect(Collectors.toSet());
+            Set<Code> invalidDuplicateCoreq = new HashSet<>(duplicateCoreqs);
+            // Returns the invalid duplicate Co-requisite(s) that exists in a different section of the degree plan.
+            invalidDuplicateCoreq.removeAll(selectedDegreePlanner.getCodes());
+            if (invalidDuplicateCoreq.size() > 0) {
+                throw new CommandException(String.format(MESSAGE_DUPLICATE_COREQ, invalidDuplicateCoreq, codesToAdd));
             }
-            coreqAdded.addAll(module.getCorequisites());
-            // Returns the valid duplicate Co-requisite(s).
-            duplicateCoreq.retainAll(selectedDegreePlanner.getCodes());
-            coreqAdded.removeAll(duplicateCoreq);
-            selectedCodeSet.addAll(coreqAdded);
+            coreqsAdded.addAll(module.getCorequisites());
+            // Returns the valid duplicate Co-requisite(s) that exists in the selected section of the degree plan.
+            duplicateCoreqs.retainAll(selectedDegreePlanner.getCodes());
+            coreqsAdded.removeAll(duplicateCoreqs);
+            selectedCodeSet.addAll(coreqsAdded);
         }
-
-        coreqAdded.removeAll(codesToAdd);
 
         DegreePlanner editedDegreePlanner = new DegreePlanner(yearToAddTo, semesterToAddTo, selectedCodeSet);
         model.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
         model.commitApplication();
 
-        if (coreqAdded.size() > 0) {
+        if (coreqsAdded.size() > 0) {
             return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo,
-                    codesToAdd, coreqAdded));
+                    codesToAdd, coreqsAdded));
         } else {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo, codesToAdd, "None"));
+            return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo, codesToAdd,
+                    "None"));
         }
     }
 
