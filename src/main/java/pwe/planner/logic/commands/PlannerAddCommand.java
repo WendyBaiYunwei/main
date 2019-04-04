@@ -91,23 +91,20 @@ public class PlannerAddCommand extends Command {
         Set<Code> coreqAdded = new HashSet<>();
         for (Code codeToAdd : codesToAdd) {
             selectedCodeSet.add(codeToAdd);
-            //Adds Co-requisite(s)
+            // Adds Co-requisite(s)
             Module module = model.getModuleByCode(codeToAdd);
-            //Returns relevant Co-requisite(s) that already exists in the entire degree plan.
+            // Returns relevant Co-requisite(s) that already exists in the entire degree plan.
             Set<Code> duplicateCoreq = module.getCorequisites().stream().filter(code -> model.getApplication()
                     .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                     .anyMatch(codes -> codes.contains(code))).collect(Collectors.toSet());
             Set<Code> duplicateCoreqCopy = new HashSet<>(duplicateCoreq);
-            //Returns the relevant Co-requisite(s) that exists in a different section.
-            //In cases where relevant Co-requisite(s) exists in the same section of the degree plan as the selected
-            //section does, addition of these module(s) is allowed. Addition to a different section,
-            //however, is not allowed.
+            // Returns the relevant Co-requisite(s) that exists in a different section.
             duplicateCoreqCopy.removeAll(selectedDegreePlanner.getCodes());
             if (duplicateCoreqCopy.size() > 0) {
                 throw new CommandException(String.format(MESSAGE_DUPLICATE_COREQ, duplicateCoreqCopy, codesToAdd));
             }
             coreqAdded.addAll(module.getCorequisites());
-            //Returns the valid duplicate Co-requisite(s).
+            // Returns the valid duplicate Co-requisite(s).
             duplicateCoreq.retainAll(selectedDegreePlanner.getCodes());
             coreqAdded.removeAll(duplicateCoreq);
             selectedCodeSet.addAll(coreqAdded);
