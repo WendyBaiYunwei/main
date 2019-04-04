@@ -41,7 +41,7 @@ image::Ui.png[width="800"]
 e.g. typing *`help`* and pressing kbd:[Enter] will open the help window.
 .  Below are some example commands you can try:
 * *`list`* : lists all modules
-* **`add`**`name/Programming Methodology code/CS1010` : adds a module named `Programming Methodology` with code `CS1010` into module list
+* **`add`**`name/Programming Methodology code/CS1010 credits/4` : adds a module named `Programming Methodology` with code `CS1010` into module list
 * **`delete`**`3` : deletes the 3rd module shown in the current list
 * *`exit`* : exits the application
 
@@ -277,7 +277,7 @@ Selects the module identified by the index number used in the displayed module l
 Format: `select INDEX`
 
 ****
-* Selects the module and loads the Google search page the module at the specified `INDEX`.
+* Selects the module at the specified `INDEX`.
 * The index refers to the index number shown in the displayed module list.
 * The index *must be a positive integer* `1, 2, 3, …`
 ****
@@ -444,8 +444,8 @@ Examples:
 * `requirement_add name/IT Professionalism code/IS4231` +
 Adds module `IS4231` into `IT Professionalism` degree requirement category.
 
-* `requirement_add name/Computing Foundations code/CS1231 code/CS2100` +
-Adds modules `CS1231` and `CS2100` into `Computing Foundations` degree requirement category.
+* `requirement_add name/Computing Foundation code/CS1231 code/CS2100` +
+Adds modules `CS1231` and `CS2100` into `Computing Foundation` degree requirement category.
 
 === Removing a module from the degree requirement category : `requirement_remove`
 
@@ -503,7 +503,8 @@ manually. The application will save the data at the specified storage location.
 == Command Summary
 
 * *Add module to module list* : `add name/NAME code/CODE credits/CREDITS [tag/TAG]… [coreq/COREQUISITE]…` +
-e.g. `add code/CS2113T name/Software Engineering & Object-Oriented Programming credits/4 tag/sweng tag/java coreq/CS2101`
+e.g. `add code/CS2113T name/Software Engineering and Object-Oriented Programming credits/4 tag/sweng tag/java
+coreq/CS2101`
 * *Edit* : `edit INDEX [name/NAME] [code/CODE] [credits/CREDITS] [tag/TAG]… [coreq/COREQUISITE]…` +
 e.g. `edit 1 name/Data Structures and Algorithms code/CS2040C`
 * *Delete* : `delete INDEX` +

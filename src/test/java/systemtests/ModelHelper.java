@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import seedu.address.model.Model;
-import seedu.address.model.module.Module;
+import pwe.planner.model.Model;
+import pwe.planner.model.module.Module;
 
 /**
  * Contains helper methods to set up {@code Model} for testing.

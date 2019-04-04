@@ -3,46 +3,47 @@ package systemtests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static seedu.address.logic.commands.CommandTestUtil.CODE_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.CODE_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.CREDITS_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.CREDITS_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_CODE_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_CREDITS_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
-import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_CODE_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_MODULES;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_MODULE;
-import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_MODULE;
-import static seedu.address.testutil.TypicalModules.AMY;
-import static seedu.address.testutil.TypicalModules.BOB;
-import static seedu.address.testutil.TypicalModules.KEYWORD_MATCHING_MEIER;
+import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_MODULE_DISPLAYED_INDEX;
+import static pwe.planner.logic.commands.CommandTestUtil.CODE_DESC_AMY;
+import static pwe.planner.logic.commands.CommandTestUtil.CODE_DESC_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.CREDITS_DESC_AMY;
+import static pwe.planner.logic.commands.CommandTestUtil.CREDITS_DESC_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.INVALID_CODE_DESC;
+import static pwe.planner.logic.commands.CommandTestUtil.INVALID_CREDITS_DESC;
+import static pwe.planner.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
+import static pwe.planner.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
+import static pwe.planner.logic.commands.CommandTestUtil.NAME_DESC_AMY;
+import static pwe.planner.logic.commands.CommandTestUtil.NAME_DESC_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
+import static pwe.planner.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
+import static pwe.planner.logic.commands.CommandTestUtil.VALID_CODE_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
+import static pwe.planner.model.Model.PREDICATE_SHOW_ALL_MODULES;
+import static pwe.planner.testutil.TypicalIndexes.INDEX_FIRST_MODULE;
+import static pwe.planner.testutil.TypicalIndexes.INDEX_SECOND_MODULE;
+import static pwe.planner.testutil.TypicalModules.AMY;
+import static pwe.planner.testutil.TypicalModules.BOB;
+import static pwe.planner.testutil.TypicalModules.KEYWORD_MATCHING_MEIER;
 
 import org.junit.Test;
 
-import seedu.address.commons.core.Messages;
-import seedu.address.commons.core.index.Index;
-import seedu.address.logic.commands.EditCommand;
-import seedu.address.logic.commands.RedoCommand;
-import seedu.address.logic.commands.UndoCommand;
-import seedu.address.model.Model;
-import seedu.address.model.module.Code;
-import seedu.address.model.module.Credits;
-import seedu.address.model.module.Module;
-import seedu.address.model.module.Name;
-import seedu.address.model.tag.Tag;
-import seedu.address.testutil.ModuleBuilder;
-import seedu.address.testutil.ModuleUtil;
+import pwe.planner.commons.core.index.Index;
+import pwe.planner.logic.commands.EditCommand;
+import pwe.planner.logic.commands.RedoCommand;
+import pwe.planner.logic.commands.UndoCommand;
+import pwe.planner.model.Model;
+import pwe.planner.model.module.Code;
+import pwe.planner.model.module.Credits;
+import pwe.planner.model.module.Module;
+import pwe.planner.model.module.Name;
+import pwe.planner.model.tag.Tag;
+import pwe.planner.testutil.ModuleBuilder;
+import pwe.planner.testutil.ModuleUtil;
 
-public class EditCommandSystemTest extends AddressBookSystemTest {
+public class EditCommandSystemTest extends ApplicationSystemTest {
 
     @Test
     public void edit() {
@@ -76,7 +77,7 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         assertCommandSuccess(command, index, BOB);
 
         /* Case: edit a module with new values same as another module's values but with different name -> rejected */
-        assertTrue(getModel().getAddressBook().getModuleList().contains(BOB));
+        assertTrue(getModel().getApplication().getModuleList().contains(BOB));
         index = INDEX_SECOND_MODULE;
         assertNotEquals(getModel().getFilteredModuleList().get(index.getZeroBased()), BOB);
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + CREDITS_DESC_BOB
@@ -106,7 +107,7 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
 
         /* ------------------ Performing edit operation while a filtered list is being shown ------------------------ */
 
-        /* Case: filtered module list, edit index within bounds of address book and module list -> edited */
+        /* Case: filtered module list, edit index within bounds of application and module list -> edited */
         showModulesWithName(KEYWORD_MATCHING_MEIER);
         index = INDEX_FIRST_MODULE;
         assertTrue(index.getZeroBased() < getModel().getFilteredModuleList().size());
@@ -115,13 +116,13 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
         editedModule = new ModuleBuilder(moduleToEdit).withName(VALID_NAME_BOB).build();
         assertCommandSuccess(command, index, editedModule);
 
-        /* Case: filtered module list, edit index within bounds of address book but out of bounds of module list
+        /* Case: filtered module list, edit index within bounds of application but out of bounds of module list
          * -> rejected
          */
         showModulesWithName(KEYWORD_MATCHING_MEIER);
-        int invalidIndex = getModel().getAddressBook().getModuleList().size();
+        int invalidIndex = getModel().getApplication().getModuleList().size();
         assertCommandFailure(EditCommand.COMMAND_WORD + " " + invalidIndex + NAME_DESC_BOB,
-                Messages.MESSAGE_INVALID_MODULE_DISPLAYED_INDEX);
+                MESSAGE_INVALID_MODULE_DISPLAYED_INDEX);
 
         /* --------------------- Performing edit operation while a module card is selected -------------------------- */
 
@@ -141,20 +142,20 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
 
         /* Case: invalid index (0) -> rejected */
         assertCommandFailure(EditCommand.COMMAND_WORD + " 0" + NAME_DESC_BOB,
-                String.format(Messages.MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
 
         /* Case: invalid index (-1) -> rejected */
         assertCommandFailure(EditCommand.COMMAND_WORD + " -1" + NAME_DESC_BOB,
-                String.format(Messages.MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
 
         /* Case: invalid index (size + 1) -> rejected */
         invalidIndex = getModel().getFilteredModuleList().size() + 1;
         assertCommandFailure(EditCommand.COMMAND_WORD + " " + invalidIndex + NAME_DESC_BOB,
-                Messages.MESSAGE_INVALID_MODULE_DISPLAYED_INDEX);
+                MESSAGE_INVALID_MODULE_DISPLAYED_INDEX);
 
         /* Case: missing index -> rejected */
         assertCommandFailure(EditCommand.COMMAND_WORD + NAME_DESC_BOB,
-                String.format(Messages.MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
 
         /* Case: missing all fields -> rejected */
         assertCommandFailure(EditCommand.COMMAND_WORD + " " + INDEX_FIRST_MODULE.getOneBased(),
@@ -178,7 +179,7 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
 
         /* Case: edit a module with new values same as another module's values -> rejected */
         executeCommand(ModuleUtil.getAddCommand(BOB));
-        assertTrue(getModel().getAddressBook().getModuleList().contains(BOB));
+        assertTrue(getModel().getApplication().getModuleList().contains(BOB));
         index = INDEX_FIRST_MODULE;
         assertFalse(getModel().getFilteredModuleList().get(index.getZeroBased()).equals(BOB));
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_BOB
@@ -247,9 +248,9 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
      * 4. Asserts that the status bar's sync status changes.<br>
      * 5. Asserts that the command box has the default style class.<br>
      * Verifications 1 and 2 are performed by
-     * {@code AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.<br>
-     * @see AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)
-     * @see AddressBookSystemTest#assertSelectedCardChanged(Index)
+     * {@code ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.<br>
+     * @see ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)
+     * @see ApplicationSystemTest#assertSelectedCardChanged(Index)
      */
     private void assertCommandSuccess(String command, Model expectedModel, String expectedResultMessage,
             Index expectedSelectedCardIndex) {
@@ -272,8 +273,8 @@ public class EditCommandSystemTest extends AddressBookSystemTest {
      * 3. Asserts that the browser url, selected card and status bar remain unchanged.<br>
      * 4. Asserts that the command box has the error style.<br>
      * Verifications 1 and 2 are performed by
-     * {@code AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.<br>
-     * @see AddressBookSystemTest#assertApplicationDisplaysExpected(String, String, Model)
+     * {@code ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)}.<br>
+     * @see ApplicationSystemTest#assertApplicationDisplaysExpected(String, String, Model)
      */
     private void assertCommandFailure(String command, String expectedResultMessage) {
         Model expectedModel = getModel();
