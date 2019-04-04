@@ -61,7 +61,7 @@ public class PlannerRemoveCommand extends Command {
             Set<Code> coreqsOfCodesToRemove = new HashSet<>();
             codesToRemove.stream().map(model::getModuleByCode).map(Module::getCorequisites)
                     .forEach(coreqsOfCodesToRemove::addAll);
-            //returns relevant Co-requisite(s) that exists in the degree plan
+            // returns relevant Co-requisite(s) that exists in the degree plan
             coreqsOfCodesToRemove.retainAll(selectedCodeSet);
             coreqRemoved.addAll(coreqsOfCodesToRemove);
             selectedCodeSet.removeAll(coreqsOfCodesToRemove);
