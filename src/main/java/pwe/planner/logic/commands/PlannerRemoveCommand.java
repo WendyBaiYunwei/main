@@ -46,24 +46,26 @@ public class PlannerRemoveCommand extends Command {
     public CommandResult execute(Model model, CommandHistory history) throws CommandException {
         requireNonNull(model);
 
-        Set<Code> nonExistentPlannerCodes = codesToRemove.stream().filter(code -> model.getApplication()
+        Set<Code> nonExistentPlannerCodes = codesToRemove.stream().filter(codeToCheck -> model.getApplication()
                 .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
-                .noneMatch(codes -> codes.contains(code))).collect(Collectors.toSet());
+                .noneMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(codeToCheck)))
+                .collect(Collectors.toSet());
         if (nonExistentPlannerCodes.size() > 0) {
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_CODES, nonExistentPlannerCodes));
         }
 
-        Set<Code> coreqRemoved = new HashSet<>();
+        Set<Code> coreqsRemoved = new HashSet<>();
         ObservableList<DegreePlanner> degreePlannerList = model.getApplication().getDegreePlannerList();
 
         for (DegreePlanner selectedDegreePlanner : degreePlannerList) {
             Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
             Set<Code> coreqsOfCodesToRemove = new HashSet<>();
+
             codesToRemove.stream().map(model::getModuleByCode).map(Module::getCorequisites)
                     .forEach(coreqsOfCodesToRemove::addAll);
             // returns relevant Co-requisite(s) that exists in the degree plan
             coreqsOfCodesToRemove.retainAll(selectedCodeSet);
-            coreqRemoved.addAll(coreqsOfCodesToRemove);
+            coreqsRemoved.addAll(coreqsOfCodesToRemove);
             selectedCodeSet.removeAll(coreqsOfCodesToRemove);
             selectedCodeSet.removeAll(codesToRemove);
             DegreePlanner editedDegreePlanner = new DegreePlanner(selectedDegreePlanner.getYear(),
@@ -73,8 +75,8 @@ public class PlannerRemoveCommand extends Command {
 
         model.commitApplication();
 
-        if (coreqRemoved.size() > 0) {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, codesToRemove, coreqRemoved));
+        if (coreqsRemoved.size() > 0) {
+            return new CommandResult(String.format(MESSAGE_SUCCESS, codesToRemove, coreqsRemoved));
         } else {
             return new CommandResult(String.format(MESSAGE_SUCCESS, codesToRemove, "None"));
         }
