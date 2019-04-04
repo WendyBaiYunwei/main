@@ -73,8 +73,6 @@ public class PlannerRemoveCommand extends Command {
 
         model.commitApplication();
 
-        coreqRemoved.removeAll(codesToRemove);
-
         if (coreqRemoved.size() > 0) {
             return new CommandResult(String.format(MESSAGE_SUCCESS, codesToRemove, coreqRemoved));
         } else {
