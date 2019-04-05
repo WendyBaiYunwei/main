@@ -6,10 +6,10 @@ import java.util.Comparator;
  * Sorts according to the lowest credits difference if tie.
  */
 public class SortModulesToSuggest implements Comparator<ModuleToSuggest> {
-    public int compare(ModuleToSuggest a, ModuleToSuggest b) {
-        if (a.getNumberOfMatchingTags() == b.getNumberOfMatchingTags()) {
-            return a.getCreditDifference() - b.getCreditDifference();
+    public int compare(ModuleToSuggest moduleA, ModuleToSuggest moduleB) {
+        if (moduleA.getNumberOfMatchingTags() == moduleB.getNumberOfMatchingTags()) {
+            return moduleA.getCreditDifference() - moduleB.getCreditDifference();
         }
-        return b.getNumberOfMatchingTags() - a.getNumberOfMatchingTags();
+        return moduleB.getNumberOfMatchingTags() - moduleA.getNumberOfMatchingTags();
     }
 }

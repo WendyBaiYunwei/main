@@ -2,24 +2,16 @@ package pwe.planner.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
-import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
-import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
 import static pwe.planner.logic.parser.ParserUtil.arePrefixesPresent;
-import static pwe.planner.logic.parser.ParserUtil.parseCodes;
 import static pwe.planner.logic.parser.ParserUtil.parseCredits;
-import static pwe.planner.logic.parser.ParserUtil.parseSemester;
 import static pwe.planner.logic.parser.ParserUtil.parseTags;
-import static pwe.planner.logic.parser.ParserUtil.parseYear;
 
 import java.util.Set;
 
-import pwe.planner.logic.commands.PlannerAddCommand;
 import pwe.planner.logic.commands.PlannerSuggestCommand;
 import pwe.planner.logic.parser.exceptions.ParseException;
-import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Credits;
 import pwe.planner.model.tag.Tag;
 

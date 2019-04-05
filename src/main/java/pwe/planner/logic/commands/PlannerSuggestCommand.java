@@ -69,8 +69,8 @@ public class PlannerSuggestCommand extends Command {
         plannerCoreqs.retainAll(plannerCodes);
         // Returns the relevant Co-requisite(s) that do not exists in the degree plan.
         missingPlannerCoreqs.removeAll(plannerCoreqs);
-        ObservableList<Module> moduleList = model.getApplication().getModuleList();
 
+        ObservableList<Module> moduleList = model.getApplication().getModuleList();
         List<ModuleToSuggest> modulesToSuggest = new ArrayList<ModuleToSuggest>();
         for (Module module : moduleList) {
             // finds the matching tags for each module
@@ -89,7 +89,6 @@ public class PlannerSuggestCommand extends Command {
             }
         }
         modulesToSuggest.removeAll(plannerCodes);
-
         modulesToSuggest.sort(new SortModulesToSuggest());
         List<Code> codesToSuggest = new ArrayList<>();
         for (ModuleToSuggest moduleToSuggest : modulesToSuggest) {
@@ -102,7 +101,7 @@ public class PlannerSuggestCommand extends Command {
         } else if (missingPlannerCoreqs.size() == 0) {
             return new CommandResult(String.format(MESSAGE_SUCCESS, "None ", codesToSuggest));
         } else if (codesToSuggest.size() == 0) {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, missingPlannerCoreqs, " None"));
+            return new CommandResult(String.format(MESSAGE_SUCCESS, missingPlannerCoreqs, "None"));
         } else {
             return new CommandResult(String.format(MESSAGE_SUCCESS, missingPlannerCoreqs, codesToSuggest));
         }
