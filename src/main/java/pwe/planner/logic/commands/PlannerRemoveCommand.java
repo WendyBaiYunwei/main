@@ -39,6 +39,8 @@ public class PlannerRemoveCommand extends Command {
      * Related Co-requisite(s) are removed as well.
      */
     public PlannerRemoveCommand(Set<Code> codes) {
+        requireNonNull(codes);
+
         codesToRemove = codes;
     }
 
