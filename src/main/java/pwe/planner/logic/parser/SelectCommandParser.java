@@ -1,6 +1,8 @@
 package pwe.planner.logic.parser;
 
+import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static pwe.planner.logic.parser.ParserUtil.parseIndex;
 
 import pwe.planner.commons.core.index.Index;
 import pwe.planner.logic.commands.SelectCommand;
@@ -17,12 +19,13 @@ public class SelectCommandParser implements Parser<SelectCommand> {
      * @throws ParseException if the user input does not conform the expected format
      */
     public SelectCommand parse(String args) throws ParseException {
+        requireNonNull(args);
+
         try {
-            Index index = ParserUtil.parseIndex(args);
+            Index index = parseIndex(args);
             return new SelectCommand(index);
         } catch (ParseException pe) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, SelectCommand.MESSAGE_USAGE), pe);
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, SelectCommand.MESSAGE_USAGE), pe);
         }
     }
 }

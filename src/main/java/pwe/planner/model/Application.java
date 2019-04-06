@@ -1,6 +1,7 @@
 package pwe.planner.model;
 
 import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +51,8 @@ public class Application implements ReadOnlyApplication {
      */
     public Application(ReadOnlyApplication toBeCopied) {
         this();
+        requireNonNull(toBeCopied);
+
         resetData(toBeCopied);
     }
 
@@ -58,6 +61,7 @@ public class Application implements ReadOnlyApplication {
      */
     public void resetData(ReadOnlyApplication newData) {
         requireNonNull(newData);
+
         setModules(newData.getModuleList());
         setDegreePlanners(newData.getDegreePlannerList());
         setRequirementCategories(newData.getRequirementCategoryList());
@@ -70,6 +74,8 @@ public class Application implements ReadOnlyApplication {
      * {@code modules} must not contain duplicate modules.
      */
     public void setModules(List<Module> modules) {
+        requireNonNull(modules);
+
         this.modules.setModules(modules);
         indicateModified();
     }
@@ -79,6 +85,8 @@ public class Application implements ReadOnlyApplication {
      * {@code degreePlanners} must not contain duplicate degree planner.
      */
     public void setDegreePlanners(List<DegreePlanner> degreePlanners) {
+        requireNonNull(degreePlanners);
+
         this.degreePlanners.setDegreePlanners(degreePlanners);
         indicateModified();
     }
@@ -88,6 +96,8 @@ public class Application implements ReadOnlyApplication {
      * {@code requirement} must not contain duplicate requirement.
      */
     public void setRequirementCategories(List<RequirementCategory> requirementCategories) {
+        requireNonNull(requirementCategories);
+
         this.requirementCategories.setRequirementCategories(requirementCategories);
         indicateModified();
     }
@@ -99,6 +109,7 @@ public class Application implements ReadOnlyApplication {
      */
     public boolean hasModule(Module module) {
         requireNonNull(module);
+
         return modules.contains(module);
     }
 
@@ -107,6 +118,7 @@ public class Application implements ReadOnlyApplication {
      */
     public Module getModuleByCode(Code code) {
         requireNonNull(code);
+
         return modules.getModuleByCode(code);
     }
 
@@ -115,6 +127,7 @@ public class Application implements ReadOnlyApplication {
      */
     public boolean hasModuleCode(Code code) {
         requireNonNull(code);
+
         return modules.asUnmodifiableObservableList().stream().anyMatch((module) -> module.getCode().equals(code));
     }
 
@@ -123,6 +136,8 @@ public class Application implements ReadOnlyApplication {
      * The module must not already exist in the application.
      */
     public void addModule(Module moduleToAdd) {
+        requireNonNull(moduleToAdd);
+
         modules.add(moduleToAdd);
         indicateModified();
     }
@@ -133,7 +148,7 @@ public class Application implements ReadOnlyApplication {
      * The module identity of {@code editedModule} must not be the same as another existing module in the application.
      */
     public void setModule(Module target, Module editedModule) {
-        requireNonNull(editedModule);
+        requireAllNonNull(target, editedModule);
 
         modules.setModule(target, editedModule);
     }
@@ -144,7 +159,7 @@ public class Application implements ReadOnlyApplication {
      * The module identity of {@code editedModule} must not be the same as another existing module in the application.
      */
     public void editModule(Module target, Module editedModule) {
-        requireNonNull(editedModule);
+        requireAllNonNull(target, editedModule);
 
         modules.setModule(target, editedModule);
         if (!target.getCode().equals(editedModule.getCode())) {
@@ -161,6 +176,8 @@ public class Application implements ReadOnlyApplication {
      * @param editedCode module code to replace with
      */
     private void cascadeEditedCodeInDegreePlanners(Code codeToEdit, Code editedCode) {
+        requireAllNonNull(codeToEdit, editedCode);
+
         ObservableList<DegreePlanner> degreePlanners = getDegreePlannerList();
 
         for (DegreePlanner degreePlanner : degreePlanners) {
@@ -186,6 +203,8 @@ public class Application implements ReadOnlyApplication {
      * @param editedCode module code to replace with
      */
     private void cascadeEditedCodeInRequirementCategories(Code codeToEdit, Code editedCode) {
+        requireAllNonNull(codeToEdit, editedCode);
+
         ObservableList<RequirementCategory> requirementCategories = getRequirementCategoryList();
 
         for (RequirementCategory requirementCategory : requirementCategories) {
@@ -210,6 +229,8 @@ public class Application implements ReadOnlyApplication {
      * {@code key} must exist in the application.
      */
     public void removeModule(Module key) {
+        requireNonNull(key);
+
         modules.remove(key);
         cascadeDeletedCodeInDegreePlanners(key.getCode());
         cascadeDeletedCodeInRequirementCategories(key.getCode());
@@ -221,6 +242,8 @@ public class Application implements ReadOnlyApplication {
      * @param codeToDelete module code to delete
      */
     private void cascadeDeletedCodeInDegreePlanners(Code codeToDelete) {
+        requireNonNull(codeToDelete);
+
         ObservableList<DegreePlanner> degreePlanners = getDegreePlannerList();
         for (DegreePlanner degreePlanner : degreePlanners) {
             if (degreePlanner.getCodes().contains(codeToDelete)) {
@@ -243,6 +266,8 @@ public class Application implements ReadOnlyApplication {
      * @param codeToDelete module code to delete
      */
     private void cascadeDeletedCodeInRequirementCategories(Code codeToDelete) {
+        requireNonNull(codeToDelete);
+
         ObservableList<RequirementCategory> requirementCategories = getRequirementCategoryList();
         for (RequirementCategory requirementCategory : requirementCategories) {
             if (requirementCategory.getCodeSet().contains(codeToDelete)) {
@@ -268,6 +293,7 @@ public class Application implements ReadOnlyApplication {
      */
     public boolean hasDegreePlanner(DegreePlanner degreePlanner) {
         requireNonNull(degreePlanner);
+
         return degreePlanners.contains(degreePlanner);
     }
 
@@ -276,6 +302,7 @@ public class Application implements ReadOnlyApplication {
      */
     public DegreePlanner getDegreePlannerByCode(Code code) {
         requireNonNull(code);
+
         return degreePlanners.getDegreePlannerByCode(code);
     }
 
@@ -284,6 +311,8 @@ public class Application implements ReadOnlyApplication {
      * The degree planner must not already exist in the degree planner list.
      */
     public void addDegreePlanner(DegreePlanner degreePlanner) {
+        requireNonNull(degreePlanner);
+
         degreePlanners.add(degreePlanner);
     }
 
@@ -294,7 +323,8 @@ public class Application implements ReadOnlyApplication {
      * in the degree planner list.
      */
     public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
-        requireNonNull(editedDegreePlanner);
+        requireAllNonNull(target, editedDegreePlanner);
+
         degreePlanners.setDegreePlanner(target, editedDegreePlanner);
     }
 
@@ -303,6 +333,8 @@ public class Application implements ReadOnlyApplication {
      * {@code key} must exist in the degree planner list.
      */
     public void removeDegreePlanner(DegreePlanner key) {
+        requireNonNull(key);
+
         degreePlanners.remove(key);
     }
 
@@ -314,6 +346,7 @@ public class Application implements ReadOnlyApplication {
      */
     public boolean hasRequirementCategory(Name requirementCategoryName) {
         requireNonNull(requirementCategoryName);
+
         return requirementCategories.contains(requirementCategoryName);
     }
 
@@ -323,6 +356,7 @@ public class Application implements ReadOnlyApplication {
      */
     public boolean hasRequirementCategory(RequirementCategory requirementCategory) {
         requireNonNull(requirementCategory);
+
         return requirementCategories.contains(requirementCategory);
     }
 
@@ -332,6 +366,7 @@ public class Application implements ReadOnlyApplication {
      */
     public RequirementCategory getRequirementCategory(Name requirementCategoryName) {
         requireNonNull(requirementCategoryName);
+
         return requirementCategories.getRequirementCategory(requirementCategoryName);
     }
 
@@ -340,6 +375,8 @@ public class Application implements ReadOnlyApplication {
      * The requirement must not already exist in the requirementCategoryList.
      */
     public void addRequirementCategory(RequirementCategory requirementCategory) {
+        requireNonNull(requirementCategory);
+
         requirementCategories.add(requirementCategory);
     }
 
@@ -351,7 +388,7 @@ public class Application implements ReadOnlyApplication {
      * requirement list.
      */
     public void setRequirementCategory(RequirementCategory target, RequirementCategory editedRequirementCategory) {
-        requireNonNull(editedRequirementCategory);
+        requireAllNonNull(target, editedRequirementCategory);
 
         requirementCategories.setRequirementCategory(target, editedRequirementCategory);
     }
@@ -361,6 +398,8 @@ public class Application implements ReadOnlyApplication {
      * {@code key} must exist in the requirement list.
      */
     public void removeRequirementCategory(RequirementCategory key) {
+        requireNonNull(key);
+
         requirementCategories.remove(key);
     }
 
@@ -368,11 +407,15 @@ public class Application implements ReadOnlyApplication {
 
     @Override
     public void addListener(InvalidationListener listener) {
+        requireNonNull(listener);
+
         invalidationListenerManager.addListener(listener);
     }
 
     @Override
     public void removeListener(InvalidationListener listener) {
+        requireNonNull(listener);
+
         invalidationListenerManager.removeListener(listener);
     }
 

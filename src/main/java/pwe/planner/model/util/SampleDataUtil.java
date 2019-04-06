@@ -1,5 +1,7 @@
 package pwe.planner.model.util;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -246,6 +248,8 @@ public class SampleDataUtil {
      * Returns a code set containing the list of strings given.
      */
     public static Set<Code> getCodeSet(String... strings) {
+        requireNonNull(strings);
+
         return Arrays.stream(strings)
                 .map(Code::new)
                 .collect(Collectors.toSet());
@@ -255,6 +259,8 @@ public class SampleDataUtil {
      * Returns a tag set containing the list of strings given.
      */
     public static Set<Tag> getTagSet(String... strings) {
+        requireNonNull(strings);
+
         return Arrays.stream(strings)
                 .map(Tag::new)
                 .collect(Collectors.toSet());

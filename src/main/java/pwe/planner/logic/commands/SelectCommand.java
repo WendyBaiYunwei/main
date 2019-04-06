@@ -28,6 +28,8 @@ public class SelectCommand extends Command {
     private final Index targetIndex;
 
     public SelectCommand(Index targetIndex) {
+        requireNonNull(targetIndex);
+
         this.targetIndex = targetIndex;
     }
 

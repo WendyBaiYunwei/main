@@ -1,5 +1,7 @@
 package pwe.planner.storage;
 
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import javafx.collections.ObservableList;
 import pwe.planner.commons.exceptions.IllegalValueException;
 import pwe.planner.model.Application;
@@ -28,6 +30,8 @@ public class JsonSerializableApplication {
     public JsonSerializableApplication(ObservableList<Module> moduleObservableList,
             ObservableList<DegreePlanner> degreeObservableList,
             ObservableList<RequirementCategory> requirementCategoryObservableList) {
+        requireAllNonNull(moduleObservableList, degreeObservableList, requirementCategoryObservableList);
+
         this.moduleObservableList = moduleObservableList;
         this.degreeObservableList = degreeObservableList;
         this.requirementCategoryObservableList = requirementCategoryObservableList;

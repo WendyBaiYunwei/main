@@ -1,5 +1,7 @@
 package pwe.planner.ui;
 
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,8 +45,9 @@ public class DegreePlannerCard extends UiPart<Region> {
 
     public DegreePlannerCard(DegreePlanner degreePlanner, ObservableList<Module> moduleList) {
         super(FXML);
-        this.degreePlanner = degreePlanner;
+        requireAllNonNull(degreePlanner, moduleList);
 
+        this.degreePlanner = degreePlanner;
 
         year.setText("Year: " + degreePlanner.getYear().year);
         year.setPadding(new Insets(0, 0, 0, 5));
@@ -69,7 +72,7 @@ public class DegreePlannerCard extends UiPart<Region> {
             credits.getStyleClass().add("red");
         }
 
-        modulesInDegreePlanner.stream().sorted(Comparator.comparing(module -> module.getCode().toString()))
+        modulesInDegreePlanner.stream().sorted(Comparator.comparing(Module::getCode))
                 .forEach(module -> {
                     VBox vbox = new VBox();
                     VBox.setMargin(vbox, new Insets(1, 1, 1, 1));

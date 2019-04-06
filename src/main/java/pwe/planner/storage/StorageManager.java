@@ -1,5 +1,8 @@
 package pwe.planner.storage;
 
+import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -27,6 +30,8 @@ public class StorageManager implements Storage {
     public StorageManager(ApplicationStorage applicationStorage,
             UserPrefsStorage userPrefsStorage) {
         super();
+
+        requireAllNonNull(applicationStorage, userPrefsStorage);
         this.applicationStorage = applicationStorage;
         this.userPrefsStorage = userPrefsStorage;
     }
@@ -45,6 +50,8 @@ public class StorageManager implements Storage {
 
     @Override
     public void saveUserPrefs(ReadOnlyUserPrefs userPrefs) throws IOException {
+        requireNonNull(userPrefs);
+
         userPrefsStorage.saveUserPrefs(userPrefs);
     }
 
@@ -59,6 +66,8 @@ public class StorageManager implements Storage {
     public Optional<ReadOnlyApplication> readApplication(Path moduleListFilePath, Path degreePlannerListFilePath,
             Path requirementCategoryListFilePath)
             throws DataConversionException, IOException {
+        requireAllNonNull(moduleListFilePath, degreePlannerListFilePath, requirementCategoryListFilePath);
+
         logger.fine("Attempting to read data from file: " + moduleListFilePath);
         logger.fine("Attempting to read data from file: " + degreePlannerListFilePath);
         logger.fine("Attempting to read data from file: " + requirementCategoryListFilePath);
@@ -68,6 +77,8 @@ public class StorageManager implements Storage {
 
     @Override
     public void saveApplication(ReadOnlyApplication application) throws IOException {
+        requireNonNull(application);
+
         saveModuleList(application, applicationStorage.getModuleListFilePath());
         saveDegreePlannerList(application, applicationStorage.getDegreePlannerListFilePath());
         saveRequirementCategoryList(application, applicationStorage.getRequirementCategoryListFilePath());
@@ -88,17 +99,23 @@ public class StorageManager implements Storage {
 
     @Override
     public Optional<ObservableList<Module>> readModuleList(Path filePath) throws DataConversionException, IOException {
+        requireNonNull(filePath);
+
         logger.fine("Attempting to read data from file: " + filePath);
         return applicationStorage.readModuleList(filePath);
     }
 
     @Override
     public void saveModuleList(ReadOnlyApplication application) throws IOException {
+        requireNonNull(application);
+
         saveModuleList(application, applicationStorage.getModuleListFilePath());
     }
 
     @Override
     public void saveModuleList(ReadOnlyApplication application, Path filePath) throws IOException {
+        requireAllNonNull(application, filePath);
+
         logger.fine("Attempting to write to data file: " + filePath);
         applicationStorage.saveModuleList(application, filePath);
     }
@@ -118,17 +135,23 @@ public class StorageManager implements Storage {
     @Override
     public Optional<ObservableList<DegreePlanner>> readDegreePlannerList(Path filePath)
             throws DataConversionException, IOException {
+        requireNonNull(filePath);
+
         logger.fine("Attempting to read data from file: " + filePath);
         return applicationStorage.readDegreePlannerList(filePath);
     }
 
     @Override
     public void saveDegreePlannerList(ReadOnlyApplication degreePlannerList) throws IOException {
+        requireNonNull(degreePlannerList);
+
         saveDegreePlannerList(degreePlannerList, applicationStorage.getDegreePlannerListFilePath());
     }
 
     @Override
     public void saveDegreePlannerList(ReadOnlyApplication application, Path filePath) throws IOException {
+        requireAllNonNull(application, filePath);
+
         logger.fine("Attempting to write to data file: " + filePath);
         applicationStorage.saveDegreePlannerList(application, filePath);
     }
@@ -149,20 +172,24 @@ public class StorageManager implements Storage {
     @Override
     public Optional<ObservableList<RequirementCategory>> readRequirementCategoryList(Path filePath)
             throws DataConversionException, IOException {
+        requireNonNull(filePath);
+
         logger.fine("Attempting to read data from file: " + filePath);
         return applicationStorage.readRequirementCategoryList(filePath);
     }
 
     @Override
-    public void saveRequirementCategoryList(ReadOnlyApplication requirementCategoryList)
-            throws IOException {
+    public void saveRequirementCategoryList(ReadOnlyApplication requirementCategoryList) throws IOException {
+        requireNonNull(requirementCategoryList);
+
         saveRequirementCategoryList(requirementCategoryList,
                 applicationStorage.getRequirementCategoryListFilePath());
     }
 
     @Override
-    public void saveRequirementCategoryList(ReadOnlyApplication application, Path filePath)
-            throws IOException {
+    public void saveRequirementCategoryList(ReadOnlyApplication application, Path filePath) throws IOException {
+        requireAllNonNull(application, filePath);
+
         logger.fine("Attempting to write to data file: " + filePath);
         applicationStorage.saveRequirementCategoryList(application, filePath);
     }

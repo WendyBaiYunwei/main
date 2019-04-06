@@ -1,5 +1,8 @@
 package pwe.planner.ui;
 
+import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Clock;
@@ -38,6 +41,8 @@ public class StatusBarFooter extends UiPart<Region> {
 
     public StatusBarFooter(Path saveLocation, ReadOnlyApplication application) {
         super(FXML);
+        requireAllNonNull(saveLocation, application);
+
         application.addListener(observable -> updateSyncStatus());
         syncStatus.setText(SYNC_STATUS_INITIAL);
         saveLocationStatus.setText(Paths.get("").toAbsolutePath().relativize(
@@ -48,6 +53,8 @@ public class StatusBarFooter extends UiPart<Region> {
      * Sets the clock used to determine the current time.
      */
     public static void setClock(Clock clock) {
+        requireNonNull(clock);
+
         StatusBarFooter.clock = clock;
     }
 

@@ -71,6 +71,7 @@ public class ModelManager implements Model {
     @Override
     public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
         requireNonNull(userPrefs);
+
         this.userPrefs.resetData(userPrefs);
     }
 
@@ -87,6 +88,7 @@ public class ModelManager implements Model {
     @Override
     public void setGuiSettings(GuiSettings guiSettings) {
         requireNonNull(guiSettings);
+
         userPrefs.setGuiSettings(guiSettings);
     }
 
@@ -98,6 +100,7 @@ public class ModelManager implements Model {
     @Override
     public void setModuleListFilePath(Path moduleListFilePath) {
         requireNonNull(moduleListFilePath);
+
         userPrefs.setModuleListFilePath(moduleListFilePath);
     }
 
@@ -109,6 +112,7 @@ public class ModelManager implements Model {
     @Override
     public void setDegreePlannerListFilePath(Path degreePlannerListFilePath) {
         requireNonNull(degreePlannerListFilePath);
+
         userPrefs.setDegreePlannerListFilePath(degreePlannerListFilePath);
     }
 
@@ -120,6 +124,7 @@ public class ModelManager implements Model {
     @Override
     public void setRequirementCategoryListFilePath(Path requirementCategoryListFilePath) {
         requireNonNull(requirementCategoryListFilePath);
+
         userPrefs.setDegreePlannerListFilePath(requirementCategoryListFilePath);
     }
 
@@ -127,6 +132,8 @@ public class ModelManager implements Model {
 
     @Override
     public void setApplication(ReadOnlyApplication application) {
+        requireNonNull(application);
+
         versionedApplication.resetData(application);
     }
 
@@ -138,28 +145,35 @@ public class ModelManager implements Model {
     @Override
     public boolean hasModule(Module module) {
         requireNonNull(module);
+
         return versionedApplication.hasModule(module);
     }
 
     @Override
     public Module getModuleByCode(Code code) {
         requireNonNull(code);
+
         return versionedApplication.getModuleByCode(code);
     }
 
     @Override
     public boolean hasModuleCode(Code code) {
         requireNonNull(code);
+
         return versionedApplication.hasModuleCode(code);
     }
 
     @Override
     public void deleteModule(Module target) {
+        requireNonNull(target);
+
         versionedApplication.removeModule(target);
     }
 
     @Override
     public void addModule(Module module) {
+        requireNonNull(module);
+
         versionedApplication.addModule(module);
         updateFilteredModuleList(PREDICATE_SHOW_ALL_MODULES);
     }
@@ -192,6 +206,7 @@ public class ModelManager implements Model {
     @Override
     public void updateFilteredModuleList(Predicate<Module> predicate) {
         requireNonNull(predicate);
+
         filteredModules.setPredicate(predicate);
     }
 
@@ -246,6 +261,8 @@ public class ModelManager implements Model {
      * Ensures {@code selectedModule} is a valid module in {@code filteredModules}.
      */
     private void ensureSelectedModuleIsValid(ListChangeListener.Change<? extends Module> change) {
+        assert change != null;
+
         while (change.next()) {
             if (selectedModule.getValue() == null) {
                 // null is always a valid selected module, so we do not need to check that it is valid anymore.
@@ -300,11 +317,13 @@ public class ModelManager implements Model {
         return versionedApplication.hasDegreePlanner(planner);
     }
 
-    @Override public void deleteDegreePlanner(DegreePlanner target) {
+    @Override
+    public void deleteDegreePlanner(DegreePlanner target) {
         versionedApplication.removeDegreePlanner(target);
     }
 
-    @Override public void addDegreePlanner(DegreePlanner degreePlanner) {
+    @Override
+    public void addDegreePlanner(DegreePlanner degreePlanner) {
         versionedApplication.addDegreePlanner(degreePlanner);
     }
 
@@ -314,18 +333,22 @@ public class ModelManager implements Model {
         return versionedApplication.getDegreePlannerByCode(code);
     }
 
-    @Override public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
+    @Override
+    public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
         requireAllNonNull(target, editedDegreePlanner);
 
         versionedApplication.setDegreePlanner(target, editedDegreePlanner);
     }
 
-    @Override public ObservableList<DegreePlanner> getFilteredDegreePlannerList() {
+    @Override
+    public ObservableList<DegreePlanner> getFilteredDegreePlannerList() {
         return filteredDegreePlanners;
     }
 
-    @Override public void updateFilteredDegreePlannerList(Predicate<DegreePlanner> predicate) {
+    @Override
+    public void updateFilteredDegreePlannerList(Predicate<DegreePlanner> predicate) {
         requireNonNull(predicate);
+
         filteredDegreePlanners.setPredicate(predicate);
     }
 
@@ -334,39 +357,49 @@ public class ModelManager implements Model {
     @Override
     public boolean hasRequirementCategory(Name requirementCategoryName) {
         requireNonNull(requirementCategoryName);
+
         return versionedApplication.hasRequirementCategory(requirementCategoryName);
     }
 
     @Override
     public boolean hasRequirementCategory(RequirementCategory requirementCategory) {
         requireNonNull(requirementCategory);
+
         return versionedApplication.hasRequirementCategory(requirementCategory);
     }
 
     @Override
     public RequirementCategory getRequirementCategory(Name requirementCategoryName) {
         requireNonNull(requirementCategoryName);
+
         return versionedApplication.getRequirementCategory(requirementCategoryName);
     }
 
-    @Override public void addRequirementCategory(RequirementCategory requirementCategory) {
+    @Override
+    public void addRequirementCategory(RequirementCategory requirementCategory) {
+        requireNonNull(requirementCategory);
+
         versionedApplication.addRequirementCategory(requirementCategory);
         updateFilteredRequirementCategoryList(PREDICATE_SHOW_ALL_REQUIREMENT_CATEGORIES);
     }
 
-    @Override public void setRequirementCategory(RequirementCategory target,
+    @Override
+    public void setRequirementCategory(RequirementCategory target,
             RequirementCategory editedRequirementCategory) {
         requireAllNonNull(target, editedRequirementCategory);
 
         versionedApplication.setRequirementCategory(target, editedRequirementCategory);
     }
 
-    @Override public ObservableList<RequirementCategory> getFilteredRequirementCategoryList() {
+    @Override
+    public ObservableList<RequirementCategory> getFilteredRequirementCategoryList() {
         return filteredRequirementCategory;
     }
 
-    @Override public void updateFilteredRequirementCategoryList(Predicate<RequirementCategory> predicate) {
+    @Override
+    public void updateFilteredRequirementCategoryList(Predicate<RequirementCategory> predicate) {
         requireNonNull(predicate);
+
         filteredRequirementCategory.setPredicate(predicate);
     }
 
@@ -393,6 +426,8 @@ public class ModelManager implements Model {
      */
     private void ensureSelectedRequirementCategoryIsValid(
             ListChangeListener.Change<? extends RequirementCategory> change) {
+        assert change != null;
+
         while (change.next()) {
             if (selectedRequirementCategory.getValue() == null) {
                 // null is always a valid selected module, so we do not need to check that it is valid anymore.

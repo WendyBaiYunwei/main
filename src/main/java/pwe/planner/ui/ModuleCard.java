@@ -1,6 +1,7 @@
 package pwe.planner.ui;
 
-import java.util.Comparator;
+import static java.util.Objects.requireNonNull;
+
 import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
@@ -44,6 +45,8 @@ public class ModuleCard extends UiPart<Region> {
 
     public ModuleCard(Module module, int displayedIndex) {
         super(FXML);
+        requireNonNull(module);
+
         this.module = module;
         id.setText(displayedIndex + ". ");
         name.setText(module.getName().fullName);
@@ -57,9 +60,7 @@ public class ModuleCard extends UiPart<Region> {
             corequisitesText = "None";
         }
         corequisites.setText("Co-requisites: " + corequisitesText);
-        module.getTags().stream()
-                .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+        module.getTags().stream().sorted().forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
     }
 
     @Override

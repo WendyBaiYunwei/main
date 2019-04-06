@@ -16,6 +16,8 @@ public class CommandHistory {
     public CommandHistory() {}
 
     public CommandHistory(CommandHistory commandHistory) {
+        requireNonNull(commandHistory);
+
         userInputHistory.addAll(commandHistory.userInputHistory);
     }
 
@@ -24,6 +26,7 @@ public class CommandHistory {
      */
     public void add(String userInput) {
         requireNonNull(userInput);
+
         userInputHistory.add(userInput);
     }
 

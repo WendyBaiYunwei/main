@@ -1,6 +1,7 @@
 package pwe.planner.commons.util;
 
 import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 
 import javafx.scene.image.Image;
 import pwe.planner.MainApp;
@@ -12,6 +13,7 @@ public class AppUtil {
 
     public static Image getImage(String imagePath) {
         requireNonNull(imagePath);
+
         return new Image(MainApp.class.getResourceAsStream(imagePath));
     }
 
@@ -21,6 +23,8 @@ public class AppUtil {
      * @throws IllegalArgumentException if {@code condition} is false.
      */
     public static void checkArgument(Boolean condition) {
+        requireNonNull(condition);
+
         if (!condition) {
             throw new IllegalArgumentException();
         }
@@ -32,6 +36,8 @@ public class AppUtil {
      * @throws IllegalArgumentException with {@code errorMessage} if {@code condition} is false.
      */
     public static void checkArgument(Boolean condition, String errorMessage) {
+        requireAllNonNull(condition, errorMessage);
+
         if (!condition) {
             throw new IllegalArgumentException(errorMessage);
         }

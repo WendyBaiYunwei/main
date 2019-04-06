@@ -49,12 +49,15 @@ public class FindCommand extends Command {
     private final Predicate<Module> predicate;
 
     public FindCommand(Predicate<Module> predicate) {
+        requireNonNull(predicate);
+
         this.predicate = predicate;
     }
 
     @Override
     public CommandResult execute(Model model, CommandHistory history) {
         requireNonNull(model);
+
         model.updateFilteredModuleList(predicate);
         return new CommandResult(
                 String.format(MESSAGE_MODULES_LISTED_OVERVIEW, model.getFilteredModuleList().size()));

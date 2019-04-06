@@ -20,6 +20,7 @@ public class ClearCommand extends Command {
     @Override
     public CommandResult execute(Model model, CommandHistory history) {
         requireNonNull(model);
+
         model.setApplication(getInitialApplication());
         model.commitApplication();
         return new CommandResult(MESSAGE_SUCCESS);

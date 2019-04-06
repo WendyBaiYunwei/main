@@ -36,6 +36,7 @@ public class UniqueModuleList implements Iterable<Module> {
      */
     public boolean contains(Module toCheck) {
         requireNonNull(toCheck);
+
         return internalList.stream().anyMatch(toCheck::isSameModule);
     }
 
@@ -44,6 +45,7 @@ public class UniqueModuleList implements Iterable<Module> {
      */
     public Module getModuleByCode(Code toCheck) {
         requireNonNull(toCheck);
+
         return internalList.stream()
                 .filter(module -> module.getCode().equals(toCheck))
                 .findFirst()
@@ -56,6 +58,7 @@ public class UniqueModuleList implements Iterable<Module> {
      */
     public void add(Module toAdd) {
         requireNonNull(toAdd);
+
         if (contains(toAdd)) {
             throw new DuplicateModuleException();
         }
@@ -71,6 +74,8 @@ public class UniqueModuleList implements Iterable<Module> {
      * @param moduleToAdd
      */
     private void cascadeAddModuleCorequisites(Module moduleToAdd) {
+        assert moduleToAdd != null;
+
         // create a union Set<Code> of co-requisites
         Code currentCode = moduleToAdd.getCode();
         Set<Code> currentCorequisites = moduleToAdd.getCorequisites();
@@ -118,6 +123,8 @@ public class UniqueModuleList implements Iterable<Module> {
      * The module identity of {@code editedModule} must not be the same as another existing module in the list.
      */
     public void setModule(Module target, Module editedModule) {
+        requireAllNonNull(target, editedModule);
+
         setModule(target, editedModule, true);
     }
 
@@ -156,6 +163,9 @@ public class UniqueModuleList implements Iterable<Module> {
      * @param editedModule module code to replace with
      */
     private void cascadeEditModuleCorequisites(Module target, Module editedModule) {
+        assert target != null;
+        assert editedModule != null;
+
         ObservableList<Module> modules = internalUnmodifiableList;
         Code codeToEdit = target.getCode();
         Code editedCode = editedModule.getCode();
@@ -185,6 +195,7 @@ public class UniqueModuleList implements Iterable<Module> {
      */
     public void remove(Module toRemove) {
         requireNonNull(toRemove);
+
         if (!internalList.remove(toRemove)) {
             throw new ModuleNotFoundException();
         }
@@ -197,6 +208,8 @@ public class UniqueModuleList implements Iterable<Module> {
      * @param moduleToDelete module code to delete
      */
     private void cascadeDeleteModuleCorequisites(Module moduleToDelete) {
+        assert moduleToDelete != null;
+
         ObservableList<Module> modules = internalUnmodifiableList;
         Code codeToDelete = moduleToDelete.getCode();
 
@@ -220,6 +233,7 @@ public class UniqueModuleList implements Iterable<Module> {
 
     public void setModules(UniqueModuleList replacement) {
         requireNonNull(replacement);
+
         internalList.setAll(replacement.internalList);
     }
 
@@ -229,6 +243,7 @@ public class UniqueModuleList implements Iterable<Module> {
      */
     public void setModules(List<Module> modules) {
         requireAllNonNull(modules);
+
         if (!modulesAreUnique(modules)) {
             throw new DuplicateModuleException();
         }

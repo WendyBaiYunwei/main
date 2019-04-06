@@ -7,7 +7,7 @@ import static pwe.planner.commons.util.AppUtil.checkArgument;
  * Represents a Tag in the application.
  * Guarantees: immutable; name is valid as declared in {@link #isValidTagName(String)}
  */
-public class Tag {
+public class Tag implements Comparable<Tag> {
 
     public static final String MESSAGE_CONSTRAINTS = "Tags names should be alphanumeric";
     public static final String VALIDATION_REGEX = "\\p{Alnum}+";
@@ -22,6 +22,7 @@ public class Tag {
     public Tag(String tagName) {
         requireNonNull(tagName);
         checkArgument(isValidTagName(tagName), MESSAGE_CONSTRAINTS);
+
         this.tagName = tagName;
     }
 
@@ -29,6 +30,8 @@ public class Tag {
      * Returns true if a given string is a valid tag name.
      */
     public static boolean isValidTagName(String test) {
+        requireNonNull(test);
+
         return test.matches(VALIDATION_REGEX);
     }
 
@@ -51,4 +54,8 @@ public class Tag {
         return '[' + tagName + ']';
     }
 
+    @Override
+    public int compareTo(Tag other) {
+        return tagName.compareTo(other.tagName);
+    }
 }

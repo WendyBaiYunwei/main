@@ -8,6 +8,11 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 import static pwe.planner.logic.parser.ParserUtil.arePrefixesPresent;
+import static pwe.planner.logic.parser.ParserUtil.parseCode;
+import static pwe.planner.logic.parser.ParserUtil.parseCorequisites;
+import static pwe.planner.logic.parser.ParserUtil.parseCredits;
+import static pwe.planner.logic.parser.ParserUtil.parseName;
+import static pwe.planner.logic.parser.ParserUtil.parseTags;
 
 import java.util.Set;
 
@@ -45,14 +50,13 @@ public class AddCommandParser implements Parser<AddCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
         }
 
-        Code code = ParserUtil.parseCode(argMultimap.getValue(PREFIX_CODE).get());
-        Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
-        Credits credits = ParserUtil.parseCredits(argMultimap.getValue(PREFIX_CREDITS).get());
-        Set<Code> corequisiteList = ParserUtil.parseCorequisites(argMultimap.getAllValues(PREFIX_COREQUISITE));
-        Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
+        Code code = parseCode(argMultimap.getValue(PREFIX_CODE).get());
+        Name name = parseName(argMultimap.getValue(PREFIX_NAME).get());
+        Credits credits = parseCredits(argMultimap.getValue(PREFIX_CREDITS).get());
+        Set<Code> corequisiteList = parseCorequisites(argMultimap.getAllValues(PREFIX_COREQUISITE));
+        Set<Tag> tagList = parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
         Module module = new Module(name, credits, code, tagList, corequisiteList);
         return new AddCommand(module);
     }
-
 }

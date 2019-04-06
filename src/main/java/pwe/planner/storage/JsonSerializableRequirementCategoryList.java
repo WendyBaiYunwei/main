@@ -1,5 +1,7 @@
 package pwe.planner.storage;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +38,8 @@ public class JsonSerializableRequirementCategoryList {
     @JsonCreator
     public JsonSerializableRequirementCategoryList(
             @JsonProperty("requirementCategories") List<JsonAdaptedRequirementCategoryList> requirementCategories) {
+        requireNonNull(requirementCategories);
+
         this.requirementCategories.addAll(requirementCategories);
     }
 
@@ -46,9 +50,10 @@ public class JsonSerializableRequirementCategoryList {
      */
 
     public JsonSerializableRequirementCategoryList(ReadOnlyApplication source) {
-        requirementCategories
-                .addAll(source.getRequirementCategoryList().stream().map(JsonAdaptedRequirementCategoryList::new)
-                        .collect(Collectors.toList()));
+        requireNonNull(source);
+
+        requirementCategories.addAll(source.getRequirementCategoryList().stream()
+                .map(JsonAdaptedRequirementCategoryList::new).collect(Collectors.toList()));
     }
 
     /**

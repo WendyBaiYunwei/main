@@ -1,5 +1,8 @@
 package pwe.planner.logic;
 
+import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
@@ -11,7 +14,7 @@ import pwe.planner.commons.core.LogsCenter;
 import pwe.planner.logic.commands.Command;
 import pwe.planner.logic.commands.CommandResult;
 import pwe.planner.logic.commands.exceptions.CommandException;
-import pwe.planner.logic.parser.ApplicationParser;
+import pwe.planner.logic.parser.CommandParser;
 import pwe.planner.logic.parser.exceptions.ParseException;
 import pwe.planner.model.Model;
 import pwe.planner.model.ReadOnlyApplication;
@@ -30,14 +33,16 @@ public class LogicManager implements Logic {
     private final Model model;
     private final Storage storage;
     private final CommandHistory history;
-    private final ApplicationParser applicationParser;
+    private final CommandParser commandParser;
     private boolean applicationModified;
 
     public LogicManager(Model model, Storage storage) {
+        requireAllNonNull(model, storage);
+
         this.model = model;
         this.storage = storage;
         history = new CommandHistory();
-        applicationParser = new ApplicationParser();
+        commandParser = new CommandParser();
 
         // Set applicationModified to true whenever the models' application is modified.
         model.getApplication().addListener(observable -> applicationModified = true);
@@ -45,12 +50,14 @@ public class LogicManager implements Logic {
 
     @Override
     public CommandResult execute(String commandText) throws CommandException, ParseException {
+        requireNonNull(commandText);
+
         logger.info("----------------[USER COMMAND][" + commandText + "]");
         applicationModified = false;
 
         CommandResult commandResult;
         try {
-            Command command = applicationParser.parseCommand(commandText);
+            Command command = commandParser.parseCommand(commandText);
             commandResult = command.execute(model, history);
         } finally {
             history.add(commandText);
@@ -105,6 +112,8 @@ public class LogicManager implements Logic {
 
     @Override
     public void setGuiSettings(GuiSettings guiSettings) {
+        requireNonNull(guiSettings);
+
         model.setGuiSettings(guiSettings);
     }
 

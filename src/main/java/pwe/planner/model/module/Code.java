@@ -7,7 +7,7 @@ import static pwe.planner.commons.util.AppUtil.checkArgument;
  * Represents a Module's code in the application.
  * Guarantees: immutable; is valid as declared in {@link #isValidCode(String)}
  */
-public class Code {
+public class Code implements Comparable<Code> {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Codes should begin with two alphabets, followed by four digits, and may optionally end with an alphabet. "
@@ -29,6 +29,7 @@ public class Code {
     public Code(String code) {
         requireNonNull(code);
         checkArgument(isValidCode(code), MESSAGE_CONSTRAINTS);
+
         value = code;
     }
 
@@ -36,6 +37,8 @@ public class Code {
      * Returns true if a given string is a valid code.
      */
     public static boolean isValidCode(String test) {
+        requireNonNull(test);
+
         return test.matches(VALIDATION_REGEX);
     }
 
@@ -56,4 +59,8 @@ public class Code {
         return value.hashCode();
     }
 
+    @Override
+    public int compareTo(Code other) {
+        return value.compareTo(other.value);
+    }
 }

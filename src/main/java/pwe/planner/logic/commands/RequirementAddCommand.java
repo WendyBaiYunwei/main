@@ -1,6 +1,7 @@
 package pwe.planner.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
 
@@ -47,8 +48,8 @@ public class RequirementAddCommand extends Command {
      * Creates an RequirementAddCommand to add the specified {@code RequirementCategory}
      */
     public RequirementAddCommand(Name name, Set<Code> codeSet) {
-        requireNonNull(name);
-        requireNonNull(codeSet);
+        requireAllNonNull(name, codeSet);
+
         this.toFind = name;
         this.toAdd.addAll(codeSet);
     }

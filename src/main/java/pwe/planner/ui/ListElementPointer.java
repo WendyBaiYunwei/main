@@ -1,5 +1,7 @@
 package pwe.planner.ui;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,6 +23,8 @@ public class ListElementPointer {
      * The cursor points to the last element in {@code list}.
      */
     public ListElementPointer(List<String> list) {
+        requireNonNull(list);
+
         this.list = new ArrayList<>(list);
         index = this.list.size() - 1;
     }

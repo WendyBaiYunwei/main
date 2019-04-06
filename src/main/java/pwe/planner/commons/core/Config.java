@@ -1,5 +1,7 @@
 package pwe.planner.commons.core;
 
+import static java.util.Objects.requireNonNull;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -21,6 +23,8 @@ public class Config {
     }
 
     public void setLogLevel(Level logLevel) {
+        requireNonNull(logLevel);
+
         this.logLevel = logLevel;
     }
 
@@ -29,6 +33,8 @@ public class Config {
     }
 
     public void setUserPrefsFilePath(Path userPrefsFilePath) {
+        requireNonNull(userPrefsFilePath);
+
         this.userPrefsFilePath = userPrefsFilePath;
     }
 

@@ -1,5 +1,7 @@
 package pwe.planner.storage;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,9 +41,11 @@ class JsonAdaptedModule {
         this.name = name;
         this.credits = credits;
         this.code = code;
+
         if (tagged != null) {
             this.tagged.addAll(tagged);
         }
+
         if (corequisites != null) {
             this.corequisites.addAll(corequisites);
         }
@@ -51,6 +55,8 @@ class JsonAdaptedModule {
      * Converts a given {@code Module} into this class for Jackson use.
      */
     public JsonAdaptedModule(Module source) {
+        requireNonNull(source);
+
         name = source.getName().fullName;
         credits = source.getCredits().value;
         code = source.getCode().value;

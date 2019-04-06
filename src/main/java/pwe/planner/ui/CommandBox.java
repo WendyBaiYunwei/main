@@ -1,5 +1,7 @@
 package pwe.planner.ui;
 
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.util.List;
 
 import javafx.collections.ObservableList;
@@ -29,6 +31,8 @@ public class CommandBox extends UiPart<Region> {
 
     public CommandBox(CommandExecutor commandExecutor, List<String> history) {
         super(FXML);
+        requireAllNonNull(commandExecutor, history);
+
         this.commandExecutor = commandExecutor;
         this.history = history;
         // calls #setStyleToDefault() whenever there is a change to the text of the command box.
@@ -41,6 +45,8 @@ public class CommandBox extends UiPart<Region> {
      */
     @FXML
     private void handleKeyPress(KeyEvent keyEvent) {
+        assert keyEvent != null;
+
         switch (keyEvent.getCode()) {
         case UP:
             // As up and down buttons will alter the position of the caret,
@@ -64,6 +70,7 @@ public class CommandBox extends UiPart<Region> {
      */
     private void navigateToPreviousInput() {
         assert historySnapshot != null;
+
         if (!historySnapshot.hasPrevious()) {
             return;
         }
@@ -77,6 +84,7 @@ public class CommandBox extends UiPart<Region> {
      */
     private void navigateToNextInput() {
         assert historySnapshot != null;
+
         if (!historySnapshot.hasNext()) {
             return;
         }
@@ -89,6 +97,8 @@ public class CommandBox extends UiPart<Region> {
      * positions the caret to the end of the {@code text}.
      */
     private void replaceText(String text) {
+        assert text != null;
+
         commandTextField.setText(text);
         commandTextField.positionCaret(commandTextField.getText().length());
     }

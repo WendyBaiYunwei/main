@@ -1,5 +1,7 @@
 package pwe.planner.ui;
 
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
@@ -26,6 +28,8 @@ public class RequirementCategoryListPanel extends UiPart<Region> {
     public RequirementCategoryListPanel(ObservableList<RequirementCategory> requirementCategoryList,
             ObservableList<Module> moduleList) {
         super(FXML);
+        requireAllNonNull(requirementCategoryList, moduleList);
+
         modules = moduleList;
         requirementCategories.setItems(requirementCategoryList);
         requirementCategories.setCellFactory(listView -> new RequirementCategoryViewCell());

@@ -15,6 +15,7 @@ public class CollectionUtil {
     /** @see #requireAllNonNull(Collection) */
     public static void requireAllNonNull(Object... items) {
         requireNonNull(items);
+
         Stream.of(items).forEach(Objects::requireNonNull);
     }
 
@@ -23,6 +24,7 @@ public class CollectionUtil {
      */
     public static void requireAllNonNull(Collection<?> items) {
         requireNonNull(items);
+
         items.forEach(Objects::requireNonNull);
     }
 
