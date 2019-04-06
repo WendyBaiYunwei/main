@@ -99,7 +99,7 @@ public class PlannerAddCommandTest {
         PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, nonexistentCode);
 
         thrown.expect(CommandException.class);
-        thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_DUPLICATE_CODE, nonexistentCode));
+        thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_NONEXISTENT_MODULES, nonexistentCode));
         plannerAddCommand.execute(model, commandHistory);
     }
 

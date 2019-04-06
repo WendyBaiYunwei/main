@@ -10,7 +10,6 @@ import static pwe.planner.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import org.junit.Test;
 
 import pwe.planner.logic.commands.PlannerAddCommand;
-import pwe.planner.logic.commands.PlannerMoveCommand;
 import pwe.planner.model.module.Code;
 import pwe.planner.model.planner.Semester;
 import pwe.planner.model.planner.Year;
@@ -29,20 +28,12 @@ public class PlannerAddCommandParserTest {
         assertParseFailure(parser, " " + PREFIX_YEAR + "% " + PREFIX_SEMESTER + "1 "
                 + PREFIX_CODE + "CS1010", Year.MESSAGE_YEAR_CONSTRAINTS);
 
-        // invalid year
-        assertParseFailure(parser, " " + PREFIX_YEAR + null + PREFIX_SEMESTER + "1 "
-                + PREFIX_CODE + "CS1010", Year.MESSAGE_YEAR_CONSTRAINTS);
-
         // invalid semester
         assertParseFailure(parser, " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "-1 "
                 + PREFIX_CODE + "CS1010", Semester.MESSAGE_SEMESTER_CONSTRAINTS);
 
         // invalid semester
         assertParseFailure(parser, " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "% "
-                + PREFIX_CODE + "CS1010", Semester.MESSAGE_SEMESTER_CONSTRAINTS);
-
-        // invalid semester
-        assertParseFailure(parser, " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + null
                 + PREFIX_CODE + "CS1010", Semester.MESSAGE_SEMESTER_CONSTRAINTS);
 
         // invalid code
@@ -61,11 +52,11 @@ public class PlannerAddCommandParserTest {
         Year validYear = new Year("1");
         Semester validSemester = new Semester("4");
 
-        PlannerMoveCommand expectedPlannerMoveCommand =
-                new PlannerMoveCommand(validYear, validSemester, validCode);
+        PlannerAddCommand expectedPlannerAddCommand =
+                new PlannerAddCommand(validYear, validSemester, validCode);
 
-        assertParseSuccess(parser, " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "2 "
-                + PREFIX_CODE + "CS1010", expectedPlannerMoveCommand);
+        assertParseSuccess(parser, " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "4 "
+                + PREFIX_CODE + "CS1010", expectedPlannerAddCommand);
     }
 
     @Test
@@ -74,6 +65,7 @@ public class PlannerAddCommandParserTest {
         assertParseFailure(parser, " " + PREFIX_YEAR + " " + PREFIX_SEMESTER + "3 "
                 + PREFIX_CODE + "CS1010", Year.MESSAGE_YEAR_CONSTRAINTS);
 
+
         // no semester specified
         assertParseFailure(parser, " " + PREFIX_YEAR + "4 " + PREFIX_SEMESTER + " "
                 + PREFIX_CODE + "CS1010", Semester.MESSAGE_SEMESTER_CONSTRAINTS);
@@ -81,11 +73,21 @@ public class PlannerAddCommandParserTest {
         // no code specified
         assertParseFailure(parser, " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "2 "
                 + PREFIX_CODE + " ", Code.MESSAGE_CONSTRAINTS);
+
     }
 
     @Test
     public void parse_compulsoryFieldMissing_failure() {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, PlannerAddCommand.MESSAGE_USAGE);
+
+        // missing parameter year number
+        assertParseFailure(parser, " " + PREFIX_YEAR + null + PREFIX_SEMESTER + "1 "
+                + PREFIX_CODE + "CS1010", expectedMessage);
+
+        // missing parameter year number
+        assertParseFailure(parser, " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + null
+                + PREFIX_CODE + "CS1010", expectedMessage);
+
         // missing year prefix
         assertParseFailure(parser, "" + "1 " + PREFIX_SEMESTER + "2 " + PREFIX_CODE + "CS1010", expectedMessage);
 
