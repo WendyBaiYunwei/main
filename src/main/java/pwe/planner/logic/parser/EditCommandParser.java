@@ -8,6 +8,12 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_COREQUISITE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
+import static pwe.planner.logic.parser.ParserUtil.parseCode;
+import static pwe.planner.logic.parser.ParserUtil.parseCorequisites;
+import static pwe.planner.logic.parser.ParserUtil.parseCredits;
+import static pwe.planner.logic.parser.ParserUtil.parseIndex;
+import static pwe.planner.logic.parser.ParserUtil.parseName;
+import static pwe.planner.logic.parser.ParserUtil.parseTags;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -44,20 +50,20 @@ public class EditCommandParser implements Parser<EditCommand> {
         Index index;
 
         try {
-            index = ParserUtil.parseIndex(argMultimap.getPreamble());
+            index = parseIndex(argMultimap.getPreamble());
         } catch (ParseException pe) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE), pe);
         }
 
         EditModuleDescriptor editModuleDescriptor = new EditCommand.EditModuleDescriptor();
         if (argMultimap.getValue(PREFIX_NAME).isPresent()) {
-            editModuleDescriptor.setName(ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get()));
+            editModuleDescriptor.setName(parseName(argMultimap.getValue(PREFIX_NAME).get()));
         }
         if (argMultimap.getValue(PREFIX_CREDITS).isPresent()) {
-            editModuleDescriptor.setCredits(ParserUtil.parseCredits(argMultimap.getValue(PREFIX_CREDITS).get()));
+            editModuleDescriptor.setCredits(parseCredits(argMultimap.getValue(PREFIX_CREDITS).get()));
         }
         if (argMultimap.getValue(PREFIX_CODE).isPresent()) {
-            editModuleDescriptor.setCode(ParserUtil.parseCode(argMultimap.getValue(PREFIX_CODE).get()));
+            editModuleDescriptor.setCode(parseCode(argMultimap.getValue(PREFIX_CODE).get()));
         }
         parseTagsForEdit(argMultimap.getAllValues(PREFIX_TAG)).ifPresent(editModuleDescriptor::setTags);
         parseCorequisitesForEdit(argMultimap.getAllValues(PREFIX_COREQUISITE))
@@ -82,7 +88,7 @@ public class EditCommandParser implements Parser<EditCommand> {
             return Optional.empty();
         }
         Collection<String> tagSet = tags.size() == 1 && tags.contains("") ? Collections.emptySet() : tags;
-        return Optional.of(ParserUtil.parseTags(tagSet));
+        return Optional.of(parseTags(tagSet));
     }
 
     /**
@@ -99,6 +105,6 @@ public class EditCommandParser implements Parser<EditCommand> {
         Collection<String> corequisitesSet = (corequisites.size() == 1 && corequisites.contains(""))
                 ? Collections.emptySet()
                 : corequisites;
-        return Optional.of(ParserUtil.parseCorequisites(corequisitesSet));
+        return Optional.of(parseCorequisites(corequisitesSet));
     }
 }

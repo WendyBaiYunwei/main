@@ -1,6 +1,6 @@
 package pwe.planner.logic.parser;
 
-import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 import static pwe.planner.logic.parser.CliSyntax.OPERATORS;
 
 import java.util.ArrayDeque;
@@ -44,8 +44,7 @@ public class BooleanExpressionTokenizer {
      * @param prefixes         a list of prefixes to be included as delimiters
      */
     public BooleanExpressionTokenizer(String stringToTokenize, List<Prefix> prefixes) {
-        requireNonNull(stringToTokenize);
-        requireNonNull(prefixes);
+        requireAllNonNull(stringToTokenize, prefixes);
 
         this.stringToTokenize = stringToTokenize;
         this.prefixes = prefixes.stream().map(Prefix::getPrefix).collect(Collectors.toList());

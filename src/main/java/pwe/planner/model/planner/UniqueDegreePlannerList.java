@@ -35,6 +35,7 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
      */
     public boolean contains(DegreePlanner toCheck) {
         requireNonNull(toCheck);
+
         return internalList.stream().anyMatch(toCheck::isSameDegreePlanner);
     }
 
@@ -44,6 +45,7 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
      */
     public DegreePlanner getDegreePlannerByCode(Code toCheck) {
         requireNonNull(toCheck);
+
         return internalList.stream()
                 .filter(degreePlanner -> degreePlanner.getCodes().contains(toCheck))
                 .findFirst()
@@ -56,6 +58,7 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
      */
     public void add(DegreePlanner toAdd) {
         requireNonNull(toAdd);
+
         if (contains(toAdd)) {
             throw new DuplicateDegreePlannerException();
         }
@@ -89,6 +92,7 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
      */
     public void remove(DegreePlanner toRemove) {
         requireNonNull(toRemove);
+
         if (!internalList.remove(toRemove)) {
             throw new DegreePlannerNotFoundException();
         }
@@ -96,6 +100,7 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
 
     public void setDegreePlanners(UniqueDegreePlannerList replacement) {
         requireNonNull(replacement);
+
         internalList.setAll(replacement.internalList);
     }
 
@@ -105,6 +110,7 @@ public class UniqueDegreePlannerList implements Iterable<DegreePlanner> {
      */
     public void setDegreePlanners(List<DegreePlanner> degreePlanners) {
         requireAllNonNull(degreePlanners);
+
         if (!degreePlannersAreUnique(degreePlanners)) {
             throw new DuplicateDegreePlannerException();
         }

@@ -1,5 +1,8 @@
 package pwe.planner.commons.util;
 
+import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -23,6 +26,8 @@ public class FileUtil {
      * @param path A string representing the file path. Cannot be null.
      */
     public static boolean isValidPath(String path) {
+        requireNonNull(path);
+
         try {
             Paths.get(path);
         } catch (InvalidPathException ipe) {
@@ -36,6 +41,8 @@ public class FileUtil {
      * @throws IOException if the file or directory cannot be created.
      */
     public static void createIfMissing(Path file) throws IOException {
+        requireNonNull(file);
+
         if (!isFileExists(file)) {
             createFile(file);
         }
@@ -45,6 +52,8 @@ public class FileUtil {
      * Creates a file if it does not exist along with its missing parent directories.
      */
     public static void createFile(Path file) throws IOException {
+        requireNonNull(file);
+
         if (Files.exists(file)) {
             return;
         }
@@ -58,6 +67,8 @@ public class FileUtil {
      * Creates parent directories of file if it has a parent directory
      */
     public static void createParentDirsOfFile(Path file) throws IOException {
+        requireNonNull(file);
+
         Path parentDir = file.getParent();
 
         if (parentDir != null) {
@@ -69,6 +80,8 @@ public class FileUtil {
      * Assumes file exists
      */
     public static String readFromFile(Path file) throws IOException {
+        requireNonNull(file);
+
         return new String(Files.readAllBytes(file), CHARSET);
     }
 
@@ -77,6 +90,8 @@ public class FileUtil {
      * Will create the file if it does not exist yet.
      */
     public static void writeToFile(Path file, String content) throws IOException {
+        requireAllNonNull(file, content);
+
         Files.write(file, content.getBytes(CHARSET));
     }
 

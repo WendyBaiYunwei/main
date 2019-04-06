@@ -1,5 +1,6 @@
 package pwe.planner.model.requirement;
 
+import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Collections;
@@ -29,6 +30,7 @@ public class RequirementCategory {
      */
     public RequirementCategory(Name name, Credits credits, Set<Code> codeSet) {
         requireAllNonNull(name, credits, codeSet);
+
         this.name = name;
         this.credits = credits;
         this.codeSet.addAll(codeSet);
@@ -67,7 +69,9 @@ public class RequirementCategory {
      * Returns true if the current codeSet contains an equivalent code in the parameter toCheck
      */
     public boolean hasModuleCode(Set<Code> codeSetToCheck) {
-        return codeSetToCheck.stream().anyMatch(codeToCheck -> codeSet.contains(codeToCheck));
+        requireNonNull(codeSetToCheck);
+
+        return codeSetToCheck.stream().anyMatch(codeSet::contains);
     }
 
     /**

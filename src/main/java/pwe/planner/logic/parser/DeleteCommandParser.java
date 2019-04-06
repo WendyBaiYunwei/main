@@ -2,6 +2,7 @@ package pwe.planner.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static pwe.planner.logic.parser.ParserUtil.parseIndex;
 
 import pwe.planner.commons.core.index.Index;
 import pwe.planner.logic.commands.DeleteCommand;
@@ -25,11 +26,10 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         }
 
         try {
-            Index index = ParserUtil.parseIndex(args);
+            Index index = parseIndex(args);
             return new DeleteCommand(index);
         } catch (ParseException pe) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE), pe);
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE), pe);
         }
     }
 

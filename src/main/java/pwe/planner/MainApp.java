@@ -1,5 +1,6 @@
 package pwe.planner;
 
+import static java.util.Objects.requireNonNull;
 import static pwe.planner.model.util.InitialDataUtil.getInitialApplication;
 
 import java.io.IOException;
@@ -81,6 +82,9 @@ public class MainApp extends Application {
      * requirement categories list and degree planner list.
      */
     private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
+        assert storage != null;
+        assert userPrefs != null;
+
         Optional<ReadOnlyApplication> applicationOptional;
 
         ReadOnlyApplication initialData;
@@ -107,6 +111,8 @@ public class MainApp extends Application {
     }
 
     private void initLogging(Config config) {
+        assert config != null;
+
         LogsCenter.init(config);
     }
 
@@ -152,6 +158,8 @@ public class MainApp extends Application {
      * reading from the file.
      */
     protected UserPrefs initPrefs(UserPrefsStorage storage) {
+        assert storage != null;
+
         Path prefsFilePath = storage.getUserPrefsFilePath();
         logger.info("Using prefs file : " + prefsFilePath);
 
@@ -181,6 +189,8 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        requireNonNull(primaryStage);
+
         logger.info("Starting PlanWithEase " + MainApp.VERSION);
         ui.start(primaryStage);
     }

@@ -1,5 +1,7 @@
 package pwe.planner.model;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class VersionedApplication extends Application {
 
     public VersionedApplication(ReadOnlyApplication initialState) {
         super(initialState);
+        requireNonNull(initialState);
 
         applicationStateList = new ArrayList<>();
         applicationStateList.add(new Application(initialState));

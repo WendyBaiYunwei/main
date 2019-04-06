@@ -30,6 +30,7 @@ public class Name {
     public Name(String name) {
         requireNonNull(name);
         checkArgument(isValidName(name), MESSAGE_CONSTRAINTS);
+
         fullName = name;
     }
 
@@ -37,6 +38,8 @@ public class Name {
      * Returns true if a given string is a valid name.
      */
     public static boolean isValidName(String test) {
+        requireNonNull(test);
+
         return test.matches(VALIDATION_REGEX);
     }
 

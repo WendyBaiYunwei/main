@@ -1,14 +1,11 @@
 package pwe.planner.logic.parser;
 
+import static java.util.Objects.requireNonNull;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 import static pwe.planner.logic.parser.CliSyntax.OPERATOR_AND;
 import static pwe.planner.logic.parser.CliSyntax.OPERATOR_OR;
 
 import java.util.Map;
-import java.util.function.Predicate;
-
-import pwe.planner.logic.commands.FindCommand;
-import pwe.planner.logic.parser.exceptions.ParseException;
-import pwe.planner.model.module.Module;
 
 /**
  * Operators that can be used
@@ -39,30 +36,21 @@ public enum Operator {
     }
 
     public static Operator getOperatorFromString(String input) {
+        requireNonNull(input);
+
         return ops.get(input);
     }
 
-    public static boolean hasHigherPrecedence(Operator op1, Operator op2) {
-        return op1.precedence >= op2.precedence;
-    }
-
     /**
-     * Apply the operator on the 2 predicate
-     *
-     * @param operator
-     * @param predicate1
-     * @param predicate2
-     * @return a composite predicate
+     * Returns {@code true} if {@code op1} has higher precedence than {@code op2}.<br>
+     * Note: If {@code op1} has equal precedence as {@code op2}, it is considered to have higher precedence than
+     * {@code op2}.
+     * @param op1 first operator to compare
+     * @param op2 second operator to compare
+     * @return {@code true} if {@code op1} has higher precedence than {@code op2}; {@code false} otherwise
      */
-    public static Predicate<Module> applyOperator(Operator operator, Predicate<Module> predicate1,
-            Predicate<Module> predicate2) throws ParseException {
-        switch (operator) {
-        case OR:
-            return predicate1.or(predicate2);
-        case AND:
-            return predicate1.and(predicate2);
-        default:
-            throw new ParseException(String.format(FindCommand.MESSAGE_INVALID_EXPRESSION, FindCommand.MESSAGE_USAGE));
-        }
+    public static boolean hasHigherPrecedence(Operator op1, Operator op2) {
+        requireAllNonNull(op1, op2);
+        return op1.precedence >= op2.precedence;
     }
 }

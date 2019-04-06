@@ -2,6 +2,7 @@ package pwe.planner.commons.util;
 
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.util.AppUtil.checkArgument;
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,8 +25,7 @@ public class StringUtil {
      * @param word cannot be null, cannot be empty, must be a single word
      */
     public static boolean containsWordIgnoreCase(String sentence, String word) {
-        requireNonNull(sentence);
-        requireNonNull(word);
+        requireAllNonNull(sentence, word);
 
         String preppedWord = word.trim();
         checkArgument(!preppedWord.isEmpty(), "Word parameter cannot be empty");
@@ -45,8 +45,7 @@ public class StringUtil {
      * @return true if both strings are equal; false otherwise
      */
     public static boolean compareEqualsIgnoreCase(String stringA, String stringB) {
-        requireNonNull(stringA);
-        requireNonNull(stringB);
+        requireAllNonNull(stringA, stringB);
 
         String preppedStringA = stringA.trim();
         checkArgument(!preppedStringA.isEmpty(), "stringA parameter cannot be empty");
@@ -61,6 +60,7 @@ public class StringUtil {
      */
     public static String getDetails(Throwable t) {
         requireNonNull(t);
+
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
         return t.getMessage() + "\n" + sw.toString();

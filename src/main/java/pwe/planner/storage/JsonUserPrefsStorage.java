@@ -1,5 +1,7 @@
 package pwe.planner.storage;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -17,6 +19,8 @@ public class JsonUserPrefsStorage implements UserPrefsStorage {
     private Path filePath;
 
     public JsonUserPrefsStorage(Path filePath) {
+        requireNonNull(filePath);
+
         this.filePath = filePath;
     }
 
@@ -36,11 +40,15 @@ public class JsonUserPrefsStorage implements UserPrefsStorage {
      * @throws DataConversionException if the file format is not as expected.
      */
     public Optional<UserPrefs> readUserPrefs(Path prefsFilePath) throws DataConversionException {
+        requireNonNull(prefsFilePath);
+
         return JsonUtil.readJsonFile(prefsFilePath, UserPrefs.class);
     }
 
     @Override
     public void saveUserPrefs(ReadOnlyUserPrefs userPrefs) throws IOException {
+        requireNonNull(userPrefs);
+
         JsonUtil.saveJsonFile(userPrefs, filePath);
     }
 

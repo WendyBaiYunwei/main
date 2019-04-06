@@ -1,5 +1,7 @@
 package pwe.planner.storage;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +38,8 @@ public class JsonSerializableDegreePlannerList {
     @JsonCreator
     public JsonSerializableDegreePlannerList(
             @JsonProperty("degreePlanners") List<JsonAdaptedDegreePlannerList> degreePlanners) {
+        requireNonNull(degreePlanners);
+
         this.degreePlanners.addAll(degreePlanners);
     }
 
@@ -45,6 +49,8 @@ public class JsonSerializableDegreePlannerList {
      * @param source future changes to this will not affect the created {@code JsonSerializableDegreePlannerList}.
      */
     public JsonSerializableDegreePlannerList(ReadOnlyApplication source) {
+        requireNonNull(source);
+
         degreePlanners.addAll(source.getDegreePlannerList().stream().map(JsonAdaptedDegreePlannerList::new)
                 .collect(Collectors.toList()));
     }

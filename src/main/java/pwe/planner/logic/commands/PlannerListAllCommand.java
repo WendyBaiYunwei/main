@@ -22,6 +22,7 @@ public class PlannerListAllCommand extends Command {
     @Override
     public CommandResult execute(Model model, CommandHistory history) {
         requireNonNull(model);
+
         model.updateFilteredDegreePlannerList(PREDICATE_SHOW_ALL_DEGREE_PLANNERS);
         StringBuilder degreePlannerListContent = new StringBuilder();
         for (DegreePlanner degreePlanner : model.getFilteredDegreePlannerList()) {

@@ -7,7 +7,7 @@ import static pwe.planner.commons.util.AppUtil.checkArgument;
  * Represents a DegreePlanner's Semester in the degreePlanner list.
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
-public class Semester {
+public class Semester implements Comparable<Semester> {
 
     public static final String MESSAGE_SEMESTER_CONSTRAINTS =
             "Semester should only be either 1, 2, 3 or 4. Semester should not be blank";
@@ -28,6 +28,7 @@ public class Semester {
     public Semester(String semester) {
         requireNonNull(semester);
         checkArgument(isValidSemester(semester), MESSAGE_SEMESTER_CONSTRAINTS);
+
         plannerSemester = semester;
     }
 
@@ -35,6 +36,8 @@ public class Semester {
      * Returns true if a given string is a valid date.
      */
     public static boolean isValidSemester(String test) {
+        requireNonNull(test);
+
         return test.matches(SEMESTER_VALIDATION_REGEX);
     }
 
@@ -53,5 +56,10 @@ public class Semester {
     @Override
     public int hashCode() {
         return plannerSemester.hashCode();
+    }
+
+    @Override
+    public int compareTo(Semester other) {
+        return plannerSemester.compareTo(other.plannerSemester);
     }
 }

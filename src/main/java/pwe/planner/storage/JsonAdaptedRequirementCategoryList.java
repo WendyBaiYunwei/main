@@ -1,5 +1,7 @@
 package pwe.planner.storage;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +46,8 @@ public class JsonAdaptedRequirementCategoryList {
      * Converts a given {@code RequirementCategory} into this class for Jackson use.
      */
     public JsonAdaptedRequirementCategoryList(RequirementCategory source) {
+        requireNonNull(source);
+
         name = source.getName().fullName;
         credits = source.getCredits().value;
         codeList.addAll(source.getCodeSet().stream().map(JsonAdaptedCode::new).collect(Collectors.toList()));

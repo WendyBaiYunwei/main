@@ -1,5 +1,7 @@
 package pwe.planner.ui;
 
+import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
@@ -22,6 +24,8 @@ public class DegreePlannerListPanel extends UiPart<Region> {
     public DegreePlannerListPanel(ObservableList<DegreePlanner> degreePlannerList,
             ObservableList<Module> moduleList) {
         super(FXML);
+        requireAllNonNull(degreePlannerList, moduleList);
+
         modules = moduleList;
         degreePlanners.setItems(degreePlannerList);
         degreePlanners.setCellFactory(listView -> new DegreePlannerViewCell());

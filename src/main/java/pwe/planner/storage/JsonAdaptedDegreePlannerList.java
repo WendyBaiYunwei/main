@@ -1,5 +1,7 @@
 package pwe.planner.storage;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,15 +36,15 @@ public class JsonAdaptedDegreePlannerList {
             @JsonProperty("semester") String semester, @JsonProperty("codes") List<JsonAdaptedCode> codes) {
         this.year = year;
         this.semester = semester;
-        if (codes != null) {
-            this.codes.addAll(codes);
-        }
+        this.codes.addAll(codes);
     }
 
     /**
      * Converts a given {@code DegreePlanner} into this class for Jackson use.
      */
     public JsonAdaptedDegreePlannerList(DegreePlanner source) {
+        requireNonNull(source);
+
         year = source.getYear().year;
         semester = source.getSemester().plannerSemester;
         codes.addAll(source.getCodes().stream().map(JsonAdaptedCode::new).collect(Collectors.toList()));

@@ -1,5 +1,7 @@
 package pwe.planner.storage;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +40,8 @@ class JsonSerializableModuleList {
 
     @JsonCreator
     public JsonSerializableModuleList(@JsonProperty("modules") List<JsonAdaptedModule> modules) {
+        requireNonNull(modules);
+
         this.modules.addAll(modules);
     }
 
@@ -47,6 +51,8 @@ class JsonSerializableModuleList {
      * @param source future changes to this will not affect the created {@code JsonSerializableModuleList}.
      */
     public JsonSerializableModuleList(ReadOnlyApplication source) {
+        requireNonNull(source);
+
         modules.addAll(source.getModuleList().stream().map(JsonAdaptedModule::new).collect(Collectors.toList()));
     }
 
