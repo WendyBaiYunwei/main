@@ -23,19 +23,14 @@ import pwe.planner.model.planner.Semester;
 import pwe.planner.model.planner.Year;
 import pwe.planner.storage.JsonSerializableApplication;
 import pwe.planner.testutil.ModuleBuilder;
-import pwe.planner.testutil.SemesterBuilder;
-import pwe.planner.testutil.YearBuilder;
 
 public class PlannerAddCommandTest {
-
-    private static final CommandHistory EMPTY_COMMAND_HISTORY = new CommandHistory();
-
-    private Model model;
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     private CommandHistory commandHistory = new CommandHistory();
+
+    private Model model;
 
     @Before
     public void setUp() throws IllegalValueException {
@@ -48,7 +43,7 @@ public class PlannerAddCommandTest {
     @Test
     public void constructor_nullYear_throwsNullPointerException() {
         thrown.expect(NullPointerException.class);
-        Semester defaultSemester = new SemesterBuilder().build();
+        Semester defaultSemester = new Semester("1");
         Code defaultCode = new ModuleBuilder().build().getCode();
         new PlannerAddCommand(null, defaultSemester, defaultCode);
     }
@@ -56,7 +51,7 @@ public class PlannerAddCommandTest {
     @Test
     public void constructor_nullSemester_throwsNullPointerException() {
         thrown.expect(NullPointerException.class);
-        Year defaultYear = new YearBuilder().build();
+        Year defaultYear = new Year("1");
         Code defaultCode = new ModuleBuilder().build().getCode();
         new PlannerAddCommand(defaultYear, null, defaultCode);
     }
@@ -64,15 +59,15 @@ public class PlannerAddCommandTest {
     @Test
     public void constructor_nullCode_throwsNullPointerException() {
         thrown.expect(NullPointerException.class);
-        Year defaultYear = new YearBuilder().build();
-        Semester defaultSemester = new SemesterBuilder().build();
+        Year defaultYear = new Year("1");
+        Semester defaultSemester = new Semester("1");
         new PlannerAddCommand(defaultYear, defaultSemester, null);
     }
 
     @Test
     public void execute_parametersAcceptedByModel_addSuccessful() throws Exception {
-        Year validYear = new YearBuilder().build();
-        Semester validSemester = new SemesterBuilder().build();
+        Year validYear = new Year("1");
+        Semester validSemester = new Semester("1");
         Code validCode = new Code("CS2105");
 
         CommandResult commandResult = new PlannerAddCommand(validYear, validSemester, validCode)
@@ -80,13 +75,12 @@ public class PlannerAddCommandTest {
 
         assertEquals(String.format(PlannerAddCommand.MESSAGE_SUCCESS, validYear, validSemester, validCode, "None"),
                 commandResult.getFeedbackToUser());
-        assertEquals(EMPTY_COMMAND_HISTORY, commandHistory);
     }
 
     @Test
     public void execute_duplicatePlannerCodes_throwsCommandException() throws Exception {
-        Year validYear = new YearBuilder().build();
-        Semester validSemester = new SemesterBuilder().build();
+        Year validYear = new Year("1");
+        Semester validSemester = new Semester("1");
         Code validCode = new Code("CS1010");
 
         PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, validCode);
@@ -98,8 +92,8 @@ public class PlannerAddCommandTest {
 
     @Test
     public void execute_nonexistentPlannerCodes_throwsCommandException() throws Exception {
-        Year validYear = new YearBuilder().build();
-        Semester validSemester = new SemesterBuilder().build();
+        Year validYear = new Year("1");
+        Semester validSemester = new Semester("1");
         Code nonexistentCode = new Code("CS9999");
 
         PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, nonexistentCode);
@@ -111,8 +105,8 @@ public class PlannerAddCommandTest {
 
     @Test
     public void equals() {
-        Year year = new YearBuilder().build();
-        Semester semester = new SemesterBuilder().build();
+        Year year = new Year("1");
+        Semester semester = new Semester("1");
         Code code = new ModuleBuilder().build().getCode();
         Code codeCopy = new ModuleBuilder().withCode("IS1103").build().getCode();
 
@@ -128,9 +122,6 @@ public class PlannerAddCommandTest {
 
         // different types -> returns false
         assertFalse(plannerAddACommand.equals(1));
-
-        // null -> returns false
-        assertFalse(plannerAddACommand.equals(null));
 
         // different module -> returns false
         assertFalse(plannerAddACommand.equals(plannerAddBCommand));
