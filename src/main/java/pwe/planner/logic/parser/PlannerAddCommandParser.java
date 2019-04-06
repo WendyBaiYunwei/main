@@ -5,6 +5,9 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
 import static pwe.planner.logic.parser.ParserUtil.arePrefixesPresent;
+import static pwe.planner.logic.parser.ParserUtil.parseCode;
+import static pwe.planner.logic.parser.ParserUtil.parseSemester;
+import static pwe.planner.logic.parser.ParserUtil.parseYear;
 
 import java.util.Set;
 
@@ -33,9 +36,9 @@ public class PlannerAddCommandParser implements Parser<PlannerAddCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, PlannerAddCommand.MESSAGE_USAGE));
         }
 
-        Code code = ParserUtil.parseCode(argMultimap.getValue(PREFIX_CODE).get());
-        Year year = ParserUtil.parseYear(argMultimap.getValue(PREFIX_YEAR).get());
-        Semester semester = ParserUtil.parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
+        Year year = parseYear(argMultimap.getValue(PREFIX_YEAR).get());
+        Semester semester = parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
+        Code code = parseCode(argMultimap.getValue(PREFIX_CODE).get());
 
         return new PlannerAddCommand(year, semester, code);
     }
