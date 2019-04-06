@@ -10,8 +10,6 @@ import static pwe.planner.logic.parser.ParserUtil.parseCode;
 import static pwe.planner.logic.parser.ParserUtil.parseSemester;
 import static pwe.planner.logic.parser.ParserUtil.parseYear;
 
-import java.util.Set;
-
 import pwe.planner.logic.commands.PlannerAddCommand;
 import pwe.planner.logic.parser.exceptions.ParseException;
 import pwe.planner.model.module.Code;
