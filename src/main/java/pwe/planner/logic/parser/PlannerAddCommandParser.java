@@ -33,10 +33,10 @@ public class PlannerAddCommandParser implements Parser<PlannerAddCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, PlannerAddCommand.MESSAGE_USAGE));
         }
 
-        Set<Code> codes = ParserUtil.parseCodes(argMultimap.getAllValues(PREFIX_CODE));
+        Code code = ParserUtil.parseCode(argMultimap.getValue(PREFIX_CODE).get());
         Year year = ParserUtil.parseYear(argMultimap.getValue(PREFIX_YEAR).get());
         Semester semester = ParserUtil.parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
 
-        return new PlannerAddCommand(year, semester, codes);
+        return new PlannerAddCommand(year, semester, code);
     }
 }
