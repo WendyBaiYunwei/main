@@ -7,6 +7,9 @@ import static pwe.planner.testutil.TypicalDegreePlanners.getTypicalDegreePlanner
 import static pwe.planner.testutil.TypicalModules.getTypicalModuleList;
 import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,7 +48,9 @@ public class PlannerAddCommandTest {
         thrown.expect(NullPointerException.class);
         Semester defaultSemester = new Semester("1");
         Code defaultCode = new ModuleBuilder().build().getCode();
-        new PlannerAddCommand(null, defaultSemester, defaultCode);
+        Set<Code> defaultCodeSet = new HashSet<>();
+        defaultCodeSet.add(defaultCode);
+        new PlannerAddCommand(null, defaultSemester, defaultCodeSet);
     }
 
     @Test
@@ -53,7 +58,9 @@ public class PlannerAddCommandTest {
         thrown.expect(NullPointerException.class);
         Year defaultYear = new Year("1");
         Code defaultCode = new ModuleBuilder().build().getCode();
-        new PlannerAddCommand(defaultYear, null, defaultCode);
+        Set<Code> defaultCodeSet = new HashSet<>();
+        defaultCodeSet.add(defaultCode);
+        new PlannerAddCommand(defaultYear, null, defaultCodeSet);
     }
 
     @Test
@@ -69,11 +76,15 @@ public class PlannerAddCommandTest {
         Year validYear = new Year("1");
         Semester validSemester = new Semester("1");
         Code validCode = new Code("CS2105");
+        Code anotherValidCode = new Code("CS2106");
+        Set<Code> validCodeSet = new HashSet<>();
+        validCodeSet.add(validCode);
+        validCodeSet.add(anotherValidCode);
 
-        CommandResult commandResult = new PlannerAddCommand(validYear, validSemester, validCode)
+        CommandResult commandResult = new PlannerAddCommand(validYear, validSemester, validCodeSet)
                 .execute(model, commandHistory);
 
-        assertEquals(String.format(PlannerAddCommand.MESSAGE_SUCCESS, validYear, validSemester, validCode, "None"),
+        assertEquals(String.format(PlannerAddCommand.MESSAGE_SUCCESS, validYear, validSemester, validCodeSet, "None"),
                 commandResult.getFeedbackToUser());
     }
 
@@ -82,11 +93,13 @@ public class PlannerAddCommandTest {
         Year validYear = new Year("1");
         Semester validSemester = new Semester("1");
         Code validCode = new Code("CS1010");
+        Set<Code> validCodeSet = new HashSet<>();
+        validCodeSet.add(validCode);
 
-        PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, validCode);
+        PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, validCodeSet);
 
         thrown.expect(CommandException.class);
-        thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_DUPLICATE_CODE, validCode));
+        thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_DUPLICATE_CODE, validCodeSet));
         plannerAddCommand.execute(model, commandHistory);
     }
 
@@ -95,11 +108,13 @@ public class PlannerAddCommandTest {
         Year validYear = new Year("1");
         Semester validSemester = new Semester("1");
         Code nonexistentCode = new Code("CS9999");
+        Set<Code> nonexistentCodeSet = new HashSet<>();
+        nonexistentCodeSet.add(nonexistentCode);
 
-        PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, nonexistentCode);
+        PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, nonexistentCodeSet);
 
         thrown.expect(CommandException.class);
-        thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_NONEXISTENT_MODULES, nonexistentCode));
+        thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_NONEXISTENT_MODULES, nonexistentCodeSet));
         plannerAddCommand.execute(model, commandHistory);
     }
 
@@ -107,17 +122,21 @@ public class PlannerAddCommandTest {
     public void equals() {
         Year year = new Year("1");
         Semester semester = new Semester("1");
-        Code code = new ModuleBuilder().build().getCode();
-        Code codeCopy = new ModuleBuilder().withCode("IS1103").build().getCode();
+        Code code = new Code("CS1010");
+        Set<Code> codeSet = new HashSet<>();
+        codeSet.add(code);
+        Code anotherCode = new Code("IS1103");
+        Set<Code> anotherCodeSet = new HashSet<>();
+        anotherCodeSet.add(anotherCode);
 
-        PlannerAddCommand plannerAddACommand = new PlannerAddCommand(year, semester, code);
-        PlannerAddCommand plannerAddBCommand = new PlannerAddCommand(year, semester, codeCopy);
+        PlannerAddCommand plannerAddACommand = new PlannerAddCommand(year, semester, codeSet);
+        PlannerAddCommand plannerAddBCommand = new PlannerAddCommand(year, semester, anotherCodeSet);
 
         // same object -> returns true
         assertTrue(plannerAddACommand.equals(plannerAddACommand));
 
         // same values -> returns true
-        PlannerAddCommand plannerAddACommandCopy = new PlannerAddCommand(year, semester, code);
+        PlannerAddCommand plannerAddACommandCopy = new PlannerAddCommand(year, semester, codeSet);
         assertTrue(plannerAddACommand.equals(plannerAddACommandCopy));
 
         // different types -> returns false

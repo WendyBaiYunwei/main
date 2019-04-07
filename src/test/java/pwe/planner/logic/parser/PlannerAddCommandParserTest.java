@@ -7,6 +7,9 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
 import static pwe.planner.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static pwe.planner.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Test;
 
 import pwe.planner.logic.commands.PlannerAddCommand;
@@ -49,11 +52,13 @@ public class PlannerAddCommandParserTest {
     @Test
     public void parse_validArgs_returnsPlannerAddCommand() {
         Code validCode = new Code("CS1010");
+        Set<Code> validCodeSet = new HashSet<>();
+        validCodeSet.add(validCode);
         Year validYear = new Year("1");
         Semester validSemester = new Semester("4");
 
         PlannerAddCommand expectedPlannerAddCommand =
-                new PlannerAddCommand(validYear, validSemester, validCode);
+                new PlannerAddCommand(validYear, validSemester, validCodeSet);
 
         assertParseSuccess(parser, " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "4 "
                 + PREFIX_CODE + "CS1010", expectedPlannerAddCommand);
