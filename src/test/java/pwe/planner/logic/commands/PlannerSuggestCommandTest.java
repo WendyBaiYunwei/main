@@ -46,7 +46,8 @@ public class PlannerSuggestCommandTest {
         Code validCode = new Code("CS2101");
         codesToSuggest.add(validCode);
         String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, "None ", codesToSuggest);
-        assertCommandSuccess(new PlannerSuggestCommand(bestCredits, tagsToFind), model, commandHistory, expectedMessage, model);
+        assertCommandSuccess(new PlannerSuggestCommand(bestCredits, tagsToFind), model,
+                commandHistory, expectedMessage, model);
     }
 
     @Test
@@ -56,6 +57,7 @@ public class PlannerSuggestCommandTest {
         Tag validTag = new Tag("nonexistent");
         tagsToFind.add(validTag);
         String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, "None ", "None");
-        assertCommandSuccess(new PlannerSuggestCommand(bestCredits, tagsToFind), model, commandHistory, expectedMessage, model);
+        assertCommandSuccess(new PlannerSuggestCommand(bestCredits, tagsToFind), model, commandHistory,
+                expectedMessage, model);
     }
 }
