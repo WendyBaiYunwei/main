@@ -96,8 +96,6 @@ public class PlannerRemoveCommandTest {
 
     @Test
     public void equals() {
-        Year year = new Year("1");
-        Semester semester = new Semester("1");
         Code code = new Code("CS1010");
         Set<Code> codeSet = new HashSet<>();
         codeSet.add(code);
