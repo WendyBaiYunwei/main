@@ -43,10 +43,10 @@ public class TypicalModules {
             .withCode("CS2102").withCorequisites("CS1231").build();
     public static final Module GEORGE = new ModuleBuilder().withName("George Best").withCredits("6")
             .withCode("CS2105").build();
-    public static final Module HOON = new ModuleBuilder().withName("Hoon Meier").withCredits("7")
-            .withCode("CS2106").build();
 
     // Manually added
+    public static final Module HOON = new ModuleBuilder().withName("Hoon Meier").withCredits("7")
+            .withCode("CS2106").build();
     public static final Module IDA = new ModuleBuilder().withName("Ida Mueller").withCredits("8")
             .withCode("CS2107").build();
 
@@ -74,6 +74,6 @@ public class TypicalModules {
 
 
     public static List<Module> getTypicalModules() {
-        return new ArrayList<>(Arrays.asList(ALICE, BENSON, CARL, DANIEL, ELLE, FIONA, GEORGE, HOON));
+        return new ArrayList<>(Arrays.asList(ALICE, BENSON, CARL, DANIEL, ELLE, FIONA, GEORGE));
     }
 }

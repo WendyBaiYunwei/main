@@ -76,10 +76,8 @@ public class PlannerAddCommandTest {
         Year validYear = new Year("1");
         Semester validSemester = new Semester("1");
         Code validCode = new Code("CS2105");
-        Code anotherValidCode = new Code("CS2106");
         Set<Code> validCodeSet = new HashSet<>();
         validCodeSet.add(validCode);
-        validCodeSet.add(anotherValidCode);
 
         CommandResult commandResult = new PlannerAddCommand(validYear, validSemester, validCodeSet)
                 .execute(model, commandHistory);
