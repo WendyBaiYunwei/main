@@ -88,13 +88,12 @@ public class PlannerSuggestCommand extends Command {
                 modulesToSuggest.add(moduleToSuggest);
             }
         }
-        modulesToSuggest.removeAll(plannerCodes);
         modulesToSuggest.sort(new SortModulesToSuggest());
         List<Code> codesToSuggest = new ArrayList<>();
         for (ModuleToSuggest moduleToSuggest : modulesToSuggest) {
             codesToSuggest.add(moduleToSuggest.getModuleCode());
         }
-
+        codesToSuggest.removeAll(plannerCodes);
         model.commitApplication();
         if (missingPlannerCoreqs.size() == 0 && codesToSuggest.size() == 0) {
             return new CommandResult(String.format(MESSAGE_SUCCESS, "None ", "None"));
