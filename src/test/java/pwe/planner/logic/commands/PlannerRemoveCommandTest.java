@@ -22,8 +22,6 @@ import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
 import pwe.planner.model.UserPrefs;
 import pwe.planner.model.module.Code;
-import pwe.planner.model.planner.Semester;
-import pwe.planner.model.planner.Year;
 import pwe.planner.storage.JsonSerializableApplication;
 
 public class PlannerRemoveCommandTest {
