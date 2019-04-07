@@ -20,44 +20,47 @@ import pwe.planner.model.planner.Semester;
 import pwe.planner.model.planner.Year;
 
 /**
- * Adds a module to the degree plan.
+ * Adds module(s) to the degree plan.
  * Related Co-requisite(s) are added as well.
  */
 public class PlannerAddCommand extends Command {
 
     public static final String COMMAND_WORD = "planner_add";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a module to the degree plan. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds module(s) to the degree plan. "
             + "Parameters: "
             + PREFIX_YEAR + "YEAR "
             + PREFIX_SEMESTER + "SEMESTER "
-            + PREFIX_CODE + "CODE\n"
+            + PREFIX_CODE + "CODE "
+            + "[" + PREFIX_CODE + "CODE]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_YEAR + "2 "
             + PREFIX_SEMESTER + "2 "
-            + PREFIX_CODE + "CS2040C ";
+            + PREFIX_CODE + "CS2040C "
+            + PREFIX_CODE + "CS2113T "
+            + PREFIX_CODE + "CS2100";
 
-    public static final String MESSAGE_SUCCESS = "Added new module to year %1$s semester %2$s of"
+    public static final String MESSAGE_SUCCESS = "Added new module(s) to year %1$s semester %2$s of"
             + " the degree plan: \n%3$s\nCo-requisite(s) added:\n%4$s";
-    public static final String MESSAGE_DUPLICATE_CODE = "The module %1$s already exists in the degree plan.";
-    public static final String MESSAGE_DUPLICATE_COREQ = "The Co-requisite(s) %1$s of module %2$s already exists"
+    public static final String MESSAGE_DUPLICATE_CODE = "The module(s) %1$s already exists in the degree plan.";
+    public static final String MESSAGE_INVALID_COREQ = "The Co-requisite(s) %1$s of module(s) %2$s already exists"
             + " in a different year and semester of the degree plan.\nModules that are Co-requisites to each other"
             + " have to be in the same year and semester of the degree plan.";
-    public static final String MESSAGE_NONEXISTENT_MODULES = "The module %1$s does not exist in the module list.";
+    public static final String MESSAGE_NONEXISTENT_MODULES = "The module(s) %1$s does not exist in the module list.";
     public static final String MESSAGE_NONEXISTENT_DEGREE_PLANNER = "The degree plan of year %1$s and semester"
             + "%2$s does not exist.";
     private Year yearToAddTo;
     private Semester semesterToAddTo;
-    private Code codeToAdd;
+    private Set<Code> codesToAdd;
 
     /**
-     * Creates a PlannerAddCommand to add the specified {@code code} to the degree plan.
+     * Creates a PlannerAddCommand to add the specified {@code codes} to the degree plan.
      */
-    public PlannerAddCommand(Year year, Semester semester, Code code) {
-        requireAllNonNull(year, semester, code);
+    public PlannerAddCommand(Year year, Semester semester, Set<Code> codes) {
+        requireAllNonNull(year, semester, codes);
         yearToAddTo = year;
         semesterToAddTo = semester;
-        codeToAdd = code;
+        codesToAdd = codes;
     }
 
     @Override
@@ -71,43 +74,49 @@ public class PlannerAddCommand extends Command {
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_DEGREE_PLANNER, yearToAddTo, semesterToAddTo));
         }
 
-        boolean isDuplicatePlannerCode = model.getApplication().getDegreePlannerList().stream()
-                .map(DegreePlanner::getCodes).anyMatch(selectedPlannerCodes -> selectedPlannerCodes
-                        .contains(codeToAdd));
-        if (isDuplicatePlannerCode) {
-            throw new CommandException(String.format(MESSAGE_DUPLICATE_CODE, codeToAdd));
+        Set<Code> duplicatePlannerCodes = codesToAdd.stream().filter(codesToCheck -> model.getApplication()
+                .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
+                .anyMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(codesToCheck)))
+                .collect(Collectors.toSet());
+        if (duplicatePlannerCodes.size() > 0) {
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_CODE, duplicatePlannerCodes));
         }
 
-        if (!model.hasModuleCode(codeToAdd)) {
-            throw new CommandException(String.format(MESSAGE_NONEXISTENT_MODULES, codeToAdd));
+        Set<Code> nonExistentModuleCodes = codesToAdd.stream()
+                .filter(codesToCheck -> !model.hasModuleCode(codesToCheck)).collect(Collectors.toSet());
+        if (nonExistentModuleCodes.size() > 0) {
+            throw new CommandException(String.format(MESSAGE_NONEXISTENT_MODULES, nonExistentModuleCodes));
         }
 
         Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
         Set<Code> coreqsAdded = new HashSet<>();
 
-        selectedCodeSet.add(codeToAdd);
-        // Adds Co-requisite(s).
-        Module module = model.getModuleByCode(codeToAdd);
+        for (Code codeToAdd : codesToAdd) {
+            selectedCodeSet.add(codeToAdd);
+            // Adds Co-requisite(s).
+            Module module = model.getModuleByCode(codeToAdd);
 
-        // Returns the relevant duplicate Co-requisite(s) in the entire degree plan.
-        Set<Code> duplicateCoreqs = module.getCorequisites().stream().filter(coreqToCheck -> model.getApplication()
-                .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
-                .anyMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(coreqToCheck)))
-                .collect(Collectors.toSet());
-        Set<Code> invalidDuplicateCoreqs = new HashSet<>(duplicateCoreqs);
-        // Returns the invalid duplicate Co-requisite(s) that exists in a different section of the degree plan.
-        invalidDuplicateCoreqs.removeAll(selectedDegreePlanner.getCodes());
-        if (invalidDuplicateCoreqs.size() > 0) {
-            throw new CommandException(String.format(MESSAGE_DUPLICATE_COREQ, invalidDuplicateCoreqs, codeToAdd));
+            // Returns the relevant duplicate Co-requisite(s) in the entire degree plan.
+            Set<Code> duplicateCoreqs = module.getCorequisites().stream().filter(coreqToCheck -> model.getApplication()
+                    .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
+                    .anyMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(coreqToCheck)))
+                    .collect(Collectors.toSet());
+            Set<Code> invalidDuplicateCoreqs = new HashSet<>(duplicateCoreqs);
+            // Returns the invalid duplicate Co-requisite(s) that exists in a different section of the degree plan.
+            invalidDuplicateCoreqs.removeAll(selectedDegreePlanner.getCodes());
+            if (invalidDuplicateCoreqs.size() > 0) {
+                throw new CommandException(String.format(MESSAGE_INVALID_COREQ, invalidDuplicateCoreqs, codesToAdd));
+            }
+
+            coreqsAdded.addAll(module.getCorequisites());
+
+            // Returns the valid duplicate Co-requisite(s) that exists in the selected section of the degree plan.
+            duplicateCoreqs.retainAll(selectedDegreePlanner.getCodes());
+            coreqsAdded.removeAll(duplicateCoreqs);
+            selectedCodeSet.addAll(coreqsAdded);
         }
 
-        coreqsAdded.addAll(module.getCorequisites());
-
-        // Returns the valid duplicate Co-requisite(s) that exists in the selected section of the degree plan.
-        duplicateCoreqs.retainAll(selectedDegreePlanner.getCodes());
-        coreqsAdded.removeAll(duplicateCoreqs);
-        selectedCodeSet.addAll(coreqsAdded);
-        coreqsAdded.remove(codeToAdd);
+        coreqsAdded.removeAll(codesToAdd);
 
         DegreePlanner editedDegreePlanner = new DegreePlanner(yearToAddTo, semesterToAddTo, selectedCodeSet);
         model.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
@@ -115,9 +124,9 @@ public class PlannerAddCommand extends Command {
 
         if (coreqsAdded.size() > 0) {
             return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo,
-                    codeToAdd, coreqsAdded));
+                    codesToAdd, coreqsAdded));
         } else {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo, codeToAdd,
+            return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo, codesToAdd,
                     "None"));
         }
     }
@@ -128,6 +137,7 @@ public class PlannerAddCommand extends Command {
                 || (other instanceof PlannerAddCommand // instanceof handles nulls
                 && yearToAddTo.equals(((PlannerAddCommand) other).yearToAddTo)
                 && semesterToAddTo.equals(((PlannerAddCommand) other).semesterToAddTo)
-                && codeToAdd.equals(((PlannerAddCommand) other).codeToAdd));
+                && codesToAdd.equals(((PlannerAddCommand) other).codesToAdd));
     }
 }
+
