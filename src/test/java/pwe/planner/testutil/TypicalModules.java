@@ -38,7 +38,7 @@ public class TypicalModules {
     public static final Module DANIEL = new ModuleBuilder().withName("Daniel Meier").withCredits("3")
             .withCode("CS2100").withTags("friends").build();
     public static final Module ELLE = new ModuleBuilder().withName("Elle Meyer").withCredits("4")
-            .withCode("CS2101").withTags("owesMoney").build();
+            .withCode("CS2101").build();
     public static final Module FIONA = new ModuleBuilder().withName("Fiona Kunz").withCredits("5")
             .withCode("CS2102").withCorequisites("CS1231").build();
     public static final Module GEORGE = new ModuleBuilder().withName("George Best").withCredits("6")

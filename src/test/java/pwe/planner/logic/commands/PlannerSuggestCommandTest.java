@@ -16,7 +16,6 @@ import pwe.planner.logic.CommandHistory;
 import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
 import pwe.planner.model.UserPrefs;
-import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Credits;
 import pwe.planner.model.tag.Tag;
 import pwe.planner.storage.JsonSerializableApplication;
@@ -34,20 +33,6 @@ public class PlannerSuggestCommandTest {
         model = new ModelManager(
                 new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
                         getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
-    }
-
-    @Test
-    public void execute_existentModulesWithMatchingTags_recommendedModulesFound() {
-        Credits bestCredits = new Credits("3");
-        Set<Tag> tagsToFind = new HashSet<>();
-        Tag validTag = new Tag("owesMoney");
-        tagsToFind.add(validTag);
-        Set<Code> codesToSuggest = new HashSet<>();
-        Code validCode = new Code("CS2101");
-        codesToSuggest.add(validCode);
-        String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, "None ", codesToSuggest);
-        assertCommandSuccess(new PlannerSuggestCommand(bestCredits, tagsToFind), model,
-                commandHistory, expectedMessage, model);
     }
 
     @Test
