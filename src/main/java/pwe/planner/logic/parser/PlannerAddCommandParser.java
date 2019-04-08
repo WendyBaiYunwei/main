@@ -1,5 +1,6 @@
 package pwe.planner.logic.parser;
 
+import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
@@ -28,6 +29,8 @@ public class PlannerAddCommandParser implements Parser<PlannerAddCommand> {
      * @throws ParseException if the user input does not conform the expected format.
      */
     public PlannerAddCommand parse(String args) throws ParseException {
+        requireNonNull(args);
+
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_CODE, PREFIX_YEAR , PREFIX_SEMESTER);
 
