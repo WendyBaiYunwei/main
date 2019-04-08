@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import pwe.planner.model.module.Code;
 
@@ -13,7 +14,11 @@ import pwe.planner.model.module.Code;
  * Represents a DegreePlanner in the degreePlanner list.
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
-public class DegreePlanner {
+public class DegreePlanner implements Comparable<DegreePlanner> {
+    /**
+     * The format string representation of a {@link DegreePlanner} object used by {@link DegreePlanner#toString()}.
+     */
+    private static final String STRING_REPRESENTATION = "Year %1$s Semester %2$s: %3$s";
 
     // Identity fields
     private final Year year;
@@ -86,14 +91,19 @@ public class DegreePlanner {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append(" Year: ")
-                .append(getYear())
-                .append(" Semester: ")
-                .append(getSemester())
-                .append(" Codes: ")
-                .append(getCodes());
-        return builder.toString();
+        final String allCodes = codes.isEmpty()
+                ? "No modules"
+                : codes.stream().sorted().map(Code::toString).collect(Collectors.joining(", "));
+
+        return String.format(STRING_REPRESENTATION, year, semester, allCodes);
     }
 
+    @Override
+    public int compareTo(DegreePlanner other) {
+        int differenceInYear = year.compareTo(other.year);
+        if (differenceInYear == 0) {
+            return semester.compareTo(other.semester);
+        }
+        return differenceInYear;
+    }
 }

@@ -118,7 +118,7 @@ public class InitialDataUtil {
     );
     private static final RequirementCategory INFORMATION_SECURITY_REQUIREMENTS = new RequirementCategory(
             new Name("Information Security Requirements"),
-            new Credits("32"),
+            new Credits("20"),
             getCodeSet()
     );
 
@@ -154,7 +154,7 @@ public class InitialDataUtil {
 
     private static final RequirementCategory UNRESTRICTED_ELECTIVES = new RequirementCategory(
             new Name("Unrestricted Electives"),
-            new Credits("12"),
+            new Credits("32"),
             getCodeSet()
     );
 

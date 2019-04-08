@@ -7,7 +7,7 @@ import static pwe.planner.commons.util.AppUtil.checkArgument;
  * Represents a DegreePlanner's Year in the degreePlanner list.
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
-public class Year {
+public class Year implements Comparable<Year> {
 
     public static final String MESSAGE_YEAR_CONSTRAINTS =
             "Year should only be either 1, 2, 3 or 4. Year should not be blank";
@@ -56,5 +56,10 @@ public class Year {
     @Override
     public int hashCode() {
         return year.hashCode();
+    }
+
+    @Override
+    public int compareTo(Year other) {
+        return year.compareTo(other.year);
     }
 }

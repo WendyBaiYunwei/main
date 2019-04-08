@@ -1,12 +1,17 @@
 package pwe.planner.testutil;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Credits;
 import pwe.planner.model.module.Module;
 import pwe.planner.model.module.Name;
+import pwe.planner.model.planner.Semester;
 import pwe.planner.model.tag.Tag;
 import pwe.planner.model.util.SampleDataUtil;
 
@@ -18,30 +23,45 @@ public class ModuleBuilder {
     public static final String DEFAULT_NAME = "Alice Pauline";
     public static final String DEFAULT_CREDITS = "666";
     public static final String DEFAULT_CODE = "ABC1234Z";
+    public static final String DEFAULT_SEMESTERS_ONE = "1";
+    public static final String DEFAULT_SEMESTERS_TWO = "2";
 
+    private Code code;
     private Name name;
     private Credits credits;
-    private Code code;
-    private Set<Tag> tags;
     private Set<Code> corequisites;
+    private Set<Semester> semesters;
+    private Set<Tag> tags;
 
     public ModuleBuilder() {
+        code = new Code(DEFAULT_CODE);
         name = new Name(DEFAULT_NAME);
         credits = new Credits(DEFAULT_CREDITS);
-        code = new Code(DEFAULT_CODE);
-        tags = new HashSet<>();
+        semesters = new HashSet<>();
+        semesters.add(new Semester(DEFAULT_SEMESTERS_ONE));
+        semesters.add(new Semester(DEFAULT_SEMESTERS_TWO));
         corequisites = new HashSet<>();
+        tags = new HashSet<>();
     }
 
     /**
      * Initializes the ModuleBuilder with the data of {@code moduleToCopy}.
      */
     public ModuleBuilder(Module moduleToCopy) {
+        code = moduleToCopy.getCode();
         name = moduleToCopy.getName();
         credits = moduleToCopy.getCredits();
-        code = moduleToCopy.getCode();
-        tags = new HashSet<>(moduleToCopy.getTags());
+        semesters = new HashSet<>(moduleToCopy.getSemesters());
         corequisites = new HashSet<>(moduleToCopy.getCorequisites());
+        tags = new HashSet<>(moduleToCopy.getTags());
+    }
+
+    /**
+     * Sets the {@code Code} of the {@code Module} that we are building.
+     */
+    public ModuleBuilder withCode(String code) {
+        this.code = new Code(code);
+        return this;
     }
 
     /**
@@ -53,10 +73,10 @@ public class ModuleBuilder {
     }
 
     /**
-     * Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code Module} that we are building.
+     * Sets the {@code Credits} of the {@code Module} that we are building.
      */
-    public ModuleBuilder withTags(String... tags) {
-        this.tags = SampleDataUtil.getTagSet(tags);
+    public ModuleBuilder withCredits(String credits) {
+        this.credits = new Credits(credits);
         return this;
     }
 
@@ -77,23 +97,33 @@ public class ModuleBuilder {
     }
 
     /**
-     * Sets the {@code Code} of the {@code Module} that we are building.
+     * Parses the {@code semesters} into a {@code Set<Semester>} and set it to the {@code Module} that we are building.
      */
-    public ModuleBuilder withCode(String code) {
-        this.code = new Code(code);
+    public ModuleBuilder withSemesters(String... semesters) {
+        requireNonNull(semesters);
+
+        this.semesters = Arrays.stream(semesters).map(Semester::new).collect(Collectors.toSet());
         return this;
     }
 
     /**
-     * Sets the {@code Credits} of the {@code Module} that we are building.
+     * Sets the {@code semesters} of the {@code Module} that we are building.
      */
-    public ModuleBuilder withCredits(String credits) {
-        this.credits = new Credits(credits);
+    public ModuleBuilder withSemesters(Set<Semester> semesters) {
+        this.semesters = new HashSet<>(semesters);
+        return this;
+    }
+
+    /**
+     * Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code Module} that we are building.
+     */
+    public ModuleBuilder withTags(String... tags) {
+        this.tags = SampleDataUtil.getTagSet(tags);
         return this;
     }
 
     public Module build() {
-        return new Module(name, credits, code, tags, corequisites);
+        return new Module(code, name, credits, semesters, corequisites, tags);
     }
 
 }

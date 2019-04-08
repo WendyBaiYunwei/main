@@ -9,6 +9,7 @@ import static pwe.planner.ui.testutil.GuiTestAssert.assertCardDisplaysModule;
 import static pwe.planner.ui.testutil.GuiTestAssert.assertCardEquals;
 
 import java.util.Collections;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -21,6 +22,8 @@ import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Credits;
 import pwe.planner.model.module.Module;
 import pwe.planner.model.module.Name;
+import pwe.planner.model.planner.Semester;
+import pwe.planner.model.tag.Tag;
 
 public class ModuleListPanelTest extends GuiUnitTest {
     private static final ObservableList<Module> TYPICAL_MODULES = FXCollections.observableList(getTypicalModules());
@@ -80,7 +83,10 @@ public class ModuleListPanelTest extends GuiUnitTest {
             Name name = new Name(i + "a");
             Credits credits = new Credits("999");
             Code code = new Code("CS1010");
-            Module module = new Module(name, credits, code, Collections.emptySet(), Collections.emptySet());
+            Set<Code> corequisites = Collections.emptySet();
+            Set<Semester> semesters = Collections.emptySet();
+            Set<Tag> tags = Collections.emptySet();
+            Module module = new Module(code, name, credits, semesters, corequisites, tags);
             backingList.add(module);
         }
         return backingList;

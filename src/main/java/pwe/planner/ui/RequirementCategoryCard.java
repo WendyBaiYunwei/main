@@ -2,7 +2,6 @@ package pwe.planner.ui;
 
 import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.Comparator;
 import java.util.stream.Stream;
 
 import javafx.collections.ObservableList;
@@ -71,7 +70,7 @@ public class RequirementCategoryCard extends UiPart<Region> {
             noCodes.getStyleClass().add("noModules");
             codes.getChildren().add(noCodes);
         } else {
-            requirementCategory.getCodeSet().stream().sorted(Comparator.comparing(code -> code.value))
+            requirementCategory.getCodeSet().stream().sorted()
                     .forEach(code -> codes.getChildren().add(new Label(code.value)));
         }
 

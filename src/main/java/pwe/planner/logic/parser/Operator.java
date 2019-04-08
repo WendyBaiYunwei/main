@@ -6,11 +6,6 @@ import static pwe.planner.logic.parser.CliSyntax.OPERATOR_AND;
 import static pwe.planner.logic.parser.CliSyntax.OPERATOR_OR;
 
 import java.util.Map;
-import java.util.function.Predicate;
-
-import pwe.planner.logic.commands.FindCommand;
-import pwe.planner.logic.parser.exceptions.ParseException;
-import pwe.planner.model.module.Module;
 
 /**
  * Operators that can be used
@@ -56,29 +51,6 @@ public enum Operator {
      */
     public static boolean hasHigherPrecedence(Operator op1, Operator op2) {
         requireAllNonNull(op1, op2);
-
         return op1.precedence >= op2.precedence;
-    }
-
-    /**
-     * Apply the operator on the 2 predicate
-     *
-     * @param operator
-     * @param predicate1
-     * @param predicate2
-     * @return a composite predicate
-     */
-    public static Predicate<Module> applyOperator(Operator operator, Predicate<Module> predicate1,
-            Predicate<Module> predicate2) throws ParseException {
-        requireAllNonNull(operator, predicate1, predicate2);
-
-        switch (operator) {
-        case OR:
-            return predicate1.or(predicate2);
-        case AND:
-            return predicate1.and(predicate2);
-        default:
-            throw new ParseException(String.format(FindCommand.MESSAGE_INVALID_EXPRESSION, FindCommand.MESSAGE_USAGE));
-        }
     }
 }

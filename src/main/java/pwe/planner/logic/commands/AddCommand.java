@@ -5,6 +5,7 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_COREQUISITE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 
 import pwe.planner.logic.CommandHistory;
@@ -26,12 +27,15 @@ public class AddCommand extends Command {
             + PREFIX_CODE + "CODE "
             + PREFIX_NAME + "NAME "
             + PREFIX_CREDITS + "CREDITS "
+            + "[" + PREFIX_SEMESTER + "SEMESTER]... "
             + "[" + PREFIX_COREQUISITE + "COREQUISITE]... "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_CODE + "CS2113T "
             + PREFIX_NAME + "Software Engineering and Object-Oriented Programming "
             + PREFIX_CREDITS + "4 "
+            + PREFIX_SEMESTER + "1 "
+            + PREFIX_SEMESTER + "2 "
             + PREFIX_COREQUISITE + "CS2101 "
             + PREFIX_TAG + "OOP "
             + PREFIX_TAG + "RCS "

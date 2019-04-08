@@ -8,6 +8,7 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.model.module.Name;
 import pwe.planner.model.requirement.exceptions.DuplicateRequirementCategoryException;
 import pwe.planner.model.requirement.exceptions.RequirementCategoryNotFoundException;
@@ -60,7 +61,8 @@ public class UniqueRequirementCategoryList implements Iterable<RequirementCatego
         requireNonNull(toCheck);
 
         return internalList.stream()
-                .filter(requirementCategory -> requirementCategory.getName().equals(toCheck))
+                .filter(requirementCategory -> StringUtil
+                        .compareEqualsIgnoreCase(requirementCategory.getName().toString(), toCheck.toString()))
                 .findFirst()
                 .orElse(null);
     }

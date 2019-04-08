@@ -7,12 +7,14 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_COREQUISITE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 import static pwe.planner.logic.parser.ParserUtil.parseCode;
 import static pwe.planner.logic.parser.ParserUtil.parseCorequisites;
 import static pwe.planner.logic.parser.ParserUtil.parseCredits;
 import static pwe.planner.logic.parser.ParserUtil.parseIndex;
 import static pwe.planner.logic.parser.ParserUtil.parseName;
+import static pwe.planner.logic.parser.ParserUtil.parseSemesters;
 import static pwe.planner.logic.parser.ParserUtil.parseTags;
 
 import java.util.Collection;
@@ -24,6 +26,7 @@ import pwe.planner.commons.core.index.Index;
 import pwe.planner.logic.commands.EditCommand;
 import pwe.planner.logic.parser.exceptions.ParseException;
 import pwe.planner.model.module.Code;
+import pwe.planner.model.planner.Semester;
 import pwe.planner.model.tag.Tag;
 
 /**
@@ -44,7 +47,7 @@ public class EditCommandParser implements Parser<EditCommand> {
         }
 
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(
-                args, PREFIX_NAME, PREFIX_CREDITS, PREFIX_CODE, PREFIX_TAG, PREFIX_COREQUISITE
+                args, PREFIX_CODE, PREFIX_NAME, PREFIX_CREDITS, PREFIX_SEMESTER, PREFIX_COREQUISITE, PREFIX_TAG
         );
 
         Index index;
@@ -56,24 +59,59 @@ public class EditCommandParser implements Parser<EditCommand> {
         }
 
         EditModuleDescriptor editModuleDescriptor = new EditCommand.EditModuleDescriptor();
+        if (argMultimap.getValue(PREFIX_CODE).isPresent()) {
+            editModuleDescriptor.setCode(parseCode(argMultimap.getValue(PREFIX_CODE).get()));
+        }
         if (argMultimap.getValue(PREFIX_NAME).isPresent()) {
             editModuleDescriptor.setName(parseName(argMultimap.getValue(PREFIX_NAME).get()));
         }
         if (argMultimap.getValue(PREFIX_CREDITS).isPresent()) {
             editModuleDescriptor.setCredits(parseCredits(argMultimap.getValue(PREFIX_CREDITS).get()));
         }
-        if (argMultimap.getValue(PREFIX_CODE).isPresent()) {
-            editModuleDescriptor.setCode(parseCode(argMultimap.getValue(PREFIX_CODE).get()));
-        }
-        parseTagsForEdit(argMultimap.getAllValues(PREFIX_TAG)).ifPresent(editModuleDescriptor::setTags);
+        parseSemestersForEdit(argMultimap.getAllValues(PREFIX_SEMESTER)).ifPresent(editModuleDescriptor::setSemesters);
         parseCorequisitesForEdit(argMultimap.getAllValues(PREFIX_COREQUISITE))
                 .ifPresent(editModuleDescriptor::setCorequisites);
+        parseTagsForEdit(argMultimap.getAllValues(PREFIX_TAG)).ifPresent(editModuleDescriptor::setTags);
 
         if (!editModuleDescriptor.isAnyFieldEdited()) {
             throw new ParseException(EditCommand.MESSAGE_NOT_EDITED);
         }
 
         return new EditCommand(index, editModuleDescriptor);
+    }
+
+    /**
+     * Parses {@code Collection<String> semesters} into a {@code Set<Semester>} if {@code semesters} is non-empty.
+     * If {@code semesters} contain only one element which is an empty string, it will be parsed into a
+     * {@code Set<Semester>} containing zero semesters.
+     */
+    private Optional<Set<Semester>> parseSemestersForEdit(Collection<String> semesters) throws ParseException {
+        assert semesters != null;
+
+        if (semesters.isEmpty()) {
+            return Optional.empty();
+        }
+        Collection<String> corequisitesSet = (semesters.size() == 1 && semesters.contains(""))
+                ? Collections.emptySet()
+                : semesters;
+        return Optional.of(parseSemesters(corequisitesSet));
+    }
+
+    /**
+     * Parses {@code Collection<String> corequisites} into a {@code Set<Code>} if {@code corequisites} is non-empty.
+     * If {@code corequisites} contain only one element which is an empty string, it will be parsed into a
+     * {@code Set<Code>} containing zero codes.
+     */
+    private Optional<Set<Code>> parseCorequisitesForEdit(Collection<String> corequisites) throws ParseException {
+        assert corequisites != null;
+
+        if (corequisites.isEmpty()) {
+            return Optional.empty();
+        }
+        Collection<String> corequisitesSet = (corequisites.size() == 1 && corequisites.contains(""))
+                ? Collections.emptySet()
+                : corequisites;
+        return Optional.of(parseCorequisites(corequisitesSet));
     }
 
     /**
@@ -89,22 +127,5 @@ public class EditCommandParser implements Parser<EditCommand> {
         }
         Collection<String> tagSet = tags.size() == 1 && tags.contains("") ? Collections.emptySet() : tags;
         return Optional.of(parseTags(tagSet));
-    }
-
-    /**
-     * Parses {@code Collection<String> corequisites} into a {@code Set<Code>} if {@code corequisites} is non-empty.
-     * If {@code corequisites} contain only one element which is an empty string, it will be parsed into a
-     * {@code Set<Code>} containing zero tags.
-     */
-    private Optional<Set<Code>> parseCorequisitesForEdit(Collection<String> corequisites) throws ParseException {
-        assert corequisites != null;
-
-        if (corequisites.isEmpty()) {
-            return Optional.empty();
-        }
-        Collection<String> corequisitesSet = (corequisites.size() == 1 && corequisites.contains(""))
-                ? Collections.emptySet()
-                : corequisites;
-        return Optional.of(parseCorequisites(corequisitesSet));
     }
 }

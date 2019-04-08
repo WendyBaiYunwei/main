@@ -6,6 +6,7 @@ import static pwe.planner.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static pwe.planner.logic.commands.CommandTestUtil.CODE_DESC_AMY;
 import static pwe.planner.logic.commands.CommandTestUtil.CREDITS_DESC_AMY;
 import static pwe.planner.logic.commands.CommandTestUtil.NAME_DESC_AMY;
+import static pwe.planner.logic.commands.CommandTestUtil.SEMESTERS_DESC_AMY;
 import static pwe.planner.testutil.TypicalModules.AMY;
 
 import java.io.IOException;
@@ -117,7 +118,9 @@ public class LogicManagerTest {
         logic = new LogicManager(model, storage);
 
         // Execute add command
-        String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY + CREDITS_DESC_AMY + CODE_DESC_AMY;
+        String addCommand = AddCommand.COMMAND_WORD + CODE_DESC_AMY + NAME_DESC_AMY + CREDITS_DESC_AMY
+                + SEMESTERS_DESC_AMY;
+
         Module expectedModule = new ModuleBuilder(AMY).withTags().build();
         ModelManager expectedModel = new ModelManager();
         expectedModel.addModule(expectedModule);

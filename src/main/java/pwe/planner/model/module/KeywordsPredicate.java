@@ -7,5 +7,5 @@ import java.util.function.Predicate;
  * This interface let us have a list of predicate of different module's attributes
  */
 @FunctionalInterface
-public interface KeywordsPredicate extends Predicate<Module> {
+public interface KeywordsPredicate<T> extends Predicate<T> {
 }

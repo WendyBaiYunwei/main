@@ -7,15 +7,22 @@ import static pwe.planner.logic.commands.CommandTestUtil.CODE_DESC_BOB;
 import static pwe.planner.logic.commands.CommandTestUtil.CREDITS_DESC_AMY;
 import static pwe.planner.logic.commands.CommandTestUtil.CREDITS_DESC_BOB;
 import static pwe.planner.logic.commands.CommandTestUtil.INVALID_CODE_DESC;
+import static pwe.planner.logic.commands.CommandTestUtil.INVALID_COREQUISITE_DESC;
 import static pwe.planner.logic.commands.CommandTestUtil.INVALID_CREDITS_DESC;
 import static pwe.planner.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
+import static pwe.planner.logic.commands.CommandTestUtil.INVALID_SEMESTER_DESC_FIVE;
 import static pwe.planner.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
 import static pwe.planner.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static pwe.planner.logic.commands.CommandTestUtil.NAME_DESC_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.SEMESTERS_DESC_AMY;
+import static pwe.planner.logic.commands.CommandTestUtil.SEMESTERS_DESC_BOB;
 import static pwe.planner.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static pwe.planner.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
 import static pwe.planner.logic.commands.CommandTestUtil.VALID_CREDITS_BOB;
 import static pwe.planner.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.VALID_SEMESTER_AMY_TWO;
+import static pwe.planner.logic.commands.CommandTestUtil.VALID_SEMESTER_BOB_FOUR;
+import static pwe.planner.logic.commands.CommandTestUtil.VALID_SEMESTER_BOB_THREE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 import static pwe.planner.testutil.TypicalModules.ALICE;
 import static pwe.planner.testutil.TypicalModules.AMY;
@@ -36,6 +43,7 @@ import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Credits;
 import pwe.planner.model.module.Module;
 import pwe.planner.model.module.Name;
+import pwe.planner.model.planner.Semester;
 import pwe.planner.model.tag.Tag;
 import pwe.planner.testutil.ModuleBuilder;
 import pwe.planner.testutil.ModuleUtil;
@@ -52,8 +60,8 @@ public class AddCommandSystemTest extends ApplicationSystemTest {
          * -> added
          */
         Module toAdd = AMY;
-        String command = "   " + AddCommand.COMMAND_WORD + "  " + NAME_DESC_AMY + "  " + CREDITS_DESC_AMY
-                + "   " + CODE_DESC_AMY + "   " + TAG_DESC_FRIEND + " ";
+        String command = "   " + AddCommand.COMMAND_WORD + "  " + CODE_DESC_AMY + "   " + NAME_DESC_AMY + "  "
+                + CREDITS_DESC_AMY + "  " + SEMESTERS_DESC_AMY + "   " + TAG_DESC_FRIEND + " ";
         assertCommandSuccess(command, toAdd);
 
         /* Case: undo adding Amy to the list -> Amy deleted */
@@ -79,14 +87,30 @@ public class AddCommandSystemTest extends ApplicationSystemTest {
         expectedResultMessage = String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, toAdd.getCode());
         assertCommandFailure(command, expectedResultMessage);
 
+        /* Case: add a module with all fields same as another module in the application except 1/2 semesters
+         * -> rejected
+         */
+        toAdd = new ModuleBuilder(AMY).withSemesters(VALID_SEMESTER_AMY_TWO, VALID_SEMESTER_BOB_THREE).build();
+        command = ModuleUtil.getAddCommand(toAdd);
+        expectedResultMessage = String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, toAdd.getCode());
+        assertCommandFailure(command, expectedResultMessage);
+
+        /* Case: add a module with all fields same as another module in the application except all semesters
+         * -> rejected
+         */
+        toAdd = new ModuleBuilder(AMY).withSemesters(VALID_SEMESTER_BOB_THREE, VALID_SEMESTER_BOB_FOUR).build();
+        command = ModuleUtil.getAddCommand(toAdd);
+        expectedResultMessage = String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, toAdd.getCode());
+        assertCommandFailure(command, expectedResultMessage);
+
         /* Case: add to empty application -> added */
         deleteAllModules();
         assertCommandSuccess(ALICE);
 
         /* Case: add a module with tags, command with parameters in random order -> added */
         toAdd = BOB;
-        command = AddCommand.COMMAND_WORD + TAG_DESC_FRIEND + CREDITS_DESC_BOB + CODE_DESC_BOB + NAME_DESC_BOB
-                + TAG_DESC_HUSBAND;
+        command = AddCommand.COMMAND_WORD + TAG_DESC_FRIEND + CREDITS_DESC_BOB + CODE_DESC_BOB + SEMESTERS_DESC_BOB
+                + NAME_DESC_BOB + TAG_DESC_HUSBAND;
         assertCommandSuccess(command, toAdd);
 
         /* Case: add a module, missing tags -> added */
@@ -133,20 +157,30 @@ public class AddCommandSystemTest extends ApplicationSystemTest {
         command = "adds " + ModuleUtil.getModuleDetails(toAdd);
         assertCommandFailure(command, MESSAGE_UNKNOWN_COMMAND);
 
+        /* Case: invalid code -> rejected */
+        command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + CREDITS_DESC_AMY + INVALID_CODE_DESC + SEMESTERS_DESC_AMY;
+        assertCommandFailure(command, Code.MESSAGE_CONSTRAINTS);
+
         /* Case: invalid name -> rejected */
-        command = AddCommand.COMMAND_WORD + INVALID_NAME_DESC + CREDITS_DESC_AMY + CODE_DESC_AMY;
+        command = AddCommand.COMMAND_WORD + INVALID_NAME_DESC + CREDITS_DESC_AMY + CODE_DESC_AMY + SEMESTERS_DESC_AMY;
         assertCommandFailure(command, Name.MESSAGE_CONSTRAINTS);
 
         /* Case: invalid credits -> rejected */
-        command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + INVALID_CREDITS_DESC + CODE_DESC_AMY;
+        command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + INVALID_CREDITS_DESC + CODE_DESC_AMY + SEMESTERS_DESC_AMY;
         assertCommandFailure(command, Credits.MESSAGE_CONSTRAINTS);
 
-        /* Case: invalid code -> rejected */
-        command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + CREDITS_DESC_AMY + INVALID_CODE_DESC;
+        /* Case: invalid semester -> rejected */
+        command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + CREDITS_DESC_AMY + CODE_DESC_AMY
+                + INVALID_SEMESTER_DESC_FIVE;
+        assertCommandFailure(command, Semester.MESSAGE_SEMESTER_CONSTRAINTS);
+
+        /* Case: invalid corequisite code -> rejected */
+        command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + CREDITS_DESC_AMY + CODE_DESC_AMY + SEMESTERS_DESC_AMY
+                + INVALID_COREQUISITE_DESC;
         assertCommandFailure(command, Code.MESSAGE_CONSTRAINTS);
 
         /* Case: invalid tag -> rejected */
-        command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + CREDITS_DESC_AMY + CODE_DESC_AMY
+        command = AddCommand.COMMAND_WORD + NAME_DESC_AMY + CREDITS_DESC_AMY + CODE_DESC_AMY + SEMESTERS_DESC_AMY
                 + INVALID_TAG_DESC;
         assertCommandFailure(command, Tag.MESSAGE_CONSTRAINTS);
     }

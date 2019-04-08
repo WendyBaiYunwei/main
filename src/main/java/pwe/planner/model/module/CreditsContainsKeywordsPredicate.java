@@ -4,10 +4,11 @@ import static java.util.Objects.requireNonNull;
 import static pwe.planner.logic.parser.ParserUtil.parseKeyword;
 
 import java.util.List;
+
 /**
  * Tests that a {@code Module}'s {@code Credit} matches any of the keywords given.
  */
-public class CreditsContainsKeywordsPredicate implements KeywordsPredicate {
+public class CreditsContainsKeywordsPredicate<T> implements KeywordsPredicate<T> {
     private final List<String> keywords;
 
     public CreditsContainsKeywordsPredicate(List<String> keywords) {
@@ -17,8 +18,9 @@ public class CreditsContainsKeywordsPredicate implements KeywordsPredicate {
     }
 
     @Override
-    public boolean test(Module module) {
-        requireNonNull(module);
+    public boolean test(T object) {
+        requireNonNull(object);
+        Module module = (Module) object;
 
         String moduleCredits = module.getCredits().toString();
         return keywords.stream().anyMatch(keyword -> parseKeyword(keyword, moduleCredits));

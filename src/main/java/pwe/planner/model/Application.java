@@ -3,6 +3,7 @@ package pwe.planner.model;
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -65,6 +66,29 @@ public class Application implements ReadOnlyApplication {
         setModules(newData.getModuleList());
         setDegreePlanners(newData.getDegreePlannerList());
         setRequirementCategories(newData.getRequirementCategoryList());
+    }
+
+    /**
+     * Resets the existing {@code DegreePlanner} data with empty {@code Code}.
+     */
+    public void resetPlanner() {
+        List<DegreePlanner> editedDegreePlannerList = new ArrayList<>();
+        for (DegreePlanner planner : degreePlanners) {
+            editedDegreePlannerList.add(new DegreePlanner(planner.getYear(), planner.getSemester(), Set.of()));
+        }
+        setDegreePlanners(editedDegreePlannerList);
+    }
+
+    /**
+     * Resets the existing {@code RequirementCategories} data with empty {@code Code}.
+     */
+    public void resetRequirement() {
+        List<RequirementCategory> editedRequirementCategories = new ArrayList<>();
+        for (RequirementCategory requirementCategory : requirementCategories) {
+            editedRequirementCategories.add(new RequirementCategory(requirementCategory.getName(),
+                    requirementCategory.getCredits(), Set.of()));
+        }
+        setRequirementCategories(editedRequirementCategories);
     }
 
     //// list overwrite operations

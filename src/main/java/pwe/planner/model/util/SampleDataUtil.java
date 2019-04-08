@@ -23,43 +23,48 @@ import pwe.planner.model.tag.Tag;
  */
 public class SampleDataUtil {
     private static final Module CS1010 = new Module(
+            new Code("CS1010"),
             new Name("Programming Methodology"),
             new Credits("4"),
-            new Code("CS1010"),
-            getTagSet("programming", "algorithms", "c", "imperative"),
-            getCodeSet()
+            getSemesterSet("1", "2", "4"),
+            getCorequisiteSet(),
+            getTagSet("programming", "algorithms", "c", "imperative")
     );
 
     private static final Module CS1231 = new Module(
+            new Code("CS1231"),
             new Name("Discrete Structures"),
             new Credits("4"),
-            new Code("CS1231"),
-            getTagSet("math", "logic", "proving"),
-            getCodeSet()
+            getSemesterSet("1", "2"),
+            getCorequisiteSet(),
+            getTagSet("math", "logic", "proving")
     );
 
     private static final Module CS2040C = new Module(
+            new Code("CS2040C"),
             new Name("Data Structures and Algorithms"),
             new Credits("4"),
-            new Code("CS2040C"),
-            getTagSet("linkedlist", "stack", "queue", "hashtable", "heap", "avltree", "graph", "sssp"),
-            getCodeSet()
+            getSemesterSet("1", "2"),
+            getCorequisiteSet(),
+            getTagSet("linkedlist", "stack", "queue", "hashtable", "heap", "avltree", "graph", "sssp")
     );
 
     private static final Module CS2100 = new Module(
+            new Code("CS2100"),
             new Name("Computer Organisation"),
             new Credits("4"),
-            new Code("CS2100"),
-            getTagSet("boolean", "mips", "assembly", "circuit", "flipflop", "pipelining", "cache"),
-            getCodeSet()
+            getSemesterSet("1", "2"),
+            getCorequisiteSet(),
+            getTagSet("boolean", "mips", "assembly", "circuit", "flipflop", "pipelining", "cache")
     );
 
     private static final Module CS2102 = new Module(
+            new Code("CS2102"),
             new Name("Database Systems"),
             new Credits("4"),
-            new Code("CS2102"),
-            getTagSet("database", "rdbms", "entity", "sql", "normalisation"),
-            getCodeSet()
+            getSemesterSet("1", "2"),
+            getCorequisiteSet(),
+            getTagSet("database", "rdbms", "entity", "sql", "normalisation")
     );
 
     private static final DegreePlanner YEAR_1_SEMESTER_1 = new DegreePlanner(
@@ -163,31 +168,45 @@ public class SampleDataUtil {
             getCodeSet("CS1010", "CS1231", "CS2040C", "CS2100", "CS2102")
     );
     private static final RequirementCategory INFORMATION_SECURITY_REQUIREMENTS = new RequirementCategory(
-            new Name("Information Security Requirements"), new Credits("20"), getCodeSet()
+            new Name("Information Security Requirements"),
+            new Credits("20"),
+            getCodeSet()
     );
 
     private static final RequirementCategory INFORMATION_SECURITY_ELECTIVES = new RequirementCategory(
-            new Name("Information Security Electives"), new Credits("12"), getCodeSet()
+            new Name("Information Security Electives"),
+            new Credits("12"),
+            getCodeSet()
     );
 
     private static final RequirementCategory COMPUTING_BREADTH = new RequirementCategory(
-            new Name("Computing Breadth"), new Credits("20"), getCodeSet()
+            new Name("Computing Breadth"),
+            new Credits("20"),
+            getCodeSet()
     );
 
     private static final RequirementCategory IT_PROFESSIONALISM = new RequirementCategory(
-            new Name("IT Professionalism"), new Credits("8"), getCodeSet()
+            new Name("IT Professionalism"),
+            new Credits("8"),
+            getCodeSet()
     );
 
     private static final RequirementCategory MATHEMATICS = new RequirementCategory(
-            new Name("Mathematics"), new Credits("12"), getCodeSet()
+            new Name("Mathematics"),
+            new Credits("12"),
+            getCodeSet()
     );
 
     private static final RequirementCategory GENERAL_EDUCATION = new RequirementCategory(
-            new Name("General Education"), new Credits("20"), getCodeSet()
+            new Name("General Education"),
+            new Credits("20"),
+            getCodeSet()
     );
 
     private static final RequirementCategory UNRESTRICTED_ELECTIVES = new RequirementCategory(
-            new Name("Unrestricted Electives"), new Credits("12"), getCodeSet()
+            new Name("Unrestricted Electives"),
+            new Credits("12"),
+            getCodeSet()
     );
 
     public static Module[] getSampleModules() {
@@ -245,6 +264,17 @@ public class SampleDataUtil {
     }
 
     /**
+     * Returns a semester set containing the list of strings given.
+     */
+    public static Set<Semester> getSemesterSet(String... strings) {
+        requireNonNull(strings);
+
+        return Arrays.stream(strings)
+                .map(Semester::new)
+                .collect(Collectors.toSet());
+    }
+
+    /**
      * Returns a code set containing the list of strings given.
      */
     public static Set<Code> getCodeSet(String... strings) {
@@ -253,6 +283,14 @@ public class SampleDataUtil {
         return Arrays.stream(strings)
                 .map(Code::new)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a code set containing the list of strings given.
+     * Syntactic sugar for {@link #getCodeSet(String...)}
+     */
+    public static Set<Code> getCorequisiteSet(String... strings) {
+        return getCodeSet(strings);
     }
 
     /**
