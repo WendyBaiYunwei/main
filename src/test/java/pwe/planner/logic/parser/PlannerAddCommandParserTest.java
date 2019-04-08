@@ -43,10 +43,6 @@ public class PlannerAddCommandParserTest {
         assertParseFailure(parser, " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "1 "
                 + PREFIX_CODE + "INVALID", Code.MESSAGE_CONSTRAINTS);
 
-        // invalid code
-        assertParseFailure(parser, " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "1 "
-                + PREFIX_CODE + null, Code.MESSAGE_CONSTRAINTS);
-
     }
 
     @Test

@@ -44,11 +44,11 @@ public class PlannerAddCommand extends Command {
             + " the degree plan: \n%3$s\nCo-requisite(s) added:\n%4$s";
     public static final String MESSAGE_DUPLICATE_CODE = "The module(s) %1$s already exists in the degree plan.";
     public static final String MESSAGE_INVALID_COREQ = "The Co-requisite(s) %1$s of module(s) %2$s already exists"
-            + " in a different year and semester of the degree plan.\nModules that are Co-requisites to each other"
+            + " in a different year and semester of the degree plan.\nCo-requisite module(s)"
             + " have to be in the same year and semester of the degree plan.";
     public static final String MESSAGE_NONEXISTENT_MODULES = "The module(s) %1$s does not exist in the module list.";
-    public static final String MESSAGE_NONEXISTENT_DEGREE_PLANNER = "The degree plan of year %1$s and semester"
-            + "%2$s does not exist.";
+    public static final String MESSAGE_NONEXISTENT_DEGREE_PLANNER = "Year %1$s Semester"
+            + "%2$s does not exist in the degree plan!";
     private Year yearToAddTo;
     private Semester semesterToAddTo;
     private Set<Code> codesToAdd;
@@ -58,6 +58,7 @@ public class PlannerAddCommand extends Command {
      */
     public PlannerAddCommand(Year year, Semester semester, Set<Code> codes) {
         requireAllNonNull(year, semester, codes);
+
         yearToAddTo = year;
         semesterToAddTo = semester;
         codesToAdd = codes;
@@ -93,10 +94,10 @@ public class PlannerAddCommand extends Command {
 
         for (Code codeToAdd : codesToAdd) {
             selectedCodeSet.add(codeToAdd);
-            // Adds Co-requisite(s).
+            // Adds co-requisite(s).
             Module module = model.getModuleByCode(codeToAdd);
 
-            // Returns the relevant duplicate Co-requisite(s) in the entire degree plan.
+            // Returns the relevant duplicate co-requisite(s) in the entire degree plan.
             Set<Code> duplicateCoreqs = module.getCorequisites().stream().filter(coreqToCheck -> model.getApplication()
                     .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                     .anyMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(coreqToCheck)))
