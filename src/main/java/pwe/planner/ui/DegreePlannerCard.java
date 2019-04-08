@@ -49,14 +49,23 @@ public class DegreePlannerCard extends UiPart<Region> {
 
         this.degreePlanner = degreePlanner;
 
-        year.setText("Year: " + degreePlanner.getYear().year);
+        year.setText("Year " + degreePlanner.getYear().year);
         year.setPadding(new Insets(0, 0, 0, 5));
-        semester.setText(" Semester: " + degreePlanner.getSemester().plannerSemester);
+
+        String degreePlannerSemester = degreePlanner.getSemester().plannerSemester;
+        StringBuilder plannerSemesterContent = new StringBuilder();
+        plannerSemesterContent.append(" Semester ").append(degreePlannerSemester);
+        if ("3".equals(degreePlannerSemester)) {
+            plannerSemesterContent.append(" (Special Semester Term 1)");
+        } else if ("4".equals(degreePlannerSemester)) {
+            plannerSemesterContent.append(" (Special Semester Term 2)");
+        }
+
+        semester.setText(plannerSemesterContent.toString());
 
         List<Module> modulesInDegreePlanner = degreePlanner.getCodes().stream()
                 .map(code -> moduleList.stream().filter(module -> module.getCode().equals(code))
                         .findFirst().get()).collect(Collectors.toList());
-
 
         int currentCredits = modulesInDegreePlanner.stream().map(Module::getCredits).map(Credits::toString)
                 .map(Integer::parseInt).reduce(0, (totalCredits, credit) -> totalCredits + credit);

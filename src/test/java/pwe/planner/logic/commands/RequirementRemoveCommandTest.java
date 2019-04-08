@@ -64,6 +64,11 @@ public class RequirementRemoveCommandTest {
         Name requirementCategoryName = new Name("Computing Foundation");
         assertCommandFailure(new RequirementRemoveCommand(requirementCategoryName, codeList), model, commandHistory,
                 RequirementRemoveCommand.MESSAGE_NONEXISTENT_CODE);
+
+        //case insensitive checks
+        requirementCategoryName = new Name("comPUTING FOUNDATion");
+        assertCommandFailure(new RequirementRemoveCommand(requirementCategoryName, codeList), model, commandHistory,
+                RequirementRemoveCommand.MESSAGE_NONEXISTENT_CODE);
     }
 
     @Test
@@ -74,13 +79,45 @@ public class RequirementRemoveCommandTest {
         assertCommandFailure(new RequirementRemoveCommand(requirementCategoryName, codeList), model, commandHistory,
                 String.format(RequirementRemoveCommand.MESSAGE_REQUIREMENT_CATEGORY_NONEXISTENT_CODE,
                         requirementCategoryName));
+
+        //case insensitive checks
+        Name requirementCategoryNameInsensitive = new Name("COMPUting FOundAtIon");
+        assertCommandFailure(new RequirementRemoveCommand(requirementCategoryNameInsensitive, codeList), model,
+                commandHistory, String.format(RequirementRemoveCommand.MESSAGE_REQUIREMENT_CATEGORY_NONEXISTENT_CODE,
+                        requirementCategoryName));
     }
 
     @Test
-    public void execute_addModuleToRequirementCategory_success() {
+    public void execute_removeModuleToRequirementCategory_success() {
         codeList.clear();
         codeList.add(new Code("CS2100"));
         Name requirementCategoryName = new Name("Computing Foundation");
+        RequirementCategory currentRequirementCategory = model.getRequirementCategory(requirementCategoryName);
+        RequirementCategory editedRequirementCategory =
+                new RequirementCategory(requirementCategoryName, currentRequirementCategory.getCredits(), codeList);
+
+        Model expectedModel = model;
+        expectedModel.setRequirementCategory(currentRequirementCategory, editedRequirementCategory);
+        expectedModel.commitApplication();
+
+        assertCommandSuccess(new RequirementRemoveCommand(requirementCategoryName, codeList), model, commandHistory,
+                String.format(RequirementRemoveCommand.MESSAGE_SUCCESS, requirementCategoryName, codeList),
+                expectedModel);
+
+        // undo -> reverts application back to previous state
+        expectedModel.undoApplication();
+        assertCommandSuccess(new UndoCommand(), model, commandHistory, UndoCommand.MESSAGE_SUCCESS, expectedModel);
+
+        // redo -> reverts application back to previous state before undo
+        expectedModel.redoApplication();
+        assertCommandSuccess(new RedoCommand(), model, commandHistory, RedoCommand.MESSAGE_SUCCESS, expectedModel);
+    }
+
+    @Test
+    public void execute_removeModuleToRequirementCategoryCaseInsensitive_success() {
+        codeList.clear();
+        codeList.add(new Code("CS2100"));
+        Name requirementCategoryName = new Name("COMPUting FOundAtIon");
         RequirementCategory currentRequirementCategory = model.getRequirementCategory(requirementCategoryName);
         RequirementCategory editedRequirementCategory =
                 new RequirementCategory(requirementCategoryName, currentRequirementCategory.getCredits(), codeList);

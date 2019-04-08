@@ -1,12 +1,14 @@
 {
   "modules": [ {
+    "code": "CS1010",
     "name": "Alice Pauline",
     "credits": "123",
-    "code": "CS1010",
+    "semesters": [ "1", "2", "4" ],
     "tagged": [ "friends" ]
   }, {
+    "code": "CS1010",
     "name": "Alice Pauline",
     "credits": "123",
-    "code": "CS1010"
+    "semesters": [ "1", "2", "4" ]
   } ]
 }

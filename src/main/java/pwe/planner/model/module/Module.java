@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import pwe.planner.model.planner.Semester;
 import pwe.planner.model.tag.Tag;
 
 /**
@@ -19,8 +20,9 @@ public class Module {
      * The format string representation of a {@link Module} object used by {@link Module#toString()}.
      */
     private static final String STRING_REPRESENTATION = "%1$s %2$s (%3$s Modular Credits)\n"
-            + "Co-requisites: %4$s\n"
-            + "Tags: %5$s";
+            + "Offered in Semesters: %4$s\n"
+            + "Co-requisites: %5$s\n"
+            + "Tags: %6$s";
 
     // Identity fields
     private final Code code;
@@ -30,18 +32,25 @@ public class Module {
     private final Credits credits;
     private final Set<Tag> tags = new HashSet<>();
     private final Set<Code> corequisites = new HashSet<>();
+    private final Set<Semester> semesters = new HashSet<>();
 
     /**
      * Every field must be present and not null.
      */
-    public Module(Name name, Credits credits, Code code, Set<Tag> tags, Set<Code> corequisites) {
-        requireAllNonNull(name, credits, code, tags, corequisites);
+    public Module(Code code, Name name, Credits credits, Set<Semester> semesters, Set<Code> corequisites,
+            Set<Tag> tags) {
+        requireAllNonNull(code, name, credits, semesters, corequisites, tags);
 
+        this.code = code;
         this.name = name;
         this.credits = credits;
-        this.code = code;
-        this.tags.addAll(tags);
+        this.semesters.addAll(semesters);
         this.corequisites.addAll(corequisites);
+        this.tags.addAll(tags);
+    }
+
+    public Code getCode() {
+        return code;
     }
 
     public Name getName() {
@@ -52,16 +61,12 @@ public class Module {
         return credits;
     }
 
-    public Code getCode() {
-        return code;
-    }
-
     /**
-     * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
+     * Returns an immutable {@code Semester} set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
-    public Set<Tag> getTags() {
-        return Collections.unmodifiableSet(tags);
+    public Set<Semester> getSemesters() {
+        return Collections.unmodifiableSet(semesters);
     }
 
     /**
@@ -70,6 +75,14 @@ public class Module {
      */
     public Set<Code> getCorequisites() {
         return Collections.unmodifiableSet(corequisites);
+    }
+
+    /**
+     * Returns an immutable {@code Tag} set, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<Tag> getTags() {
+        return Collections.unmodifiableSet(tags);
     }
 
     /**
@@ -99,21 +112,26 @@ public class Module {
         }
 
         Module otherModule = (Module) other;
-        return otherModule.getName().equals(getName())
+        return otherModule.getCode().equals(getCode())
+                && otherModule.getName().equals(getName())
                 && otherModule.getCredits().equals(getCredits())
-                && otherModule.getCode().equals(getCode())
-                && otherModule.getTags().equals(getTags())
-                && otherModule.getCorequisites().equals(getCorequisites());
+                && otherModule.getCorequisites().equals(getCorequisites())
+                && otherModule.getSemesters().equals(getSemesters())
+                && otherModule.getTags().equals(getTags());
     }
 
     @Override
     public int hashCode() {
-        // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, credits, code, tags, corequisites);
+        return Objects.hash(code, name, credits, semesters, corequisites, tags);
     }
 
     @Override
     public String toString() {
+
+        final String allSemesters = semesters.isEmpty()
+                ? "None"
+                : semesters.stream().sorted().map(Semester::toString).collect(Collectors.joining(", "));
+
         final String allCorequisites = corequisites.isEmpty()
                 ? "None"
                 : corequisites.stream().sorted().map(Code::toString).collect(Collectors.joining(", "));
@@ -122,7 +140,6 @@ public class Module {
                 ? "None"
                 : tags.stream().sorted().map(Tag::toString).collect(Collectors.joining(", "));
 
-        return String.format(STRING_REPRESENTATION, code, name, credits, allCorequisites, allTags);
+        return String.format(STRING_REPRESENTATION, code, name, credits, allSemesters, allCorequisites, allTags);
     }
-
 }

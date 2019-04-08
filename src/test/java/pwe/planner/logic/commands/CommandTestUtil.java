@@ -3,8 +3,10 @@ package pwe.planner.logic.commands;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_COREQUISITE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.ArrayList;
@@ -24,28 +26,46 @@ import pwe.planner.testutil.EditModuleDescriptorBuilder;
  * Contains helper methods for testing commands.
  */
 public class CommandTestUtil {
+    // Generic valid attributes
+    public static final String VALID_SEMESTER_ONE = "1";
+    public static final String VALID_SEMESTER_TWO = "2";
+    public static final String VALID_SEMESTER_THREE = "3";
+    public static final String VALID_SEMESTER_FOUR = "4";
+    public static final String VALID_TAG_HUSBAND = "husband";
+    public static final String VALID_TAG_FRIEND = "friend";
 
+    public static final String VALID_CODE_AMY = "AAA0000A";
+    public static final String VALID_CODE_BOB = "BBB1111B";
     public static final String VALID_NAME_AMY = "Amy Bee";
     public static final String VALID_NAME_BOB = "Bob Choo";
     public static final String VALID_CREDITS_AMY = "0";
     public static final String VALID_CREDITS_BOB = "999";
-    public static final String VALID_CODE_AMY = "AAA0000A";
-    public static final String VALID_CODE_BOB = "BBB1111B";
-    public static final String VALID_TAG_HUSBAND = "husband";
-    public static final String VALID_TAG_FRIEND = "friend";
+    public static final String VALID_SEMESTER_AMY_ONE = VALID_SEMESTER_ONE;
+    public static final String VALID_SEMESTER_AMY_TWO = VALID_SEMESTER_TWO;
+    public static final String VALID_SEMESTER_BOB_THREE = VALID_SEMESTER_THREE;
+    public static final String VALID_SEMESTER_BOB_FOUR = VALID_SEMESTER_FOUR;
 
+    public static final String CODE_DESC_AMY = " " + PREFIX_CODE + VALID_CODE_AMY;
+    public static final String CODE_DESC_BOB = " " + PREFIX_CODE + VALID_CODE_BOB;
     public static final String NAME_DESC_AMY = " " + PREFIX_NAME + VALID_NAME_AMY;
     public static final String NAME_DESC_BOB = " " + PREFIX_NAME + VALID_NAME_BOB;
     public static final String CREDITS_DESC_AMY = " " + PREFIX_CREDITS + VALID_CREDITS_AMY;
     public static final String CREDITS_DESC_BOB = " " + PREFIX_CREDITS + VALID_CREDITS_BOB;
-    public static final String CODE_DESC_AMY = " " + PREFIX_CODE + VALID_CODE_AMY;
-    public static final String CODE_DESC_BOB = " " + PREFIX_CODE + VALID_CODE_BOB;
+    public static final String SEMESTER_DESC_AMY_ONE = " " + PREFIX_SEMESTER + VALID_SEMESTER_AMY_ONE;
+    public static final String SEMESTER_DESC_AMY_TWO = " " + PREFIX_SEMESTER + VALID_SEMESTER_AMY_TWO;
+    public static final String SEMESTERS_DESC_AMY = SEMESTER_DESC_AMY_ONE + SEMESTER_DESC_AMY_TWO;
+    public static final String SEMESTER_DESC_BOB_THREE = " " + PREFIX_SEMESTER + VALID_SEMESTER_BOB_THREE;
+    public static final String SEMESTER_DESC_BOB_FOUR = " " + PREFIX_SEMESTER + VALID_SEMESTER_BOB_FOUR;
+    public static final String SEMESTERS_DESC_BOB = SEMESTER_DESC_BOB_THREE + SEMESTER_DESC_BOB_FOUR;
     public static final String TAG_DESC_FRIEND = " " + PREFIX_TAG + VALID_TAG_FRIEND;
     public static final String TAG_DESC_HUSBAND = " " + PREFIX_TAG + VALID_TAG_HUSBAND;
 
+    public static final String INVALID_CODE_DESC = " " + PREFIX_CODE; // empty string not allowed for codes
     public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "Jame§"; // '§' not allowed in names
     public static final String INVALID_CREDITS_DESC = " " + PREFIX_CREDITS + "1a"; // 'a' not allowed in credits
-    public static final String INVALID_CODE_DESC = " " + PREFIX_CODE; // empty string not allowed for codes
+    public static final String INVALID_SEMESTER_DESC_ZERO = " " + PREFIX_SEMESTER + "0"; // 0 is out of range (1-4)
+    public static final String INVALID_SEMESTER_DESC_FIVE = " " + PREFIX_SEMESTER + "5"; // 5 is out of range (1-4)
+    public static final String INVALID_COREQUISITE_DESC = " " + PREFIX_COREQUISITE + "1000";
     public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
@@ -55,12 +75,21 @@ public class CommandTestUtil {
     public static final EditCommand.EditModuleDescriptor DESC_BOB;
 
     static {
-        DESC_AMY = new EditModuleDescriptorBuilder().withName(VALID_NAME_AMY)
-                .withCredits(VALID_CREDITS_AMY).withCode(VALID_CODE_AMY)
-                .withTags(VALID_TAG_FRIEND).build();
-        DESC_BOB = new EditModuleDescriptorBuilder().withName(VALID_NAME_BOB)
-                .withCredits(VALID_CREDITS_BOB).withCode(VALID_CODE_BOB)
-                .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND).build();
+        DESC_AMY = new EditModuleDescriptorBuilder()
+                .withCode(VALID_CODE_AMY)
+                .withName(VALID_NAME_AMY)
+                .withCredits(VALID_CREDITS_AMY)
+                .withSemesters(VALID_SEMESTER_AMY_ONE, VALID_SEMESTER_AMY_TWO)
+                .withTags(VALID_TAG_FRIEND)
+                .build();
+
+        DESC_BOB = new EditModuleDescriptorBuilder()
+                .withName(VALID_NAME_BOB)
+                .withCredits(VALID_CREDITS_BOB)
+                .withCode(VALID_CODE_BOB)
+                .withSemesters(VALID_SEMESTER_BOB_THREE, VALID_SEMESTER_BOB_FOUR)
+                .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND)
+                .build();
     }
 
     /**
@@ -130,7 +159,7 @@ public class CommandTestUtil {
 
         Module module = model.getFilteredModuleList().get(targetIndex.getZeroBased());
         final String[] splitName = module.getName().fullName.split("\\s+");
-        model.updateFilteredModuleList(new NameContainsKeywordsPredicate(Arrays.asList(splitName[0])));
+        model.updateFilteredModuleList(new NameContainsKeywordsPredicate<>(Arrays.asList(splitName[0])));
 
         assertEquals(1, model.getFilteredModuleList().size());
     }

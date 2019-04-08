@@ -138,6 +138,16 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void resetRequirement() {
+        versionedApplication.resetRequirement();
+    }
+
+    @Override
+    public void resetPlanner() {
+        versionedApplication.resetPlanner();
+    }
+
+    @Override
     public ReadOnlyApplication getApplication() {
         return versionedApplication;
     }

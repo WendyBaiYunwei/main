@@ -105,11 +105,12 @@ public class UniqueModuleList implements Iterable<Module> {
                 editedOtherCorequisites.remove(otherModule.getCode());
 
                 Module editedOtherModule = new Module(
+                        otherModule.getCode(),
                         otherModule.getName(),
                         otherModule.getCredits(),
-                        otherModule.getCode(),
-                        otherModule.getTags(),
-                        editedOtherCorequisites
+                        otherModule.getSemesters(),
+                        editedOtherCorequisites,
+                        otherModule.getTags()
                 );
 
                 setModule(otherModule, editedOtherModule, false);
@@ -177,11 +178,12 @@ public class UniqueModuleList implements Iterable<Module> {
                 editedCorequisiteCodes.add(editedCode);
 
                 Module editedCorequisiteModule = new Module(
+                        module.getCode(),
                         module.getName(),
                         module.getCredits(),
-                        module.getCode(),
-                        module.getTags(),
-                        editedCorequisiteCodes
+                        module.getSemesters(),
+                        editedCorequisiteCodes,
+                        module.getTags()
                 );
 
                 setModule(module, editedCorequisiteModule, false);
@@ -219,11 +221,12 @@ public class UniqueModuleList implements Iterable<Module> {
                 editedCorequisiteCodes.remove(codeToDelete);
 
                 Module editedModule = new Module(
+                        module.getCode(),
                         module.getName(),
                         module.getCredits(),
-                        module.getCode(),
-                        module.getTags(),
-                        editedCorequisiteCodes
+                        module.getSemesters(),
+                        editedCorequisiteCodes,
+                        module.getTags()
                 );
 
                 setModule(module, editedModule, false);

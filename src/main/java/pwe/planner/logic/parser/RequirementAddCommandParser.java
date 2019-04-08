@@ -18,7 +18,7 @@ import pwe.planner.model.module.Name;
 /**
  * Parses input arguments and creates a new AddCommand object
  */
-public class RequirementAddCommandParser {
+public class RequirementAddCommandParser implements Parser<RequirementAddCommand> {
     /**
      * Parses the given {@code String} of arguments in the context of the AddCommand
      * and returns an AddCommand object for execution.

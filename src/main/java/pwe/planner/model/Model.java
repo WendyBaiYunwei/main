@@ -84,6 +84,16 @@ public interface Model {
     void setApplication(ReadOnlyApplication application);
 
     /**
+     * Reset the Requirement Categories in {@code application}
+     */
+    void resetRequirement();
+
+    /**
+     * Reset the Degree Planner in {@code application}
+     */
+    void resetPlanner();
+
+    /**
      * Returns true if a module with the same identity as {@code module} exists in the application.
      */
     boolean hasModule(Module module);

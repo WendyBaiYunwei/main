@@ -66,17 +66,19 @@ public class RequirementRemoveCommand extends Command {
         }
 
         if (!currentRequirementCategory.getCodeSet().containsAll(toRemove)) {
-            throw new CommandException(String.format(MESSAGE_REQUIREMENT_CATEGORY_NONEXISTENT_CODE, toFind));
+            throw new CommandException(String.format(MESSAGE_REQUIREMENT_CATEGORY_NONEXISTENT_CODE,
+                    currentRequirementCategory.getName()));
         }
 
         Set<Code> newCodeSet = new HashSet<>(currentRequirementCategory.getCodeSet());
         newCodeSet.removeAll(toRemove);
 
-        RequirementCategory editedRequirementCategory =
-                new RequirementCategory(toFind, currentRequirementCategory.getCredits(), newCodeSet);
+        RequirementCategory editedRequirementCategory = new RequirementCategory(
+                currentRequirementCategory.getName(), currentRequirementCategory.getCredits(), newCodeSet
+        );
         model.setRequirementCategory(currentRequirementCategory, editedRequirementCategory);
         model.commitApplication();
-        return new CommandResult(String.format(MESSAGE_SUCCESS, toFind));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, currentRequirementCategory.getName()));
     }
 
     @Override
