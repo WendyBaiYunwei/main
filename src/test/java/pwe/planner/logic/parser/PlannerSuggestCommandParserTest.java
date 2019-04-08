@@ -6,36 +6,18 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 import static pwe.planner.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static pwe.planner.logic.parser.CommandParserTestUtil.assertParseSuccess;
-import static pwe.planner.testutil.TypicalDegreePlanners.getTypicalDegreePlannerList;
-import static pwe.planner.testutil.TypicalModules.getTypicalModuleList;
-import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import pwe.planner.commons.exceptions.IllegalValueException;
 import pwe.planner.logic.commands.PlannerSuggestCommand;
-import pwe.planner.model.Model;
-import pwe.planner.model.ModelManager;
-import pwe.planner.model.UserPrefs;
 import pwe.planner.model.module.Credits;
 import pwe.planner.model.tag.Tag;
-import pwe.planner.storage.JsonSerializableApplication;
 
 public class PlannerSuggestCommandParserTest {
     private PlannerSuggestCommandParser parser = new PlannerSuggestCommandParser();
-
-    private Model model;
-
-    @Before
-    public void setUp() throws IllegalValueException {
-        model = new ModelManager(
-                new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
-                        getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
-    }
 
     @Test
     public void parse_allFieldsPresent_success() {
