@@ -242,4 +242,10 @@ compileJava {
     options.compilerArgs += [ "-Xlint:cast,deprecation,divzero,rawtypes,unchecked" ]
 }
 
-defaultTasks 'clean', 'headless', 'allTests', 'coverage', 'asciidoctor'
+compileTestJava {
+    options.warnings = true
+    options.deprecation = true
+    options.compilerArgs += [ "-Xlint:cast,deprecation,divzero,rawtypes,unchecked" ]
+}
+
+defaultTasks 'clean', 'checkstyleMain', 'checkstyleTest', 'headless', 'allTests', 'coverage', 'asciidoctor'

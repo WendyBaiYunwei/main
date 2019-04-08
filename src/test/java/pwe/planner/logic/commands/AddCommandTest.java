@@ -163,6 +163,16 @@ public class AddCommandTest {
         }
 
         @Override
+        public void resetPlanner() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void resetRequirement() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public boolean hasModule(Module module) {
             throw new AssertionError("This method should not be called.");
         }

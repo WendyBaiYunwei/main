@@ -132,6 +132,19 @@ public class ParserUtil {
     }
 
     /**
+     * Parses {@code Collection<String> semesters} into a {@code Set<Semester>}.<br>
+     */
+    public static Set<Semester> parseSemesters(Collection<String> semesters) throws ParseException {
+        requireNonNull(semesters);
+
+        final Set<Semester> semesterSet = new HashSet<>();
+        for (String semester : semesters) {
+            semesterSet.add(parseSemester(semester));
+        }
+        return semesterSet;
+    }
+
+    /**
      * Parses a {@code String tag} into a {@code Tag}.
      * Leading and trailing whitespaces will be trimmed.
      *

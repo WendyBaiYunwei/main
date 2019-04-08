@@ -2,10 +2,11 @@ package pwe.planner.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import javafx.collections.ObservableList;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.model.Model;
 
@@ -22,18 +23,20 @@ public class HistoryCommand extends Command {
     public CommandResult execute(Model model, CommandHistory history) {
         requireNonNull(history);
 
-        ObservableList<String> commandHistory = history.getHistory();
+        List<String> commandHistory = history.getHistory();
 
         if (commandHistory.isEmpty()) {
             return new CommandResult(MESSAGE_NO_HISTORY);
         }
 
-        String reversedCommandHistory = commandHistory.stream()
-                .sorted(Collections.reverseOrder())
+        List<String> reversedCommandHistory = new ArrayList<>(commandHistory);
+        Collections.reverse(reversedCommandHistory);
+
+        String preppedReversedCommandHistory = reversedCommandHistory.stream()
                 .map(command -> "- " + command)
                 .collect(Collectors.joining("\n"));
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, reversedCommandHistory));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, preppedReversedCommandHistory));
     }
 
 }

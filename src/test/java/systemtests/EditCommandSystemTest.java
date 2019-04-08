@@ -15,6 +15,8 @@ import static pwe.planner.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
 import static pwe.planner.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
 import static pwe.planner.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static pwe.planner.logic.commands.CommandTestUtil.NAME_DESC_BOB;
+import static pwe.planner.logic.commands.CommandTestUtil.SEMESTERS_DESC_AMY;
+import static pwe.planner.logic.commands.CommandTestUtil.SEMESTERS_DESC_BOB;
 import static pwe.planner.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static pwe.planner.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
 import static pwe.planner.logic.commands.CommandTestUtil.VALID_CODE_BOB;
@@ -56,7 +58,7 @@ public class EditCommandSystemTest extends ApplicationSystemTest {
          */
         Index index = INDEX_FIRST_MODULE;
         String command = " " + EditCommand.COMMAND_WORD + "  " + index.getOneBased() + "  " + NAME_DESC_BOB + "  "
-                + CREDITS_DESC_BOB + " " + CODE_DESC_BOB + " " + TAG_DESC_HUSBAND + " ";
+                + CREDITS_DESC_BOB + " " + CODE_DESC_BOB + " " + SEMESTERS_DESC_BOB + "  " + TAG_DESC_HUSBAND + " ";
         Module editedModule = new ModuleBuilder(BOB).withTags(VALID_TAG_HUSBAND).build();
         assertCommandSuccess(command, index, editedModule);
 
@@ -133,7 +135,7 @@ public class EditCommandSystemTest extends ApplicationSystemTest {
         index = INDEX_FIRST_MODULE;
         selectModule(index);
         command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + CREDITS_DESC_AMY
-                + CODE_DESC_AMY + TAG_DESC_FRIEND;
+                + CODE_DESC_AMY + TAG_DESC_FRIEND + SEMESTERS_DESC_AMY;
         // this can be misleading: card selection actually remains unchanged but the
         // browser's url is updated to reflect the new module's name
         assertCommandSuccess(command, index, AMY, index);

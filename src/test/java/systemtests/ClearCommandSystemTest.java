@@ -1,11 +1,13 @@
 package systemtests;
 
 import static pwe.planner.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
+import static pwe.planner.logic.commands.ClearCommand.MESSAGE_USAGE;
 import static pwe.planner.model.util.InitialDataUtil.getInitialApplication;
 import static pwe.planner.testutil.TypicalModules.KEYWORD_MATCHING_MEIER;
 
 import org.junit.Test;
 
+import pwe.planner.commons.core.Messages;
 import pwe.planner.commons.core.index.Index;
 import pwe.planner.logic.commands.ClearCommand;
 import pwe.planner.logic.commands.RedoCommand;
@@ -20,14 +22,23 @@ public class ClearCommandSystemTest extends ApplicationSystemTest {
         final Model defaultModel = getModel();
 
         /* Case: clear non-empty application, command with leading spaces and trailing alphanumeric characters and
-         * spaces -> cleared
+         * spaces -> failed
          */
-        assertCommandSuccess("   " + ClearCommand.COMMAND_WORD + " ab12   ");
+        String command = ClearCommand.COMMAND_WORD + "      ab4";
+        String expectedResultMessage = String.format(Messages.MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_USAGE);
+        assertCommandFailure(command, expectedResultMessage);
+        assertSelectedCardUnchanged();
+
+
+        /*
+         * Case: clear command with trailing spaces -> passed
+         */
+        assertCommandSuccess(ClearCommand.COMMAND_WORD + "              ");
         assertSelectedCardUnchanged();
 
         /* Case: undo clearing application -> original application restored */
-        String command = UndoCommand.COMMAND_WORD;
-        String expectedResultMessage = UndoCommand.MESSAGE_SUCCESS;
+        command = UndoCommand.COMMAND_WORD;
+        expectedResultMessage = UndoCommand.MESSAGE_SUCCESS;
         assertCommandSuccess(command, expectedResultMessage, defaultModel);
         assertSelectedCardUnchanged();
 

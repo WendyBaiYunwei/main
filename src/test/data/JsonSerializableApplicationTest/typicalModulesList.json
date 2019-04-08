@@ -1,46 +1,53 @@
 {
   "_comment": "Application save file which contains the same Module values as in TypicalModules#getTypicalApplication()",
   "modules" : [ {
+    "code" : "CS1010",
     "name" : "Alice Pauline",
     "credits" : "0",
-    "code" : "CS1010",
-    "tagged" : [ "friends" ],
-    "corequisites": [ ]
+    "semesters" : [ "1", "2", "4" ],
+    "corequisites": [ ],
+    "tagged" : [ "friends" ]
   }, {
+    "code" : "CS1231",
     "name" : "Benson Meier",
     "credits" : "1",
-    "code" : "CS1231",
-    "tagged" : [ "owesMoney", "friends" ],
-    "corequisites": [ "CS2102" ]
+    "semesters" : [ "1", "2" ],
+    "corequisites": [ "CS2102" ],
+    "tagged" : [ "owesMoney", "friends" ]
   }, {
+    "code" : "CS2040C",
     "name" : "Carl Kurz",
     "credits" : "2",
-    "code" : "CS2040C",
-    "tagged" : [ ],
-    "corequisites": [ ]
+    "semesters" : [ "1", "2" ],
+    "corequisites": [ ],
+    "tagged" : [ ]
   }, {
+    "code" : "CS2100",
     "name" : "Daniel Meier",
     "credits" : "3",
-    "code" : "CS2100",
-    "tagged" : [ "friends" ],
-    "corequisites": [ ]
+    "semesters" : [ "1", "2" ],
+    "corequisites": [ ],
+    "tagged" : [ "friends" ]
   }, {
+    "code" : "CS2101",
     "name" : "Elle Meyer",
     "credits" : "4",
-    "code" : "CS2101",
-    "tagged" : [ ],
-    "corequisites": [ ]
+    "semesters" : [ "1", "2" ],
+    "corequisites": [ ],
+    "tagged" : [ ]
   }, {
+    "code" : "CS2102",
     "name" : "Fiona Kunz",
     "credits" : "5",
-    "code" : "CS2102",
-    "tagged" : [ ],
-    "corequisites": [ "CS1231" ]
+    "semesters" : [ "1", "2" ],
+    "corequisites": [ "CS1231" ],
+    "tagged" : [ ]
   }, {
+    "code" : "CS2105",
     "name" : "George Best",
     "credits" : "6",
-    "code" : "CS2105",
-    "tagged" : [ ],
-    "corequisites": [  ]
+    "semesters" : [ "1", "2" ],
+    "corequisites": [ ],
+    "tagged" : [ ]
   } ]
 }

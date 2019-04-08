@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Tests that a {@code Module}'s {@code Code} matches any of the keywords given.
  */
-public class CodeContainsKeywordsPredicate implements KeywordsPredicate {
+public class CodeContainsKeywordsPredicate<T> implements KeywordsPredicate<T> {
     private final List<String> keywords;
 
     public CodeContainsKeywordsPredicate(List<String> keywords) {
@@ -18,12 +18,12 @@ public class CodeContainsKeywordsPredicate implements KeywordsPredicate {
     }
 
     @Override
-    public boolean test(Module module) {
-        requireNonNull(module);
+    public boolean test(T object) {
+        requireNonNull(object);
+        Module module = (Module) object;
 
         String moduleCode = module.getCode().toString();
-        return keywords.stream()
-                .anyMatch(keyword -> parseKeyword(keyword, moduleCode));
+        return keywords.stream().anyMatch(keyword -> parseKeyword(keyword, moduleCode));
     }
 
     @Override

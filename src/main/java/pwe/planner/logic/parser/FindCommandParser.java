@@ -36,7 +36,8 @@ public class FindCommandParser implements Parser<FindCommand> {
         if (trimmedArgs.isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
-        Predicate<Module> predicate = BooleanExpressionParser.parse(args, PREFIXES);
+        BooleanExpressionParser<Module> expressionParser = new BooleanExpressionParser<>(args, PREFIXES);
+        Predicate<Module> predicate = expressionParser.parse();
         return new FindCommand(predicate);
     }
 

@@ -8,6 +8,7 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_COREQUISITE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 import static pwe.planner.model.Model.PREDICATE_SHOW_ALL_MODULES;
 
@@ -16,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import pwe.planner.commons.core.index.Index;
 import pwe.planner.logic.CommandHistory;
@@ -26,6 +28,8 @@ import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Credits;
 import pwe.planner.model.module.Module;
 import pwe.planner.model.module.Name;
+import pwe.planner.model.planner.DegreePlanner;
+import pwe.planner.model.planner.Semester;
 import pwe.planner.model.tag.Tag;
 
 /**
@@ -41,8 +45,9 @@ public class EditCommand extends Command {
             + "[" + PREFIX_NAME + "NAME] "
             + "[" + PREFIX_CODE + "CODE] "
             + "[" + PREFIX_CREDITS + "CREDITS] "
-            + "[" + PREFIX_TAG + "TAG]... "
+            + "[" + PREFIX_SEMESTER + "SEMESTER]..."
             + "[" + PREFIX_COREQUISITE + "COREQUISITE]...\n"
+            + "[" + PREFIX_TAG + "TAG]... "
             + "Example: To edit the number of credits assigned to the first module in the displayed module list below"
             + ", you can enter: " + COMMAND_WORD + " 1 " + PREFIX_CREDITS + "8 ";
 
@@ -62,6 +67,11 @@ public class EditCommand extends Command {
             + "Module (%2$s) already exists in the module list!";
     public static final String MESSAGE_INVALID_COREQUISITE = "A module cannot be a co-requisite of itself!\n"
             + "Perhaps you might have entered the new co-requisites module(s) incorrectly?";
+    public static final String MESSAGE_INVALID_SEMESTER =
+            "You cannot edit the semesters offering module (%1$s) from (%2$s) to (%3$s), as the module can no longer "
+            + "be taken in Year %4$s Semester %5$s (according to your degree plan)!\n"
+            + "[Tip] You can remove module (%1$s) from the degree plan first, edit the semesters offering the module "
+            + "to (%3$s), and then add the module back to a suitable year/semester of the degree plan!\n";
     public static final String MESSAGE_NOT_EDITED = "You didn't specify what module details you want to edit.\n"
             + "Perhaps you would like to see the command format and example again?\n"
             + FORMAT_AND_EXAMPLES;
@@ -97,11 +107,50 @@ public class EditCommand extends Command {
         Module moduleToEdit = lastShownList.get(index.getZeroBased());
         Module editedModule = createEditedModule(moduleToEdit, editModuleDescriptor);
 
+        // Check if module to edit is the same as edited module
         if (!moduleToEdit.isSameModule(editedModule) && model.hasModule(editedModule)) {
             throw new CommandException(
                     String.format(MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(), editedModule.getCode())
             );
         }
+
+        boolean hasSemestersChanged = !moduleToEdit.getSemesters().equals(editedModule.getSemesters());
+        Optional<DegreePlanner> degreePlannerContainingModuleToEdit = model.getApplication().getDegreePlannerList()
+                .stream()
+                .filter(degreePlanner -> (degreePlanner.getCodes().contains(moduleToEdit.getCode())))
+                .findFirst();
+
+        /**
+         * Checks if there are any issues updating a module's semesters.
+         * There is no issues updating a module's semesters if the module is not added to any {@link DegreePlanner}.
+         * However, if {@code moduleToEdit} exists in a {@link DegreePlanner}} and {@code moduleToEdit#getSemesters()}
+         * is different from {@code editedModule#getSemeters()}, we need to check if {@link DegreePlanner#getSemester()}
+         * is within {@code editedModule#getSemesters()}.
+         *
+         * If {@link DegreePlanner#getSemester()} is within {@code editedModule#getSemesters()}, there are no issues.
+         * otherwise, editing the semesters of the module will violate data integrity, which results in an exception.
+         */
+        if (hasSemestersChanged && degreePlannerContainingModuleToEdit.isPresent()) {
+            DegreePlanner degreePlanner = degreePlannerContainingModuleToEdit.get();
+            Semester semester = degreePlanner.getSemester();
+            if (!editedModule.getSemesters().contains(semester)) {
+                String semestersToEdit = moduleToEdit.getSemesters().stream().sorted().map(Semester::toString)
+                        .collect(Collectors.joining(", "));
+                if (semestersToEdit.isEmpty()) {
+                    semestersToEdit = "None";
+                }
+                String editedSemesters = editedModule.getSemesters().stream().sorted().map(Semester::toString)
+                        .collect(Collectors.joining(", "));
+                if (editedSemesters.isEmpty()) {
+                    editedSemesters = "None";
+                }
+                String exceptionMessage = String.format(MESSAGE_INVALID_SEMESTER, moduleToEdit.getCode(),
+                        semestersToEdit, editedSemesters, degreePlanner.getYear(), degreePlanner.getSemester());
+                throw new CommandException(exceptionMessage);
+            }
+        }
+
+        // Ensure that all module co-requisites exists, and no module co-requisite is the same as code of module to edit
         for (Code corequisite : editedModule.getCorequisites()) {
             if (moduleToEdit.getCode().equals(corequisite)) {
                 throw new CommandException(MESSAGE_INVALID_COREQUISITE);
@@ -112,10 +161,12 @@ public class EditCommand extends Command {
             }
         }
 
+        // Edit and cascade the changes of the module to the rest of the entire application
         model.editModule(moduleToEdit, editedModule);
         model.updateFilteredModuleList(PREDICATE_SHOW_ALL_MODULES);
         model.commitApplication();
 
+        // Get latest copy of edited module after cascading changes
         Module editedModuleInModuleList = model.getFilteredModuleList().stream()
                 .filter(module -> editedModule.getCode().equals(module.getCode())).findFirst().get();
 
@@ -132,13 +183,14 @@ public class EditCommand extends Command {
         assert moduleToEdit != null;
         assert editModuleDescriptor != null;
 
+        Code updatedCode = editModuleDescriptor.getCode().orElse(moduleToEdit.getCode());
         Name updatedName = editModuleDescriptor.getName().orElse(moduleToEdit.getName());
         Credits updatedCredits = editModuleDescriptor.getCredits().orElse(moduleToEdit.getCredits());
-        Code updatedCode = editModuleDescriptor.getCode().orElse(moduleToEdit.getCode());
-        Set<Tag> updatedTags = editModuleDescriptor.getTags().orElse(moduleToEdit.getTags());
         Set<Code> updatedCorequisites = editModuleDescriptor.getCorequisites().orElse(moduleToEdit.getCorequisites());
+        Set<Semester> updatedSemesters = editModuleDescriptor.getSemesters().orElse(moduleToEdit.getSemesters());
+        Set<Tag> updatedTags = editModuleDescriptor.getTags().orElse(moduleToEdit.getTags());
 
-        return new Module(updatedName, updatedCredits, updatedCode, updatedTags, updatedCorequisites);
+        return new Module(updatedCode, updatedName, updatedCredits, updatedSemesters, updatedCorequisites, updatedTags);
     }
 
     @Override
@@ -164,11 +216,12 @@ public class EditCommand extends Command {
      * Each non-empty field value will replace the corresponding field value of the module.
      */
     public static class EditModuleDescriptor {
+        private Code code;
         private Name name;
         private Credits credits;
-        private Code code;
-        private Set<Tag> tags;
         private Set<Code> corequisites;
+        private Set<Semester> semesters;
+        private Set<Tag> tags;
 
         public EditModuleDescriptor() {}
 
@@ -180,18 +233,27 @@ public class EditCommand extends Command {
         public EditModuleDescriptor(EditModuleDescriptor toCopy) {
             requireNonNull(toCopy);
 
+            setCode(toCopy.code);
             setName(toCopy.name);
             setCredits(toCopy.credits);
-            setCode(toCopy.code);
-            setTags(toCopy.tags);
             setCorequisites(toCopy.corequisites);
+            setSemesters(toCopy.semesters);
+            setTags(toCopy.tags);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return isAnyNonNull(name, credits, code, tags, corequisites);
+            return isAnyNonNull(code, name, credits, corequisites, semesters, tags);
+        }
+
+        public Optional<Code> getCode() {
+            return Optional.ofNullable(code);
+        }
+
+        public void setCode(Code code) {
+            this.code = code;
         }
 
         public void setName(Name name) {
@@ -210,21 +272,47 @@ public class EditCommand extends Command {
             return Optional.ofNullable(credits);
         }
 
-        public void setCode(Code code) {
-            this.code = code;
-        }
-
-        public Optional<Code> getCode() {
-            return Optional.ofNullable(code);
+        /**
+         * Returns an unmodifiable {@link Semester} set, which throws {@code UnsupportedOperationException}
+         * if modification is attempted.
+         * <br><br>
+         * Returns {@code Optional#empty()} if {@code semesters} is null.
+         */
+        public Optional<Set<Semester>> getSemesters() {
+            return semesters != null
+                    ? Optional.of(Collections.unmodifiableSet(semesters))
+                    : Optional.empty();
         }
 
         /**
-         * Sets {@code tags} to this object's {@link #tags}.<br>
-         * A defensive copy of {@code tags} is used internally.
+         * Sets {@code semesters} to this object's {@link #semesters}.
+         * A defensive copy of {@code semesters} is used internally.
          */
-        public void setTags(Set<Tag> tags) {
-            this.tags = (tags != null)
-                    ? new HashSet<>(tags)
+        public void setSemesters(Set<Semester> semesters) {
+            this.semesters = (semesters != null)
+                    ? new HashSet<>(semesters)
+                    : null;
+        }
+
+        /**
+         * Returns an unmodifiable {@link Code} set, which throws {@code UnsupportedOperationException}
+         * if modification is attempted.
+         * <br><br>
+         * Returns {@code Optional#empty()} if {@code corequisites} is null.
+         */
+        public Optional<Set<Code>> getCorequisites() {
+            return corequisites != null
+                    ? Optional.of(Collections.unmodifiableSet(corequisites))
+                    : Optional.empty();
+        }
+
+        /**
+         * Sets {@code corequisites} to this object's {@link #corequisites}.
+         * A defensive copy of {@code corequisites} is used internally.
+         */
+        public void setCorequisites(Set<Code> corequisites) {
+            this.corequisites = (corequisites != null)
+                    ? new HashSet<>(corequisites)
                     : null;
         }
 
@@ -241,25 +329,13 @@ public class EditCommand extends Command {
         }
 
         /**
-         * Sets {@code corequisites} to this object's {@link #corequisites}.
-         * A defensive copy of {@code corequisites} is used internally.
+         * Sets {@code tags} to this object's {@link #tags}.<br>
+         * A defensive copy of {@code tags} is used internally.
          */
-        public void setCorequisites(Set<Code> corequisites) {
-            this.corequisites = (corequisites != null)
-                    ? new HashSet<>(corequisites)
+        public void setTags(Set<Tag> tags) {
+            this.tags = (tags != null)
+                    ? new HashSet<>(tags)
                     : null;
-        }
-
-        /**
-         * Returns an unmodifiable {@link Code} set, which throws {@code UnsupportedOperationException}
-         * if modification is attempted.
-         * <br><br>
-         * Returns {@code Optional#empty()} if {@code corequisites} is null.
-         */
-        public Optional<Set<Code>> getCorequisites() {
-            return corequisites != null
-                    ? Optional.of(Collections.unmodifiableSet(corequisites))
-                    : Optional.empty();
         }
 
         @Override
@@ -276,11 +352,12 @@ public class EditCommand extends Command {
 
             // state check
             EditModuleDescriptor e = (EditModuleDescriptor) other;
-            return getName().equals(e.getName())
+            return getCode().equals(e.getCode())
+                    && getName().equals(e.getName())
                     && getCredits().equals(e.getCredits())
-                    && getCode().equals(e.getCode())
-                    && getTags().equals(e.getTags())
-                    && getCorequisites().equals(e.getCorequisites());
+                    && getSemesters().equals(e.getSemesters())
+                    && getCorequisites().equals(e.getCorequisites())
+                    && getTags().equals(e.getTags());
         }
     }
 }

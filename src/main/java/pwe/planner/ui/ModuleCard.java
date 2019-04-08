@@ -2,7 +2,6 @@ package pwe.planner.ui;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
@@ -12,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Module;
+import pwe.planner.model.planner.Semester;
 
 /**
  * An UI component that displays information of a {@code Module}.
@@ -32,13 +32,15 @@ public class ModuleCard extends UiPart<Region> {
     @FXML
     private HBox cardPane;
     @FXML
-    private Label name;
-    @FXML
     private Label id;
+    @FXML
+    private Label code;
+    @FXML
+    private Label name;
     @FXML
     private Label credits;
     @FXML
-    private Label code;
+    private Label semesters;
     @FXML
     private Label corequisites;
     @FXML
@@ -54,16 +56,20 @@ public class ModuleCard extends UiPart<Region> {
         credits.setText("Modular Credits: " + module.getCredits().value);
         code.setText(module.getCode().value);
 
+        String semestersText = module.getSemesters().stream().map(Semester::toString)
+                .collect(Collectors.joining(", "));
+        if (semestersText.length() == 0) {
+            semestersText = "None";
+        }
+        semesters.setText("Offered in Semesters: " + semestersText);
+
         String corequisitesText = module.getCorequisites().stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
-
         if (corequisitesText.length() == 0) {
             corequisitesText = "None";
         }
         corequisites.setText("Co-requisites: " + corequisitesText);
-        module.getTags().stream()
-                .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+        module.getTags().stream().sorted().forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
     }
 
     @Override
