@@ -1,8 +1,8 @@
 package pwe.planner.logic.commands;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static pwe.planner.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static pwe.planner.testutil.TypicalDegreePlanners.getTypicalDegreePlannerList;
 import static pwe.planner.testutil.TypicalModules.getTypicalModuleList;
 import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
@@ -22,6 +22,7 @@ import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
 import pwe.planner.model.UserPrefs;
 import pwe.planner.model.module.Code;
+import pwe.planner.model.planner.DegreePlanner;
 import pwe.planner.model.planner.Semester;
 import pwe.planner.model.planner.Year;
 import pwe.planner.storage.JsonSerializableApplication;
@@ -79,11 +80,26 @@ public class PlannerAddCommandTest {
         Set<Code> validCodeSet = new HashSet<>();
         validCodeSet.add(validCode);
 
-        CommandResult commandResult = new PlannerAddCommand(validYear, validSemester, validCodeSet)
-                .execute(model, commandHistory);
+        Model expectedModel = new ModelManager(
+                new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
+                        getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
 
-        assertEquals(String.format(PlannerAddCommand.MESSAGE_SUCCESS, validYear, validSemester, validCodeSet, "None"),
-                commandResult.getFeedbackToUser());
+        DegreePlanner selectedDegreePlanner = model.getApplication().getDegreePlannerList().stream()
+                .filter(degreePlanner -> (degreePlanner.getYear().equals(validYear)
+                        && degreePlanner.getSemester().equals(validSemester))).findFirst().orElse(null);
+
+        assert selectedDegreePlanner != null;
+        Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
+        selectedCodeSet.addAll(validCodeSet);
+        DegreePlanner editedDegreePlanner = new DegreePlanner(selectedDegreePlanner.getYear(),
+                selectedDegreePlanner.getSemester(), selectedCodeSet);
+        expectedModel.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
+
+        expectedModel.commitApplication();
+
+        assertCommandSuccess(new PlannerAddCommand(validYear, validSemester, validCodeSet), model, commandHistory,
+                String.format(PlannerAddCommand.MESSAGE_SUCCESS, validYear, validSemester, validCodeSet, "None"),
+                expectedModel);
     }
 
     @Test

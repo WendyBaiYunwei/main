@@ -41,7 +41,7 @@ public class PlannerAddCommand extends Command {
             + PREFIX_CODE + "CS2100";
 
     public static final String MESSAGE_SUCCESS = "Added new module(s) to year %1$s semester %2$s of"
-            + " the degree plan: \n%3$s\nCo-requisite(s) added:\n%4$s";
+            + " the degree plan: \n%3$s\nCo-requisite(s) added: %4$s";
     public static final String MESSAGE_DUPLICATE_CODE = "The module(s) %1$s already exists in the degree plan.";
     public static final String MESSAGE_INVALID_COREQ = "The Co-requisite(s) %1$s of module(s) %2$s already exists"
             + " in a different year and semester of the degree plan.\nCo-requisite module(s)"
