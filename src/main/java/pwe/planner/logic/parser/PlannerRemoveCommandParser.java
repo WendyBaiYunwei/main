@@ -5,7 +5,6 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.ParserUtil.arePrefixesPresent;
 
 import java.util.Set;
-import java.util.stream.Stream;
 
 import pwe.planner.logic.commands.PlannerRemoveCommand;
 import pwe.planner.logic.parser.exceptions.ParseException;
