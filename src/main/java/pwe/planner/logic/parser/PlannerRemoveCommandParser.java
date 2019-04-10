@@ -2,6 +2,7 @@ package pwe.planner.logic.parser;
 
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
+import static pwe.planner.logic.parser.ParserUtil.arePrefixesPresent;
 
 import java.util.Set;
 import java.util.stream.Stream;
@@ -23,8 +24,7 @@ public class PlannerRemoveCommandParser implements Parser<PlannerRemoveCommand> 
     public PlannerRemoveCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_CODE);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_CODE)
-                || !argMultimap.getPreamble().isEmpty()) {
+        if (!arePrefixesPresent(argMultimap, PREFIX_CODE) || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, PlannerRemoveCommand.MESSAGE_USAGE));
         }
 
@@ -32,13 +32,4 @@ public class PlannerRemoveCommandParser implements Parser<PlannerRemoveCommand> 
 
         return new PlannerRemoveCommand(codes);
     }
-
-    /**
-     * Returns true if none of the prefixes contains empty {@code Optional} values in the given
-     * {@code ArgumentMultimap}.
-     */
-    private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
-        return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
-    }
-
 }

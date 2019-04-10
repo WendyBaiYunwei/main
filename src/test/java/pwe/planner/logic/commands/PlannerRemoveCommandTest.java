@@ -1,13 +1,15 @@
 package pwe.planner.logic.commands;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static pwe.planner.logic.commands.CommandTestUtil.assertCommandFailure;
+import static pwe.planner.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static pwe.planner.testutil.TypicalDegreePlanners.getTypicalDegreePlannerList;
 import static pwe.planner.testutil.TypicalModules.getTypicalModuleList;
 import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
@@ -17,11 +19,11 @@ import org.junit.rules.ExpectedException;
 
 import pwe.planner.commons.exceptions.IllegalValueException;
 import pwe.planner.logic.CommandHistory;
-import pwe.planner.logic.commands.exceptions.CommandException;
 import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
 import pwe.planner.model.UserPrefs;
 import pwe.planner.model.module.Code;
+import pwe.planner.model.planner.DegreePlanner;
 import pwe.planner.storage.JsonSerializableApplication;
 
 public class PlannerRemoveCommandTest {
@@ -36,8 +38,7 @@ public class PlannerRemoveCommandTest {
     public void setUp() throws IllegalValueException {
         model = new ModelManager(
                 new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
-                        getTypicalRequirementCategoriesList()).toModelType(),
-                new UserPrefs());
+                        getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
     }
 
     @Test
@@ -47,36 +48,31 @@ public class PlannerRemoveCommandTest {
     }
 
     @Test
-    public void execute_parametersAcceptedByModel_removeWithCoreqSuccessful() throws Exception {
-        Code validCode = new Code("CS2102");
-        Set<Code> validCodeSet = new HashSet<>();
-        validCodeSet.add(validCode);
-        Code anotherValidCode = new Code("CS1010");
-        validCodeSet.add(anotherValidCode);
-        Code coreqRemoved = new Code("CS1231");
-        Set<Code> coreqsRemoved = new HashSet<>();
-        coreqsRemoved.add(coreqRemoved);
-
-        CommandResult commandResult = new PlannerRemoveCommand(validCodeSet)
-                .execute(model, commandHistory);
-
-        assertEquals(String.format(PlannerRemoveCommand.MESSAGE_SUCCESS, validCodeSet, coreqsRemoved),
-                commandResult.getFeedbackToUser());
-    }
-
-    @Test
-    public void execute_parametersAcceptedByModel_removeWithoutCoreqSuccessful() throws Exception {
+    public void execute_parametersAcceptedByModel_removeSuccessful() throws Exception {
         Code validCode = new Code("CS2100");
         Set<Code> validCodeSet = new HashSet<>();
         validCodeSet.add(validCode);
         Code anotherValidCode = new Code("CS1010");
         validCodeSet.add(anotherValidCode);
+        Model model = new ModelManager(
+                new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
+                        getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
+        Model expectedModel = new ModelManager(
+                new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
+                        getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
 
-        CommandResult commandResult = new PlannerRemoveCommand(validCodeSet)
-                .execute(model, commandHistory);
+        List<DegreePlanner> degreePlannerList = expectedModel.getApplication().getDegreePlannerList();
+        for (DegreePlanner selectedDegreeePlanner : degreePlannerList) {
+            Set<Code> selectedCodeSet = new HashSet<>(selectedDegreeePlanner.getCodes());
+            selectedCodeSet.removeAll(validCodeSet);
+            DegreePlanner editedDegreePlanner = new DegreePlanner(selectedDegreeePlanner.getYear(),
+                    selectedDegreeePlanner.getSemester(), selectedCodeSet);
+            expectedModel.setDegreePlanner(selectedDegreeePlanner, editedDegreePlanner);
+        }
+        expectedModel.commitApplication();
 
-        assertEquals(String.format(PlannerRemoveCommand.MESSAGE_SUCCESS, validCodeSet, "None"),
-                commandResult.getFeedbackToUser());
+        assertCommandSuccess(new PlannerRemoveCommand(validCodeSet), model, commandHistory,
+                String.format(PlannerRemoveCommand.MESSAGE_SUCCESS, validCodeSet, "None"), expectedModel);
     }
 
     @Test
@@ -86,10 +82,8 @@ public class PlannerRemoveCommandTest {
         nonexistentCodeSet.add(nonexistentCode);
 
         PlannerRemoveCommand plannerRemoveCommand = new PlannerRemoveCommand(nonexistentCodeSet);
-
-        thrown.expect(CommandException.class);
-        thrown.expectMessage(String.format(PlannerRemoveCommand.MESSAGE_NONEXISTENT_CODES, nonexistentCodeSet));
-        plannerRemoveCommand.execute(model, commandHistory);
+        assertCommandFailure(plannerRemoveCommand, model, commandHistory,
+                String.format(PlannerRemoveCommand.MESSAGE_NONEXISTENT_CODES, nonexistentCodeSet));
     }
 
     @Test

@@ -52,7 +52,7 @@ public class PlannerRemoveCommand extends Command {
                 .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                 .noneMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(codeToCheck)))
                 .collect(Collectors.toSet());
-        if (nonExistentPlannerCodes.size() > 0) {
+        if (!nonExistentPlannerCodes.isEmpty()) {
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_CODES, nonExistentPlannerCodes));
         }
 
@@ -75,13 +75,11 @@ public class PlannerRemoveCommand extends Command {
             model.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
         }
 
+        coreqsRemoved.removeAll(codesToRemove);
         model.commitApplication();
 
-        if (coreqsRemoved.size() > 0) {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, codesToRemove, coreqsRemoved));
-        } else {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, codesToRemove, "None"));
-        }
+        return new CommandResult(String.format(MESSAGE_SUCCESS,
+                codesToRemove, coreqsRemoved.isEmpty() ? "None" : coreqsRemoved));
     }
 
     @Override
