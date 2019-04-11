@@ -39,10 +39,7 @@ public class PlannerSuggestCommandParserTest {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, PlannerSuggestCommand.MESSAGE_USAGE);
 
         // missing credits prefix
-        assertParseFailure(parser, "3 " + PREFIX_TAG + "validTag", expectedMessage);
-
-        // missing tag prefix
-        assertParseFailure(parser, PREFIX_CREDITS + "3 " + "tag", expectedMessage);
+        assertParseFailure(parser, " " + "3 " + PREFIX_TAG + "validTag", expectedMessage);
     }
 
     @Test
