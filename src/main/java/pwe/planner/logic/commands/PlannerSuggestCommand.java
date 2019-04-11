@@ -84,7 +84,7 @@ public class PlannerSuggestCommand extends Command {
                     new ModuleToSuggest(creditDifference, matchingTags.size(), module.getCode());
             modulesToSuggest.add(moduleToSuggest);
 
-            if (matchingTags.size() > 0) {
+            if (!matchingTags.isEmpty()) {
                 modulesWithMatchingTags.add(moduleToSuggest);
             }
 

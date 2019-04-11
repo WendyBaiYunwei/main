@@ -30,14 +30,13 @@ public class PlannerSuggestCommandParser implements Parser<PlannerSuggestCommand
 
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_CREDITS, PREFIX_TAG);
 
-        Set<Tag> tags;
         if (!arePrefixesPresent(argMultimap, PREFIX_CREDITS) || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(
                     MESSAGE_INVALID_COMMAND_FORMAT, PlannerSuggestCommand.MESSAGE_USAGE));
         }
 
         Credits credits = parseCredits(argMultimap.getValue(PREFIX_CREDITS).get());
-        tags = parseTags(argMultimap.getAllValues(PREFIX_TAG));
+        Set<Tag> tags = parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
         return new PlannerSuggestCommand(credits, tags);
     }
