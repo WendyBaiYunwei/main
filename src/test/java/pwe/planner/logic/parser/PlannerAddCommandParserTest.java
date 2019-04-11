@@ -66,7 +66,6 @@ public class PlannerAddCommandParserTest {
         assertParseFailure(parser, " " + PREFIX_YEAR + " " + PREFIX_SEMESTER + "3 "
                 + PREFIX_CODE + "CS1010", Year.MESSAGE_YEAR_CONSTRAINTS);
 
-
         // no semester specified
         assertParseFailure(parser, " " + PREFIX_YEAR + "4 " + PREFIX_SEMESTER + " "
                 + PREFIX_CODE + "CS1010", Semester.MESSAGE_SEMESTER_CONSTRAINTS);

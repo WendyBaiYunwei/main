@@ -124,7 +124,7 @@ public class PlannerAddCommand extends Command {
         model.commitApplication();
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo,
-                codesToAdd, !coreqsAdded.isEmpty() ? "None" : coreqsAdded));
+                codesToAdd, coreqsAdded.isEmpty() ? "None" : coreqsAdded));
     }
 
     @Override

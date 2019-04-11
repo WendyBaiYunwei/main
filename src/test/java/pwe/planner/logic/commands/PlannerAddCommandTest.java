@@ -80,9 +80,7 @@ public class PlannerAddCommandTest {
         Set<Code> validCodeSet = new HashSet<>();
         validCodeSet.add(validCode);
 
-        Model expectedModel = new ModelManager(
-                new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
-                        getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
+        Model expectedModel = new ModelManager(model.getApplication(), new UserPrefs());
 
         DegreePlanner selectedDegreePlanner = model.getApplication().getDegreePlannerList().stream()
                 .filter(degreePlanner -> (degreePlanner.getYear().equals(validYear)
