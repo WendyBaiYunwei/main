@@ -1,6 +1,7 @@
 package pwe.planner.logic.commands;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.min;
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
@@ -33,15 +34,17 @@ public class PlannerSuggestCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Suggests module(s) to take. "
             + "Parameters: "
             + PREFIX_CREDITS + "CREDITS "
-            + PREFIX_TAG + "TAG "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_CREDITS + "2 "
             + PREFIX_TAG + "algorithms "
-            + PREFIX_TAG + "c ";
+            + PREFIX_TAG + "c";
 
     public static final String MESSAGE_SUCCESS = "The list is sorted with the more recommended module(s)"
-            + "at the top.\nModule(s) must take:\n%1$s\nModule(s) recommended:\n%2$s";
+            + " at the top.\nModule(s) must take:\n%1$s\nModule(s) recommended:\n%2$s\nModule(s) with relevant"
+            + " tags:\n%3$s\nModule(s) with matching credits:\n%4$s";
+    private static final int MAX_NUMBER_OF_ELEMENETS = 10;
+
     private Credits creditsToFind;
     private Set<Tag> tagsToFind;
 
@@ -72,6 +75,8 @@ public class PlannerSuggestCommand extends Command {
 
         ObservableList<Module> moduleList = model.getApplication().getModuleList();
         List<ModuleToSuggest> modulesToSuggest = new ArrayList<ModuleToSuggest>();
+        List<ModuleToSuggest> modulesWithMatchingTags = new ArrayList<ModuleToSuggest>();
+        List<ModuleToSuggest> modulesWithMatchingCredits = new ArrayList<ModuleToSuggest>();
         for (Module module : moduleList) {
             // finds the matching tags for each module
             Set<Tag> matchingTags = new HashSet<>(tagsToFind);
@@ -82,28 +87,50 @@ public class PlannerSuggestCommand extends Command {
             int bestCredits = Integer.valueOf(creditsToFind.toString());
             int creditDifference = abs(credit - bestCredits);
 
+            ModuleToSuggest moduleToSuggest =
+                    new ModuleToSuggest(creditDifference, matchingTags.size(), module.getCode());
+            modulesToSuggest.add(moduleToSuggest);
+
             if (matchingTags.size() > 0) {
-                ModuleToSuggest moduleToSuggest =
-                        new ModuleToSuggest(creditDifference, matchingTags.size(), module.getCode());
-                modulesToSuggest.add(moduleToSuggest);
+                modulesWithMatchingTags.add(moduleToSuggest);
+            }
+
+            if (creditDifference == 0) {
+                modulesWithMatchingCredits.add(moduleToSuggest);
             }
         }
+
         modulesToSuggest.sort(new SortModulesToSuggest());
+        modulesWithMatchingTags.sort(new SortModulesToSuggest());
+
+        //Returns codes to suggest based on both credits and tags.
         List<Code> codesToSuggest = new ArrayList<>();
         for (ModuleToSuggest moduleToSuggest : modulesToSuggest) {
             codesToSuggest.add(moduleToSuggest.getModuleCode());
         }
         codesToSuggest.removeAll(plannerCodes);
-        model.commitApplication();
-        if (missingPlannerCoreqs.size() == 0 && codesToSuggest.size() == 0) {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, "None ", "None"));
-        } else if (missingPlannerCoreqs.size() == 0) {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, "None ", codesToSuggest));
-        } else if (codesToSuggest.size() == 0) {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, missingPlannerCoreqs, "None"));
-        } else {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, missingPlannerCoreqs, codesToSuggest));
+        List<Code> truncatedList = codesToSuggest.subList(0, min(codesToSuggest.size(), MAX_NUMBER_OF_ELEMENETS));
+
+        //Returns codes with matching tags.
+        List<Code> codesWithMatchingTags = new ArrayList<>();
+        for (ModuleToSuggest moduleWithMatchingTags : modulesWithMatchingTags) {
+            codesWithMatchingTags.add(moduleWithMatchingTags.getModuleCode());
         }
+        codesWithMatchingTags.removeAll(plannerCodes);
+
+        //Returns codes with matching credits.
+        List<Code> codesWithMatchingCredits = new ArrayList<>();
+        for (ModuleToSuggest moduleWithMatchingCredits : modulesWithMatchingCredits) {
+            codesWithMatchingCredits.add(moduleWithMatchingCredits.getModuleCode());
+        }
+        codesWithMatchingCredits.removeAll(plannerCodes);
+
+        model.commitApplication();
+
+        return new CommandResult(String.format(MESSAGE_SUCCESS, missingPlannerCoreqs.isEmpty() ? "None "
+                : missingPlannerCoreqs, truncatedList.isEmpty() ? "None" : truncatedList,
+                codesWithMatchingTags.isEmpty() ? "None" : codesWithMatchingTags,
+                codesWithMatchingCredits.isEmpty() ? "None" : codesWithMatchingCredits));
     }
 
     @Override
@@ -113,5 +140,5 @@ public class PlannerSuggestCommand extends Command {
                 && tagsToFind.equals(((PlannerSuggestCommand) other).tagsToFind)
                 && creditsToFind.equals(((PlannerSuggestCommand) other).creditsToFind));
     }
-}
 
+}

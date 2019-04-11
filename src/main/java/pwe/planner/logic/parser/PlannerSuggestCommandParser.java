@@ -28,17 +28,17 @@ public class PlannerSuggestCommandParser implements Parser<PlannerSuggestCommand
     public PlannerSuggestCommand parse(String args) throws ParseException {
         requireNonNull(args);
 
-        ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_CREDITS, PREFIX_TAG);
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_CREDITS, PREFIX_TAG);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_CREDITS, PREFIX_TAG)
-                || !argMultimap.getPreamble().isEmpty()) {
+        Set<Tag> tags;
+        if (!arePrefixesPresent(argMultimap, PREFIX_CREDITS) || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(
                     MESSAGE_INVALID_COMMAND_FORMAT, PlannerSuggestCommand.MESSAGE_USAGE));
         }
 
         Credits credits = parseCredits(argMultimap.getValue(PREFIX_CREDITS).get());
-        Set<Tag> tags = parseTags(argMultimap.getAllValues(PREFIX_TAG));
+        tags = parseTags(argMultimap.getAllValues(PREFIX_TAG));
+
         return new PlannerSuggestCommand(credits, tags);
     }
 }
