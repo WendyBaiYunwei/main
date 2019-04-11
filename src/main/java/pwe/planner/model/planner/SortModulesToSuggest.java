@@ -7,7 +7,6 @@ import java.util.Comparator;
  */
 public class SortModulesToSuggest implements Comparator<ModuleToSuggest> {
     /**
-     *
      * @param moduleA A valid moduleA to suggest
      * @param moduleB A valid moduleB to suggest
      * @return number of matching tags difference between two modules to suggest, or
