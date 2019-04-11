@@ -49,7 +49,7 @@ public class PlannerSuggestCommandTest {
         List<Code> recommendedCodes = new ArrayList<>();
         recommendedCodes.add(code);
         recommendedCodes.add(code2);
-        String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, "None", recommendedCodes, "None",
+        String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, recommendedCodes, "None",
                 "None");
 
         assertCommandSuccess(new PlannerSuggestCommand(bestCredits, tagsToFind), model, commandHistory,
@@ -70,7 +70,7 @@ public class PlannerSuggestCommandTest {
         List<Code> codesWithMatchingCredits = new ArrayList<>();
         codesWithMatchingCredits.add(code);
 
-        String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, "None", recommendedCodes, "None",
+        String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, recommendedCodes, "None",
                 codesWithMatchingCredits);
 
         assertCommandSuccess(new PlannerSuggestCommand(bestCredits, tagsToFind), model, commandHistory,

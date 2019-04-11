@@ -41,8 +41,8 @@ public class PlannerSuggestCommand extends Command {
             + PREFIX_TAG + "c";
 
     public static final String MESSAGE_SUCCESS = "The list is sorted with the more recommended module(s)"
-            + " in front.\nModule(s) must take:\n%1$s\nModule(s) recommended:\n%2$s\nModule(s) with relevant"
-            + " tags:\n%3$s\nModule(s) with matching credits:\n%4$s";
+            + " in front.\nModule(s) recommended:\n%1$s\nModule(s) with relevant"
+            + " tags:\n%2$s\nModule(s) with matching credits:\n%3$s";
     private static final int MAX_NUMBER_OF_ELEMENETS = 10;
 
     private Credits creditsToFind;
@@ -65,13 +65,6 @@ public class PlannerSuggestCommand extends Command {
         Set<Code> plannerCodes = new HashSet<>();
         model.getApplication().getDegreePlannerList()
                 .stream().map(DegreePlanner::getCodes).forEach(plannerCodes::addAll);
-        Set<Code> plannerCoreqs = new HashSet<>();
-        plannerCodes.stream().map(model::getModuleByCode).map(Module::getCorequisites).forEach(plannerCoreqs::addAll);
-        Set<Code> missingPlannerCoreqs = new HashSet<>(plannerCoreqs);
-        // Returns the Co-requisite(s) that already exists in the degree plan.
-        plannerCoreqs.retainAll(plannerCodes);
-        // Returns the relevant Co-requisite(s) that do not exists in the degree plan.
-        missingPlannerCoreqs.removeAll(plannerCoreqs);
 
         ObservableList<Module> moduleList = model.getApplication().getModuleList();
         List<ModuleToSuggest> modulesToSuggest = new ArrayList<ModuleToSuggest>();
@@ -127,8 +120,7 @@ public class PlannerSuggestCommand extends Command {
 
         model.commitApplication();
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, missingPlannerCoreqs.isEmpty() ? "None"
-                : missingPlannerCoreqs, truncatedList.isEmpty() ? "None" : truncatedList,
+        return new CommandResult(String.format(MESSAGE_SUCCESS, truncatedList.isEmpty() ? "None" : truncatedList,
                 codesWithMatchingTags.isEmpty() ? "None" : codesWithMatchingTags,
                 codesWithMatchingCredits.isEmpty() ? "None" : codesWithMatchingCredits));
     }
