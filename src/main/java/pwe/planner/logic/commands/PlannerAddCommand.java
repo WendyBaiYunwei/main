@@ -21,7 +21,7 @@ import pwe.planner.model.planner.Year;
 
 /**
  * Adds module(s) to the degree plan.
- * Related Co-requisite(s) are added as well.
+ * Related co-requisite(s) are added as well.
  */
 public class PlannerAddCommand extends Command {
 
@@ -41,10 +41,10 @@ public class PlannerAddCommand extends Command {
             + PREFIX_CODE + "CS2100";
 
     public static final String MESSAGE_SUCCESS = "Added new module(s) to year %1$s semester %2$s of"
-            + " the degree plan: \n%3$s\nCo-requisite(s) added: %4$s";
+            + " the degree plan: \n%3$s\nco-requisite(s) added: %4$s";
     public static final String MESSAGE_DUPLICATE_CODE = "The module(s) %1$s already exists in the degree plan.";
-    public static final String MESSAGE_INVALID_COREQ = "The Co-requisite(s) %1$s of module(s) %2$s already exists"
-            + " in a different year and semester of the degree plan.\nCo-requisite module(s)"
+    public static final String MESSAGE_INVALID_COREQ = "The co-requisite(s) %1$s of module(s) %2$s already exists"
+            + " in a different year and semester of the degree plan.\nco-requisite module(s)"
             + " have to be in the same year and semester of the degree plan.";
     public static final String MESSAGE_NONEXISTENT_MODULES = "The module(s) %1$s does not exist in the module list.";
     public static final String MESSAGE_NONEXISTENT_DEGREE_PLANNER = "Year %1$s Semester"
@@ -103,7 +103,7 @@ public class PlannerAddCommand extends Command {
                     .anyMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(coreqToCheck)))
                     .collect(Collectors.toSet());
             Set<Code> invalidDuplicateCoreqs = new HashSet<>(duplicateCoreqs);
-            // Returns the invalid duplicate Co-requisite(s) that exists in a different section of the degree plan.
+            // Returns the invalid duplicate co-requisite(s) that exists in a different section of the degree plan.
             invalidDuplicateCoreqs.removeAll(selectedDegreePlanner.getCodes());
             if (invalidDuplicateCoreqs.size() > 0) {
                 throw new CommandException(String.format(MESSAGE_INVALID_COREQ, invalidDuplicateCoreqs, codesToAdd));
@@ -111,7 +111,7 @@ public class PlannerAddCommand extends Command {
 
             coreqsAdded.addAll(module.getCorequisites());
 
-            // Returns the valid duplicate Co-requisite(s) that exists in the selected section of the degree plan.
+            // Returns the valid duplicate co-requisite(s) that exists in the selected section of the degree plan.
             duplicateCoreqs.retainAll(selectedDegreePlanner.getCodes());
             coreqsAdded.removeAll(duplicateCoreqs);
             selectedCodeSet.addAll(coreqsAdded);
@@ -123,13 +123,8 @@ public class PlannerAddCommand extends Command {
         model.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
         model.commitApplication();
 
-        if (coreqsAdded.size() > 0) {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo,
-                    codesToAdd, coreqsAdded));
-        } else {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo, codesToAdd,
-                    "None"));
-        }
+        return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo,
+                codesToAdd, !coreqsAdded.isEmpty() ? "None" : coreqsAdded));
     }
 
     @Override
