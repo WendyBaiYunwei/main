@@ -41,7 +41,7 @@ public class PlannerSuggestCommand extends Command {
             + PREFIX_TAG + "c";
 
     public static final String MESSAGE_SUCCESS = "The list is sorted with the more recommended module(s)"
-            + " at the top.\nModule(s) must take:\n%1$s\nModule(s) recommended:\n%2$s\nModule(s) with relevant"
+            + " in front.\nModule(s) must take:\n%1$s\nModule(s) recommended:\n%2$s\nModule(s) with relevant"
             + " tags:\n%3$s\nModule(s) with matching credits:\n%4$s";
     private static final int MAX_NUMBER_OF_ELEMENETS = 10;
 
@@ -127,7 +127,7 @@ public class PlannerSuggestCommand extends Command {
 
         model.commitApplication();
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, missingPlannerCoreqs.isEmpty() ? "None "
+        return new CommandResult(String.format(MESSAGE_SUCCESS, missingPlannerCoreqs.isEmpty() ? "None"
                 : missingPlannerCoreqs, truncatedList.isEmpty() ? "None" : truncatedList,
                 codesWithMatchingTags.isEmpty() ? "None" : codesWithMatchingTags,
                 codesWithMatchingCredits.isEmpty() ? "None" : codesWithMatchingCredits));
