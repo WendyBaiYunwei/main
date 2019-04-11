@@ -12,11 +12,9 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.platform.commons.util.StringUtils;
 
 import pwe.planner.commons.exceptions.IllegalValueException;
 import pwe.planner.logic.CommandHistory;
-import pwe.planner.logic.commands.exceptions.CommandException;
 import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
 import pwe.planner.model.UserPrefs;
