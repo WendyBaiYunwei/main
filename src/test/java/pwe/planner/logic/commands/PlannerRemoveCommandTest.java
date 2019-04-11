@@ -55,9 +55,7 @@ public class PlannerRemoveCommandTest {
         Code anotherValidCode = new Code("CS1010");
         validCodeSet.add(anotherValidCode);
 
-        Model expectedModel = new ModelManager(
-                new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
-                        getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
+        Model expectedModel = new ModelManager(model.getApplication(), new UserPrefs());
 
         List<DegreePlanner> degreePlannerList = expectedModel.getApplication().getDegreePlannerList();
         for (DegreePlanner selectedDegreeePlanner : degreePlannerList) {

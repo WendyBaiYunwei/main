@@ -27,7 +27,6 @@ public class PlannerRemoveCommandParserTest {
         // one valid one invalid code
         assertParseFailure(parser, " " + PREFIX_CODE + "CS1010 " + PREFIX_CODE
                 + "INVALID", Code.MESSAGE_CONSTRAINTS);
-
     }
 
     @Test
