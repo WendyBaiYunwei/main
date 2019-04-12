@@ -7,7 +7,6 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 import static pwe.planner.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static pwe.planner.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;

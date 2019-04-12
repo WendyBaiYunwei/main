@@ -5,8 +5,6 @@ import static pwe.planner.testutil.TypicalDegreePlanners.getTypicalDegreePlanner
 import static pwe.planner.testutil.TypicalModules.getTypicalModuleList;
 import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
