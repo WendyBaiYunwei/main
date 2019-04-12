@@ -8,6 +8,7 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,14 +16,11 @@ import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
 import pwe.planner.logic.CommandHistory;
-import pwe.planner.logic.commands.exceptions.CommandException;
 import pwe.planner.model.Model;
 import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Credits;
 import pwe.planner.model.module.Module;
 import pwe.planner.model.planner.DegreePlanner;
-import pwe.planner.model.planner.ModuleToSuggest;
-import pwe.planner.model.planner.SortModulesToSuggest;
 import pwe.planner.model.tag.Tag;
 
 /**
@@ -60,7 +58,7 @@ public class PlannerSuggestCommand extends Command {
     }
 
     @Override
-    public CommandResult execute(Model model, CommandHistory history) throws CommandException {
+    public CommandResult execute(Model model, CommandHistory history) {
         requireNonNull(model);
 
         Set<Code> plannerCodes = new HashSet<>();
@@ -94,8 +92,8 @@ public class PlannerSuggestCommand extends Command {
             }
         }
 
-        modulesToSuggest.sort(new SortModulesToSuggest());
-        modulesWithMatchingTags.sort(new SortModulesToSuggest());
+        Collections.sort(modulesToSuggest);
+        Collections.sort(modulesWithMatchingTags);
 
         //Returns codes to suggest based on both credits and tags.
         List<Code> codesToSuggest = new ArrayList<>();
@@ -103,12 +101,16 @@ public class PlannerSuggestCommand extends Command {
             codesToSuggest.add(moduleToSuggest.getModuleCode());
         }
         codesToSuggest.removeAll(plannerCodes);
-        List<Code> truncatedList = codesToSuggest.subList(0, min(codesToSuggest.size(), MAX_NUMBER_OF_ELEMENETS));
+        List<Code> truncatedSuggestionList = codesToSuggest.subList(0, min(codesToSuggest.size(),
+                MAX_NUMBER_OF_ELEMENETS));
+
 
         //Returns codes with matching tags.
         List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream()
                 .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesWithMatchingTags.removeAll(plannerCodes);
+        List<Code> truncatedMathingTagCodeList = codesWithMatchingTags.subList(0, min(codesWithMatchingTags.size(),
+                MAX_NUMBER_OF_ELEMENETS));
 
         //Returns codes with matching credits.
         List<Code> codesWithMatchingCredits = new ArrayList<>();
@@ -116,6 +118,8 @@ public class PlannerSuggestCommand extends Command {
             codesWithMatchingCredits.add(moduleWithMatchingCredits.getModuleCode());
         }
         codesWithMatchingCredits.removeAll(plannerCodes);
+        List<Code> truncatedMathingCreditCodeList = codesWithMatchingCredits.subList(0,
+                min(codesWithMatchingCredits.size(), MAX_NUMBER_OF_ELEMENETS));
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, truncatedList.isEmpty() ? "None" : truncatedList,
                 codesWithMatchingTags.isEmpty() ? "None" : codesWithMatchingTags,
@@ -130,4 +134,43 @@ public class PlannerSuggestCommand extends Command {
                 && creditsToFind.equals(((PlannerSuggestCommand) other).creditsToFind));
     }
 
+    /**
+     * Creates a ModuleToSuggest object for sorting.
+     */
+    public class ModuleToSuggest implements Comparable<ModuleToSuggest> {
+        private int creditDifference;
+        private int numberOfMatchingTags;
+        private Code moduleCode;
+
+        public ModuleToSuggest(int creditDifference, int numberOfMatchingTags, Code moduleCode) {
+            this.creditDifference = creditDifference;
+            this.numberOfMatchingTags = numberOfMatchingTags;
+            this.moduleCode = moduleCode;
+        }
+
+        public int getCreditDifference() {
+            return creditDifference;
+        }
+
+        public int getNumberOfMatchingTags() {
+            return numberOfMatchingTags;
+        }
+
+        public Code getModuleCode() {
+            return moduleCode;
+        }
+
+        /**
+         * @param moduleB A valid moduleB to suggest
+         * @return number of matching tags difference between two modules to suggest, or
+         * credit difference between two modules if tie.
+         */
+        @Override
+        public int compareTo(ModuleToSuggest moduleB) {
+            if (this.getNumberOfMatchingTags() == moduleB.getNumberOfMatchingTags()) {
+                return this.getCreditDifference() - moduleB.getCreditDifference();
+            }
+            return moduleB.getNumberOfMatchingTags() - this.getNumberOfMatchingTags();
+        }
+    }
 }
