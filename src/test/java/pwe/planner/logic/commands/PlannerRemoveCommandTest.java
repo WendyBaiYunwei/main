@@ -37,8 +37,7 @@ public class PlannerRemoveCommandTest {
 
     @Before
     public void setUp() throws IllegalValueException {
-        model = new ModelManager(
-                new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
+        model = new ModelManager(new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
                         getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
     }
 
@@ -49,12 +48,8 @@ public class PlannerRemoveCommandTest {
     }
 
     @Test
-    public void execute_parametersAcceptedByModel_removeSuccessful() throws Exception {
-        Code validCode = new Code("CS2100");
-        Set<Code> validCodeSet = new HashSet<>();
-        validCodeSet.add(validCode);
-        Code anotherValidCode = new Code("CS1010");
-        validCodeSet.add(anotherValidCode);
+    public void execute_parametersAcceptedByModel_removeSuccessful() {
+        Set<Code> validCodeSet = Set.of(new Code("CS2100"), new Code("CS1010"));
 
         Model expectedModel = new ModelManager(model.getApplication(), new UserPrefs());
 
@@ -68,51 +63,44 @@ public class PlannerRemoveCommandTest {
         }
         expectedModel.commitApplication();
 
-        String removedCodesString = validCodeSet.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String removedCodesString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
 
         assertCommandSuccess(new PlannerRemoveCommand(validCodeSet), model, commandHistory,
                 String.format(PlannerRemoveCommand.MESSAGE_SUCCESS, removedCodesString, "None"), expectedModel);
     }
 
     @Test
-    public void execute_nonexistentPlannerCodes_throwsCommandException() throws Exception {
-        Code nonexistentCode = new Code("CS9999");
-        Set<Code> nonexistentCodeSet = new HashSet<>();
-        nonexistentCodeSet.add(nonexistentCode);
+    public void execute_nonexistentPlannerCodes_throwsCommandException() {
+        Set<Code> nonexistentCodeSet = Set.of(new Code("CS9999"));
 
         String nonexistentCodesString = nonexistentCodeSet.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
         PlannerRemoveCommand plannerRemoveCommand = new PlannerRemoveCommand(nonexistentCodeSet);
         assertCommandFailure(plannerRemoveCommand, model, commandHistory,
-                String.format(PlannerRemoveCommand.MESSAGE_NONEXISTENT_CODES, nonexistentCodeSet));
+                String.format(PlannerRemoveCommand.MESSAGE_NONEXISTENT_CODES, nonexistentCodesString));
     }
 
     @Test
     public void equals() {
-        Code code = new Code("CS1010");
-        Set<Code> codeSet = new HashSet<>();
-        codeSet.add(code);
-        Code anotherCode = new Code("IS1103");
-        Set<Code> anotherCodeSet = new HashSet<>();
-        anotherCodeSet.add(anotherCode);
+        Set<Code> codeSet = Set.of(new Code("CS1010"));
+        Set<Code> anotherCodeSet = Set.of(new Code("IS1103"));
 
-        PlannerRemoveCommand plannerRemoveACommand = new PlannerRemoveCommand(codeSet);
-        PlannerRemoveCommand plannerRemoveBCommand = new PlannerRemoveCommand(anotherCodeSet);
+        PlannerRemoveCommand plannerRemoveCommand = new PlannerRemoveCommand(codeSet);
+        PlannerRemoveCommand plannerRemoveCommandToCompare = new PlannerRemoveCommand(anotherCodeSet);
 
         // same object -> returns true
-        assertTrue(plannerRemoveACommand.equals(plannerRemoveACommand));
+        assertTrue(plannerRemoveCommand.equals(plannerRemoveCommand));
 
         // same values -> returns true
         PlannerRemoveCommand plannerAddACommandCopy = new PlannerRemoveCommand(codeSet);
-        assertTrue(plannerRemoveACommand.equals(plannerAddACommandCopy));
+        assertTrue(plannerRemoveCommand.equals(plannerAddACommandCopy));
 
         // different types -> returns false
-        assertFalse(plannerRemoveACommand.equals(1));
+        assertFalse(plannerRemoveCommand.equals(1));
 
         // different module -> returns false
-        assertFalse(plannerRemoveACommand.equals(plannerRemoveBCommand));
+        assertFalse(plannerRemoveCommand.equals(plannerRemoveCommandToCompare));
     }
 }
 

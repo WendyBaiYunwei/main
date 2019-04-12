@@ -32,7 +32,7 @@ public class PlannerRemoveCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Successfully removed module(s) %1$s from the degree plan!\n"
             + "Co-requisite(s) removed: %2$s";
     public static final String MESSAGE_NONEXISTENT_CODES = "You cannot remove module(s) %1$s that does not exist in the"
-            + " degree plan!\nPerhaps you misspelled the code?";
+            + " degree plan!\nPerhaps you mistyped the code?";
     private Set<Code> codesToRemove;
 
     /**
@@ -93,11 +93,10 @@ public class PlannerRemoveCommand extends Command {
 
         // Converts a set to a string to remove the brackets of set.
         String removedCodesString = codesToRemove.stream().map(Code::toString).collect(Collectors.joining(", "));
-        String coreqsRemovedString = coreqsRemoved.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
 
         return new CommandResult(String.format(MESSAGE_SUCCESS,
-                removedCodesString, coreqsRemoved.isEmpty() ? "None" : coreqsRemovedString));
+                removedCodesString, coreqsRemoved.isEmpty() ? "None" : coreqsRemoved.stream().map(Code::toString)
+                        .collect(Collectors.joining(", "))));
     }
 
     @Override

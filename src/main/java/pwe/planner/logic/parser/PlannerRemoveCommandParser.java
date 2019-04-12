@@ -24,6 +24,10 @@ public class PlannerRemoveCommandParser implements Parser<PlannerRemoveCommand> 
     public PlannerRemoveCommand parse(String args) throws ParseException {
         requireNonNull(args);
 
+        if (args.isEmpty()) {
+            throw new ParseException(PlannerRemoveCommand.MESSAGE_USAGE);
+        }
+
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_CODE);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_CODE) || !argMultimap.getPreamble().isEmpty()) {
