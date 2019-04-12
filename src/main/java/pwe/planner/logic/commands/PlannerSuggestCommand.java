@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
 import pwe.planner.logic.CommandHistory;
@@ -67,9 +68,9 @@ public class PlannerSuggestCommand extends Command {
                 .stream().map(DegreePlanner::getCodes).forEach(plannerCodes::addAll);
 
         ObservableList<Module> moduleList = model.getApplication().getModuleList();
-        List<ModuleToSuggest> modulesToSuggest = new ArrayList<ModuleToSuggest>();
-        List<ModuleToSuggest> modulesWithMatchingTags = new ArrayList<ModuleToSuggest>();
-        List<ModuleToSuggest> modulesWithMatchingCredits = new ArrayList<ModuleToSuggest>();
+        List<ModuleToSuggest> modulesToSuggest = new ArrayList<>();
+        List<ModuleToSuggest> modulesWithMatchingTags = new ArrayList<>();
+        List<ModuleToSuggest> modulesWithMatchingCredits = new ArrayList<>();
         for (Module module : moduleList) {
             // finds the matching tags for each module
             Set<Tag> matchingTags = new HashSet<>(tagsToFind);
@@ -105,10 +106,8 @@ public class PlannerSuggestCommand extends Command {
         List<Code> truncatedList = codesToSuggest.subList(0, min(codesToSuggest.size(), MAX_NUMBER_OF_ELEMENETS));
 
         //Returns codes with matching tags.
-        List<Code> codesWithMatchingTags = new ArrayList<>();
-        for (ModuleToSuggest moduleWithMatchingTags : modulesWithMatchingTags) {
-            codesWithMatchingTags.add(moduleWithMatchingTags.getModuleCode());
-        }
+        List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream()
+                .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesWithMatchingTags.removeAll(plannerCodes);
 
         //Returns codes with matching credits.
@@ -117,8 +116,6 @@ public class PlannerSuggestCommand extends Command {
             codesWithMatchingCredits.add(moduleWithMatchingCredits.getModuleCode());
         }
         codesWithMatchingCredits.removeAll(plannerCodes);
-
-        model.commitApplication();
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, truncatedList.isEmpty() ? "None" : truncatedList,
                 codesWithMatchingTags.isEmpty() ? "None" : codesWithMatchingTags,
