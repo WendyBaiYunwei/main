@@ -132,7 +132,7 @@ public class PlannerAddCommand extends Command {
         String coreqsAddedString = coreqsAdded.stream().map(Code::toString).collect(Collectors.joining(", "));
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo,
-                codesToAddString coreqsAdded.isEmpty() ? "None" : coreqsAddedString));
+                codesToAddString, coreqsAdded.isEmpty() ? "None" : coreqsAddedString));
     }
 
     @Override

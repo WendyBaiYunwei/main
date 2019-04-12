@@ -9,6 +9,7 @@ import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequir
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -95,8 +96,11 @@ public class PlannerAddCommandTest {
 
         expectedModel.commitApplication();
 
+        String validCodeString = validCodeSet.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
+
         assertCommandSuccess(new PlannerAddCommand(validYear, validSemester, validCodeSet), model, commandHistory,
-                String.format(PlannerAddCommand.MESSAGE_SUCCESS, validYear, validSemester, validCodeSet, "None"),
+                String.format(PlannerAddCommand.MESSAGE_SUCCESS, validYear, validSemester, validCodeString, "None"),
                 expectedModel);
     }
 
@@ -110,8 +114,11 @@ public class PlannerAddCommandTest {
 
         PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, validCodeSet);
 
+        String validCodeString = validCodeSet.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
+
         thrown.expect(CommandException.class);
-        thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_DUPLICATE_CODE, validCodeSet));
+        thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_DUPLICATE_CODE, validCodeString));
         plannerAddCommand.execute(model, commandHistory);
     }
 
@@ -125,8 +132,11 @@ public class PlannerAddCommandTest {
 
         PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, nonexistentCodeSet);
 
+        String nonexistentCodeString = nonexistentCodeSet.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
+
         thrown.expect(CommandException.class);
-        thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_NONEXISTENT_MODULES, nonexistentCodeSet));
+        thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_NONEXISTENT_MODULES, nonexistentCodeString));
         plannerAddCommand.execute(model, commandHistory);
     }
 
