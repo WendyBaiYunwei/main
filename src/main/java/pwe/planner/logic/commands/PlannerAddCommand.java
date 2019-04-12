@@ -79,14 +79,19 @@ public class PlannerAddCommand extends Command {
                 .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                 .anyMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(codesToCheck)))
                 .collect(Collectors.toSet());
+        // Converts a set to a string to remove the brackets of set.
+        String duplicatePlannerCodeString = duplicatePlannerCodes.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
         if (duplicatePlannerCodes.size() > 0) {
-            throw new CommandException(String.format(MESSAGE_DUPLICATE_CODE, duplicatePlannerCodes));
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_CODE, duplicatePlannerCodeString));
         }
 
         Set<Code> nonExistentModuleCodes = codesToAdd.stream()
                 .filter(codesToCheck -> !model.hasModuleCode(codesToCheck)).collect(Collectors.toSet());
+        String nonExistentModuleString = nonExistentModuleCodes.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
         if (nonExistentModuleCodes.size() > 0) {
-            throw new CommandException(String.format(MESSAGE_NONEXISTENT_MODULES, nonExistentModuleCodes));
+            throw new CommandException(String.format(MESSAGE_NONEXISTENT_MODULES, nonExistentModuleString));
         }
 
         Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
@@ -123,8 +128,11 @@ public class PlannerAddCommand extends Command {
         model.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
         model.commitApplication();
 
+        String codesToAddString = codesToAdd.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String coreqsAddedString = coreqsAdded.stream().map(Code::toString).collect(Collectors.joining(", "));
+
         return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo,
-                codesToAdd, coreqsAdded.isEmpty() ? "None" : coreqsAdded));
+                codesToAddString coreqsAdded.isEmpty() ? "None" : coreqsAddedString));
     }
 
     @Override
