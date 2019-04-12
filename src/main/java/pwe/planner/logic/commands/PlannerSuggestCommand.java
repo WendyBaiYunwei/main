@@ -62,6 +62,7 @@ public class PlannerSuggestCommand extends Command {
         requireNonNull(model);
 
         Set<Code> plannerCodes = new HashSet<>();
+        // Adds all the codes in the degree plan to a set.
         model.getApplication().getDegreePlannerList()
                 .stream().map(DegreePlanner::getCodes).forEach(plannerCodes::addAll);
 
@@ -70,11 +71,11 @@ public class PlannerSuggestCommand extends Command {
         List<ModuleToSuggest> modulesWithMatchingTags = new ArrayList<>();
         List<ModuleToSuggest> modulesWithMatchingCredits = new ArrayList<>();
         for (Module module : moduleList) {
-            // finds the matching tags for each module
+            // Finds the matching tags for each module.
             Set<Tag> matchingTags = new HashSet<>(tagsToFind);
             matchingTags.retainAll(module.getTags());
 
-            // finds the creditDifference
+            // Finds the credit difference.
             int credit = Integer.valueOf((module.getCredits().toString()));
             int bestCredits = Integer.valueOf(creditsToFind.toString());
             int creditDifference = abs(credit - bestCredits);
@@ -95,37 +96,38 @@ public class PlannerSuggestCommand extends Command {
         Collections.sort(modulesToSuggest);
         Collections.sort(modulesWithMatchingTags);
 
-        //Returns codes to suggest based on both credits and tags.
+        // Returns codes to suggest based on both credits and tags.
         List<Code> codesToSuggest = modulesToSuggest.stream()
                 .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesToSuggest.removeAll(plannerCodes);
-        List<Code> shortSuggestionList = codesToSuggest.subList(0, min(codesToSuggest.size(),
+        // Makes the list contain maximum 10 elements.
+        codesToSuggest = codesToSuggest.subList(0, min(codesToSuggest.size(),
                 MAX_NUMBER_OF_ELEMENETS));
         // Converts a list to a string to remove the brackets of list.
-        String shortSuggestionString = shortSuggestionList.stream().map(Code::toString)
+        String suggestionString = codesToSuggest.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
-        //Returns codes with matching tags.
+        // Returns codes with matching tags.
         List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream()
                 .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesWithMatchingTags.removeAll(plannerCodes);
-        List<Code> shortMatchingTagCodeList = codesWithMatchingTags.subList(0, min(codesWithMatchingTags.size(),
+        codesWithMatchingTags = codesWithMatchingTags.subList(0, min(codesWithMatchingTags.size(),
                 MAX_NUMBER_OF_ELEMENETS));
-        String shortMatchingTagCodeString = shortMatchingTagCodeList.stream().map(Code::toString)
+        String matchingTagCodeString = codesWithMatchingTags.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
         //Returns codes with matching credits.
         List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream()
                 .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesWithMatchingCredits.removeAll(plannerCodes);
-        List<Code> shortMatchingCreditCodeList = codesWithMatchingCredits.subList(0,
+        codesWithMatchingCredits = codesWithMatchingCredits.subList(0,
                 min(codesWithMatchingCredits.size(), MAX_NUMBER_OF_ELEMENETS));
-        String shortMatchingCreditCodeString = shortMatchingCreditCodeList.stream().map(Code::toString)
+        String matchingCreditCodeString = codesWithMatchingCredits.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, shortSuggestionList.isEmpty() ? "None"
-                        : shortSuggestionString, codesWithMatchingTags.isEmpty() ? "None" : shortMatchingTagCodeString,
-                codesWithMatchingCredits.isEmpty() ? "None" : shortMatchingCreditCodeString));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, codesToSuggest.isEmpty() ? "None"
+                        : suggestionString, codesWithMatchingTags.isEmpty() ? "None" : matchingTagCodeString,
+                codesWithMatchingCredits.isEmpty() ? "None" : matchingCreditCodeString));
     }
 
     @Override
@@ -163,16 +165,16 @@ public class PlannerSuggestCommand extends Command {
         }
 
         /**
-         * @param moduleB A valid moduleB to suggest
+         * @param moduleToCompare A valid module to suggest
          * @return number of matching tags difference between two modules to suggest, or
          * credit difference between two modules if tie.
          */
         @Override
-        public int compareTo(ModuleToSuggest moduleB) {
-            if (this.getNumberOfMatchingTags() == moduleB.getNumberOfMatchingTags()) {
-                return this.getCreditDifference() - moduleB.getCreditDifference();
+        public int compareTo(ModuleToSuggest moduleToCompare) {
+            if (this.getNumberOfMatchingTags() == moduleToCompare.getNumberOfMatchingTags()) {
+                return this.getCreditDifference() - moduleToCompare.getCreditDifference();
             }
-            return moduleB.getNumberOfMatchingTags() - this.getNumberOfMatchingTags();
+            return moduleToCompare.getNumberOfMatchingTags() - this.getNumberOfMatchingTags();
         }
     }
 }
