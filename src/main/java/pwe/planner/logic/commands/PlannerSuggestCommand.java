@@ -103,6 +103,7 @@ public class PlannerSuggestCommand extends Command {
         codesToSuggest.removeAll(plannerCodes);
         List<Code> shortSuggestionList = codesToSuggest.subList(0, min(codesToSuggest.size(),
                 MAX_NUMBER_OF_ELEMENETS));
+        // Converts a list to a string to remove the brackets of list.
         String shortSuggestionString = shortSuggestionList.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 

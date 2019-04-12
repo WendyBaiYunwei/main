@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +50,10 @@ public class PlannerSuggestCommandTest {
         List<Code> recommendedCodes = new ArrayList<>();
         recommendedCodes.add(code);
         recommendedCodes.add(code2);
-        String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, recommendedCodes, "None",
+        String recommendedCodesString = recommendedCodes.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
+
+        String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, recommendedCodesString, "None",
                 "None");
 
         assertCommandSuccess(new PlannerSuggestCommand(bestCredits, tagsToFind), model, commandHistory,
@@ -70,8 +74,14 @@ public class PlannerSuggestCommandTest {
         List<Code> codesWithMatchingCredits = new ArrayList<>();
         codesWithMatchingCredits.add(code);
 
-        String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, recommendedCodes, "None",
-                codesWithMatchingCredits);
+        String matchingCreditCodesString = codesWithMatchingCredits.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
+
+        String recommendedCodesString = recommendedCodes.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
+
+        String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, recommendedCodesString, "None",
+                matchingCreditCodesString);
 
         assertCommandSuccess(new PlannerSuggestCommand(bestCredits, tagsToFind), model, commandHistory,
                 expectedMessage, model);
