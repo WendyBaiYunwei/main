@@ -53,13 +53,13 @@ public class PlannerRemoveCommandTest {
 
         Model expectedModel = new ModelManager(model.getApplication(), new UserPrefs());
 
-        List<DegreePlanner> degreePlannerList = expectedModel.getApplication().getDegreePlannerList();
-        for (DegreePlanner selectedDegreeePlanner : degreePlannerList) {
-            Set<Code> selectedCodeSet = new HashSet<>(selectedDegreeePlanner.getCodes());
+        List<DegreePlanner> degreePlannerList = model.getApplication().getDegreePlannerList();
+        for (DegreePlanner selectedDegreePlanner : degreePlannerList) {
+            Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
             selectedCodeSet.removeAll(validCodeSet);
-            DegreePlanner editedDegreePlanner = new DegreePlanner(selectedDegreeePlanner.getYear(),
-                    selectedDegreeePlanner.getSemester(), selectedCodeSet);
-            expectedModel.setDegreePlanner(selectedDegreeePlanner, editedDegreePlanner);
+            DegreePlanner editedDegreePlanner = new DegreePlanner(selectedDegreePlanner.getYear(),
+                    selectedDegreePlanner.getSemester(), selectedCodeSet);
+            expectedModel.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
         }
         expectedModel.commitApplication();
 
