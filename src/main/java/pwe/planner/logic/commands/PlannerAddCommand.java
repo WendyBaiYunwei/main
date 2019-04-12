@@ -41,10 +41,10 @@ public class PlannerAddCommand extends Command {
             + PREFIX_CODE + "CS2100";
 
     public static final String MESSAGE_SUCCESS = "Added new module(s) to year %1$s semester %2$s of"
-            + " the degree plan: \n%3$s\nco-requisite(s) added: %4$s";
+            + " the degree plan: \n%3$s\nCo-requisite(s) added: %4$s";
     public static final String MESSAGE_DUPLICATE_CODE = "The module(s) %1$s already exists in the degree plan.";
     public static final String MESSAGE_INVALID_COREQ = "The co-requisite(s) %1$s of module(s) %2$s already exists"
-            + " in a different year and semester of the degree plan.\nco-requisite module(s)"
+            + " in a different year and semester of the degree plan.\nCo-requisite module(s)"
             + " have to be in the same year and semester of the degree plan.";
     public static final String MESSAGE_NONEXISTENT_MODULES = "The module(s) %1$s does not exist in the module list.";
     public static final String MESSAGE_NONEXISTENT_DEGREE_PLANNER = "Year %1$s Semester"
