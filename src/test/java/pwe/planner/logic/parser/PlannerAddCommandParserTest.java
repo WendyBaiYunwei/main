@@ -47,9 +47,7 @@ public class PlannerAddCommandParserTest {
 
     @Test
     public void parse_validArgs_returnsPlannerAddCommand() {
-        Code validCode = new Code("CS1010");
-        Set<Code> validCodeSet = new HashSet<>();
-        validCodeSet.add(validCode);
+        Set<Code> validCodeSet = Set.of(new Code("CS1010"));
         Year validYear = new Year("1");
         Semester validSemester = new Semester("4");
 

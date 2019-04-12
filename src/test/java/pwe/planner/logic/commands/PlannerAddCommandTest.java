@@ -39,19 +39,15 @@ public class PlannerAddCommandTest {
 
     @Before
     public void setUp() throws IllegalValueException {
-        model = new ModelManager(
-                new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
-                        getTypicalRequirementCategoriesList()).toModelType(),
-                new UserPrefs());
+        model = new ModelManager(new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
+                        getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
     }
 
     @Test
     public void constructor_nullYear_throwsNullPointerException() {
         thrown.expect(NullPointerException.class);
         Semester defaultSemester = new Semester("1");
-        Code defaultCode = new ModuleBuilder().build().getCode();
-        Set<Code> defaultCodeSet = new HashSet<>();
-        defaultCodeSet.add(defaultCode);
+        Set<Code> defaultCodeSet = Set.of(new ModuleBuilder().build().getCode());
         new PlannerAddCommand(null, defaultSemester, defaultCodeSet);
     }
 
@@ -59,9 +55,7 @@ public class PlannerAddCommandTest {
     public void constructor_nullSemester_throwsNullPointerException() {
         thrown.expect(NullPointerException.class);
         Year defaultYear = new Year("1");
-        Code defaultCode = new ModuleBuilder().build().getCode();
-        Set<Code> defaultCodeSet = new HashSet<>();
-        defaultCodeSet.add(defaultCode);
+        Set<Code> defaultCodeSet = Set.of(new ModuleBuilder().build().getCode());
         new PlannerAddCommand(defaultYear, null, defaultCodeSet);
     }
 
@@ -77,9 +71,7 @@ public class PlannerAddCommandTest {
     public void execute_parametersAcceptedByModel_addSuccessful() throws Exception {
         Year validYear = new Year("1");
         Semester validSemester = new Semester("1");
-        Code validCode = new Code("CS2105");
-        Set<Code> validCodeSet = new HashSet<>();
-        validCodeSet.add(validCode);
+        Set<Code> validCodeSet = Set.of(new Code("CS2105"));
 
         Model expectedModel = new ModelManager(model.getApplication(), new UserPrefs());
 
@@ -108,9 +100,7 @@ public class PlannerAddCommandTest {
     public void execute_duplicatePlannerCodes_throwsCommandException() throws Exception {
         Year validYear = new Year("1");
         Semester validSemester = new Semester("1");
-        Code validCode = new Code("CS1010");
-        Set<Code> validCodeSet = new HashSet<>();
-        validCodeSet.add(validCode);
+        Set<Code> validCodeSet = Set.of(new Code("CS1010"));
 
         PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, validCodeSet);
 
@@ -126,9 +116,7 @@ public class PlannerAddCommandTest {
     public void execute_nonexistentPlannerCodes_throwsCommandException() throws Exception {
         Year validYear = new Year("1");
         Semester validSemester = new Semester("1");
-        Code nonexistentCode = new Code("CS9999");
-        Set<Code> nonexistentCodeSet = new HashSet<>();
-        nonexistentCodeSet.add(nonexistentCode);
+        Set<Code> nonexistentCodeSet = Set.of(new Code("CS9999"));
 
         PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, nonexistentCodeSet);
 
@@ -144,12 +132,8 @@ public class PlannerAddCommandTest {
     public void equals() {
         Year year = new Year("1");
         Semester semester = new Semester("1");
-        Code code = new Code("CS1010");
-        Set<Code> codeSet = new HashSet<>();
-        codeSet.add(code);
-        Code anotherCode = new Code("IS1103");
-        Set<Code> anotherCodeSet = new HashSet<>();
-        anotherCodeSet.add(anotherCode);
+        Set<Code> codeSet = Set.of(new Code("CS1010"),new Code("IS1103"));
+        Set<Code> anotherCodeSet = Set.of(new Code("IS1103"));
 
         PlannerAddCommand plannerAddACommand = new PlannerAddCommand(year, semester, codeSet);
         PlannerAddCommand plannerAddBCommand = new PlannerAddCommand(year, semester, anotherCodeSet);
