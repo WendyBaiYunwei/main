@@ -40,8 +40,8 @@ public class PlannerSuggestCommand extends Command {
             + PREFIX_TAG + "c";
 
     public static final String MESSAGE_SUCCESS = "The list is sorted with the more recommended module(s)"
-            + " in front.\nModule(s) recommended:\n%1$s\nModule(s) with relevant"
-            + " tags:\n%2$s\nModule(s) with matching credits:\n%3$s";
+            + " in front.\nModule(s) recommended: %1$s\nModule(s) with relevant"
+            + " tags: %2$s\nModule(s) with matching credits: %3$s";
     private static final int MAX_NUMBER_OF_ELEMENETS = 10;
 
     private Credits creditsToFind;
@@ -101,16 +101,19 @@ public class PlannerSuggestCommand extends Command {
             codesToSuggest.add(moduleToSuggest.getModuleCode());
         }
         codesToSuggest.removeAll(plannerCodes);
-        List<Code> truncatedSuggestionList = codesToSuggest.subList(0, min(codesToSuggest.size(),
+        List<Code> shortSuggestionList = codesToSuggest.subList(0, min(codesToSuggest.size(),
                 MAX_NUMBER_OF_ELEMENETS));
-
+        String shortSuggestionString = shortSuggestionList.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
 
         //Returns codes with matching tags.
         List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream()
                 .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesWithMatchingTags.removeAll(plannerCodes);
-        List<Code> truncatedMathingTagCodeList = codesWithMatchingTags.subList(0, min(codesWithMatchingTags.size(),
+        List<Code> shortMathingTagCodeList = codesWithMatchingTags.subList(0, min(codesWithMatchingTags.size(),
                 MAX_NUMBER_OF_ELEMENETS));
+        String shortMathingTagCodeString = shortMathingTagCodeList.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
 
         //Returns codes with matching credits.
         List<Code> codesWithMatchingCredits = new ArrayList<>();
@@ -118,12 +121,14 @@ public class PlannerSuggestCommand extends Command {
             codesWithMatchingCredits.add(moduleWithMatchingCredits.getModuleCode());
         }
         codesWithMatchingCredits.removeAll(plannerCodes);
-        List<Code> truncatedMathingCreditCodeList = codesWithMatchingCredits.subList(0,
+        List<Code> shortMathingCreditCodeList = codesWithMatchingCredits.subList(0,
                 min(codesWithMatchingCredits.size(), MAX_NUMBER_OF_ELEMENETS));
+        String shortMathingCreditCodeString = shortMathingCreditCodeList.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, truncatedList.isEmpty() ? "None" : truncatedList,
-                codesWithMatchingTags.isEmpty() ? "None" : codesWithMatchingTags,
-                codesWithMatchingCredits.isEmpty() ? "None" : codesWithMatchingCredits));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, shortSuggestionList.isEmpty() ? "None"
+                        : shortSuggestionString, codesWithMatchingTags.isEmpty() ? "None" : shortMathingTagCodeString,
+                codesWithMatchingCredits.isEmpty() ? "None" : shortMathingCreditCodeString));
     }
 
     @Override
