@@ -96,8 +96,8 @@ public class PlannerSuggestCommand extends Command {
         Collections.sort(modulesWithMatchingTags);
 
         //Returns codes to suggest based on both credits and tags.
-        List<Code> codesToSuggest = new ArrayList<>();
-        modulesToSuggest.forEach(moduleToSuggest -> codesToSuggest.add(moduleToSuggest.getModuleCode()));
+        List<Code> codesToSuggest = modulesToSuggest.stream()
+                .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesToSuggest.removeAll(plannerCodes);
         List<Code> shortSuggestionList = codesToSuggest.subList(0, min(codesToSuggest.size(),
                 MAX_NUMBER_OF_ELEMENETS));
@@ -109,24 +109,23 @@ public class PlannerSuggestCommand extends Command {
         List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream()
                 .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesWithMatchingTags.removeAll(plannerCodes);
-        List<Code> shortMathingTagCodeList = codesWithMatchingTags.subList(0, min(codesWithMatchingTags.size(),
+        List<Code> shortMatchingTagCodeList = codesWithMatchingTags.subList(0, min(codesWithMatchingTags.size(),
                 MAX_NUMBER_OF_ELEMENETS));
-        String shortMathingTagCodeString = shortMathingTagCodeList.stream().map(Code::toString)
+        String shortMatchingTagCodeString = shortMatchingTagCodeList.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
         //Returns codes with matching credits.
-        List<Code> codesWithMatchingCredits = new ArrayList<>();
-        modulesWithMatchingCredits.forEach(moduleWithMatchingCredits -> codesWithMatchingCredits
-                .add(moduleWithMatchingCredits.getModuleCode()));
+        List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream()
+                .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesWithMatchingCredits.removeAll(plannerCodes);
-        List<Code> shortMathingCreditCodeList = codesWithMatchingCredits.subList(0,
+        List<Code> shortMatchingCreditCodeList = codesWithMatchingCredits.subList(0,
                 min(codesWithMatchingCredits.size(), MAX_NUMBER_OF_ELEMENETS));
-        String shortMathingCreditCodeString = shortMathingCreditCodeList.stream().map(Code::toString)
+        String shortMatchingCreditCodeString = shortMatchingCreditCodeList.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, shortSuggestionList.isEmpty() ? "None"
-                        : shortSuggestionString, codesWithMatchingTags.isEmpty() ? "None" : shortMathingTagCodeString,
-                codesWithMatchingCredits.isEmpty() ? "None" : shortMathingCreditCodeString));
+                        : shortSuggestionString, codesWithMatchingTags.isEmpty() ? "None" : shortMatchingTagCodeString,
+                codesWithMatchingCredits.isEmpty() ? "None" : shortMatchingCreditCodeString));
     }
 
     @Override
