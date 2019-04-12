@@ -91,6 +91,7 @@ public class PlannerRemoveCommand extends Command {
         coreqsRemoved.removeAll(codesToRemove);
         model.commitApplication();
 
+        // Converts a set to a string to remove the brackets of set.
         String removedCodesString = codesToRemove.stream().map(Code::toString).collect(Collectors.joining(", "));
         String coreqsRemovedString = coreqsRemoved.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
