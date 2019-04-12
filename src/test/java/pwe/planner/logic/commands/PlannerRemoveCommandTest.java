@@ -11,6 +11,7 @@ import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequir
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -67,8 +68,11 @@ public class PlannerRemoveCommandTest {
         }
         expectedModel.commitApplication();
 
+        String removedCodesString = validCodeSet.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
+
         assertCommandSuccess(new PlannerRemoveCommand(validCodeSet), model, commandHistory,
-                String.format(PlannerRemoveCommand.MESSAGE_SUCCESS, validCodeSet, "None"), expectedModel);
+                String.format(PlannerRemoveCommand.MESSAGE_SUCCESS, removedCodesString, "None"), expectedModel);
     }
 
     @Test
@@ -76,6 +80,9 @@ public class PlannerRemoveCommandTest {
         Code nonexistentCode = new Code("CS9999");
         Set<Code> nonexistentCodeSet = new HashSet<>();
         nonexistentCodeSet.add(nonexistentCode);
+
+        String nonexistentCodesString = nonexistentCodeSet.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
 
         PlannerRemoveCommand plannerRemoveCommand = new PlannerRemoveCommand(nonexistentCodeSet);
         assertCommandFailure(plannerRemoveCommand, model, commandHistory,

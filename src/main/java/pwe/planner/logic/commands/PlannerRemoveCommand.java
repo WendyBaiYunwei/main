@@ -54,8 +54,11 @@ public class PlannerRemoveCommand extends Command {
                 .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                 .noneMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(codeToCheck)))
                 .collect(Collectors.toSet());
+        // Converts the set to a string to remove the square brackets.
+        String nonExistentCodesString = nonExistentPlannerCodes.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
         if (!nonExistentPlannerCodes.isEmpty()) {
-            throw new CommandException(String.format(MESSAGE_NONEXISTENT_CODES, nonExistentPlannerCodes));
+            throw new CommandException(String.format(MESSAGE_NONEXISTENT_CODES, nonExistentCodesString));
         }
 
         Set<Code> coreqsRemoved = new HashSet<>();
@@ -88,8 +91,12 @@ public class PlannerRemoveCommand extends Command {
         coreqsRemoved.removeAll(codesToRemove);
         model.commitApplication();
 
+        String removedCodesString = codesToRemove.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String coreqsRemovedString = coreqsRemoved.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
+
         return new CommandResult(String.format(MESSAGE_SUCCESS,
-                codesToRemove, coreqsRemoved.isEmpty() ? "None" : coreqsRemoved));
+                removedCodesString, coreqsRemoved.isEmpty() ? "None" : coreqsRemovedString));
     }
 
     @Override
