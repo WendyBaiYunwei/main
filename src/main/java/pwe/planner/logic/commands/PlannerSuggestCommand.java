@@ -97,9 +97,7 @@ public class PlannerSuggestCommand extends Command {
 
         //Returns codes to suggest based on both credits and tags.
         List<Code> codesToSuggest = new ArrayList<>();
-        for (ModuleToSuggest moduleToSuggest : modulesToSuggest) {
-            codesToSuggest.add(moduleToSuggest.getModuleCode());
-        }
+        modulesToSuggest.forEach(moduleToSuggest -> codesToSuggest.add(moduleToSuggest.getModuleCode()));
         codesToSuggest.removeAll(plannerCodes);
         List<Code> shortSuggestionList = codesToSuggest.subList(0, min(codesToSuggest.size(),
                 MAX_NUMBER_OF_ELEMENETS));
@@ -118,9 +116,8 @@ public class PlannerSuggestCommand extends Command {
 
         //Returns codes with matching credits.
         List<Code> codesWithMatchingCredits = new ArrayList<>();
-        for (ModuleToSuggest moduleWithMatchingCredits : modulesWithMatchingCredits) {
-            codesWithMatchingCredits.add(moduleWithMatchingCredits.getModuleCode());
-        }
+        modulesWithMatchingCredits.forEach(moduleWithMatchingCredits -> codesWithMatchingCredits
+                .add(moduleWithMatchingCredits.getModuleCode()));
         codesWithMatchingCredits.removeAll(plannerCodes);
         List<Code> shortMathingCreditCodeList = codesWithMatchingCredits.subList(0,
                 min(codesWithMatchingCredits.size(), MAX_NUMBER_OF_ELEMENETS));

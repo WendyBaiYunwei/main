@@ -22,11 +22,7 @@ public class PlannerSuggestCommandParserTest {
     @Test
     public void parse_allFieldsPresent_success() {
         Credits bestCredits = new Credits("2");
-        Tag tagToFind = new Tag("validName");
-        Tag anotherTagToFind = new Tag("anotherValidName");
-        Set<Tag> tagsToFind = new HashSet<>();
-        tagsToFind.add(tagToFind);
-        tagsToFind.add(anotherTagToFind);
+        Set<Tag> tagsToFind = Set.of(new Tag("validName"), new Tag("anotherValidName"));
 
         // multiple tags - all tags accepted
         assertParseSuccess(parser, " " + PREFIX_CREDITS + "2 "

@@ -34,22 +34,16 @@ public class PlannerSuggestCommandTest {
 
     @Before
     public void setUp() throws IllegalValueException {
-        model = new ModelManager(
-                new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
+        model = new ModelManager(new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
                         getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
     }
 
     @Test
     public void execute_modulesWithoutMatchingTagsAndCredits_recommendedModulesFound() {
         Credits bestCredits = new Credits("3");
-        Set<Tag> tagsToFind = new HashSet<>();
-        Tag validTag = new Tag("nonexistent");
-        tagsToFind.add(validTag);
-        Code code = new Code("CS2101");
-        Code code2 = new Code("CS2105");
-        List<Code> recommendedCodes = new ArrayList<>();
-        recommendedCodes.add(code);
-        recommendedCodes.add(code2);
+        Set<Tag> tagsToFind = Set.of(new Tag("nonexistent"));
+        List<Code> recommendedCodes = List.of(new Code("CS2101"), new Code("CS2105"));
+
         String recommendedCodesString = recommendedCodes.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
@@ -63,16 +57,9 @@ public class PlannerSuggestCommandTest {
     @Test
     public void execute_modulesWithMatchingCredits_recommendedModulesFound() {
         Credits bestCredits = new Credits("4");
-        Set<Tag> tagsToFind = new HashSet<>();
-        Tag validTag = new Tag("nonexistent");
-        tagsToFind.add(validTag);
-        Code code = new Code("CS2101");
-        Code code2 = new Code("CS2105");
-        List<Code> recommendedCodes = new ArrayList<>();
-        recommendedCodes.add(code);
-        recommendedCodes.add(code2);
-        List<Code> codesWithMatchingCredits = new ArrayList<>();
-        codesWithMatchingCredits.add(code);
+        Set<Tag> tagsToFind = Set.of(new Tag("nonexistent"));
+        List<Code> recommendedCodes = List.of(new Code("CS2101"), new Code("CS2105"));
+        List<Code> codesWithMatchingCredits = List.of(new Code("CS2101"));
 
         String matchingCreditCodesString = codesWithMatchingCredits.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
