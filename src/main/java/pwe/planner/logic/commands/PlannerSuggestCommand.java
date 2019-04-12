@@ -43,6 +43,8 @@ public class PlannerSuggestCommand extends Command {
             + " in front.\nModule(s) recommended: %1$s\nModule(s) with relevant"
             + " tags: %2$s\nModule(s) with matching credits: %3$s";
     private static final int MAX_NUMBER_OF_ELEMENETS = 10;
+    private static final int START_INDEX = 0;
+    private static final int VALUE_OF_NO_DIFFERENCE = 0;
 
     private Credits creditsToFind;
     private Set<Tag> tagsToFind;
@@ -88,7 +90,7 @@ public class PlannerSuggestCommand extends Command {
                 modulesWithMatchingTags.add(moduleToSuggest);
             }
 
-            if (creditDifference == 0) {
+            if (creditDifference == VALUE_OF_NO_DIFFERENCE) {
                 modulesWithMatchingCredits.add(moduleToSuggest);
             }
         }
@@ -101,7 +103,7 @@ public class PlannerSuggestCommand extends Command {
                 .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesToSuggest.removeAll(plannerCodes);
         // Makes the list contain maximum 10 elements.
-        codesToSuggest = codesToSuggest.subList(0, min(codesToSuggest.size(),
+        codesToSuggest = codesToSuggest.subList(START_INDEX, min(codesToSuggest.size(),
                 MAX_NUMBER_OF_ELEMENETS));
         // Converts a list to a string to remove the brackets of list.
         String suggestionString = codesToSuggest.stream().map(Code::toString)
@@ -111,7 +113,7 @@ public class PlannerSuggestCommand extends Command {
         List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream()
                 .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesWithMatchingTags.removeAll(plannerCodes);
-        codesWithMatchingTags = codesWithMatchingTags.subList(0, min(codesWithMatchingTags.size(),
+        codesWithMatchingTags = codesWithMatchingTags.subList(START_INDEX, min(codesWithMatchingTags.size(),
                 MAX_NUMBER_OF_ELEMENETS));
         String matchingTagCodeString = codesWithMatchingTags.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
@@ -120,7 +122,7 @@ public class PlannerSuggestCommand extends Command {
         List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream()
                 .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
         codesWithMatchingCredits.removeAll(plannerCodes);
-        codesWithMatchingCredits = codesWithMatchingCredits.subList(0,
+        codesWithMatchingCredits = codesWithMatchingCredits.subList(START_INDEX,
                 min(codesWithMatchingCredits.size(), MAX_NUMBER_OF_ELEMENETS));
         String matchingCreditCodeString = codesWithMatchingCredits.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
