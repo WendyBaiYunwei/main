@@ -356,7 +356,7 @@ The `redo` command fails as there are no `undo` commands executed previously.
 Clears all entries from the module list. +
 Format: `clear`
 
-==== Adding module(s) to degree plan : `planner_add`
+=== Adding module(s) to degree plan : `planner_add`
 
 Want to add module(s) to the degree plan?
 
@@ -392,7 +392,7 @@ Adds modules CS1231 and CS2040C to year 1 semester 4 (special term semester 2) o
 * `planner_add year/1 sem/2 code/CS2113T code/CS2107` +
 Adds modules CS2113T and CS2107 to year 1 semester 2 of the degree plan.
 
-==== Removing module(s) from degree plan : `planner_remove`
+=== Removing module(s) from degree plan : `planner_remove`
 
 Want to remove module(s) from the degree plan?
 
@@ -453,7 +453,7 @@ Shows a degree planner for year 1 semester 1.
 * `planner_list y/1 s/2` +
 Shows a degree planner for year 1 semester 2
 
-==== Suggesting module(s) to add to degree plan : `planner_suggest`
+=== Suggesting module(s) to add to degree plan : `planner_suggest`
 
 Having trouble identifying modules to add to the degree plan?
 
