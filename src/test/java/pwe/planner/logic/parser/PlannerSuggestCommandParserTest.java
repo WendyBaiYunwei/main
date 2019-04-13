@@ -39,7 +39,6 @@ public class PlannerSuggestCommandParserTest {
 
     @Test
     public void parse_invalidValue_failure() {
-
         // invalid credits
         assertParseFailure(parser, " " + PREFIX_CREDITS + "-1 " + PREFIX_TAG + "validTag", Credits.MESSAGE_CONSTRAINTS);
 
