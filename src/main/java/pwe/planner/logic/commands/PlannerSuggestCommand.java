@@ -167,7 +167,7 @@ public class PlannerSuggestCommand extends Command {
         @Override
         public int compareTo(ModuleToSuggest moduleToCompare) {
             if (this.getNumberOfMatchingTags() == moduleToCompare.getNumberOfMatchingTags()
-            && this.getCreditDifference() == moduleToCompare.getCreditDifference()) {
+                && this.getCreditDifference() == moduleToCompare.getCreditDifference()) {
                 return this.getModuleCode().compareTo(moduleToCompare.getModuleCode());
             } else if (this.getNumberOfMatchingTags() == moduleToCompare.getNumberOfMatchingTags()) {
                 return this.getCreditDifference() - moduleToCompare.getCreditDifference();
