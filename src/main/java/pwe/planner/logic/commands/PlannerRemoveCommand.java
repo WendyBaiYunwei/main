@@ -25,6 +25,7 @@ public class PlannerRemoveCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Removes module(s) from the degree plan.\n"
             + "Parameters: "
+            + "Format: " + COMMAND_WORD + " "
             + PREFIX_CODE + "CODE "
             + "[" + PREFIX_CODE + "CODE]...\n"
             + "Example: " + COMMAND_WORD + " code/CS1010 code/CS2040C";
@@ -62,15 +63,14 @@ public class PlannerRemoveCommand extends Command {
         }
 
         Set<Code> coreqsRemoved = new HashSet<>();
+        Set<Code> coreqsOfCodesToRemove = new HashSet<>();
+        // Adds co-requisites of codes to remove to a set.
+        codesToRemove.stream().map(model::getModuleByCode).map(Module::getCorequisites)
+                .forEach(coreqsOfCodesToRemove::addAll);
+
         ObservableList<DegreePlanner> degreePlannerList = model.getApplication().getDegreePlannerList();
-
-        for (DegreePlanner selectedDegreePlanner : degreePlannerList) {
-            Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
-            Set<Code> coreqsOfCodesToRemove = new HashSet<>();
-
-            // Adds co-requisites of codes to remove to a set.
-            codesToRemove.stream().map(model::getModuleByCode).map(Module::getCorequisites)
-                    .forEach(coreqsOfCodesToRemove::addAll);
+        for (DegreePlanner degreePlanner : degreePlannerList) {
+            Set<Code> selectedCodeSet = new HashSet<>(degreePlanner.getCodes());
             // Returns relevant codes that are not just co-requisites to the code to remove, but are also existing
             // in the selected section of the degree plan.
             coreqsOfCodesToRemove.retainAll(selectedCodeSet);
@@ -80,9 +80,9 @@ public class PlannerRemoveCommand extends Command {
             // Removes the codes to remove.
             selectedCodeSet.removeAll(codesToRemove);
             // Updates the selected section of the degree plan.
-            DegreePlanner editedDegreePlanner = new DegreePlanner(selectedDegreePlanner.getYear(),
-                    selectedDegreePlanner.getSemester(), selectedCodeSet);
-            model.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
+            DegreePlanner editedDegreePlanner = new DegreePlanner(degreePlanner.getYear(),
+                    degreePlanner.getSemester(), selectedCodeSet);
+            model.setDegreePlanner(degreePlanner, editedDegreePlanner);
 
             // Combines the removed co-requisites together into a set for feedback to user.
             coreqsRemoved.addAll(coreqsOfCodesToRemove);
@@ -93,10 +93,10 @@ public class PlannerRemoveCommand extends Command {
 
         // Converts a set to a string to remove the brackets of set.
         String removedCodesString = codesToRemove.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String coreqsRemovedString = coreqsRemoved.isEmpty() ? "None" : coreqsRemoved.stream().map(Code::toString)
+                .collect(Collectors.joining(", "));
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS,
-                removedCodesString, coreqsRemoved.isEmpty() ? "None" : coreqsRemoved.stream().map(Code::toString)
-                        .collect(Collectors.joining(", "))));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, removedCodesString, coreqsRemovedString));
     }
 
     @Override
