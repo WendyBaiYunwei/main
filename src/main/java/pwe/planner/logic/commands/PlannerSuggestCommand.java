@@ -38,7 +38,7 @@ public class PlannerSuggestCommand extends Command {
             + PREFIX_TAG + "algorithms "
             + PREFIX_TAG + "c";
 
-    public static final String MESSAGE_SUCCESS = "The list is sorted with the more recommended module(s)"
+    public static final String MESSAGE_SUCCESS = "The lists are sorted with the more recommended module(s)"
             + " in front.\nModule(s) recommended: %1$s\nModule(s) with relevant"
             + " tags: %2$s\nModule(s) with matching credits: %3$s";
     private static final int MAX_NUMBER_OF_ELEMENETS = 10;
