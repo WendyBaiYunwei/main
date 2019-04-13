@@ -28,6 +28,10 @@ public class PlannerSuggestCommandParser implements Parser<PlannerSuggestCommand
     public PlannerSuggestCommand parse(String args) throws ParseException {
         requireNonNull(args);
 
+        if (args.isEmpty()) {
+            throw new ParseException(PlannerSuggestCommand.MESSAGE_USAGE);
+        }
+
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_CREDITS, PREFIX_TAG);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_CREDITS) || !argMultimap.getPreamble().isEmpty()) {

@@ -5,8 +5,10 @@ import static org.junit.Assert.assertTrue;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static pwe.planner.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
 import static pwe.planner.testutil.TypicalIndexes.INDEX_FIRST_MODULE;
 
@@ -31,6 +33,7 @@ import pwe.planner.logic.commands.HistoryCommand;
 import pwe.planner.logic.commands.ListCommand;
 import pwe.planner.logic.commands.PlannerListAllCommand;
 import pwe.planner.logic.commands.PlannerMoveCommand;
+import pwe.planner.logic.commands.PlannerSuggestCommand;
 import pwe.planner.logic.commands.RedoCommand;
 import pwe.planner.logic.commands.RequirementAddCommand;
 import pwe.planner.logic.commands.RequirementListCommand;
@@ -39,11 +42,13 @@ import pwe.planner.logic.commands.SelectCommand;
 import pwe.planner.logic.commands.UndoCommand;
 import pwe.planner.logic.parser.exceptions.ParseException;
 import pwe.planner.model.module.Code;
+import pwe.planner.model.module.Credits;
 import pwe.planner.model.module.Module;
 import pwe.planner.model.module.Name;
 import pwe.planner.model.module.NameContainsKeywordsPredicate;
 import pwe.planner.model.planner.Semester;
 import pwe.planner.model.planner.Year;
+import pwe.planner.model.tag.Tag;
 import pwe.planner.testutil.EditModuleDescriptorBuilder;
 import pwe.planner.testutil.ModuleBuilder;
 import pwe.planner.testutil.ModuleUtil;
@@ -142,6 +147,14 @@ public class CommandParserTest {
                 PlannerMoveCommand.COMMAND_WORD + " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "2 " + PREFIX_CODE
                         + "CS1010");
         assertEquals(new PlannerMoveCommand(new Year("1"), new Semester("2"), new Code("CS1010")), command);
+    }
+
+    @Test
+    public void parseCommand_plannerSuggest() throws Exception {
+        Set<Tag> validTags = Set.of(new Tag("validTag"));
+        PlannerSuggestCommand command = (PlannerSuggestCommand) parser.parseCommand(
+                PlannerSuggestCommand.COMMAND_WORD + " " + PREFIX_CREDITS + "2 " + PREFIX_TAG + "validTag");
+        assertEquals(new PlannerSuggestCommand(new Credits("2"), validTags), command);
     }
 
     @Test

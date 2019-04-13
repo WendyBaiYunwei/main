@@ -1,7 +1,6 @@
 package pwe.planner.logic.commands;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.min;
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
@@ -43,7 +42,6 @@ public class PlannerSuggestCommand extends Command {
             + " in front.\nModule(s) recommended: %1$s\nModule(s) with relevant"
             + " tags: %2$s\nModule(s) with matching credits: %3$s";
     private static final int MAX_NUMBER_OF_ELEMENETS = 10;
-    private static final int START_INDEX = 0;
     private static final int VALUE_OF_NO_DIFFERENCE = 0;
 
     private Credits creditsToFind;
@@ -99,31 +97,21 @@ public class PlannerSuggestCommand extends Command {
         Collections.sort(modulesWithMatchingTags);
 
         // Returns codes to suggest based on both credits and tags.
-        List<Code> codesToSuggest = modulesToSuggest.stream()
-                .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
-        codesToSuggest.removeAll(plannerCodes);
-        // Makes the list contain maximum 10 elements.
-        codesToSuggest = codesToSuggest.subList(START_INDEX, min(codesToSuggest.size(),
-                MAX_NUMBER_OF_ELEMENETS));
-        // Converts a list to a string to remove the brackets of list.
+        List<Code> codesToSuggest = modulesToSuggest.stream().map(ModuleToSuggest::getModuleCode)
+        .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
+        // Converts the list to a string to remove the brackets of list.
         String suggestionString = codesToSuggest.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
         // Returns codes with matching tags.
-        List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream()
-                .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
-        codesWithMatchingTags.removeAll(plannerCodes);
-        codesWithMatchingTags = codesWithMatchingTags.subList(START_INDEX, min(codesWithMatchingTags.size(),
-                MAX_NUMBER_OF_ELEMENETS));
+        List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream().map(ModuleToSuggest::getModuleCode)
+        .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
         String matchingTagCodeString = codesWithMatchingTags.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
         //Returns codes with matching credits.
-        List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream()
-                .map(ModuleToSuggest::getModuleCode).collect(Collectors.toList());
-        codesWithMatchingCredits.removeAll(plannerCodes);
-        codesWithMatchingCredits = codesWithMatchingCredits.subList(START_INDEX,
-                min(codesWithMatchingCredits.size(), MAX_NUMBER_OF_ELEMENETS));
+        List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream().map(ModuleToSuggest::getModuleCode)
+        .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
         String matchingCreditCodeString = codesWithMatchingCredits.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
