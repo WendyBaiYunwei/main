@@ -54,10 +54,10 @@ public class PlannerRemoveCommand extends Command {
                 .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                 .noneMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(codeToCheck)))
                 .collect(Collectors.toSet());
-        // Converts the set to a string to remove the square brackets.
-        String nonExistentCodesString = nonExistentPlannerCodes.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
         if (!nonExistentPlannerCodes.isEmpty()) {
+            // Converts the set to a string to remove the square brackets.
+            String nonExistentCodesString = nonExistentPlannerCodes.stream().map(Code::toString)
+                    .collect(Collectors.joining(", "));
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_CODES, nonExistentCodesString));
         }
 
