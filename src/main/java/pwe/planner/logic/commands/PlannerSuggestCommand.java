@@ -93,29 +93,25 @@ public class PlannerSuggestCommand extends Command {
             }
         }
 
-        // Sorts the list according to recommendation order.
-        Collections.sort(modulesToSuggest);
-        // Returns a list of codes to suggest based on both credits and tags.
+        // Returns a sorted list of codes to suggest based on both credits and tags.
         List<Code> codesToSuggest = modulesToSuggest.stream().map(ModuleToSuggest::getModuleCode)
-            .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS)
+            .filter(module -> !plannerCodes.contains(module)).sorted().limit(MAX_NUMBER_OF_ELEMENETS)
                 .collect(Collectors.toList());
         // Converts the list to a string to remove the brackets of list.
         String suggestionString = codesToSuggest.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
-        Collections.sort(modulesWithMatchingTags);
-        // Returns a list of codes with matching tags in the recommendation list.
+        // Returns a sorted list of codes with matching tags in the recommendation list.
         List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream().map(ModuleToSuggest::getModuleCode)
             .filter(code -> !plannerCodes.contains(code) && codesToSuggest.contains(code))
-                .limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
+                .sorted().limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
         String matchingTagCodeString = codesWithMatchingTags.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
-        Collections.sort(modulesWithMatchingCredits);
-        // Returns a list of codes with matching credits in the recommendation list.
+        // Returns a sorted list of codes with matching credits in the recommendation list.
         List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream().map(ModuleToSuggest::getModuleCode)
             .filter(code -> !plannerCodes.contains(code) && codesToSuggest.contains(code))
-                .limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
+                .sorted().limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
         String matchingCreditCodeString = codesWithMatchingCredits.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
