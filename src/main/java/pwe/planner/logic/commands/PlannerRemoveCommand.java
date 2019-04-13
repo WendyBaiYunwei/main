@@ -29,10 +29,10 @@ public class PlannerRemoveCommand extends Command {
             + "[" + PREFIX_CODE + "CODE]...\n"
             + "Example: " + COMMAND_WORD + " code/CS1010 code/CS2040C";
 
-    public static final String MESSAGE_SUCCESS = "Successfully removed module(s) %1$s from the degree plan!\n"
+    public static final String MESSAGE_SUCCESS = "Removed module(s) %1$s from the degree plan\n"
             + "Co-requisite(s) removed: %2$s";
-    public static final String MESSAGE_NONEXISTENT_CODES = "You cannot remove module(s) %1$s that does not exist in the"
-            + " degree plan!\nPerhaps you mistyped the code?";
+    public static final String MESSAGE_NONEXISTENT_CODES = "The module code(s) %1$s does not exist in the"
+            + " degree plan.";
     private Set<Code> codesToRemove;
 
     /**
