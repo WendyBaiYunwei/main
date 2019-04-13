@@ -358,9 +358,9 @@ Format: `clear`
 
 === Adding module(s) to degree plan : `planner_add`
 
-Want to add module(s) to the degree plan?
+Want to add modules to the degree plan?
 
-Make use of `planner_add` command to add one or multiple module code(s) to the degree plan. +
+Make use of `planner_add` command to add one or multiple modules to the degree plan. +
 Format: `planner_add year/YEAR sem/SEMESTER code/CODE [code/CODE]…`
 
 When this command is successfully executed, the degree plan will be updated with the selected module code(s) added.
@@ -394,9 +394,9 @@ Adds modules CS2113T and CS2107 to year 1 semester 2 of the degree plan.
 
 === Removing module(s) from degree plan : `planner_remove`
 
-Want to remove module(s) from the degree plan?
+Want to remove modules from the degree plan?
 
-Make use of `planner_remove` command to remove one or multiple module code(s) from the degree plan. +
+Make use of `planner_remove` command to remove one or multiple modules from the degree plan. +
 Format: `planner_remove code/CODE [code/CODE]…`
 
 When this command is successfully executed, the degree plan will be updated with the selected module code(s) removed.
@@ -473,17 +473,18 @@ The following table describes the valid prefixes that you can use:
 ====
 * *Maximum 10* modules are recommended in the recommendation list.
 
-* In addition to the recommendation list, supplementary information on the exact modules with matching tags and credits
+* In addition to the recommendation list, supplementary information on the specific modules with matching tags and credits
 will be given as two additional lists. The modules in the two additional lists are all from the recommendation list.
 
-* Modules recommended in all 3 lists will be sorted according to the following criteria:
+* Modules recommended in all 3 aforementioned lists will be sorted according to the following criteria:
 ** For modules with different number of tags that match the desirable tags (matching tags), modules with more matching
 tags will be sorted to the front of the list.
 ** If modules have the same number of matching tags but different credits, modules with the credits closer to the
 desirable credits will be sorted to the front of the list.
-** If modules have both the same number of matching tags and credits, they will be sorted according to alphabetical
+** If modules have the same number of matching tags and credits, they will be sorted according to alphabetical
 order.
-** If `tag/TAG` is not supplied in the command, modules will be sorted according to credits and alphabetical order only.
+** If `tag/TAG` is not supplied in the command as a parameter, modules will be sorted according to credits and
+alphabetical order only.
 
 * All modules in recommendation list and the two additional lists are modules not found in the degree plan.
 ====
