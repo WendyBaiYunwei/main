@@ -79,18 +79,18 @@ public class PlannerAddCommand extends Command {
                 .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                 .anyMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(codesToCheck)))
                 .collect(Collectors.toSet());
-        // Converts a set to a string to remove the brackets of set.
-        String duplicatePlannerCodeString = duplicatePlannerCodes.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
         if (duplicatePlannerCodes.size() > 0) {
+            // Converts a set to a string to remove the brackets of set.
+            String duplicatePlannerCodeString = duplicatePlannerCodes.stream().map(Code::toString)
+                    .collect(Collectors.joining(", "));
             throw new CommandException(String.format(MESSAGE_DUPLICATE_CODE, duplicatePlannerCodeString));
         }
 
         Set<Code> nonExistentModuleCodes = codesToAdd.stream()
                 .filter(codesToCheck -> !model.hasModuleCode(codesToCheck)).collect(Collectors.toSet());
-        String nonExistentModuleString = nonExistentModuleCodes.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
         if (nonExistentModuleCodes.size() > 0) {
+            String nonExistentModuleString = nonExistentModuleCodes.stream().map(Code::toString)
+                    .collect(Collectors.joining(", "));
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_MODULES, nonExistentModuleString));
         }
 
@@ -99,25 +99,30 @@ public class PlannerAddCommand extends Command {
 
         for (Code codeToAdd : codesToAdd) {
             selectedCodeSet.add(codeToAdd);
-            // Adds co-requisite(s).
+            // Gets the module for the current code to add.
             Module module = model.getModuleByCode(codeToAdd);
 
-            // Returns the relevant duplicate co-requisite(s) in the entire degree plan.
+            // Returns the relevant duplicate co-requisite(s) of the code to add in the entire degree plan.
             Set<Code> duplicateCoreqs = module.getCorequisites().stream().filter(coreqToCheck -> model.getApplication()
                     .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                     .anyMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(coreqToCheck)))
                     .collect(Collectors.toSet());
-            Set<Code> invalidDuplicateCoreqs = new HashSet<>(duplicateCoreqs);
+            Set<Code> invalidCoreqs = new HashSet<>(duplicateCoreqs);
             // Returns the invalid duplicate co-requisite(s) that exists in a different section of the degree plan.
-            invalidDuplicateCoreqs.removeAll(selectedDegreePlanner.getCodes());
-            if (invalidDuplicateCoreqs.size() > 0) {
-                throw new CommandException(String.format(MESSAGE_INVALID_COREQ, invalidDuplicateCoreqs, codesToAdd));
+            invalidCoreqs.removeAll(selectedDegreePlanner.getCodes());
+            if (!invalidCoreqs.isEmpty()) {
+                String invalidCoreqsString = invalidCoreqs.stream().map(Code::toString)
+                        .collect(Collectors.joining(", "));
+                String codesToAddString = codesToAdd.stream().map(Code::toString)
+                        .collect(Collectors.joining(", "));
+                throw new CommandException(String.format(MESSAGE_INVALID_COREQ, invalidCoreqsString, codesToAddString));
             }
 
             coreqsAdded.addAll(module.getCorequisites());
 
             // Returns the valid duplicate co-requisite(s) that exists in the selected section of the degree plan.
             duplicateCoreqs.retainAll(selectedDegreePlanner.getCodes());
+            // Records the co-requisites added for feedback to users.
             coreqsAdded.removeAll(duplicateCoreqs);
             selectedCodeSet.addAll(coreqsAdded);
         }
