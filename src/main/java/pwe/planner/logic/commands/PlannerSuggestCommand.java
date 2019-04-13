@@ -75,7 +75,7 @@ public class PlannerSuggestCommand extends Command {
             Set<Tag> matchingTags = new HashSet<>(tagsToFind);
             matchingTags.retainAll(module.getTags());
 
-            // Finds the credit difference.
+            // Finds the credits difference.
             int credit = Integer.valueOf((module.getCredits().toString()));
             int bestCredits = Integer.valueOf(creditsToFind.toString());
             int creditDifference = abs(credit - bestCredits);
@@ -93,9 +93,8 @@ public class PlannerSuggestCommand extends Command {
             }
         }
 
+        // Sorts the list according to recommendation order.
         Collections.sort(modulesToSuggest);
-        Collections.sort(modulesWithMatchingTags);
-
         // Returns a list of codes to suggest based on both credits and tags.
         List<Code> codesToSuggest = modulesToSuggest.stream().map(ModuleToSuggest::getModuleCode)
             .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS)
@@ -104,17 +103,19 @@ public class PlannerSuggestCommand extends Command {
         String suggestionString = codesToSuggest.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
-        // Returns a list of codes with matching tags.
+        Collections.sort(modulesWithMatchingTags);
+        // Returns a list of codes with matching tags in the recommendation list.
         List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream().map(ModuleToSuggest::getModuleCode)
-            .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS)
-                .collect(Collectors.toList());
+            .filter(code -> !plannerCodes.contains(code) && codesToSuggest.contains(code))
+                .limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
         String matchingTagCodeString = codesWithMatchingTags.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
-        //Returns a list of codes with matching credits.
+        Collections.sort(modulesWithMatchingCredits);
+        // Returns a list of codes with matching credits in the recommendation list.
         List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream().map(ModuleToSuggest::getModuleCode)
-            .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS)
-                .collect(Collectors.toList());
+            .filter(code -> !plannerCodes.contains(code) && codesToSuggest.contains(code))
+                .limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
         String matchingCreditCodeString = codesWithMatchingCredits.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
@@ -160,11 +161,15 @@ public class PlannerSuggestCommand extends Command {
         /**
          * @param moduleToCompare A valid module to suggest
          * @return number of matching tags difference between two modules to suggest, or
-         * credit difference between two modules if tie.
+         * credit difference between two modules if tie. If both tie, sort according to
+         * alphabetical order.
          */
         @Override
         public int compareTo(ModuleToSuggest moduleToCompare) {
-            if (this.getNumberOfMatchingTags() == moduleToCompare.getNumberOfMatchingTags()) {
+            if (this.getNumberOfMatchingTags() == moduleToCompare.getNumberOfMatchingTags()
+            && this.getCreditDifference() == moduleToCompare.getCreditDifference()) {
+                return this.getModuleCode().compareTo(moduleToCompare.getModuleCode());
+            } else if (this.getNumberOfMatchingTags() == moduleToCompare.getNumberOfMatchingTags()) {
                 return this.getCreditDifference() - moduleToCompare.getCreditDifference();
             }
             return moduleToCompare.getNumberOfMatchingTags() - this.getNumberOfMatchingTags();
