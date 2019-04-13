@@ -96,22 +96,25 @@ public class PlannerSuggestCommand extends Command {
         Collections.sort(modulesToSuggest);
         Collections.sort(modulesWithMatchingTags);
 
-        // Returns codes to suggest based on both credits and tags.
+        // Returns a list of codes to suggest based on both credits and tags.
         List<Code> codesToSuggest = modulesToSuggest.stream().map(ModuleToSuggest::getModuleCode)
-        .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
+            .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS)
+                .collect(Collectors.toList());
         // Converts the list to a string to remove the brackets of list.
         String suggestionString = codesToSuggest.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
-        // Returns codes with matching tags.
+        // Returns a list of codes with matching tags.
         List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream().map(ModuleToSuggest::getModuleCode)
-        .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
+            .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS)
+                .collect(Collectors.toList());
         String matchingTagCodeString = codesWithMatchingTags.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
-        //Returns codes with matching credits.
+        //Returns a list of codes with matching credits.
         List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream().map(ModuleToSuggest::getModuleCode)
-        .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
+            .filter(module -> !plannerCodes.contains(module)).limit(MAX_NUMBER_OF_ELEMENETS)
+                .collect(Collectors.toList());
         String matchingCreditCodeString = codesWithMatchingCredits.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
