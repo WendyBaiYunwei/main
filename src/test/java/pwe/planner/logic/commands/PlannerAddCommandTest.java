@@ -132,7 +132,7 @@ public class PlannerAddCommandTest {
     public void equals() {
         Year year = new Year("1");
         Semester semester = new Semester("1");
-        Set<Code> codeSet = Set.of(new Code("CS1010"),new Code("IS1103"));
+        Set<Code> codeSet = Set.of(new Code("CS1010"), new Code("IS1103"));
         Set<Code> anotherCodeSet = Set.of(new Code("IS1103"));
 
         PlannerAddCommand plannerAddACommand = new PlannerAddCommand(year, semester, codeSet);

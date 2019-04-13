@@ -29,6 +29,7 @@ import pwe.planner.logic.commands.FindCommand;
 import pwe.planner.logic.commands.HelpCommand;
 import pwe.planner.logic.commands.HistoryCommand;
 import pwe.planner.logic.commands.ListCommand;
+import pwe.planner.logic.commands.PlannerAddCommand;
 import pwe.planner.logic.commands.PlannerListAllCommand;
 import pwe.planner.logic.commands.PlannerMoveCommand;
 import pwe.planner.logic.commands.RedoCommand;
@@ -142,6 +143,15 @@ public class CommandParserTest {
                 PlannerMoveCommand.COMMAND_WORD + " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "2 " + PREFIX_CODE
                         + "CS1010");
         assertEquals(new PlannerMoveCommand(new Year("1"), new Semester("2"), new Code("CS1010")), command);
+    }
+
+    @Test
+    public void parseCommand_plannerAdd() throws Exception {
+        Set<Code> codesToAdd = Set.of(new Code("CS1010"));
+        PlannerAddCommand command = (PlannerAddCommand) parser.parseCommand(
+                PlannerAddCommand.COMMAND_WORD + " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "2 " + PREFIX_CODE
+                        + "CS1010");
+        assertEquals(new PlannerAddCommand(new Year("1"), new Semester("2"), codesToAdd), command);
     }
 
     @Test
