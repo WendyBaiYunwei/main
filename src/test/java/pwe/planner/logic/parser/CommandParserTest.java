@@ -172,7 +172,6 @@ public class CommandParserTest {
 
     @Test
     public void parseCommand_plannerRemove() throws Exception {
-        Name name = new Name("Computing Foundation");
         Set<Code> codesToRemove = Set.of(new Code("CS1010"));
         PlannerRemoveCommand command = (PlannerRemoveCommand) parser.parseCommand(
                 PlannerRemoveCommand.COMMAND_WORD + " " + PREFIX_CODE + "CS1010");
