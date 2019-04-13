@@ -103,14 +103,14 @@ public class PlannerSuggestCommand extends Command {
         // Returns a sorted list of codes with matching tags in the recommendation list.
         List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream().map(ModuleToSuggest::getModuleCode)
             .filter(code -> !plannerCodes.contains(code) && codesToSuggest.contains(code))
-                .sorted().limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
+                .sorted().collect(Collectors.toList());
         String matchingTagCodeString = codesWithMatchingTags.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
         // Returns a sorted list of codes with matching credits in the recommendation list.
         List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream().map(ModuleToSuggest::getModuleCode)
             .filter(code -> !plannerCodes.contains(code) && codesToSuggest.contains(code))
-                .sorted().limit(MAX_NUMBER_OF_ELEMENETS).collect(Collectors.toList());
+                .sorted().collect(Collectors.toList());
         String matchingCreditCodeString = codesWithMatchingCredits.stream().map(Code::toString)
                 .collect(Collectors.joining(", "));
 
