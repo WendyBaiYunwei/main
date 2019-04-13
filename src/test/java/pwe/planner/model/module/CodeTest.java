@@ -35,4 +35,15 @@ public class CodeTest {
         assertTrue(Code.isValidCode("IFS4231")); // starts with 3 alphabets
         assertTrue(Code.isValidCode("ABC1234D")); // starts with 3 alphabets and ends with optional alphabet
     }
+
+    @Test
+    public void equals() {
+        // case insensitive equals codes -> success
+        assertTrue(new Code("ABC1234D").equals(new Code("ABC1234D")));
+        assertTrue(new Code("ABC1234D").equals(new Code("abc1234d")));
+        assertTrue(new Code("ABC1234D").equals(new Code("aBc1234D")));
+
+        // case insensitive equals codes -> success
+        assertFalse(new Code("DEF5678").equals(new Code("DE5678F")));
+    }
 }

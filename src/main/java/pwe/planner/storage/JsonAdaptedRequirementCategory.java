@@ -20,20 +20,20 @@ import pwe.planner.model.requirement.RequirementCategory;
 /**
  * Jackson-friendly version of {@link RequirementCategory}.
  */
-public class JsonAdaptedRequirementCategoryList {
+public class JsonAdaptedRequirementCategory {
 
-    public static final String MISSING_FIELD_MESSAGE_FORMAT = "requirement's %s field is missing!";
+    public static final String MISSING_FIELD_MESSAGE_FORMAT = "Requirement Category's %s field is missing!";
 
-    private final String name;
-    private final String credits;
+    private final JsonAdaptedName name;
+    private final JsonAdaptedCredits credits;
     private final List<JsonAdaptedCode> codeList = new ArrayList<>();
 
     /**
-     * Constructs a {@code JsonAdaptedRequirementCategoryList} with the given requirement details.
+     * Constructs a {@link JsonAdaptedRequirementCategory} with the given requirement category details.
      */
     @JsonCreator
-    public JsonAdaptedRequirementCategoryList(@JsonProperty("name") String name,
-            @JsonProperty("credits") String credits,
+    public JsonAdaptedRequirementCategory(@JsonProperty("name") JsonAdaptedName name,
+            @JsonProperty("credits") JsonAdaptedCredits credits,
             @JsonProperty("codeList") List<JsonAdaptedCode> codeList) {
         this.name = name;
         this.credits = credits;
@@ -43,20 +43,20 @@ public class JsonAdaptedRequirementCategoryList {
     }
 
     /**
-     * Converts a given {@code RequirementCategory} into this class for Jackson use.
+     * Converts a given {@link RequirementCategory} into this class for Jackson use.
      */
-    public JsonAdaptedRequirementCategoryList(RequirementCategory source) {
+    public JsonAdaptedRequirementCategory(RequirementCategory source) {
         requireNonNull(source);
 
-        name = source.getName().fullName;
-        credits = source.getCredits().value;
+        name = new JsonAdaptedName(source.getName());
+        credits = new JsonAdaptedCredits(source.getCredits());
         codeList.addAll(source.getCodeSet().stream().map(JsonAdaptedCode::new).collect(Collectors.toList()));
     }
 
     /**
-     * Converts this Jackson-friendly adapted requirement object into the model's {@code RequirementCategory} object.
-     *
-     * @throws IllegalValueException if there were any data constraints violated in the adapted requirement.
+     * Converts this Jackson-friendly adapted requirement catergory object into the model's {@link RequirementCategory}
+     * object.
+     * @throws IllegalValueException if there were any data constraints violated in the adapted requirement category.
      */
     public RequirementCategory toModelType() throws IllegalValueException {
         final List<Code> codes = new ArrayList<>();
@@ -67,18 +67,12 @@ public class JsonAdaptedRequirementCategoryList {
         if (name == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Name.class.getSimpleName()));
         }
-        if (!Name.isValidName(name)) {
-            throw new IllegalValueException(Name.MESSAGE_CONSTRAINTS);
-        }
-        final Name modelName = new Name(name);
+        final Name modelName = name.toModelType();
 
         if (credits == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Credits.class.getSimpleName()));
         }
-        if (!Credits.isValidCredits(credits)) {
-            throw new IllegalValueException(Credits.MESSAGE_CONSTRAINTS);
-        }
-        final Credits modelCredits = new Credits(credits);
+        final Credits modelCredits = credits.toModelType();
 
         final Set<Code> modelCodes = new HashSet<>(codes);
         return new RequirementCategory(modelName, modelCredits, modelCodes);

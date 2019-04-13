@@ -19,14 +19,11 @@ import pwe.planner.model.module.Module;
 import pwe.planner.model.module.UniqueModuleList;
 
 /**
- * An Immutable Application that is serializable to JSON format.
+ * An immutable list of {@link Module modules} that is serializable to JSON format.
  */
 @JsonRootName(value = "modules")
 class JsonSerializableModuleList {
-
     public static final String MESSAGE_DUPLICATE_MODULE = "Modules list contains duplicate module(s).";
-    public static final String MESSAGE_INVALID_COREQUISITE =
-            "The module code (%1$s) cannot be a co-requisite of itself!";
     public static final String MESSAGE_NON_EXISTENT_COREQUISITE =
             "The corequisite module code (%1$s) does not exists in the module list";
     public static final String MESSAGE_ONE_WAY_COREQUISITE =
@@ -35,9 +32,8 @@ class JsonSerializableModuleList {
     private final List<JsonAdaptedModule> modules = new ArrayList<>();
 
     /**
-     * Constructs a {@code JsonSerializableModuleList} with the given modules.
+     * Constructs a {@link JsonSerializableModuleList} with the given list of {@link JsonAdaptedModule}.
      */
-
     @JsonCreator
     public JsonSerializableModuleList(@JsonProperty("modules") List<JsonAdaptedModule> modules) {
         requireNonNull(modules);
@@ -46,9 +42,9 @@ class JsonSerializableModuleList {
     }
 
     /**
-     * Converts a given {@code ReadOnlyApplication} into this class for Jackson use.
+     * Converts a given {@link ObservableList} of {@link Module} into this class for Jackson use.
      *
-     * @param source future changes to this will not affect the created {@code JsonSerializableModuleList}.
+     * @param source future changes to this will not affect the created {@link JsonSerializableRequirementCategoryList}.
      */
     public JsonSerializableModuleList(ReadOnlyApplication source) {
         requireNonNull(source);
@@ -57,11 +53,19 @@ class JsonSerializableModuleList {
     }
 
     /**
-     * Converts this application into the model's {@code Application} object.
+     * Converts the list of {@link JsonAdaptedModule} into the model's {@code ObservableList<Module>} object.<br>
+     * Checks for additional data constraints on top of {@link JsonAdaptedModule#toModelType()}.
+     * <br><br>
+     * Data constraints:<br>
+     * - All modules must be unique.<br>
+     * - All module co-requisites must refer to existing modules in module list.<br>
+     * - All module co-requisites must be two-way<br>
+     *   (A has B as a co-requisite, and vice versa).<br>
      *
      * @throws IllegalValueException if there were any data constraints violated.
      */
     public ObservableList<Module> toModelType() throws IllegalValueException {
+        // Ensure all modules are unique
         UniqueModuleList uniqueModuleList = new UniqueModuleList();
         for (JsonAdaptedModule jsonAdaptedModule : modules) {
             Module module = jsonAdaptedModule.toModelType();
@@ -72,26 +76,24 @@ class JsonSerializableModuleList {
         }
 
         ObservableList<Module> moduleList = uniqueModuleList.asUnmodifiableObservableList();
-
         for (Module module : moduleList) {
             for (Code corequisite : module.getCorequisites()) {
-                if (module.getCode().equals(corequisite)) {
-                    throw new IllegalValueException(String.format(MESSAGE_INVALID_COREQUISITE, corequisite));
-                }
-
                 Optional<Module> corequisiteModuleOptional = moduleList.stream()
                         .filter(currentModule -> currentModule.getCode().equals(corequisite))
                         .findFirst();
 
+                // Ensure that all module co-requisites refers to existing modules in module list
                 if (!corequisiteModuleOptional.isPresent()) {
                     throw new IllegalValueException(String.format(MESSAGE_NON_EXISTENT_COREQUISITE, corequisite));
                 }
+                // Ensure that module co-requisites must be two-way (A has B as a co-requisite, and vice versa)
                 if (!corequisiteModuleOptional.get().getCorequisites().contains(module.getCode())) {
                     throw new IllegalValueException(String.format(MESSAGE_ONE_WAY_COREQUISITE, module.getCode(),
                             corequisite));
                 }
             }
         }
+
         return moduleList;
     }
 

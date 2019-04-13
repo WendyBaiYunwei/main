@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static pwe.planner.storage.JsonAdaptedModule.MISSING_FIELD_MESSAGE_FORMAT;
 import static pwe.planner.testutil.TypicalModules.BENSON;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,20 +18,19 @@ import pwe.planner.model.planner.Semester;
 import pwe.planner.testutil.Assert;
 
 public class JsonAdaptedModuleTest {
-    private static final String VALID_CODE = BENSON.getCode().toString();
-    private static final String VALID_NAME = BENSON.getName().toString();
-    private static final String VALID_CREDITS = BENSON.getCredits().toString();
+    private static final JsonAdaptedCode VALID_CODE = new JsonAdaptedCode(BENSON.getCode());
+    private static final JsonAdaptedName VALID_NAME = new JsonAdaptedName(BENSON.getName());
+    private static final JsonAdaptedCredits VALID_CREDITS = new JsonAdaptedCredits(BENSON.getCredits());
     private static final List<JsonAdaptedSemester> VALID_SEMESTERS = BENSON.getSemesters().stream()
             .map(JsonAdaptedSemester::new).collect(Collectors.toList());
     private static final List<JsonAdaptedCode> VALID_COREQUISITES = BENSON.getCorequisites().stream()
             .map(JsonAdaptedCode::new).collect(Collectors.toList());
     private static final List<JsonAdaptedTag> VALID_TAGS = BENSON.getTags().stream()
-            .map(JsonAdaptedTag::new)
-            .collect(Collectors.toList());
+            .map(JsonAdaptedTag::new).collect(Collectors.toList());
 
-    private static final String INVALID_CODE = "A1234B";
-    private static final String INVALID_NAME = "Näme containing invalid characters";
-    private static final String INVALID_CREDITS = "1000";
+    private static final JsonAdaptedCode INVALID_CODE = new JsonAdaptedCode("A1234B");
+    private static final JsonAdaptedName INVALID_NAME = new JsonAdaptedName("Näme containing invalid characters");
+    private static final JsonAdaptedCredits INVALID_CREDITS = new JsonAdaptedCredits("1000");
     private static final JsonAdaptedSemester INVALID_SEMESTER = new JsonAdaptedSemester("5");
     private static final List<JsonAdaptedSemester> INVALID_SEMESTERS = Stream
             .concat(VALID_SEMESTERS.stream(), List.of(INVALID_SEMESTER).stream())
@@ -41,7 +39,10 @@ public class JsonAdaptedModuleTest {
     private static final List<JsonAdaptedCode> INVALID_COREQUISITES = Stream
             .concat(VALID_COREQUISITES.stream(), List.of(INVALID_COREQUISITE).stream())
             .collect(Collectors.toList());
-    private static final String INVALID_TAG = "#hashIsInvalid";
+    private static final JsonAdaptedTag INVALID_TAG = new JsonAdaptedTag("#hashIsInvalid");
+    private static final List<JsonAdaptedTag> INVALID_TAGS = Stream
+            .concat(VALID_TAGS.stream(), List.of(INVALID_TAG).stream())
+            .collect(Collectors.toList());
 
     @Test
     public void toModelType_validModuleDetails_returnsModule() throws Exception {
@@ -103,21 +104,15 @@ public class JsonAdaptedModuleTest {
         Assert.assertThrows(IllegalValueException.class, expectedMessage, module::toModelType);
     }
 
+    // We don't test for null semesters, corequisites, tags because all of them will result in a successful operation.
+    // (They can be empty sets).
+
     @Test
     public void toModelType_invalidSemesters_throwsIllegalValueException() {
         JsonAdaptedModule module = new JsonAdaptedModule(
                 VALID_CODE, VALID_NAME, VALID_CREDITS, INVALID_SEMESTERS, VALID_COREQUISITES, VALID_TAGS
         );
         String expectedMessage = Semester.MESSAGE_SEMESTER_CONSTRAINTS;
-        Assert.assertThrows(IllegalValueException.class, expectedMessage, module::toModelType);
-    }
-
-    @Test
-    public void toModelType_nullSemesters_throwsIllegalValueException() {
-        JsonAdaptedModule module = new JsonAdaptedModule(
-                VALID_CODE, VALID_NAME, VALID_CREDITS, null, VALID_COREQUISITES, VALID_TAGS
-        );
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Semester.class.getSimpleName());
         Assert.assertThrows(IllegalValueException.class, expectedMessage, module::toModelType);
     }
 
@@ -132,10 +127,8 @@ public class JsonAdaptedModuleTest {
 
     @Test
     public void toModelType_invalidTags_throwsIllegalValueException() {
-        List<JsonAdaptedTag> invalidTags = new ArrayList<>(VALID_TAGS);
-        invalidTags.add(new JsonAdaptedTag(INVALID_TAG));
         JsonAdaptedModule module = new JsonAdaptedModule(
-                VALID_CODE, VALID_NAME, VALID_CREDITS, VALID_SEMESTERS, VALID_COREQUISITES, invalidTags
+                VALID_CODE, VALID_NAME, VALID_CREDITS, VALID_SEMESTERS, VALID_COREQUISITES, INVALID_TAGS
         );
         Assert.assertThrows(IllegalValueException.class, module::toModelType);
     }

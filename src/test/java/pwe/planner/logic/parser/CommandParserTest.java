@@ -96,7 +96,7 @@ public class CommandParserTest {
         List<String> keywords = Arrays.asList("foo");
         FindCommand command = (FindCommand) parser.parseCommand(FindCommand.COMMAND_WORD + " "
                 + PREFIX_NAME + "foo");
-        assertEquals(new FindCommand(new NameContainsKeywordsPredicate(keywords)), command);
+        assertEquals(new FindCommand(new NameContainsKeywordsPredicate<>(keywords)), command);
     }
 
     @Test
@@ -132,9 +132,9 @@ public class CommandParserTest {
     }
 
     @Test
-    public void parseCommand_plannerListAll() throws Exception {
-        assertTrue(parser.parseCommand(PlannerListAllCommand.COMMAND_WORD) instanceof PlannerListAllCommand);
-        assertTrue(parser.parseCommand(PlannerListAllCommand.COMMAND_WORD + " 3") instanceof PlannerListAllCommand);
+    public void parseCommand_plannerList() throws Exception {
+        assertTrue(parser.parseCommand(PlannerListCommand.COMMAND_WORD) instanceof PlannerListCommand);
+        assertTrue(parser.parseCommand(PlannerListCommand.COMMAND_WORD + " 3") instanceof PlannerListCommand);
     }
 
     @Test
