@@ -30,7 +30,7 @@ public class Code implements Comparable<Code> {
         requireNonNull(code);
         checkArgument(isValidCode(code), MESSAGE_CONSTRAINTS);
 
-        value = code;
+        value = code.toUpperCase();
     }
 
     /**

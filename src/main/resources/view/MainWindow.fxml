@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <fx:root type="javafx.stage.Stage" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-         title="PlanWithEase" minWidth="930" minHeight="600" onCloseRequest="#handleExit">
+         title="PlanWithEase" minWidth="960" minHeight="600" onCloseRequest="#handleExit">
   <icons>
     <Image url="@/images/plan_with_ease_32.png" />
   </icons>
@@ -47,7 +47,7 @@
         </StackPane>
 
         <SplitPane id="splitPane" fx:id="splitPane" dividerPositions="0.4, 0.5" VBox.vgrow="ALWAYS">
-          <VBox fx:id="moduleList" alignment="CENTER" minWidth="300" prefWidth="310">
+          <VBox fx:id="moduleList" alignment="CENTER" minWidth="290" prefWidth="310">
                 <Label alignment="CENTER" contentDisplay="CENTER" lineSpacing="9.0" text="Module List"
                        underline="true" styleClass="title_header">
                     <padding>
@@ -60,7 +60,7 @@
             </padding>
           </VBox>
 
-          <VBox fx:id="requirementCategories" alignment="CENTER" minWidth="300" prefWidth="310" VBox.vgrow="ALWAYS">
+          <VBox fx:id="requirementCategories" alignment="CENTER" minWidth="340" prefWidth="340" VBox.vgrow="ALWAYS">
               <Label alignment="CENTER" contentDisplay="CENTER" lineSpacing="9.0" text="Requirement Categories"
                      underline="true" styleClass="title_header">
                   <padding>

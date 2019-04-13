@@ -37,6 +37,7 @@ import pwe.planner.commons.exceptions.IllegalValueException;
 import pwe.planner.logic.commands.ClearCommand;
 import pwe.planner.logic.commands.FindCommand;
 import pwe.planner.logic.commands.ListCommand;
+import pwe.planner.logic.commands.PlannerListCommand;
 import pwe.planner.logic.commands.SelectCommand;
 import pwe.planner.model.Application;
 import pwe.planner.model.Model;
@@ -185,6 +186,15 @@ public abstract class ApplicationSystemTest {
     protected void deleteAllModules() {
         executeCommand(ClearCommand.COMMAND_WORD);
         assertEquals(0, getModel().getApplication().getModuleList().size());
+    }
+
+    /**
+     * Displays all degree planners in the application.
+     */
+    protected void showAllDegreePlanners() {
+        executeCommand(PlannerListCommand.COMMAND_WORD);
+        assertEquals(getModel().getApplication().getDegreePlannerList().size(),
+                getModel().getFilteredDegreePlannerList().size());
     }
 
     /**
