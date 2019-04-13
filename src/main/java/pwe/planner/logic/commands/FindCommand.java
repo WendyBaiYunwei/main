@@ -43,9 +43,6 @@ public class FindCommand extends Command {
             + OPERATOR_LEFT_BRACKET + " " + PREFIX_CODE + "CS1231 " + OPERATOR_OR + " " + PREFIX_CODE + "CS1010 "
             + OPERATOR_RIGHT_BRACKET + " ";
 
-    public static final String MESSAGE_INVALID_EXPRESSION =
-            "Invalid command format! (Filter expression is invalid) \n%1$s ";
-
     private final Predicate<Module> predicate;
 
     public FindCommand(Predicate<Module> predicate) {

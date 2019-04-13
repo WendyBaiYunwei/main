@@ -16,7 +16,7 @@ public class JsonAdaptedSemester {
     private final String semesterValue;
 
     /**
-     * Constructs a {@code JsonAdaptedCode} with the given {@code codeValue}.
+     * Constructs a {@link JsonAdaptedSemester} with the given {@code semesterValue}.
      */
     @JsonCreator
     public JsonAdaptedSemester(String semesterValue) {
@@ -26,7 +26,7 @@ public class JsonAdaptedSemester {
     }
 
     /**
-     * Converts a given {@code Semester} into this class for Jackson use.
+     * Converts a given {@link Semester} into this class for Jackson use.
      */
     public JsonAdaptedSemester(Semester source) {
         requireNonNull(source);
@@ -40,9 +40,9 @@ public class JsonAdaptedSemester {
     }
 
     /**
-     * Converts this Jackson-friendly adapted tag object into the model's {@code Tag} object.
+     * Converts this Jackson-friendly adapted tag object into the model's {@link Semester} object.
      *
-     * @throws IllegalValueException if there were any data constraints violated in the adapted tag.
+     * @throws IllegalValueException if there were any data constraints violated in the adapted semester.
      */
     public Semester toModelType() throws IllegalValueException {
         if (!Semester.isValidSemester(semesterValue)) {

@@ -18,17 +18,17 @@ public class CreditsContainsKeywordsPredicateTest {
         List<String> firstPredicateKeywordList = Collections.singletonList("1 2");
         List<String> secondPredicateKeywordList = Arrays.asList("1", "1");
 
-        CreditsContainsKeywordsPredicate firstPredicate =
-                new CreditsContainsKeywordsPredicate(firstPredicateKeywordList);
-        CreditsContainsKeywordsPredicate secondPredicate =
-                new CreditsContainsKeywordsPredicate(secondPredicateKeywordList);
+        CreditsContainsKeywordsPredicate<Module> firstPredicate =
+                new CreditsContainsKeywordsPredicate<>(firstPredicateKeywordList);
+        CreditsContainsKeywordsPredicate<Module> secondPredicate =
+                new CreditsContainsKeywordsPredicate<>(secondPredicateKeywordList);
 
         // same object -> returns true
         assertTrue(firstPredicate.equals(firstPredicate));
 
         // same values -> returns true
-        CreditsContainsKeywordsPredicate firstPredicateCopy =
-                new CreditsContainsKeywordsPredicate(firstPredicateKeywordList);
+        CreditsContainsKeywordsPredicate<Module> firstPredicateCopy =
+                new CreditsContainsKeywordsPredicate<>(firstPredicateKeywordList);
         assertTrue(firstPredicate.equals(firstPredicateCopy));
 
         // different types -> returns false
@@ -44,27 +44,28 @@ public class CreditsContainsKeywordsPredicateTest {
     @Test
     public void test_nameContainsKeywords_returnsTrue() {
         // One keyword
-        CreditsContainsKeywordsPredicate predicate =
-                new CreditsContainsKeywordsPredicate(Collections.singletonList("444"));
+        CreditsContainsKeywordsPredicate<Module> predicate =
+                new CreditsContainsKeywordsPredicate<>(Collections.singletonList("444"));
         assertTrue(predicate.test(new ModuleBuilder().withCredits("444").build()));
 
         // Multiple keywords
-        predicate = new CreditsContainsKeywordsPredicate(Arrays.asList("122", "444"));
+        predicate = new CreditsContainsKeywordsPredicate<>(Arrays.asList("122", "444"));
         assertTrue(predicate.test(new ModuleBuilder().withCredits("122").build()));
 
         // Only one matching keyword
-        predicate = new CreditsContainsKeywordsPredicate(Arrays.asList("999", "444"));
+        predicate = new CreditsContainsKeywordsPredicate<>(Arrays.asList("999", "444"));
         assertTrue(predicate.test(new ModuleBuilder().withCredits("444").build()));
     }
 
     @Test
     public void test_nameDoesNotContainKeywords_returnsFalse() {
         // Zero keywords
-        CreditsContainsKeywordsPredicate predicate = new CreditsContainsKeywordsPredicate(Collections.emptyList());
+        CreditsContainsKeywordsPredicate<Module> predicate = new CreditsContainsKeywordsPredicate<>(
+                Collections.emptyList());
         assertFalse(predicate.test(new ModuleBuilder().withCredits("123").build()));
 
         // Non-matching keyword
-        predicate = new CreditsContainsKeywordsPredicate(Arrays.asList("144"));
+        predicate = new CreditsContainsKeywordsPredicate<>(Arrays.asList("144"));
         assertFalse(predicate.test(new ModuleBuilder().withCredits("441").build()));
     }
 }
