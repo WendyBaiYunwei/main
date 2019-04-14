@@ -2,70 +2,129 @@
 :site-section: AboutUs
 :imagesDir: ../images
 :stylesDir: ../stylesheets
+:repoURL: https://github.com/CS2113-AY1819S2-T09-1/main
+:prURL: {repoURL}/pull
+:forumURL: https://github.com/nusCS2113-AY1819S2/forum/issues
+:budgeterURL: https://github.com/CS2113-AY1819S2-T11-3/main
+:experimental:
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:warning-caption: :warning:
+endif::[]
 
 == PROJECT: PlanWithEase
-_{The dummy content given below serves as a placeholder to be updated in the future.}_ +
 
----
+Hello there, I am _Wei Lin_. I am currently pursuing a degree in Information Security at National University of Singapore (NUS). +
+I love to build and break applications!
+
+This portfolio serves to document my involvements in a team-based project CS2113T (Software Engineering & Object-Oriented Programming) module by NUS.
+The project spans over a period of eight weeks, and was completed by a team of five members (consisting of <<truegitnovice#,Ahn TaeGyu>>, <<wendybaiyunwei#,Bai YunWei>>, <<lycjackie#,Lee Yu Choy>>, <<chyeo#, Yeo Cheng Hong>> and myself) over the span of 8 weeks.
 
 == Overview
 
-AddressBook - Level 4 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
+In this project, our aim was to simplify the process of planning a degree, and ensure that the degree plan fulfills the
+degree requirements.
 
-== Summary of contributions
+Planning a degree is certainly not an easy task, and can be very time-consuming. Furthermore, there are many considerations to make, making it difficult to create the perfect degree plan.
 
-* *Major enhancement*: added *the ability to undo/redo previous commands*
-** What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be reversed by using the redo command.
-** Justification: This feature improves the product significantly because a user can make mistakes in commands and the app should provide a convenient way to rectify them.
-** Highlights: This enhancement affects existing commands and commands to be added in future. It required an in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
-** Credits: _{mention here if you reused any code/ideas from elsewhere or if a third-party library is heavily used in the feature so that a reader can make a more accurate judgement of how much effort went into the feature}_
+With this goal in mind, we developed PlanWithEase (PWE), a degree planner application designed to help NUS
+Information Security freshmen in creating a comprehensive degree plan according to the degree requirements effortlessly.
 
-* *Minor enhancement*: added a history command that allows the user to navigate to previous commands using up/down keys.
+ifdef::env-github[]
+image::Ui.png[width="800"]
+endif::[]
 
-* *Code contributed*: [https://github.com[Functional code]] [https://github.com[Test code]] _{give links to collated code files}_
+ifndef::env-github[]
+image::Ui.png[width="970"]
+endif::[]
 
-* *Other contributions*:
+== Understanding This Project Portfolio
 
-** Project management:
-*** Managed releases `v1.3` - `v1.5rc` (3 releases) on GitHub
-** Enhancements to existing features:
-*** Updated the GUI color scheme (Pull requests https://github.com[#33], https://github.com[#34])
-*** Wrote additional tests for existing features to increase coverage from 88% to 92% (Pull requests https://github.com[#36], https://github.com[#38])
-** Documentation:
-*** Did cosmetic tweaks to existing contents of the User Guide: https://github.com[#14]
-** Community:
-*** PRs reviewed (with non-trivial review comments): https://github.com[#12], https://github.com[#32], https://github.com[#19], https://github.com[#42]
-*** Contributed to forum discussions (examples:  https://github.com[1], https://github.com[2], https://github.com[3], https://github.com[4])
-*** Reported bugs and suggestions for other teams in the class (examples:  https://github.com[1], https://github.com[2], https://github.com[3])
-*** Some parts of the history feature I added was adopted by several other class mates (https://github.com[1], https://github.com[2])
-** Tools:
-*** Integrated a third party library (Natty) to the project (https://github.com[#42])
-*** Integrated a new Github plugin (CircleCI) to the team repo
+The following symbols are used throughout this project portfolio:
+[NOTE]
+====
+This symbol denotes information that you may want to take note of when using the application.
+====
+[TIP]
+====
+This symbol denotes a tip which you may find useful when using the application.
+====
+[WARNING]
+====
+This symbol denotes a warning message which you need to be careful of when using the application.
+====
 
-_{you can add/remove categories in the list above}_
+Additionally, you may also encounter the following text styles:
+====
+* Commands or parameters will be in this `format`.
+* Important messages will be *bold*.
+* Undoable command will be in _italics_.
+* Keyboard buttons will be referred to as such: kbd:[F1].
+====
+
+== Summary of Contributions
+
+|===
+|_This section provides a summary on the contributions I made to this project._
+|===
+
+=== *Major Enhancement*: Module Management
+
+==== Add, Edit & Delete Modules
+
+This feature allows the user to manage modules in PlanWithEase easily using the `add`, `edit` and `delete` commands.
+
+** Justification: Users can keep track of module details (such as module co-requisites, the semesters the modules are offered in, etc.) within PlanWithEase to facilitate their planning.
+
+** Highlights: This enhancement performs numerous validation checks to ensure that the degree plan created by the user remains sound after users edit module details, which is crucial in enabling the whole application to function correctly. The module management commands also provide tips on how to resolve any errors encountered by the users.
+
+=== *Code Contributed*:
+
+* [link:{repoURL}/commits?author=creastery[Commits]] [link:{repoURL}/pulls?q=is%3Apr+is%3Amerged+author%3Acreastery[Pull Requests]] [https://nuscs2113-ay1819s2.github.io/dashboard-beta/#=undefined&search=creastery[RepoSense Code Contribution Dashboard]]
+
+=== *Other Contributions*:
+
+* Project management:
+** Managed releases `v1.1`, `v1.2`, `v1.2.1` and `v1.3` (4 releases) on link:{repoURL}/releases[GitHub]
+** Reviewed about one-third of the team's Pull Requests (PRs) and gave non-trivial review comments (examples: PRs link:{prURL}/43[#43], link:{prURL}/64[#64], link:{prURL}/69[#69])
+
+* Notable Enhancements/Modifications to Existing Features:
+** Collaborated with a team mate (<<lycjackie#,Lee Yu Choy>>) to implement a *custom string tokenizer* `BooleanExpressionTokenizer`, which was pivotal in enabling users to be able to use complex search conditions to narrow down their search when using the `find` and `planner_show` commands (PR link:{prURL}/119[#119])
+** Introduced *data integrity validations* for Storage component (PRs link:{prURL}/122[#122], link:{prURL}/204[#204], link:{prURL}/222[#222])
+** Performed surgical *refactoring* of the original https://github.com/se-edu/addressbook-level4[Address Book (Level 4)] codebase to fit our requirements (example: PRs link:{prURL}/18[#18], link:{prURL}/27[#27], link:{prURL}/30[#30])
+** Populated *sample data* used to guide new users in using the application (examples: PRs link:{prURL}/45[#45], link:{prURL}/146[#146])
+** Implemented *precondition checks* to all functional code to follow defensive programming practices (example: PR link:{prURL}/170[#170])
+
+* Documentation:
+** Performed *cosmetic tweaks* to existing contents of the User Guide: (examples: PRs link:{prURL}/147[#147], link:{prURL}/218[#218])
+
+* Community:
+** Contributed to *forum discussions* (examples: PRs link:{forumURL}/14[#14], link:{forumURL}/15[#15], link:{forumURL}/23[#23], link:{forumURL}/24[#24])
+** Reported *numerous bugs* in another team's project, link:{budgeterURL}[Budgeter] (examples: Issues link:{budgeterURL}/issues/71[#71], link:{budgeterURL}/issues/78[#78], link:{budgeterURL}/issues/84[#84], link:{budgeterURL}/issues/88[#88])
+
+* Tools:
+** Integrated https://travis-ci.org/CS2113-AY1819S2-T09-1/main[Travis] & https://ci.appveyor.com/project/Creastery/main[AppVeyor] *Continuous Integration (CI)* tools, https://coveralls.io/github/CS2113-AY1819S2-T09-1/main?branch=master[Coveralls] *code coverage* tool, https://www.codacy.com/app/cs2113-ay1819s2-t09-1/main[Codacy] *code analytics* tool, https://app.netlify.com/sites/cs2113-ay1819s2-t09-1/deploys[Netlify] *deployment preview* tool to the team's repository (examples: PRs {prURL}/4[#4], {prURL}/23[#23])
+** Updated *Gradle build configuration* to automate and simplify the build process (examples: PRs link:{prURL}/107[#107], link:{prURL}/201[#201])
+** Added a new *Github plugin* (https://github.com/apps/project-bot[project-bot]) to automate triaging of issues in the team's link:{repoURL}/projects/6[Project Board]
 
 == Contributions to the User Guide
 
-
 |===
-|_Given below are sections I contributed to the User Guide. They showcase my ability to write documentation targeting end-users._
+|_The following sections illustrate my ability in writing documentation targeting end-users to guide them in using the various features of the application._
 |===
 
-include::../UserGuide.adoc[tag=undoredo]
+include::../UserGuide.adoc[tag=module_management]
 
+include::../UserGuide.adoc[tag=module_add]
+
+include::../UserGuide.adoc[tag=module_edit]
 
 == Contributions to the Developer Guide
 
 |===
-|_Given below are sections I contributed to the Developer Guide. They showcase my ability to write technical documentation and the technical depth of my contributions to the project._
+|_The following sections illustrate my ability in writing documentation to provide developers insights on the design
+of the application. It also showcase the technical depth of my contributions to the project._
 |===
 
-include::../DeveloperGuide.adoc[tag=undoredo]
-
-
-
-== PROJECT: PowerPointLabs
-
----
-
-_{Optionally, you may include other projects in your portfolio.}_
+include::../DeveloperGuide.adoc[tag=editing_module]

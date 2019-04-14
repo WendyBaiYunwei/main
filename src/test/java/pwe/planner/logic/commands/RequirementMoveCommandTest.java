@@ -9,7 +9,6 @@ import static pwe.planner.testutil.TypicalModules.getTypicalModuleList;
 import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,6 +16,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import pwe.planner.commons.exceptions.IllegalValueException;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
@@ -69,7 +69,7 @@ public class RequirementMoveCommandTest {
         RequirementMoveCommand requirementMoveCommand =
                 new RequirementMoveCommand(requirementCategoryName, validCodeSet);
 
-        String formattedCodeString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
 
         String expectedMessage = String.format(RequirementMoveCommand.MESSAGE_NONEXISTENT_CODE, formattedCodeString);
 
@@ -84,7 +84,7 @@ public class RequirementMoveCommandTest {
         RequirementMoveCommand requirementMoveCommand =
                 new RequirementMoveCommand(requirementCategoryName, validCodeSet);
 
-        String formattedCodeString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
 
         String expectedMessage =
                 String.format(RequirementMoveCommand.MESSAGE_CODE_NOT_IN_ANY_REQUIREMENT_CATEGORY, formattedCodeString);
@@ -102,7 +102,7 @@ public class RequirementMoveCommandTest {
         RequirementMoveCommand requirementMoveCommand =
                 new RequirementMoveCommand(requirementCategoryName, validCodeSet);
 
-        String formattedCodeString = invalidCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(invalidCodeSet.stream().sorted());
 
         String expectedMessage =
                 String.format(RequirementMoveCommand.MESSAGE_NONEXISTENT_CODE, formattedCodeString);
@@ -120,7 +120,7 @@ public class RequirementMoveCommandTest {
         RequirementMoveCommand requirementMoveCommand =
                 new RequirementMoveCommand(requirementCategoryName, validCodeSet);
 
-        String formattedCodeString = invalidCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(invalidCodeSet.stream().sorted());
 
         String expectedMessage =
                 String.format(RequirementMoveCommand.MESSAGE_CODE_NOT_IN_ANY_REQUIREMENT_CATEGORY, formattedCodeString);
@@ -167,7 +167,7 @@ public class RequirementMoveCommandTest {
         RequirementMoveCommand requirementMoveCommand =
                 new RequirementMoveCommand(requirementCategoryName, validCodeSet);
 
-        String formattedCodeString = invalidCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(invalidCodeSet.stream().sorted());
 
         String expectedMessage = String.format(RequirementMoveCommand.MESSAGE_NONEXISTENT_CODE, formattedCodeString);
 
@@ -208,7 +208,7 @@ public class RequirementMoveCommandTest {
         expectedModel.setRequirementCategory(destinationReqCat, editedDestinationReqCat);
         expectedModel.commitApplication();
 
-        String formattedCodeString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
 
         RequirementMoveCommand requirementMoveCommand =
                 new RequirementMoveCommand(destinationReqCatName, validCodeSet);
@@ -227,7 +227,7 @@ public class RequirementMoveCommandTest {
 
         Model expectedModel = model;
 
-        String formattedCodeString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
 
         RequirementMoveCommand requirementMoveCommand =
                 new RequirementMoveCommand(destinationReqCatName, validCodeSet);
@@ -270,7 +270,7 @@ public class RequirementMoveCommandTest {
         RequirementMoveCommand requirementMoveCommand =
                 new RequirementMoveCommand(destinationReqCatName, validCodeSet);
 
-        String formattedCodeString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
 
         String expectedMessage =
                 String.format(RequirementMoveCommand.MESSAGE_SUCCESS, formattedCodeString, destinationReqCatName);
@@ -311,7 +311,7 @@ public class RequirementMoveCommandTest {
         RequirementMoveCommand requirementMoveCommand =
                 new RequirementMoveCommand(destinationReqCatName, validCodeSet);
 
-        String formattedCodeString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
 
         String expectedMessage =
                 String.format(RequirementMoveCommand.MESSAGE_SUCCESS, formattedCodeString, destinationReqCatName);

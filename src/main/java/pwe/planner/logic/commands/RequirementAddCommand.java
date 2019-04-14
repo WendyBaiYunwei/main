@@ -6,9 +6,12 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.logic.commands.exceptions.CommandException;
 import pwe.planner.model.Model;
@@ -23,23 +26,45 @@ public class RequirementAddCommand extends Command {
 
     public static final String COMMAND_WORD = "requirement_add";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a module to a requirement category.\n"
-            + "Parameters: "
+    // This is declared before MESSAGE_USAGE to prevent illegal forward reference
+    public static final String FORMAT_AND_EXAMPLES = "Format: " + COMMAND_WORD + ' '
             + PREFIX_NAME + "NAME "
+            + PREFIX_CODE + "CODE "
             + "[" + PREFIX_CODE + "CODE]...\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_NAME + "IT Professionalism "
-            + PREFIX_CODE + "IS4231 ";
+            + PREFIX_NAME + "Computing Foundation "
+            + PREFIX_CODE + "CS1010";
 
-    public static final String MESSAGE_SUCCESS = "Module added to requirement category: %1$s";
+    // General command help details
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a module to a requirement category.\n"
+            + FORMAT_AND_EXAMPLES;
+
+    // Command success message
+    public static final String MESSAGE_SUCCESS = "Successfully added module(s) (%1$s) the requirement category %2$s!";
+
+    // Command failure messages
     public static final String MESSAGE_NONEXISTENT_REQUIREMENT_CATEGORY =
-            "The requirement category (%1$s) does not exist!";
-    public static final String MESSAGE_NONEXISTENT_CODE =
-            "The module to be added to the requirement category does not exists in the module list!";
+            "You cannot specify a requirement category (%1$s) that does not exist!\n"
+            + "Perhaps you misspelled the name of the requirement category?\n"
+            + "[Tip] You may want to refer to the requirement category list to see the requirement categories"
+            + " in the application using the \"requirement_list\" command!";
+
+    public static final String MESSAGE_NONEXISTENT_CODE = "You cannot specify module(s) (%1$s) that does not exist!\n"
+            + "Perhaps you were trying to add modules into the application?\n"
+            + "[Tip] You may want to add the module into the module list first using the \"add\" command.\n"
+            + "Afterwards, you can add the module into the requirement category using the "
+            + "\"requirement_add\" command!";
+
     public static final String MESSAGE_DUPLICATE_CODE =
-            "The module has already been added to %1$s ";
+            "The module has already been added to requirement category %1$s\n"
+            + "Perhaps you misspelled a module code?\n"
+            + "[Tip] You are able to view all the modules in application using the \"list\" command.";
+
     public static final String MESSAGE_EXISTING_CODE =
-            "The module to be added already exists in another requirement category!";
+            "The module to be added already exists in another requirement category!\n"
+            + "Perhaps you misspelled a module code?\n"
+            + "[Tip] You may want to refer to the requirement category list to see the requirement categories"
+            + " in the application using the \"requirement_list\" command!";
 
     private final Name toFind;
     private final Set<Code> toAdd = new HashSet<>();
@@ -64,8 +89,12 @@ public class RequirementAddCommand extends Command {
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_REQUIREMENT_CATEGORY, toFind));
         }
 
-        if (toAdd.stream().anyMatch(code -> !model.hasModuleCode(code))) {
-            throw new CommandException(MESSAGE_NONEXISTENT_CODE);
+        List<Code> nonExistentCodes = toAdd.stream().filter(code -> !model.hasModuleCode(code))
+                .collect(Collectors.toList());
+
+        if (!nonExistentCodes.isEmpty()) {
+            String nonExistentCodesErrorMessage = StringUtil.joinStreamAsString(nonExistentCodes.stream().sorted());
+            throw new CommandException(String.format(MESSAGE_NONEXISTENT_CODE, nonExistentCodesErrorMessage));
         }
 
         if (currentRequirementCategory.hasModuleCode(toAdd)) {
@@ -90,7 +119,10 @@ public class RequirementAddCommand extends Command {
         );
         model.setRequirementCategory(currentRequirementCategory, editedRequirementCategory);
         model.commitApplication();
-        return new CommandResult(String.format(MESSAGE_SUCCESS, currentRequirementCategory.getName()));
+
+        String codesAdded = StringUtil.joinStreamAsString(toAdd.stream().sorted());
+
+        return new CommandResult(String.format(MESSAGE_SUCCESS, codesAdded, currentRequirementCategory.getName()));
     }
 
     @Override

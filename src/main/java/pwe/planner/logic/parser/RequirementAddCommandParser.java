@@ -28,6 +28,10 @@ public class RequirementAddCommandParser implements Parser<RequirementAddCommand
     public RequirementAddCommand parse(String args) throws ParseException {
         requireNonNull(args);
 
+        if (args.isEmpty()) {
+            throw new ParseException(RequirementAddCommand.MESSAGE_USAGE);
+        }
+
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_CODE);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_CODE) || !argMultimap.getPreamble().isEmpty()) {

@@ -22,6 +22,12 @@ public class RequirementAddCommandParserTest {
     private RequirementAddCommandParser parser = new RequirementAddCommandParser();
 
     @Test
+    public void parse_nullValue_failure() {
+        //empty input
+        assertParseFailure(parser, "", RequirementAddCommand.MESSAGE_USAGE);
+    }
+
+    @Test
     public void parse_invalidValue_failure() {
         // invalid format
         assertParseFailure(parser, " INVALID INPUT", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
@@ -56,6 +62,9 @@ public class RequirementAddCommandParserTest {
                 new RequirementAddCommand(validName, validCodeSet);
 
         assertParseSuccess(parser, " " + PREFIX_NAME + "Computing Foundation " + PREFIX_CODE + "CS1010 ",
+                expectedRequirementAddCommand);
+
+        assertParseSuccess(parser, " " + PREFIX_CODE + "CS1010 " + PREFIX_NAME + "Computing Foundation ",
                 expectedRequirementAddCommand);
 
         // whitespace only preamble

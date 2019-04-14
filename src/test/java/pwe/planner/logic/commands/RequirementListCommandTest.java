@@ -5,18 +5,16 @@ import static pwe.planner.testutil.TypicalDegreePlanners.getTypicalDegreePlanner
 import static pwe.planner.testutil.TypicalModules.getTypicalModuleList;
 import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
-import java.util.stream.Collectors;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import javafx.collections.ObservableList;
 import pwe.planner.commons.exceptions.IllegalValueException;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
 import pwe.planner.model.UserPrefs;
-import pwe.planner.model.module.Code;
 import pwe.planner.model.requirement.RequirementCategory;
 import pwe.planner.storage.JsonSerializableApplication;
 
@@ -50,8 +48,8 @@ public class RequirementListCommandTest {
             if (requirementCategory.getCodeSet().isEmpty()) {
                 requirementListContent.append("No modules added!");
             } else {
-                requirementListContent.append("Modules: ").append(requirementCategory.getCodeSet().stream()
-                        .map(Code::toString).sorted().collect(Collectors.joining(", ")));
+                requirementListContent.append("Modules: ")
+                        .append(StringUtil.joinStreamAsString(requirementCategory.getCodeSet().stream().sorted()));
             }
 
             requirementListContent.append("\n\n");

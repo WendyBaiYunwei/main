@@ -10,7 +10,6 @@ import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequir
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,6 +17,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import pwe.planner.commons.exceptions.IllegalValueException;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
@@ -50,14 +50,13 @@ public class RequirementRemoveCommandTest {
     @Test
     public void execute_nonExistentCode_throwsCommandException() {
         Set<Code> validCodeSet = Set.of(new Code("CS9999"));
-        String formattedCodeString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
         assertCommandFailure(new RequirementRemoveCommand(validCodeSet), model, commandHistory,
                 String.format(RequirementRemoveCommand.MESSAGE_NONEXISTENT_CODE, formattedCodeString));
 
         //case insensitive checks
         Set<Code> validCodeSetCaseInsensitive = Set.of(new Code("cs9999"));
-        formattedCodeString = validCodeSetCaseInsensitive.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        formattedCodeString = StringUtil.joinStreamAsString(validCodeSetCaseInsensitive.stream().sorted());
         assertCommandFailure(new RequirementRemoveCommand(validCodeSet), model, commandHistory,
                 String.format(RequirementRemoveCommand.MESSAGE_NONEXISTENT_CODE, formattedCodeString));
     }
@@ -66,7 +65,7 @@ public class RequirementRemoveCommandTest {
     public void execute_nonExistentCodes_throwsCommandException() {
         Set<Code> invalidCodeSet = Set.of(new Code("CS9999"));
         Set<Code> validCodeSet = Set.of(new Code("CS2100"), new Code("CS9999"));
-        String formattedCodeString = invalidCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(invalidCodeSet.stream().sorted());
         assertCommandFailure(new RequirementRemoveCommand(validCodeSet), model, commandHistory,
                 String.format(RequirementRemoveCommand.MESSAGE_NONEXISTENT_CODE, formattedCodeString));
     }
@@ -74,15 +73,14 @@ public class RequirementRemoveCommandTest {
     @Test
     public void execute_codeNotInAnyRequirementCategory_throwsCommandException() {
         Set<Code> validCodeSet = Set.of(new Code("CS1010"));
-        String formattedCodeString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
         assertCommandFailure(new RequirementRemoveCommand(validCodeSet), model, commandHistory,
                 String.format(RequirementRemoveCommand.MESSAGE_CODE_NOT_IN_ANY_REQUIREMENT_CATEGORY,
                         formattedCodeString));
 
         //case insensitive checks
         Set<Code> validCodeSetCaseInsensitive = Set.of(new Code("cs1010"));
-        formattedCodeString = validCodeSetCaseInsensitive.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        formattedCodeString = StringUtil.joinStreamAsString(validCodeSetCaseInsensitive.stream().sorted());
         assertCommandFailure(new RequirementRemoveCommand(validCodeSetCaseInsensitive), model, commandHistory,
                 String.format(RequirementRemoveCommand.MESSAGE_CODE_NOT_IN_ANY_REQUIREMENT_CATEGORY,
                         formattedCodeString));
@@ -92,7 +90,7 @@ public class RequirementRemoveCommandTest {
     public void execute_codesNotInAnyRequirementCategory_throwsCommandException() {
         Set<Code> invalidCodeSet = Set.of(new Code("CS1010"));
         Set<Code> validCodeSet = Set.of(new Code("CS2100"), new Code("CS1010"));
-        String formattedCodeString = invalidCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(invalidCodeSet.stream().sorted());
         assertCommandFailure(new RequirementRemoveCommand(validCodeSet), model, commandHistory,
                 String.format(RequirementRemoveCommand.MESSAGE_CODE_NOT_IN_ANY_REQUIREMENT_CATEGORY,
                         formattedCodeString));
@@ -111,7 +109,7 @@ public class RequirementRemoveCommandTest {
         expectedModel.commitApplication();
 
         validCodeSet.add(new Code("CS2100"));
-        String formattedCodeString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
         assertCommandSuccess(new RequirementRemoveCommand(validCodeSet), model, commandHistory,
                 String.format(RequirementRemoveCommand.MESSAGE_SUCCESS, formattedCodeString),
                 expectedModel);
@@ -130,7 +128,7 @@ public class RequirementRemoveCommandTest {
         expectedModel.commitApplication();
 
         validCodeSet.add(new Code("cs2100"));
-        String formattedCodeString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
         assertCommandSuccess(new RequirementRemoveCommand(validCodeSet), model, commandHistory,
                 String.format(RequirementRemoveCommand.MESSAGE_SUCCESS, formattedCodeString),
                 expectedModel);
@@ -156,7 +154,7 @@ public class RequirementRemoveCommandTest {
         expectedModel.commitApplication();
 
         validCodeSet.addAll(Set.of(new Code("CS2100"), new Code("CS1231")));
-        String formattedCodeString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
         assertCommandSuccess(new RequirementRemoveCommand(validCodeSet), model, commandHistory,
                 String.format(RequirementRemoveCommand.MESSAGE_SUCCESS, formattedCodeString),
                 expectedModel);

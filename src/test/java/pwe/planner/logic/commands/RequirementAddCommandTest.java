@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import pwe.planner.commons.exceptions.IllegalValueException;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
@@ -33,7 +34,6 @@ public class RequirementAddCommandTest {
 
     private CommandHistory commandHistory = new CommandHistory();
     private Model model;
-    private Set<Code> codeList = new HashSet<>();
 
     @Before
     public void setUp() throws IllegalValueException {
@@ -50,73 +50,74 @@ public class RequirementAddCommandTest {
 
     @Test
     public void execute_nonExistentRequirementCategory_throwsCommandException() {
-        codeList.clear();
+        Set<Code> validCodeSet = new HashSet<>();
         Name nonExistentRequirementCategoryName = new Name("DOES NOT EXIST");
-        assertCommandFailure(new RequirementAddCommand(nonExistentRequirementCategoryName, codeList),
+        assertCommandFailure(new RequirementAddCommand(nonExistentRequirementCategoryName, validCodeSet),
                 model, commandHistory, String.format(RequirementAddCommand.MESSAGE_NONEXISTENT_REQUIREMENT_CATEGORY,
                         nonExistentRequirementCategoryName));
     }
 
     @Test
     public void execute_nonExistentCode_throwsCommandException() {
-        codeList.clear();
-        codeList.add(new Code("CS2010"));
+        Set<Code> validCodeSet = Set.of(new Code("CS2010"));
         Name requirementCategoryName = new Name("Computing Foundation");
-        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, codeList), model, commandHistory,
-                RequirementAddCommand.MESSAGE_NONEXISTENT_CODE);
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
+        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, validCodeSet), model, commandHistory,
+                String.format(RequirementAddCommand.MESSAGE_NONEXISTENT_CODE, formattedCodeString));
 
         //case insensitive checks
         requirementCategoryName = new Name("comPUTING FOUNDATion");
-        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, codeList), model, commandHistory,
-                String.format(RequirementAddCommand.MESSAGE_NONEXISTENT_CODE,
-                        requirementCategoryName));
+        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, validCodeSet), model, commandHistory,
+                String.format(RequirementAddCommand.MESSAGE_NONEXISTENT_CODE, formattedCodeString));
     }
 
     @Test
     public void execute_duplicateCode_throwsCommandException() {
-        codeList.clear();
-        codeList.add(new Code("CS2100"));
+        Set<Code> validCodeSet = Set.of(new Code("CS2100"));
         Name requirementCategoryName = new Name("Computing Foundation");
-        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, codeList), model, commandHistory,
-                String.format(RequirementAddCommand.MESSAGE_DUPLICATE_CODE,
-                        requirementCategoryName));
+        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, validCodeSet), model, commandHistory,
+                String.format(RequirementAddCommand.MESSAGE_DUPLICATE_CODE, requirementCategoryName));
 
         //case insensitive checks
+        Set<Code> validCodeSetCaseInsensitive = Set.of(new Code("CS2100"));
         Name requirementCategoryNameInsensitive = new Name("COMPUting FOundAtIon");
-        assertCommandFailure(new RequirementAddCommand(requirementCategoryNameInsensitive, codeList), model,
-                commandHistory, String.format(RequirementAddCommand.MESSAGE_DUPLICATE_CODE,
+        assertCommandFailure(new RequirementAddCommand(requirementCategoryNameInsensitive, validCodeSetCaseInsensitive),
+                model, commandHistory, String.format(RequirementAddCommand.MESSAGE_DUPLICATE_CODE,
                         requirementCategoryName));
     }
 
     @Test
     public void execute_existingCode_throwsCommandException() {
-        codeList.clear();
-        codeList.add(new Code("CS2100"));
+        Set<Code> validCodeSet = Set.of(new Code("CS2100"));
         Name requirementCategoryName = new Name("Computing Breadth");
-        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, codeList), model, commandHistory,
+        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, validCodeSet), model, commandHistory,
                 RequirementAddCommand.MESSAGE_EXISTING_CODE);
 
         //case insensitive checks
+        Set<Code> validCodeSetCaseInsensitive = Set.of(new Code("CS2100"));
         requirementCategoryName = new Name("COMPUting BREAdth");
-        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, codeList), model, commandHistory,
-                String.format(RequirementAddCommand.MESSAGE_EXISTING_CODE,
+        assertCommandFailure(new RequirementAddCommand(requirementCategoryName, validCodeSetCaseInsensitive),
+                model, commandHistory, String.format(RequirementAddCommand.MESSAGE_EXISTING_CODE,
                         requirementCategoryName));
     }
 
     @Test
     public void execute_addModuleToRequirementCategory_success() {
-        codeList.clear();
+        Set<Code> validCodeSet = Set.of(new Code("CS2040C"));
+        Set<Code> codeSetToCheck = Set.of(new Code("CS2040C"), new Code("CS2100"));
         Name requirementCategoryName = new Name("Computing Foundation");
         RequirementCategory currentRequirementCategory = model.getRequirementCategory(requirementCategoryName);
-        RequirementCategory editedRequirementCategory =
-                new RequirementCategory(requirementCategoryName, currentRequirementCategory.getCredits(), codeList);
+        RequirementCategory editedRequirementCategory = new RequirementCategory(requirementCategoryName,
+                currentRequirementCategory.getCredits(), codeSetToCheck);
 
-        Model expectedModel = model;
+        Model expectedModel = new ModelManager(model.getApplication(), new UserPrefs());
         expectedModel.setRequirementCategory(currentRequirementCategory, editedRequirementCategory);
         expectedModel.commitApplication();
 
-        assertCommandSuccess(new RequirementAddCommand(requirementCategoryName, codeList), model, commandHistory,
-                String.format(RequirementAddCommand.MESSAGE_SUCCESS, requirementCategoryName, codeList),
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
+
+        assertCommandSuccess(new RequirementAddCommand(requirementCategoryName, validCodeSet), model, commandHistory,
+                String.format(RequirementAddCommand.MESSAGE_SUCCESS, formattedCodeString, requirementCategoryName),
                 expectedModel);
 
         // undo -> reverts application back to previous state
@@ -130,41 +131,42 @@ public class RequirementAddCommandTest {
 
     @Test
     public void execute_addModuleToRequirementCategoryCaseInsensitive_success() {
-        codeList.clear();
-        Name requirementCategoryName = new Name("CoMpUtInG BreaDTH");
+        Set<Code> validCodeSet = Set.of(new Code("CS2102"), new Code("CS2040C"));
+        Set<Code> codeSetToCheck = Set.of(new Code("CS2040C"), new Code("CS2100"), new Code("CS2102"));
+        Name requirementCategoryName = new Name("CoMpUtInG FoundatioN");
         RequirementCategory currentRequirementCategory = model.getRequirementCategory(requirementCategoryName);
-        RequirementCategory editedRequirementCategory =
-                new RequirementCategory(requirementCategoryName, currentRequirementCategory.getCredits(), codeList);
+        RequirementCategory editedRequirementCategory = new RequirementCategory(currentRequirementCategory.getName(),
+                currentRequirementCategory.getCredits(), codeSetToCheck);
 
-        Model expectedModel = model;
+        Model expectedModel = new ModelManager(model.getApplication(), new UserPrefs());
         expectedModel.setRequirementCategory(currentRequirementCategory, editedRequirementCategory);
         expectedModel.commitApplication();
 
-        assertCommandSuccess(new RequirementAddCommand(requirementCategoryName, codeList), model, commandHistory,
-                String.format(RequirementAddCommand.MESSAGE_SUCCESS, requirementCategoryName, codeList),
-                expectedModel);
+        String formattedCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
+
+        assertCommandSuccess(new RequirementAddCommand(requirementCategoryName, validCodeSet), model, commandHistory,
+                String.format(RequirementAddCommand.MESSAGE_SUCCESS, formattedCodeString,
+                        currentRequirementCategory.getName()), expectedModel);
 
     }
 
     @Test
     public void execute_equals() {
-        codeList.clear();
-        codeList.add(new Code("CS2100"));
+        Set<Code> validCodeSet = Set.of(new Code("CS2100"));
         Name requirementCategoryName = new Name("Computing Foundation");
 
-        Set<Code> codeListToCompare = new HashSet<>();
-        codeListToCompare.add(new Code("CS1010"));
+        Set<Code> codeSetToCompare = Set.of(new Code("CS1010"));
         Name requirementCategoryNameToCompare = new Name("Mathematics");
 
-        RequirementAddCommand commandBaseline = new RequirementAddCommand(requirementCategoryName, codeList);
+        RequirementAddCommand commandBaseline = new RequirementAddCommand(requirementCategoryName, validCodeSet);
         RequirementAddCommand commandToCompare =
-                new RequirementAddCommand(requirementCategoryNameToCompare, codeListToCompare);
+                new RequirementAddCommand(requirementCategoryNameToCompare, codeSetToCompare);
 
         //same object -> returns true
         assertTrue(commandBaseline.equals(commandBaseline));
 
         //different objects, same values -> returns true
-        RequirementAddCommand commandBaselineCopy = new RequirementAddCommand(requirementCategoryName, codeList);
+        RequirementAddCommand commandBaselineCopy = new RequirementAddCommand(requirementCategoryName, validCodeSet);
         assertTrue(commandBaseline.equals(commandBaselineCopy));
 
         //different objects -> returns false

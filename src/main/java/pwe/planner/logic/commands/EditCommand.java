@@ -47,8 +47,8 @@ public class EditCommand extends Command {
             + "[" + PREFIX_CODE + "CODE] "
             + "[" + PREFIX_CREDITS + "CREDITS] "
             + "[" + PREFIX_SEMESTER + "SEMESTER]..."
-            + "[" + PREFIX_COREQUISITE + "COREQUISITE]...\n"
-            + "[" + PREFIX_TAG + "TAG]... "
+            + "[" + PREFIX_COREQUISITE + "COREQUISITE]..."
+            + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: To edit the number of credits assigned to the first module in the displayed module list below"
             + ", you can enter: " + COMMAND_WORD + " 1 " + PREFIX_CREDITS + "8 ";
 

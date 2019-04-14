@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.logic.commands.exceptions.CommandException;
 import pwe.planner.model.Model;
@@ -68,8 +69,8 @@ public class RequirementRemoveCommand extends Command {
                 .collect(Collectors.toList());
 
         if (!nonExistentCodes.isEmpty()) {
-            String nonExistentCodesErrorMessage = nonExistentCodes.stream().map(Code::toString)
-                    .collect(Collectors.joining(", "));
+            String nonExistentCodesErrorMessage =
+                    StringUtil.joinStreamAsString(nonExistentCodes.stream().sorted());
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_CODE, nonExistentCodesErrorMessage));
         }
 
@@ -78,8 +79,8 @@ public class RequirementRemoveCommand extends Command {
                         .contains(code))).collect(Collectors.toList());
 
         if (!codeNotInAnyRequirementCategory.isEmpty()) {
-            String codeNotInAnyRequirementCategoryErrorMessage = codeNotInAnyRequirementCategory.stream()
-                    .map(Code::toString).collect(Collectors.joining(", "));
+            String codeNotInAnyRequirementCategoryErrorMessage =
+                    StringUtil.joinStreamAsString(codeNotInAnyRequirementCategory.stream().sorted());
             throw new CommandException(String.format(MESSAGE_CODE_NOT_IN_ANY_REQUIREMENT_CATEGORY,
                     codeNotInAnyRequirementCategoryErrorMessage));
         }
@@ -115,7 +116,7 @@ public class RequirementRemoveCommand extends Command {
             }
         }
 
-        String codesMoved = toRemove.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String codesMoved = StringUtil.joinStreamAsString(toRemove.stream().sorted());
 
         model.commitApplication();
         return new CommandResult(String.format(MESSAGE_SUCCESS, codesMoved));

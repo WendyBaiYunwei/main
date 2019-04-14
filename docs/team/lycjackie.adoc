@@ -2,56 +2,140 @@
 :site-section: AboutUs
 :imagesDir: ../images
 :stylesDir: ../stylesheets
+:repoURL: https://github.com/CS2113-AY1819S2-T09-1/main
+:prURL: {repoURL}/pull
+:forumURL: https://github.com/nusCS2113-AY1819S2/forum/issues
+:budgeterURL: https://github.com/CS2113-AY1819S2-M11-2/main
+:experimental:
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:warning-caption: :warning:
+endif::[]
+
 
 == PROJECT: PlanWithEase
-_{The dummy content given below serves as a placeholder to be updated in the future.}_ +
 
----
+Hello there! I am Jackie. I am currently a student at the National University of Singapore +
+(NUS) studying Information Security. I love to build application that could simplify our life then break it down to make
+it better again!
+
+This portfolio documents my involvement in the PlanWithEase, a degree planner
+application which is morphed from https://github.com/se-edu/addressbook-level4[AddressBook Level 4].
+
+PlanWithEase is developed by my team (consisting of <<truegitnovice#,Ahn TaeGyu>>, <<wendybaiyunwei#,Bai YunWei>>, <<creastery#,Ngo Wei Lin>>,
+ <<chyeo#, Yeo Cheng Hong>> and myself) under the CS2113T (Software Engineering & Object-Oriented Programming) module
+taken in NUS over the span of 8 weeks.
 
 == Overview
 
-AddressBook - Level 4 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
+For this project, we aim to simplify the process of planning a degree, and ensure that the degree plan fulfills the
+degree requirements for graduation.
+
+With this goal in mind, we developed PlanWithEase (PWE), degree planner desktop application designed to help
+National University of Singapore (NUS) Information Security freshmen in creating a comprehensive degree plan with ease
+according to their degree requirements.
+
+We understand that planning a degree is not an easy task,and can be very time-consuming. Further more there are much
+considerations to make, making it confusing, troublesome and difficult to create the perfect degree plan.
+
+With this goal in mind, we developed PlanWithEase (PWE), a degree planner application designed to help NUS
+Information Security freshmen in creating a comprehensive degree plan according to the degree requirements effortlessly.
+
+ifdef::env-github[]
+image::Ui.png[width="800"]
+endif::[]
+
+ifndef::env-github[]
+image::Ui.png[width="970"]
+endif::[]
+
+
+My role as a developer in this project involves designing and write code to enhance our existing `find` features
+which enables our users to do the following:
+
+* *Finding modules* with either its name, code or credits.
+* *Complex search terms* to narrow down the find results.
+
+== Understanding This Project Portfolio
+
+The following symbols are used throughout this project portfolio:
+[NOTE]
+====
+This symbol denotes information that you may want to take note of when using the application.
+====
+[TIP]
+====
+This symbol denotes a tip which you may find useful when using the application.
+====
+[WARNING]
+====
+This symbol denotes a warning message which you need to be careful of when using the application.
+====
+
+Additionally, you may also encounter the following text styles:
+====
+* Commands or parameters will be in this `format`.
+* Important messages will be *bold*.
+* Undoable command will be in _italics_.
+* Keyboard buttons will be referred to as such: kbd:[F1].
+====
 
 == Summary of contributions
 
-* *Major enhancement*: added *the ability to undo/redo previous commands*
-** What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be reversed by using the redo command.
-** Justification: This feature improves the product significantly because a user can make mistakes in commands and the app should provide a convenient way to rectify them.
-** Highlights: This enhancement affects existing commands and commands to be added in future. It required an in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
-** Credits: _{mention here if you reused any code/ideas from elsewhere or if a third-party library is heavily used in the feature so that a reader can make a more accurate judgement of how much effort went into the feature}_
+|===
+|_This section details the main enhancements as well as other contributions I have made in the project._
+|===
 
-* *Minor enhancement*: added a history command that allows the user to navigate to previous commands using up/down keys.
+* *Main enhancement*: added *the ability to perform complex find command*
+** What it does: allows the user to find modules via more complex find criteria. Find criteria can be composed from
+mixed of logical AND (`&&`) and logical OR (`||`), users can optionally specify parenthesis to denote the expression
+to be evaluated first.
+** Justification: With a expected large number of modules available in our application, users needs to be able to
+find a small subset of modules which are of interest to them. The ability of performing complex find commands give users
+the flexibility of finding a smaller subset of modules which are relevant to them.
+** Highlights: The algorithm for this enhancement was generalized not only to suit my own features, but also my team
+mate's features. My team mate (<<truegitnovice#,Ahn TaeGyu>>) has managed to make use of this generalized class I created for his own
+features. The implementation of this enhancement required some research on the different ways of parsing a boolean
+expression, as there are many parsing algorithms available. After deciding on the algorithm to be used, I had to
+implement the said algorithm in code using an Object-Orientated style, while trying to abstract the algorithm as much
+ as possible as per the requirements of Object-Oriented Programming.
 
-* *Code contributed*: [https://github.com[Functional code]] [https://github.com[Test code]] _{give links to collated code files}_
+
+* *Code contributed*: [{repoURL}/commits?author=lycjackie[Commits]] [{repoURL}/pulls?q=is%3Apr+author%3Alycjackie+is%3Amerged[Pull Requests]] [https://nuscs2113-ay1819s2.github.io/dashboard-beta/#search=lycjackie[RepoSense Code Contribution Dashboard]]
 
 * *Other contributions*:
 
 ** Project management:
-*** Managed releases `v1.3` - `v1.5rc` (3 releases) on GitHub
+*** Set up the organization and main repository.
+*** Managed release `v1.4` on {repoURL}/releases[GitHub]
+*** Contributed to user stories on Github issue tracker https://github.com/CS2113-AY1819S2-T09-1/main/issues/66[#66]
+and help to create issues label on Github.
 ** Enhancements to existing features:
-*** Updated the GUI color scheme (Pull requests https://github.com[#33], https://github.com[#34])
-*** Wrote additional tests for existing features to increase coverage from 88% to 92% (Pull requests https://github.com[#36], https://github.com[#38])
+*** Sourced for new application icon and update the application accordingly. https://github.com/CS2113-AY1819S2-T09-1/main/pull/110[#110]
+*** Updated the GUI color scheme. https://github.com/CS2113-AY1819S2-T09-1/main/pull/144[#144]
+*** Collaborated with a team mate (<<creastery#,Ngo Wei Lin>>) to implement a custom string tokenizer
+`BooleanExpressionTokenizer`, which enables the users to be able to use complex search conditions to narrow down
+their search when using `find` and `planner_show` commands. ({repoURL}/pull/119[#119])
 ** Documentation:
-*** Did cosmetic tweaks to existing contents of the User Guide: https://github.com[#14]
+*** Modify the structure and did clean up to existing contents of the User Guide:  {repoURL}/pull/1[#1],
+{repoURL}/pull/207[#207]
 ** Community:
-*** PRs reviewed (with non-trivial review comments): https://github.com[#12], https://github.com[#32], https://github.com[#19], https://github.com[#42]
-*** Contributed to forum discussions (examples:  https://github.com[1], https://github.com[2], https://github.com[3], https://github.com[4])
-*** Reported bugs and suggestions for other teams in the class (examples:  https://github.com[1], https://github.com[2], https://github.com[3])
-*** Some parts of the history feature I added was adopted by several other class mates (https://github.com[1], https://github.com[2])
-** Tools:
-*** Integrated a third party library (Natty) to the project (https://github.com[#42])
-*** Integrated a new Github plugin (CircleCI) to the team repo
+*** Reviewed about one-third of the team's Pull Requests(PRs) and gave non-trivial review comments :
+{repoURL}/pull/82[#82], {repoURL}/pull/109[#109], {repoURL}/pull/136[#136]
+*** Contributed to forum discussions https://github.com/nusCS2113-AY1819S2/forum/issues/14[#14]
+*** Reported bugs and suggestions for other teams in the class ({budgeterURL}/issues/127[1], {budgeterURL}/issues/131[2], {budgeterURL}/issues/144[3])
 
-_{you can add/remove categories in the list above}_
 
 == Contributions to the User Guide
 
 
 |===
-|_Given below are sections I contributed to the User Guide. They showcase my ability to write documentation targeting end-users._
+|_Given below are sections I contributed to the User Guide. They showcase my ability to write
+documentation targeting end-users to facilitate mastering of *PlanWithEase*'s features. ._
 |===
 
-include::../UserGuide.adoc[tag=undoredo]
+include::../UserGuide.adoc[tag=find]
 
 
 == Contributions to the Developer Guide
@@ -60,12 +144,4 @@ include::../UserGuide.adoc[tag=undoredo]
 |_Given below are sections I contributed to the Developer Guide. They showcase my ability to write technical documentation and the technical depth of my contributions to the project._
 |===
 
-include::../DeveloperGuide.adoc[tag=undoredo]
-
-
-
-== PROJECT: PowerPointLabs
-
----
-
-_{Optionally, you may include other projects in your portfolio.}_
+include::../DeveloperGuide.adoc[tag=find]

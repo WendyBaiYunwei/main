@@ -211,7 +211,7 @@ The `Model`,
 === Storage component
 
 .Structure of the Storage Component
-image::StorageClassDiagram.png[width="800"]
+image::StorageComponentDiagram.png[width="800"]
 
 *API* : link:{repoURL}/src/main/java/pwe/planner/storage/Storage.java[`Storage.java`]
 
@@ -360,13 +360,16 @@ refreshed to display the full listing just to be able to iterate and delete modu
 // tag::find[]
 ===  Find Feature
 
-The find feature aims to help users to be able to locate any module in our application easily. We support
-the finding of module's name, code and credits. This enable our users to be able to find for any modules with partial
- information.
+The `find` feature aims to help users to be able to easily locate any modules in our application. With a large number
+of modules available to our users, `find` feature is essential. Currently, the `find` feature only supports searching
+ of module's name, code, credits, tags and the semesters it is offered in.
+
+This section shares the implementation and the design considerations gone through while enhancing the find feature.
+Details on how the find feature is implemented and how it supports more search parameters are also shared.
 
 ==== Overview
 
-When a user invokes the `find` command. (e.g. find name/Programming code/CS1231), the following steps are taken by
+When a user invokes the `find` command. (e.g. find name/Programming || code/CS1231), the following steps are taken by
 the program.
 
 1. Extract out the text related to `find` command
@@ -375,24 +378,68 @@ the program.
 
 Step 1 is performed by the `ApplicationParser` class, and no special actions is needed for the `find` feature.
 
-Step 3 is performed by `BooleanExpression#parse`
+Step 2 and 3 are performed by `BooleanExpressionParser#parse`
+
+The class diagram below shows the different components and constraints for `find` feature.
+
+.Class diagram for `find` feature
+ifdef::env-github[]
+image::FindCommandClassDiagram.png[width="800"]
+endif::[]
+
+ifndef::env-github[]
+image::FindCommandClassDiagram.png[width="970"]
+endif::[]
+
 
 ==== Current Implementation
 
 The `FindCommandParser` parses the strings of arguments provided by the user to retrieve a composite `Predicate`
-which is used by `FindCommand`. A `ParseException` is thrown when if the input provided by the user does not conform
-to the expected format.
+which is used by `FindCommand`. A `ParseException` is thrown in the case if the input provided by the user does not
+conform to the expected format.
 
 The sequence diagram below shows the interaction within the `Logic` components.
 
 .Find component interactions
-image::FindCommandSequenceDiagram.png[width="650"]
+ifdef::env-github[]
+image::FindCommandSequenceDiagram.png[width="800"]
+endif::[]
+
+ifndef::env-github[]
+image::FindCommandSequenceDiagram.png[width="970"]
+endif::[]
+
 
 The main implementation of this feature is split into two components. The `Tokenizer` and `BooleanExpressionParser`
 
-1. `Tokenizer` helps to split the user provided argument into tokens which could be used by `BooleanExpressionParser`.
-2. `BooleanExpressionParser` handle the high-level syntax of the find expressions and map them into
-`Predicate` which could be used by `FindCommand`
+. `Tokenizer` helps to split the user provided argument into tokens which could be used by `BooleanExpressionParser`.
+. `BooleanExpressionParser` simply performs Shunting-Yard algorithm on the boolean expression tokens provided by the
+`Tokenizer`  and maps them into `Predicate` which could be used by `FindCommand`.
+
+`FindCommandParser` calls `BooleanExpressionParser#parse` which handles the evaluation of the expression. +
+This process is achieved by the code snippet shown below.
+
+```java
+String trimmedArgs = args.trim();
+if (trimmedArgs.isEmpty()) {
+    throw new ParseException(
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+}
+Predicate<Module> predicate = BooleanExpressionParser.parse(args, PREFIXES);
+return new FindCommand(predicate);
+```
+
+
+
+To support more parameters for our `find` feature. You can do the following steps.
+
+. Create a new `Predicate` class (e.g. `NameContainsKeywordsPredicate`) and define your expected behaviour in it.
+. Ensure your `Predicate` class extends `KeywordsPredicate`.
+. Update `BooleanExpressionParser#getKeywordsPredicate` to handle the creation of the `Predicate`.
+. Update `CliSyntax` on the new prefix you would like for the new parameter.
+. Update `FindCommandParser` to take in the new `PREFIX`.
+
+Your new parameter will now be supported after the above steps!
 
 ==== Tokenizer
 
@@ -403,17 +450,54 @@ This class is initialized with the input argument and prefixes and can be querie
 Each query will consume the previous token and returns the next available token. +
 This is similar to how `java.util.Scanner` works.
 
+===== Design Consideration
+
+After many rounds of experiment with `StringTokenizer` that is provided by native Java and `ArgumentMultimap`. +
+We found three main issues which could not be satisfied by either `StringTokenizer` or `ArgumentMultimap`.
+
+. `ArgumentMultimap` does not keep track of the order of each delimiter. They will only track if the delimiter exists.
+. `StringTokenizer` has a default delimiter as a whitespace, although we could change the delimiter and parse multiple
+delimiters. It does not suit our situation. +
+e.g. `find name/AAAA code/BBBB`. +
+This will return us 1 token. `name/AAAA code/BBBB`, which we cannot use to check due to the missing `operator`. +
+We need the tokenizer to return us 2 tokens `name/AAAA` and `code/BBBB` in order for us to know that the expression
+was invalid due to the missing `operator`.
+. `StringTokenizer` can take in `PREFIX` as delimiter, however, this will split the argument (i.e. `code/CS1231`) into
+two tokens, `code/` and `CS1231`. +
+Additional parsing is required before we are able to pass it to `BooleanExpressionParser`. This parsing creates more
+overhead as we have to ensure that the proper checks are done.
+
+As such, our custom `Tokenizer` aims to solve these three issues.
+
+The table below shows the differences among our `Tokenizer`, `StringTokenizer` and `ArgumentMultimap`
+|====
+| *`Tokenizer`* | *`StringTokenizer`* | *`ArgumentMultimap`*
+| Respect the order of delimiters. | Respect the order of delimiters | Only keep track which delimiters are present.
+| Support multiple delimiters. | Support multiple delimiters. | Support multiple delimiters.
+| Splitting tokens is more flexible | Only split token based on delimiters | Does not split into token.
+|====
+
 ==== Operator
 
-This is represented by the class `pwe.planner.logic.parser.Operator` and define all valid operators to be used in
+This is represented by the class `pwe.planner.logic.parser.Operator` and defines all valid operators to be used in
 `BooleanExpressionParser`.
 
-To support more operators for our `BooleanExpressionParser`. The following steps should be done.
+The table below shows the valid operators that our application currently supports.
 
-1. Add the operator and give it precedence.
-2. Update the mapping between `String` and `Operator` in `Operator#getOperatorFromString`
-3. Update the logic of the new operator in `Operator#applyOperator`
-4. Update `CliSyntax.OPERATORS` to include the new operator.
+|====
+| *Operator* | *Description* | *Precedence*
+| `&&` | Logical "AND" operation (both conditions A AND B must match) | Highest
+| `\|\|` | Logical "OR" operation (either conditions A OR B must match)| Lowest
+| `(` and `)` | Search term surrounded by parenthesis will always be evaluated first. If there is a tie, the logical
+operator precedence will be taken into consideration. | N.A
+|====
+
+To support more operators for our `BooleanExpressionParser`. The following steps should be performed.
+
+. Add the operator and give it precedence.
+. Update the mapping between `String` and `Operator` in `Operator#getOperatorFromString`
+. Update the logic of the new operator in `Operator#applyOperator`
+. Update `CliSyntax.OPERATORS` to include the new operator.
 
 ==== Boolean Expression Parser
 
@@ -435,128 +519,344 @@ Parentheses `(` and `)` are also recognized and respected, and they may be neste
 The sequence diagram below shows the interactions between `FindCommandParser` and `BooleanExpressionParser`.
 
 .Parser interactions
-image::parserSequenceDiagram.png[width="650"]
+.Find component interactions
+ifdef::env-github[]
+image::parserSequenceDiagram.png[width="800"]
+endif::[]
 
-==== Design Consideration
+ifndef::env-github[]
+image::parserSequenceDiagram.png[width="970"]
+endif::[]
 
-===== Aspect: How to parse composite predicates
 
-[NOTE]
-Currently we are using choice 2 because this provide our users with a more flexible way of finding modules in our
-application.
+When `FindCommandParser` receives the provided user argument, it will carry out checks and pass the argument to
+ `BooleanExpressionParser` which will initialize a new `Tokenizer` that extracts the arguments as tokens. +
+`BooleanExpressionParser` will create a `Predicate` based on the `Prefix` in each token. If the token is an `Operator`,
+`BooleanExpressionParser` will apply the operator on two `Predicate` to combine them into a composite `Predicate`.
 
-- Alternative 1: Do an implicit boolean `OR` for every predicate.
+[TIP]
+====
+See <<Tokenizer>> for more details regarding the tokenizer.
+====
 
-[cols="30%,<70%"]
-|======
-|*Pros*| Very easy to implementation
-|*Cons*| User will not be able to do a very detailed or complex find.
-|======
 
-- Alternative 2 (current choice): Implement an algorithm https://en.wikipedia.org/wiki/Shunting-yard_algorithm[Shunting Yard]
- that can parse complex boolean expression.
+The process of how the predicate for each prefix is created is shown in the code snippet below.
 
-[cols="30%,<70%"]
+```java
+ArgumentMultimap argMultimap =
+        ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_CODE, PREFIX_CREDITS);
+KeywordsPredicate predicate = null;
+if (argMultimap.getValue(PREFIX_NAME).isPresent()) {
+    String nameKeyword = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get()).toString();
+    predicate = new NameContainsKeywordsPredicate(List.of(nameKeyword));
+} else if (argMultimap.getValue(PREFIX_CODE).isPresent()) {
+    String codeKeyword = ParserUtil.parseCode(argMultimap.getValue(PREFIX_CODE).get()).toString();
+    predicate = new CodeContainsKeywordsPredicate(List.of(codeKeyword));
+} else if (argMultimap.getValue(PREFIX_CREDITS).isPresent()) {
+    String creditKeyword = ParserUtil.parseCredits(argMultimap.getValue(PREFIX_CREDITS).get()).toString();
+    predicate = new CreditsContainsKeywordsPredicate(List.of(creditKeyword));
+} else {
+    throw new ParseException(
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+}
+return predicate;
+```
+
+==== Design Considerations
+
+This section shares the design considerations we went through during the enhancing the existing `find` feature.
+
+===== Aspect: Parsing of composite predicate
+The table below shows comparisons between the two approaches.
+
+[cols="30%,35%,35%"]
 |=====
-| *Pros* | User will have very flexible searching terms
-| *Cons* | Developer will take a very long time to implement and test for edge cases.
+|*Approach* | *Pros* | *Cons*|
+*1.* Implement an algorithm https://en.wikipedia.org/wiki/Shunting-yard_algorithm[Shunting Yard] that parses the complex
+boolean expression and returns a composite predicate. |
+Find command can be very flexible. It can work with multiple parameters to search for the specific modules that the
+user wants.
+a|
+* Requires many tests to ensure expected behaviours
+* Extra work is required to integrate a new logic parser into `FindCommandParser`. It may result in  build problems if
+ it is not implemented properly.
+ |*2.* Do an implicit logical `OR` for every predicate.
+ |Very easy to implement a|
+* Returns a very huge set of results when the number of keywords increase.
+* Find command will be restricted to logical `OR` results.
 |=====
+
+After weighing both pros and cons, we decided to go with *approach 1*. +
+As we are expecting many similar names between modules in the university curriculum, if the user could only search
+with an implicit logical `OR`, the user would not be able to find the desired modules effectively. This can drastically
+ reduce the effectiveness of the `find` command.
 //end::find[]
 
 // tag::requirement-add[]
 === Requirement Add Feature
-The `requirement_add` command in PWE is used to add module code(s) to the requirement category.
+The requirement add feature in the application aims to help users to keep track and check if they have fulfilled a
+particular degree requirement category by adding module code(s) to the specified requirement category.
 
 ==== Current implementation
 
-The `requirement_add` command requires the `RequirementAddCommandParser` class to parse the user input provided. The
- parsed data will then be passed to the `RequirmentAddCommand` class.
+When the user invokes the `requirement_add` command, e.g. (requirement_add name/Mathematics code/MA1531). +
+The following steps are taken by the application.
 
-The input should consist of the name of the requirement category and module code(s) to be added.
+*1.* The `CommandParser` invokes the `RequirementAddCommandParser` class to parse the user input provided.
+ The parsed data will then be used to create a `RequirementAddCommand` object and will be returned to
+ `LogicManager`.
 
-`RequirementAddCommandParser` will throw an error if the user input does not match the command format.
+[NOTE]
+====
+* The input should only consist of the `name` of the requirement category and module `code`(s) to be added
+* `RequirementAddCommandParser` will throw an error if the user input does not match the command format
+====
 
-When `RequirementAddCommand` receives the parsed data, it will perform the following checks:
+*2.* Upon receiving the `RequirementAddCommand` object, `LogicManager` would then invoke the `RequirementAddCommand`
+ class to pass the object received.
 
-- Check if the requirement category exists in PWE through `getRequirementCategory`
-- Check if the module codes provided exists in PWE through `model.hasModuleCode`
-- Check if the module codes have already been added to other requirement categories
-- Check if the module codes have already been added to the specified requirement category through `RequirementCategory.hasModuleCode`
+Once invoked, `RequirementAddCommand` will perform the following checks on the object received: +
+ * Check if the degree requirement category exists in the application through `getRequirementCategory` +
+ * Check if the module codes provided exists in the application through `model.hasModuleCode` +
+ * Check if the module codes have already been added to other degree requirement categories +
+ * Check if the module codes have already been added to the specified degree requirement category through
+   `RequirementCategory.hasModuleCode`
 
+[NOTE]
+====
 `RequirementAddCommand` will throw an error if any of the above checks fails.
+====
 
-After passing all of the above checks, `RequirementAddCommand` updates the context in `ModelManager` through
+*3.* After passing all of the above checks, `RequirementAddCommand` updates the context in `Model` through
 `setRequirementCategory`.
 
-In addition to adding module code(s) to the requirement category, the `RequirementAddCommand` class also saves the
-current database state through `commitApplication` (for undo/redo functions).
+*4.* In addition to adding module code(s) to the specified degree requirement category, the `RequirementAddCommand`
+class also saves the current database state through `commitApplication` (for undo/redo functions).
+
+The sequence diagram below shows how this command interacts with the `Logic` components as described above.
+
+[TIP]
+====
+* You can click on the image below, so that it is enlarged in a new tab (only works on github)
+* The sequence diagram has been extracted into 2 sub-diagrams to better illustrate the component interactions
+====
 
 .RequirementAddCommand component interactions
 image::RequirementAddCommandSequenceDiagram.png[width="650"]
 
+.Component interactions of the checks performed by RequirementAddCommand class
+image::RequirementAddCommandSequenceDiagramExtracted.png[width="650"]
+
 ==== Design Considerations
-===== Aspect: Choice of what is stored in the requirement category
 
-- Alternative 1 (current choice): Storing only the module codes.
+This section describes the various design considerations the taken when implementing the `requirement_add`
+feature.
 
-[cols="30%,<70%"]
-|======
-|*Pros*| Lesser storage space is required. Easy to maintain.
-|*Cons*| Extra overhead is required when additional information related to the module is needed to be retrieved.
-|======
+===== Aspect: Choice of what is stored in the requirement category storage file
 
-- Alternative 2: Storing all information related to the modules.
+The table below shows a comparison between the two approaches that could have been implemented.
 
-[cols="30%,<70%"]
+[cols="30%,35%,35%"]
 |=====
-| *Pros* | Every information related to the modules is easily retrievable.
-| *Cons* | The stored information is duplicated, additional storage space and processing time is needed to load the requirement categories.
-           Hard to maintain the stored information, if a module information is updated, have to ensure that the
-           stored information is updated as well.
+|*Approach* | *Pros* | *Cons*|
+*1.* Storing only the module codes in the requirement category storage file
+ a|
+* Lesser storage space is required as only the module code is being stored
+* Easy to maintain, as only one information is being stored
+a|
+* Extra overhead is required when additional information related to the module is retrieved
+ |*2.* Storing all information related to the modules but only the module code is displayed
+a|
+* Any information related to the modules is easily retrievable
+a|
+* The module information is duplicated, additional storage space and processing time is needed to load the
+ entire requirement category
+* Hard to maintain and manage the stored information. If a module information is updated the information in the
+ requirement category storage needs to be updated as well.
 |=====
+
+After evaluating the pros and cons of both approaches, we have decided to implement *Approach 1*.
+
+The main reason is that all module information would be duplicated again in the requirement category storage file.
+This would effectively make the module storage file redundant as the information can be found in the requirement
+category storage file.
+
+In addition, when a module information is updated, we have to ensure that the information in both storage files are
+updated and consistent to avoid any conflicting information.
+
+Another factor that heavily impacted the decision would be that each module is uniquely identified by a module code.
+Hence, by storing the module code only, the module's information can be easily obtained.
+
 //end::requirement-add[]
+
+// tag::requirement-move[]
+=== Requirement Move Feature
+The requirement move feature in the application aims to help users to be able to move module code(s) from any degree
+requirement category to the specified requirement category.
+
+==== Current implementation
+
+When the user invokes the `requirement_move` command, e.g. (requirement_move name/Mathematics code/CS1231). +
+The following steps are taken by the application.
+
+*1.* The `CommandParser` invokes the `RequirementMoveCommandParser` class to parse the user input provided.
+ The parsed data will then be used to create a `RequirementMoveCommand` object. The `RequirementMoveCommand` object
+ will then be returned to `LogicManager`.
+
+[NOTE]
+====
+* The input should only consist of the `name` of the requirement category and module `code`(s) to be moved
+* `RequirementMoveCommandParser` will throw an error if the user input does not match the command format
+====
+
+*2.* Upon receiving the `RequirementMoveCommand` object, `LogicManager` would then invoke the `RequirementMoveCommand`
+ class to pass the object received. +
+
+Once invoked, `RequirementMoveCommand` will perform the following checks on the
+ object received: +
+* Check if the degree requirement category specified exists in the application through `getRequirementCategory` +
+* Check if the module code(s) provided exists in the application through `model.hasModuleCode` +
+* Check if the module code(s) provided already been added to the degree requirement category +
+
+[NOTE]
+====
+`RequirementMoveCommand` will throw an error if any of the above checks fails.
+====
+
+*3.* After passing all of the above checks, `RequirementMoveCommand` determines if the modules code(s) to be moved
+belongs
+ to a single degree requirement category or from multiple degree requirement categories
+
+*4.* If the module code(s) belongs to a *single* degree requirement category, `RequirementMoveCommand` will move all the
+ module code(s) specified at once. +
+If the module code(s) belong to *multiple* degree requirement categories, `RequirementMoveCommand` will move the
+module code(s) specified at one by one
+
+*5.* In addition to adding module code(s) to the specified degree requirement category, the `RequirementMoveCommand`
+class
+also saves the current database state through `commitApplication` (for undo/redo functions).
+
+The sequence diagram below shows how this command interacts with the `Logic` components as described above.
+
+[TIP]
+====
+* You can click on the image below, so that it is enlarged in a new tab (only works on github)
+* The sequence diagram has been extracted into 2 sub-diagrams to better illustrate the component interactions
+====
+
+.RequirementMoveCommand component interactions
+image::RequirementMoveCommandSequenceDiagram.png[width="650"]
+
+.Component interactions of the checks performed by RequirementMoveCommand class
+image::RequirementMoveCommandSequenceDiagramExtracted.png[width="650"]
+
+==== Design Considerations
+
+This section describes the various design considerations the taken when implementing the `requirement_move`
+feature.
+
+===== Aspect: To include a check to determine if the module code(s) specified come froms a single source degree requirement category
+
+The table below shows a comparison between the two approaches that could have been implemented.
+
+[cols="30%,35%,35%"]
+|=====
+|*Approach* | *Pros* | *Cons*|
+*1.* Implementing to check if the module code(s) comes from a single source
+ a|
+* Able to move all modules at once
+* Reduce overhead
+a|
+* Extra checks are required in the application
+ |*2.* Not implementing to check if the module code(s) comes from a single source
+a|
+* Lesser checks needs to be implemented
+a|
+* More overhead is needed when handling the moving of the module code(s)
+|=====
+
+After evaluating the pros and cons of both approaches, we have decided to implement *Approach 1*.
+
+The main reason is that it has a slight performance boost for the application as all the module code(s) can be moved
+together at once, reducing the overall overhead.
+
+//end::requirement-move[]
 
 // tag::requirement-list[]
 === Requirement List Feature
-The `requirement_list` command in PWE is used to display all requirement categories and the module code(s) that have
-been added to requirement category.
+The requirement list feature in the application allow users to display all requirement categories and the module code(s)
+ that have been added to the requirement categories.
 
 ==== Current implementation
 
 The `requirement_list` command requires no additional input other than the command itself.
+When the user executes the `requirement_list` command, the following steps are taken by the the application.
 
-When the `RequirementListCommand` class is called, it will perform the following actions before displaying the output
-to the user:
+*1.* The `CommandParser` invokes the `RequirementListCommand` class
 
-- Obtain a list of all the requirement categories in the application
-- Check if there are modules added to the requirement category
-- Calculate the current amount of credits based on the modules added to the requirement category
+*2.* When the `RequirementListCommand` class is invoked, it will perform the following actions before displaying the
+output to the user:
 
-If there are no modules added to a requirement category, the output will display `No modules in this category!` for
- the particular requirement category. Otherwise, it will display the modules codes that have been added.
+- Obtain a list of all the requirement categories and the modules added to each requirement category in the application
+through `getFilteredRequirementCategoryList`
+- Obtain the module credit information for every module added into each requirement category through `getModuleByCode`
+
+*3.* Once the information has been populated, the application will then display all requirement categories, the current
+ credit count for each requirement category as well as the module(s) added to each requirement category.
+
+[NOTE]
+====
+If there are no modules added to a requirement category, the application will display `No modules in this category!`
+ for that particular requirement category.
+====
+
+The sequence diagram below shows the interaction with the `Logic` components as described above.
+
+[TIP]
+====
+You can click on the image below, so that it is enlarged in a new tab (only works on github)
+====
 
 .RequirmentListCommand component interactions
 image::RequirementListCommandSequenceDiagram.png[width="650"]
 
 ==== Design Considerations
+
+This section describes the various design considerations the taken when implementing the `requirement_list`
+feature.
+
 ===== Aspect: Tracking the current amount of credits in a requirement category
 
-- Alternative 1: Creating a new attribute to store the credits
+The table below shows a comparison between the two approaches that could have been implemented.
 
-[cols="30%,<70%"]
+[cols="30%,35%,35%"]
 |=====
-| *Pros* | Current amount of credits is always available.
-| *Cons* |Hard to maintain. When a module credit is updated to a new value, the corresponding attribute has to be
-          updated as well. Additional storage space is needed to store the additional attribute.
+|*Approach* | *Pros* | *Cons*|
+*1.* Creating a dedicated attribute to track the current amount credits of a requirement category
+ a|
+* Current amount of credits is always available and easily obtainable
+a|
+* Hard to maintain. When a module credit is updated to a new value, the attribute has to be updated as well to
+ prevent conflicting information.
+ |*2.* Calculating the current amount of credits of a requirement category when needed
+a|
+* Any information related to the modules is easily retrievable as each module is uniquely identified by the module
+code
+* No extra maintenance of information needed
+* Able to easily calculate the credits when needed as module information
+  are easily obtainable.
+a|
+* Extra overhead is required to retrieve the module's information and compute the current amount of credits
 |=====
 
-- Alternative 2 (current choice): Calculating the credits when needed.
+After evaluating the pros and cons of both approaches, the group decided that *Approach 2* was to be implemented.
 
-[cols="30%,<70%"]
-|======
-|*Pros*| No maintenance needed. Able to easily calculate the credits when needed as module information are easily obtainable.
-|*Cons*| Extra overhead is required to retrieve and calculate the credits.
-|======
+The determining factor was that the module's credits can be easily obtain. Hence the current amount of credits for a
+particular requirement category can be easily calculated as and when needed.
+
+Furthermore, when a module's credits is changed, we have to ensure that the information in the
+requirement category storage file is updated as well. Which is hard to maintain as the requirement category
+containing the module code must first be retrieved for the attribute to be updated.
 
 //end::requirement-list[]
 
@@ -1637,6 +1937,66 @@ Expected: Maximum 10 modules recommended in a specially sorted order.
 .. Test case: `planner_suggest credits/1 tag/maths` +
 Expected: Maximum 10 modules recommended in a specially sorted order.
 
+=== Find modules
+
+. Find modules in the module list using one parameter.
+
+.. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list`
+command.
+.. Test case: `find name/programming` +
+Expected: Module list will displays all the modules whose name contains `programming`. +
+Number of modules found is shown in the *result box*
+.. Test case: `find name/PROGRAMMING` +
+Expected: Module list will displays all the modules whose name contains `programming`. +
+Number of modules found is shown in the *result box*. +
+This will have the same results as the previous test case.
+.. Test case: `find code/CS1231` +
+Expected: Module list will displays all the modules whose code matches `CS1231`. +
+Number of modules found is shown in the *result box*. +
+.. Test case: `find credits/4` +
+Expected: Module list will displays all the modules which assigned `4` modular credits. +
+Number of modules found is shown in the *result box*. +
+.. Test case: `find tag/algorithm` +
+Expected: Module list will displays all the modules which has the tag `algorithm`. +
+Number of modules found is shown in the *result box*.
+.. Test case: `find sem/2` +
+Expected: Module list will displays all modules offered in semesters `2`. +
+Number of modules found is shown in the *result box*.
+
+. Find modules in the module list using multiple parameters.
+
+.. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list`
+command.
+.. Test case: `find name/programming || name/discrete` +
+Expected: Module list will displays all the modules whose name contains `programming` or `discrete`. +
+ Number of modules found is shown in the *result box*.
+.. Test case: `find name/discrete || name/programming` +
+Expected: Module list will displays all the modules whose name contains `programming` or `discrete`. +
+ Number of modules found is shown in the *result box*. +
+This will have the same results as the previous test case.
+.. Test case: `find name/programming && name/methodology` +
+Expected: Module list will displays all the modules whose name contains `programming` and `methodology`. +
+Number of modules found is shown in the *result box*.
+.. Test case: `find name/programming && sem/2` +
+Expected: Module list will displays all the modules whose name contains `programming` and is offered in semester 2 only.
+.. Test case: `find (name/programming || name/algorithm) && sem/2`
+Expected: Module list will displays all the module whose name contains either `programming` or `algorithm` and is
+offered in semesters 2. +
+Number of modules found is shown in the *result box*.
+
+. Find modules with bad parameters.
+.. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list`
+command.
+.. Test case: `find nonExist/` +
+Expected: Invalid command format! +
+A guide on how to use the command will be displayed in the *result box*.
+
+. Find modules with invalid values.
+.. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list`
+command.
+.. Test case: `find code/ZZZZZZ` +
+Expected: A guide on how the accepted value for `code` will be displayed in the *result box*.
+
 === Saving data
 
 . Dealing with missing/corrupted data files
@@ -1644,3 +2004,74 @@ Expected: Maximum 10 modules recommended in a specially sorted order.
 .. _{explain how to simulate a missing/corrupted file and the expected behavior}_
 
 _{ more test cases ... }_
+
+
+=== Degree Requirement Category
+
+. Adding a module to a degree requirement category
+
+.. Prerequisites:
+... Create a new module using the `add` command with the modular code of `CS9999`
+... Ensure that the newly created module does not have corequisite of another module
+... The newly created module do not belong to any degree requirement categories
+
+.. Test case: `requirement_add name/Computing Foundation code/CS9999` +
+   Expected: The module is added to the specified degree requirement category. +
+   Details of the module added to the degree requirement category is shown in the application result box.
+
+.. Test case: `requirement_add name/Computing Foundation code/CS9999` +
+   *This test case is to be tested after the above test case* +
+   Expected: Application displays an error message saying that the module is already in the degree requirement
+   category +
+   Details of the error message is shown in the application result box.
+
+.. Test case: `requirement_add name/Computing ddddd code/CS9999` +
+   Expected: Application displays an error message saying that the specified degree requirement category does not
+   exist +
+   Details of the error message is shown in the application result box.
+
+. Removing a module from the degree requirement category
+
+.. Prerequisites:
+... Create a new module using the `add` command with the modular code of `CS9999`
+... Ensure that the newly created module does not have corequisite of another module
+... Add the newly created module to a degree requirement category
+
+.. Test case: `requirement_remove code/CS9999` +
+   Expected: The module is removed from the degree requirement category. Details of the deleted module is shown in
+   the application result box.
+
+.. Test case: `requirement_remove code/CS9999` +
+   *This test case is to be tested after the above test case* +
+   Expected: Application displays an error message saying that the module does not exist in the degree requirement
+   category +
+   Details of the error message is shown in the application result box.
+
+. Moving a module to a degree requirement category
+
+.. Prerequisites: Module to be moved must already be added to a degree requirement category.
+... Create a new module using the `add` command with the modular code of `CS9999`
+... Ensure that there no modules with the modular code of `CS9998` in the application
+... Ensure that the newly created module does not have corequisite of another module
+... Add the newly created module to a degree requirement category
+
+.. Test case: `requirement_move name/Computing Breadth code/CS9999` +
+   Expected: The module is moved to the specified degree requirement category. Details of the moved module is shown in
+   the application result box.
+
+.. Test case: `requirement_move name/Computing ddddd code/CS9999` +
+   Expected: Application displays an error message saying that the specified degree requirement category does not
+   exist +
+   Details of the error message is shown in the application result box.
+
+.. Test case: `requirement_move name/Computing Breadth code/CS9998` +
+   Expected: Application displays an error message saying that no such module exists in the application +
+   Details of the error message is shown in the application result box.
+
+. Listing all the degree requirement category in the application
+
+.. Prerequisites: NIL.
+.. Test case: `requirement_list` +
+   Expected: All the degree requirement categories in the applications, including the current modular credit count
+   and the module code(s) added to the degree requirement categories is listed in the application result box.
+

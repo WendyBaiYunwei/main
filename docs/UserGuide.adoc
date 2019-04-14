@@ -55,10 +55,10 @@ This symbol denotes a warning message which you need to be careful of when using
 
 Additionally, you may also encounter the following text styles:
 ====
-* Commands or parameters will be in this `format`.
-* Important messages will be *bold*.
-* Undoable command will be in _italics_.
-* Buttons on your keyboard will be referred as such: kbd:[F1].
+* Commands, parameters and file paths will be in this `format`
+* Important messages will be *bold*
+* Undoable command will be in _italics_
+* Keyboard buttons will be referred to as such: kbd:[F1]
 ====
 
 === Navigating Around Our Application
@@ -96,7 +96,7 @@ to make changes to the *Degree Plan*.
 
 == Quick Start
 
-.  Ensure you have Java version `9` installed in your Computer.
+.  Ensure you have *Java version 9* installed in your Computer.
 .  Download the latest `PWE.jar` link:{repoURL}/releases/latest[here].
 .  Copy the file to the folder you want to use as the home folder for *PlanWithEase*.
 .  Double-click the file to start the app. The GUI should appear in a few seconds.
@@ -123,12 +123,21 @@ e.g. typing *`help`* and pressing kbd:[Enter] will open the help window.
 [[Features]]
 == Features
 
+In this section, the expected command format will be introduced, and you can expect to learn the various commands you can use.
+
+[NOTE]
 ====
+Don't worry if you don't understand everything at once. +
+There are plentiful examples provided to aid your understanding of the commands' usage better.
+====
+
 *Command Format*
 
 * Words in `UPPER_CASE` are the parameters to be supplied by the user
-.. e.g. in `add name/NAME`, `NAME` is a parameter
-which can be used as `add name/Programming Methodology`.
+** e.g. in `add name/NAME`, `NAME` is a parameter
+which can be used as:
+.. `add name/Programming Methodology`
+.. `add name/Web Security`
 * Items in square brackets are optional parameters
 ** e.g. `name/NAME [tag/TAG]` can be used as:
 .. `name/Database Systems tag/sql` (with optional `tag` parameter)
@@ -144,8 +153,12 @@ which can be used as `add name/Programming Methodology`.
 .. `name/Programming Methodology`, etc.  (i.e. many times)
 * Prefixed-parameters can be arranged in any order after all non-prefixed parameters (if any)
 ** e.g. if the command specifies `INDEX name/NAME code/CODE`:
-.. entering `INDEX code/CODE name/NAME` is also acceptable
-.. entering `name/NAME INDEX code/CODE` is not acceptable
+.. entering `INDEX code/CODE name/NAME` is also acceptable, but
+.. entering `name/NAME INDEX code/CODE` is *not acceptable*
+
+[WARNING]
+====
+Parameter values cannot be empty (unless otherwise stated).
 ====
 
 === General Commands
@@ -191,7 +204,12 @@ _Undoable_ commands are commands that modifies the contents of PlanWithEase's da
 Below is a list of all _undoable_ commands in *PlanWithEase*.
 
 |====
-| *Module Management* | *Requirement Tracker* | *Degree Plan Management*
+| *General* | *Module Management* | *Requirement Tracker* | *Degree Plan Management*
+a|
+* `undo`
+* `redo`
+* `clear`
+* `reset`
 a|
 * `add`
 * `edit`
@@ -208,25 +226,24 @@ a|
 
 *Examples:*
 
-* `delete 1` (Delete first module in the displayed module list) +
-`list` (Displays all modules in the module list) +
+* `delete 1` (deletes first module in the displayed module list) +
+`list` (displays all modules in the module list) +
 `undo` (reverses the `delete 1` command) +
 
-* `find name/Programming` (Find modules with name containing the word `Programming` and display them in the module
+* `find name/Programming` (finds modules with name containing the word `Programming` and displays them in the module
 list) +
-`list` (Displays all modules in the module list) +
-`undo` +
-The `undo` command fails as there are no undoable commands executed previously.
+`list` (displays all modules in the module list) +
+`undo` (the `undo` command fails as there are no undoable commands executed previously)
 
-* `delete 1` (Delete first module in the displayed module list) +
-`clear` (clear all application data) +
+* `delete 1` (deletes first module in the displayed module list) +
+`clear` (clears all application data) +
 `undo` (reverses the `clear` command) +
 `undo` (reverses the `delete 1` command) +
 
 ==== Redoing previously undone command : `redo` image:https://img.shields.io/badge/general-redo-8774C1.svg[]
 
 Took too many steps back in time using the `undo` command and want to move forward in time again? +
-Use the `redo` command to reverses the most recent `undo` command!
+Use the `redo` command to reverse the most recent `undo` command!
 
 [WARNING]
 ====
@@ -238,16 +255,15 @@ This can happen if you you run an _undoable_ command (excluding `undo` and `redo
 
 *Examples:*
 
-* `delete 1` (Delete first module in the displayed module list) +
+* `delete 1` (deletes first module in the displayed module list) +
 `undo` (reverses the `delete 1` command) +
 `redo` (reapplies the `delete 1` command) +
 
-* `delete 1`  (Delete first module in the displayed module list)+
-`redo` +
-The `redo` command fails as there are no `undo` commands executed previously.
+* `delete 1`  (deletes first module in the displayed module list) +
+`redo` (the `redo` command fails as there are no `undo` commands executed previously)
 
-* `delete 1` (Delete first module in the displayed module list) +
-`clear` (Clear all modules from the application) +
+* `delete 1` (deletes first module in the displayed module list) +
+`clear` (clears all modules from the application) +
 `undo` (reverses the `clear` command) +
 `undo` (reverses the `delete 1` command) +
 `redo` (reapplies the `delete 1` command) +
@@ -290,9 +306,9 @@ emptied.
 *Example:*
 
 Here's an example of how *PlanWithEase* would look like after executing the `clear` command. +
-You can see a success message will be shown as shown by the images below.
+Notice that a success message will be displayed after clearing all modules from *PlanWithEase*.
 
-Before the `clear` command:
+Before running the `clear` command:
 [[beforeClear]]
 .Before executing the `clear` command.
 ifdef::env-github[]
@@ -315,7 +331,21 @@ image::clearafter.png[width=970]
 endif::[]
 // end::clear[]
 
-==== Exiting the program : `exit` image:https://img.shields.io/badge/general-exit-8774C1.svg[]
+==== Reset the application: `reset` image:https://img.shields.io/badge/general-reset-8774C1.svg[]
+If you want to populate the program with our sample modules, you can enter `reset` in the *command box* +
+
+This will save you the trouble of adding new `module` again!
+
+[NOTE]
+====
+This will *discard* all changes you have made and populate the program with our sample modules.
+====
+[TIP]
+====
+If you unintentionally used this command, do use the `undo` command to revert back the changes
+====
+
+==== Exiting PlanWithEase : `exit` image:https://img.shields.io/badge/general-exit-8774C1.svg[]
 
 If you want to exit *PlanWithEase*, you can enter `exit` in the *command box*. +
 Hope you had a wonderful experience using *PlanWithEase*. Do come back soon!
@@ -323,157 +353,195 @@ Hope you had a wonderful experience using *PlanWithEase*. Do come back soon!
 // tag::module_management[]
 === Module Management
 
-The following table describes the parameters you may use for commands in this section.
-[cols="<20%,40%,35%"]
+In this section, you'll be introduced to commands that helps you to manage modules in *PlanWithEase*.
+
+Below is a list of command parameters that you can expect to use for commands in this section.
+
+[cols="18%,37%,45%"]
 |======
 |*Parameter*| *Description* | *Acceptable Range of Values*
-| `NAME` | Indicates the name of the module (e.g. `Effective Communication for Computing Professionals`). |
-`NAME` should only contain alphanumeric characters and spaces.
-  +
-`NAME` should not be blank.
-| `CODE` | Indicates the module code (e.g. `CS2101`). |
-`CODE` should begin with two or three alphabets, followed by four digits, and may optionally end with an alphabet.
- +
-`CODE` should not be blank.
-| `CREDITS` | Indicates the modular credits assigned to the module (e.g. `4`). |
-`CREDITS` should be between 0 to 999.
-| `TAG` | Indicates the extra information to associate the module with (e.g. `Presentation`, `Email`). |
-`TAG` should only contain alphanumeric characters.
- +
-`TAG` should not be blank unless otherwise specified.
-| `COREQUISITE` | indicates the module code that is a co-requisite of the module to be added. |
-`COREQUISITE` follow the same format as `CODE`
- +
-`COREQUISITE` should not be blank unless otherwise specified.
-
-| `SEMESTER` | indicates the semesters which offers the module | `SEMESTERS` should be between 1 to 4.
+| `CODE` | Indicates the module code +
+(e.g. `CS2101`). | `CODE` should begin with two alphabets, followed by four digits, and may optionally end with an
+alphabet. +
+`CODE` is insensitive and must be unique
+| `NAME` | Indicates the name of the module +
+(e.g. `Effective Communication for Computing Professionals`). |
+`NAME` should only contain alphanumeric characters, punctuations (excluding "(", ")", "&", "\|") and spaces. +
+Note that if you are using punctuations, you may want to consider replacing "()" with "[]", "&" with "and", and "\|" with "l" (lowercase L) instead! +
+| `CREDITS` | Indicates the modular credits assigned to the module +
+(e.g. `4` Modular Credits). | `CREDITS` should be whole numbers between 0 to 999 (both inclusive).
+| `SEMESTER` | Indicates the semester which the module is offered in. +
+(e.g. Semester `1`) | `SEMESTER` should only be either `1`, `2`, `3` or `4`. +
+`3` and `4` indicates special term semesters 1 and 2 respectively.
+| `COREQUISITE` | Indicates the module code of a co-requisite module. +
+(e.g. `CS2101` is a co-requisite module of `CS2113T`) | `COREQUISITE` follow the same format as `CODE`.
+| `TAG` | Indicates the extra information to associate the module with (e.g. `Presentation`, `Email`). | `TAG` should only contain alphabets and numbers.
 |======
 // end::module_management[]
 
 // tag::module_add[]
 ==== Adding modules : `add` image:https://img.shields.io/badge/module-add-blue.svg[]
 
-Before you can add modules to the degree plan, you'll need to add modules into the *module list* first. +
-Here's how you can use the `add` command
+Before you can add modules to the *degree plan*, you'll need to add modules into the *module list* first. +
+It's easy to add a module into the *module list*! Here's how you can use the `add` command.
 
-Adds a new module to the module list. +
-Format: `add code/CODE name/NAME credits/CREDITS [coreq/COREQUISITE]… [tag/TAG]…`
-
-
-Example:
-
-* `add code/CS1010 name/Programming Methodology credits/4 tag/programming tag/algorithms tag/c tag/imperative` +
-Adds a module named `Programming Methodology` with module code `CS1010`, which is assigned `4` modular credits, to the module list. This module also has the tags `programming`, `algorithms`, `c`, `imperative`.
-
-[TIP]
-A module can have any number of tags (including 0)
-
-Example: +
-
-* `add code/CS1231 credits/4 name/Discrete Structures`
+*Command Format:* `add code/CODE name/NAME credits/CREDITS [sem/SEMESTER]… [coreq/COREQUISITE]… [tag/TAG]…`
 
 [WARNING]
+====
+Please note that you cannot add a new module which has a co-requisite module already existing in the *degree plan*. +
+You'll need to remove the module from the *degree plan* first before you can add the new module in with the co-requisite module specified.
+====
+
+*Example:*
+
+* `add code/GEH1074 name/Luck credits/4 sem/1 sem/2` +
+Adds a module named `Luck` with module code `GEH1074`, which is assigned `4` modular credits and is offered in semesters `1` and `2`, to the *module list*.
+
+.New module "GEH1074 Luck" added to *module list* successfully
+ifdef::env-github[]
+image::module_add_luck.png[width=800]
+endif::[]
+
+ifndef::env-github[]
+image::module_add_luck.png[width=970]
+endif::[]
+
+[NOTE]
 ====
 When adding a module with a corequisite, if the module is added successfully, the co-requisite modules will be updated as well.
 ====
 
-Example: +
+*Example:* +
 
-* `add code/CS2113T name/Software Engineering and Object-Oriented Programming credits/4 coreq/CS2101` +
-Adds a module named `Software Engineering and Object-Oriented Programming` with module code `CS2113T`, which is
-assigned `4` modular credits and has module code `CS2101` as a corequisite, to the module list. This module also has
-the tags `sweng`, `java`. +
-Both `CS2113T` and `CS2101` will be updated to be co-requisites.
-// tag::module_add[]
+* `add name/Skills code/GEH1074T credits/4 sem/1 sem/2 coreq/GEH1074 tag/GEM tag/economics` +
+Adds a module named `Skills` with module code `GEH1074T`, which is assigned `4` modular credits and has module code `GEH1074` as a corequisite, to the module list. +
+Both modules (`GEH1074T` and `GEH1074`) will be updated to be co-requisites as shown below.
+
+.Module GEH1074T is added successfully; GEH1074T and GEH1074 are now co-requisites.
+ifdef::env-github[]
+image::module_add_coreq.png[width=800]
+endif::[]
+
+ifndef::env-github[]
+image::module_add_coreq.png[width=970]
+endif::[]
+
+// end::module_add[]
 
 // tag::module_edit[]
 ==== Editing modules : `edit` image:https://img.shields.io/badge/module-edit-blue.svg[]
 
-Edits an existing module in the module list. +
-Format: `edit INDEX [name/NAME] [code/CODE] [credits/CREDITS] [tag/TAG]… [coreq/COREQUISITE]…`
+Want to change the module details? No problem! +
+You can use this handy `edit` command to update the module details to your liking.
+
+*Command Format:* `edit INDEX [name/NAME] [code/CODE] [credits/CREDITS] [sem/SEMESTER]… [coreq/COREQUISITE]… [tag/TAG]…`
 
 [NOTE]
 ====
 * Edits the module at the specified `INDEX`. The index refers to the index number (beside the module code) shown in the displayed module list.
 * You need to provide at least one of the optional fields to edit.
 * Existing values will be updated to the input values.
-* When editing tags/corequisites, the existing tags/corequisites of the module will be removed (i.e adding of tags is not cumulative.)
+* When editing semesters/corequisites/tags, the existing semesters/corequisites/tags of the module will be removed (i.e adding of semesters/corequisites/tags is not cumulative.)
 * You can remove all the module's tags by typing `tag/` without specifying any tags after it.
-* Likewise, you can remove all module's co-requisites by typing `coreq/` without specifying any codes after it.
+* Likewise, you can remove all module's co-requisites or semesters by typing `coreq/` and `sem/` respectively without
+ specifying any values after the parameter prefix.
 ====
 
 Examples:
 
 * `edit 1 name/Data Structures and Algorithms code/CS2040C` +
-Edits the name and code of the 1st module in the displayed module list to be `Data Structures and Algorithms` and `CS2040C` respectively. +
+Edits the name and code of the 1^st^ module in the displayed module list to be `Data Structures and Algorithms` and
+`CS2040C` respectively. +
 * `edit 2 code/CS2040C tag/` +
-Edits the code of the 2nd module in the displayed module list to be `CS2040C` and clears all existing tags associated
+Edits the code of the 2^nd^ module in the displayed module list to be `CS2040C` and clears all existing tags associated
  with the module. +
-* `edit 3 coreq/CS1010` +
-Edits the co-requisite of the 3rd module in the displayed module list to be `CS1010`. +
-* `edit 4 coreq/CS2105 coreq/CS2106 coreq/CS2107` +
-Edits the co-requisites of the 4rd module in the displayed module list to be `CS2105`, `CS2106` and `CS2107`. +
-// tag::module_edit[]
+* `edit 3 coreq/CS2105 coreq/CS2106 coreq/CS2107` +
+ Edits the co-requisites of the 3^rd^ module in the displayed module list to be `CS2105`, `CS2106` and `CS2107`. +
+
+[NOTE]
+====
+Just like the `add` command, when editing the co-requisites of a module, the co-requisite modules will be updated as well.
+====
+
+*Example:* If `GEH1074` and `GEH1074T` are not co-requisites, running the command `edit 24 coreq/GEH1074T` will
+result in GEH1074 and GEH1074T being co-requisites.
+
+.GEH1074 and GEH1074T are being edited to be co-requisites.
+ifdef::env-github[]
+image::module_edit_coreq.png[width=800]
+endif::[]
+
+ifndef::env-github[]
+image::module_edit_coreq.png[width=970]
+endif::[]
+
+// end::module_edit[]
 
 // tag::module_delete[]
 ==== Deleting modules : `delete` image:https://img.shields.io/badge/module-delete-blue.svg[]
 
-Deletes the specified module from the module list. +
-Format: `delete INDEX`
+Want to delete a module from the *module list*? Simply locate the module to be deleted in the *module list*, and
+then use the `delete` command!
+
+*Command Format:* `delete INDEX`
 
 [NOTE]
 ====
-* Deletes the module at the specified `INDEX`.
-* The index refers to the index number shown in the displayed module list.
-* The index *must be a positive integer* 1, 2, 3, …
+To choose which module you want to delete, include the index number (beside the module code) in the displayed module list.
 ====
 
 [WARNING]
 ====
-* The deleted module will be removed from both the requirement category assigned and (where applicable).
-* When deleting a module, any modules with the deleted module as its co-requisite will be updated
-accordingly (i.e. deleted module is removed from the respective module's co-requisite list).
+* The deleted module will be removed from both the requirement category assigned and the degree plan (where applicable).
+* Any modules with the deleted module as a co-requisite will be updated accordingly (i.e. deleted module is removed from the respective module's co-requisite list).
 ====
 
-Examples:
+*Example:*
+If `GET1074T` and `GET1074` are co-requisite modules, deleting `GET1074` will cause `GET1074` 's list of co-requisite
+ modules to be updated as well.
 
-* `list` +
-`delete 2` +
-Deletes the 2nd module in the module list.
-* `find Programming` +
-`delete 1` +
-Deletes the 1st module in the results of the `find` command.
-// tag::module_delete[]
+.`GET1074` is removed from `GET1074` 's list of co-requisites.
+ifdef::env-github[]
+image::module_delete_coreq.png[width=800]
+endif::[]
 
-==== Listing all modules : `list` image:https://img.shields.io/badge/module-list-blue.svg[]
+ifndef::env-github[]
+image::module_delete_coreq.png[width=970]
+endif::[]
 
-Shows a list of all modules in the module list. +
-Format: `list`
+// end::module_delete[]
 
+// tag::find[]
 ==== Finding modules : `find` image:https://img.shields.io/badge/module-find-blue.svg[]
 
 Having trouble locating the modules you want?
 
-Make use of `find` command which allows you to find modules that have their names, code or credits matches the given
-search criteria +
-Format: `find [name/NAME] OPERATOR [code/CODE] OPERATOR [credits/CREDITS]`
+Make use of `find` command which allows you to find modules that have their names, code or credits matching the given
+search criteria.
+
+*Command Format:* `find [name/NAME] OPERATOR [code/CODE] OPERATOR [credits/CREDITS]`
 
 When this command is used, the application will display only those modules which satisfy the search criteria.
 
-The following table describes the valid prefixes that you can use to supply to the search criteria.
+The following table describes the valid prefixes that you can supply to the search criteria.
 |====
 | *Prefix* | *Description*
 | `name/NAME` | Search for any module `name` which matches `NAME`
 | `code/CODE` | Search for any module `code` which matches `CODE`
 | `credits/CREDITS` | Search for any module `credits` which has `CREDITS`
+| `tag/TAG` | Search for any module `tag` which matches `TAG`
+| `sem/SEMESTER` | Search for any module that is being offered in `SEMESTER`
 |====
 
-The following table describes the valid operators which you can to use supply to the search criteria.
+The following table describes the valid operators which you can supply to the search criteria.
 
 |====
 | *Operator* | *Description* | *Precedence*
 | `&&` | Logical "AND" operation (both conditions A AND B must match) | Highest
 | `\|\|` | Logical "OR" operation (either conditions A OR B must match)| Lowest
+a| `(` and `)` | Search term surrounded by parenthesis will always be evaluated first. If there is a tie, the logical
+operator precedence will be taken into consideration. | N.A
 |====
 
 The following examples describes how you could form a valid search criteria for the `find` command.
@@ -485,7 +553,7 @@ The following examples describes how you could form a valid search criteria for 
 | `find credits/CREDITS` | Returns modules having `CREDITS` in their credits
 |====
 
-If you need multiple prefixes, the following table shows you how you could do it.
+If you need multiple prefixes, the following table shows some examples on how it can be done.
  +
 Note that you will need to separate multiple prefixes with an operator.
 [TIP]
@@ -494,8 +562,8 @@ You could choose which search criteria having a higher priority by specifying pa
 ====
 |====
 | *Multiple Prefix Usage* | *Expected Result*
-| `find name/NAME1 && name/NAME2` | Returns modules containing both `NAME1` and `NAME2 in their names.
-| `find name/NAME1 \|\| name/NAME2` | Returns modules containing both `NAME1` or `NAME2 in their names.
+| `find name/NAME1 && name/NAME2` | Returns modules containing both `NAME1` and `NAME2` in their names.
+| `find name/NAME1 \|\| name/NAME2` | Returns modules containing both `NAME1` or `NAME2` in their names.
 | `find name/NAME && code/CODE` | Returns modules containing `NAME` in their name and `CODE` in their codes.
 | `find code/CODE \|\| (name/NAME && code/CODE2)` | Returns modules containing either `CODE` in their codes or `NAME`
 in their names and `CODE2` in their codes.
@@ -509,20 +577,43 @@ in their names and `CODE2` in their codes.
 ****
 Examples:
 
-* `find name/Security` +
-Displays any modules having the word `security` (e.g. `security` and `Information Security`) in the module list.
-* `find name/Information Security` +
-Displays any modules having name with exact match  `Information Security` in the module list.
-* `find code/CS1231 || code/CS2040`  +
-Displays any modules having code `CS1231` or `CS2040` in the module list.
-* `find credits/4 || credits/12` +
-Displays any modules having credits `4` or `12` in the module list.
-* `find name/Programming || code/CS1231` +
-Displays any modules having name `Programming` or code `CS1231` in the module list.
-* `find code/CS2113 || credits/4 && name/Programming` +
-Displays any modules having name `Programming` and credits `4` or code `CS2113` in the module list.
-* `find name/Programming && (code/CS1231 || code/CS1010)` +
-Displays any modules having name `Programming` and code `CS1231` or code `CS1010` in the module list.
+* `find name/computer` +
+Displays all modules with names containing the word `computer` (e.g. `computer` and `Computer Security`) in the module
+list.
+
+.Finding modules with name contains `computer`
+ifdef::env-github[]
+image::find1.png[width=800]
+endif::[]
+
+ifndef::env-github[]
+image::find1.png[width=970]
+endif::[]
+
+* `find name/computer && name/Security`
+Displays all modules with names containing the word `computer` and `security` in the module list.
+
+.Finding modules with name contains `computer` and `security`.
+ifdef::env-github[]
+image::find2.png[width=800]
+endif::[]
+
+ifndef::env-github[]
+image::find2.png[width=970]
+endif::[]
+
+* `find (sem/1 || sem/4) && name/Programming` +
+Displays all modules with names containing `programming` and is offered in either semester `1` or `4` in the module
+list.
+
+.Finding modules with names containing `programming` and is offered in either semester `1` or `4`.
+ifdef::env-github[]
+image::find3.png[width=800]
+endif::[]
+
+ifndef::env-github[]
+image::find3.png[width=970]
+endif::[]
 
 [TIP]
 ====
@@ -533,11 +624,33 @@ Do note that if you prefer to search for module name containing both `Informatio
 you can do the following command. `find name/Information && name/Security` +
 This command will return you modules with both name keywords. (e.g. `Security in Information Privacy`)
 ====
+// end::find[]
+
+==== Listing all modules : `list` image:https://img.shields.io/badge/module-list-blue.svg[]
+
+Shows a list of all modules in the *module list*. +
+*Command Format:* `list`
+
+[TIP]
+====
+This command is useful if you want to display all modules in the *module list* after doing a `find` command.
+====
+
+*Example:* Running the `list` command:
+
+.All modules are displayed in the *module list*.
+ifdef::env-github[]
+image::module_list.png[width=800]
+endif::[]
+
+ifndef::env-github[]
+image::module_list.png[width=970]
+endif::[]
 
 ==== Selecting modules : `select` image:https://img.shields.io/badge/module-select-blue.svg[]
 
 Selects the module identified by the index number used in the displayed module list. +
-Format: `select INDEX`
+*Command Format:* `select INDEX`
 
 ****
 * Selects the module at the specified `INDEX`.
@@ -550,18 +663,25 @@ Examples:
 * `list` +
 `select 2` +
 Selects the 2nd module in the displayed module list.
-* `find Betsy` +
+* `find Programming` +
 `select 1` +
 Selects the 1st module in the results of the `find` command.
 
+// tag::requirementtracker[]
 === Requirement Tracker
 
-The following table describes the parameters you may use for commands in this section.
+The requirement tracker allows you to manage and and track your degree requirements so that you are always on-track for
+ graduation!
+
+This section contains the various commands that you can use in this application to add, remove, move and list modules
+ to and from the specified requirement categories in this application.
+
+The following table describes the parameters you may use for the commands in this section.
 [cols="<20%,35%,35%"]
 |======
 |*Parameter*| *Description* | *Acceptable Range of Values*
 | `NAME` | Indicates the name of degree requirement category (e.g. `IT Professionalism`).
-| `NAME` should be either one of the following: +
+| `NAME` must be one of the following values: +
 1. `Computing Foundation` +
 2. `Information Security Requirements` +
 3. `Information Security Electives` +
@@ -571,150 +691,412 @@ The following table describes the parameters you may use for commands in this se
 7. `General Education` +
 8. `Unrestricted Electives`
 | `CODE` | Indicates the module code (e.g. `CS2101`). |
-`CODE` should begin with two or three alphabets, followed by four digits, and may optionally end with an alphabet.
- +
-`CODE` should not be blank.
+`CODE` must begin with two or three alphabets, followed by four digits, and may optionally end with an alphabet.
 |======
 
+[WARNING]
+====
+`NAME` and `CODE` (where applicable) must not be empty or blank.
+====
+
+[NOTE]
+====
+* Both `NAME` and `CODE` parameters are case insensitive. (e.g. `computing foundation` will match `Computing
+Foundation`)
+* `CODE` is treated as uppercase (e.g. cs1010 is treated as CS1010), and should be unique.
+* Only full words will be matched. (e.g. `foundation` will not match `Computing Foundation`)
+====
+// end::requirementtracker[]
+
+// tag::requirementadd[]
 ==== Adding modules : `requirement_add` image:https://img.shields.io/badge/requirement-add-8AB702.svg[]
 
-Adds a module to the degree requirement category in the application. +
-Format: `requirement_add name/NAME code/CODE [code/CODE]…`
+Want to see if you have fulfilled a particular degree requirement category?​
 
-*  After adding, the updated requirement category will be displayed.
+Simply add the module code to a degree requirement category using the `requirement_add` command to find out.
 
-Examples:
+*Command Format:* `requirement_add name/NAME code/CODE [code/CODE]…`
+
+*Examples:*
 
 * `requirement_add name/IT Professionalism code/IS4231` +
-Adds module `IS4231` into `IT Professionalism` degree requirement category.
+Adds the module code `IS4231` to the degree requirement category `IT Professionalism`.
+
+The two images below this command describes what you should see when you execute the above command
+
+image::RequirementAddCommand.png[]
+image::RequirementAddCommandAfter.png[]
 
 * `requirement_add name/Computing Foundation code/CS1231 code/CS2100` +
-Adds modules `CS1231` and `CS2100` into `Computing Foundation` degree requirement category.
+Adds module codes `CS1231` and `CS2100` to the degree requirement category `Computing Foundation`.
+// end::requirementadd[]
 
-==== Removing modules : `requirement_remove`  image:https://img.shields.io/badge/requirement-remove-8AB702.svg[]
+// tag::requirementremove[]
+==== Removing modules : `requirement_remove` image:https://img.shields.io/badge/requirement-remove-8AB702.svg[]
 
-Removes the specified module from the degree requirement category. +
-Format: `requirement_remove name/NAME code/CODE [code/CODE]…`
+Want to remove a module code from the degree requirement category?
 
-*  After removing, the updated requirement category will be displayed.
+`requirement_remove` will help you to remove the specified module code from the degree requirement category.
 
-Examples:
+*Command Format:* `requirement_remove code/CODE [code/CODE]…`
 
-* `requirement_remove name/Professionalism code/IS4231` +
-Removes the module `IS4231` from the `IT Professionalism` degree requirement category.
+[TIP]
+====
+If you want to delete the module entirely, simply use the `delete` command instead! The changes will be reflected in
+the degree requirement category as well.
+====
 
+*Examples:*
+
+* `requirement_remove code/IS4231` +
+Removes the module code `IS4231` from the degree requirement category.
+
+The two images below this command describes what you should see when you execute the above command
+
+image::RequirementRemoveCommand.png[]
+image::RequirementRemoveCommandAfter.png[]
+
+* `requirement_remove code/CS1231 code/CS2100` +
+Removes module codes `CS1231` and `CS2100` from the degree requirement category.
+
+// end::requirementremove[]
+
+// tag::requirementmove[]
+==== Moving modules between requirement categories : `requirement_move` image:https://img.shields.io/badge/requirement-move-8AB702.svg[]
+
+Having seconds thoughts about which degree requirement category the module code should be classified under?
+
+Or simply added the module code to the wong degree requirement category?
+
+No worries, `requirement_move` will allow you to move the specified module to another degree requirement category.
+
+*Command Format:* `requirement_move name/NAME code/CODE [code/CODE]…`
+
+[WARNING]
+====
+The `CODE` specified must be already added to a degree requirement category!
+====
+
+[NOTE]
+====
+Unlike the `planner_move` command, modules that are co-requisites will not be moved together.
+====
+
+*Examples:*
+
+* `requirement_move name/Computing Breadth code/IS4231` +
+Moves the module code `IS4231` to the degree requirement category `Computing Breadth.
+
+The two images below this command describes what you should see when you execute the above command
+
+image::RequirementMoveCommand.png[]
+image::RequirementMoveCommandAfter.png[]
+
+* `requirement_move name/Computing Foundation code/CS1231 code/CS2100` +
+Moves module codes `CS1231` and `CS2100` to the degree requirement category `Computing Foundation`.
+
+// end::requirementmove[]
+
+
+// tag::requirementlist[]
 ==== Listing all requirement categories : `requirement_list` image:https://img.shields.io/badge/requirement-list-8AB702.svg[]
+Shows a list of all degree requirement categories in the application and the module codes added into each degree
+requirement category.
 
-Shows a list of all degree requirement categories in the application and the modules
-added into each degree requirement category. +
-Format: `requirement_list`
+*Command Format:* `requirement_list`
 
+*Examples:*
+
+* `requirement_list`
+
+The image below this command describes what you should see when you execute the above command
+
+image::RequirementListCommand.png[]
+// end::requirementlist[]
+
+//tag::degreeplanmanagement[]
 === Degree Plan Management
 
 The following table describes the parameters you may use for commands in this section.
 [cols="<20%,35%,35%"]
 |======
 |*Parameter*| *Description* | *Acceptable Range of Values*
-| `CODE` | Indicates the module code (e.g. `CS2101`). |
-`CODE` should begin with two or three alphabets, followed by four digits, and may optionally end with an alphabet.
- +
-`CODE` should not be blank.
-| `YEAR` | Indicates the year. |
-`YEAR` should be between 1 and 4
-| `SEMESTER` | Indicates the semester. |
-`SEMESTER` follow the same format as `YEAR`
+| `CODE` | Indicates the module code +
+(e.g. `CS2101`). | `CODE` should begin with two alphabets, followed by four digits, and may optionally end with an alphabet.
+| `YEAR` | Indicates the year of one of the semesters in the degree plan. +
+(e.g. `1`) | `YEAR` should only be either 1, 2, 3 or 4. +
+| `SEMESTER` | Indicates the semester of one of the semesters in the degree plan. +
+(e.g. `1`) | `SEMESTER` should only be either 1, 2, 3 or 4. +
+3 and 4 indicates special term semesters 1 and 2 respectively.
 |======
+
+[WARNING]
+====
+* `YEAR`, `SEMESTER` and `CODE` (if specified) must not be empty. +
+* `CODE` is case insensitive, and is treated as uppercase (e.g. `cs1010` is treated as `CS1010`), and should be unique.
+====
+//end::degreeplanmanagement[]
 
 ==== Adding modules : `planner_add` image:https://img.shields.io/badge/planner-add-F17D3F.svg[]
 
-Adds module(s) to the degree plan. +
-Format: `planner_add year/YEAR sem/SEMESTER code/CODE [code/CODE]…`
+Want to add modules to the *degree plan*? +
+Make use of the `planner_add` command to add one or multiple modules to the *degree plan*.
 
-* `CODE` indicates module code.
-* `YEAR` indicates the year.
-* `SEMESTER` indicates the semester.
-* `YEAR` and `SEMESTER` must be either 1, 2, 3 or 4.
-** 3 and 4 for `SEMESTER` indicates special term semesters 1 and 2 respectively.
-* All the module(s) to be added must exist in the module list.
-* After adding, the updated degree plan will be displayed.
+*Command Format:* `planner_add year/YEAR sem/SEMESTER code/CODE [code/CODE]…`
 
-Examples:
+[NOTE]
+====
+* 3 and 4 for `SEMESTER` indicates special term semesters 1 and 2 respectively.
+* All the module(s) to be added *must exist in the module list*.
+* All the module(s) to add *must not have duplicate(s)* in the *degree plan*.
+* For the following two points, `added to the valid semester` is defined as:
+The semesters in which module(s) are offered should contain the semester to which the module(s) are added.
+* The module(s) *must be added to the valid semester*.
+* The co-requisite(s) of the module(s) added *must be added to the valid semester*.
+* After adding, the updated *degree plan* will be displayed.
+====
+
+*Examples:*
 
 * `planner_add year/1 sem/3 code/CS1010` +
-Adds module CS1010 to year 1 semester 3 (special term semester 1) of the degree plan.
+Adds module `CS1010` to year 1 semester 3 (special term semester 1) of the *degree plan*.
 
 * `planner_add year/1 sem/4 code/CS1231 code/CS2040C` +
-Adds modules CS1231 and CS2040C to year 1 semester 4 (special term semester 2) of the degree plan.
+Adds modules `CS1231` and `CS2040C` to year 1 semester 4 (special term semester 2) of the *degree plan*.
 
 * `planner_add year/1 sem/2 code/CS2113T code/CS2107` +
-Adds modules CS2113T and CS2107 to year 1 semester 2 of the degree plan.
+Adds modules `CS2113T` and `CS2107` to year 1 semester 2 of the *degree plan*.
 
-==== Moving modules between semesters : `planner_move` image:https://img.shields.io/badge/planner-move-F17D3F.svg[]
+==== Removing modules : `planner_remove` image:https://img.shields.io/badge/planner-remove-F17D3F.svg[]
 
-Moves a module in the degree plan to another academic semester. +
-Format: `planner_move year/YEAR sem/SEMESTER code/CODE`
+Want to remove modules from the *degree plan*? +
+Make use of `planner_remove` command to remove one or multiple modules from the *degree plan*. +
 
-* After moving, the updated degree plan will be displayed.
+*Command Format:* `planner_remove code/CODE [code/CODE]…`
 
-Examples:
+[NOTE]
+====
+* All the module(s) to remove *must exist in the degree plan*.
+* After removing, the updated *degree plan* will be displayed.
+====
 
-* `planner_move year/1 sem/2 code/CS1231` +
-Moves module CS1231 to year 1 semester 2.
-
-* `planner_move year/1 sem/4 code/CS1231` +
-Moves module CS1231 to year 1 semester 4 (special term semester 2).
-
-==== Listing all semesters : `planner_list` image:https://img.shields.io/badge/planner-list-F17D3F.svg[]
-
-Shows a list of all semesters in the degree plan. +
-
-Format: `planner_list`
-
-== Future Enhancements `[coming in v2.0]`
-
-=== Removing module(s) : `planner_remove`
-
-Coming in v2.0 you will be able to removes module(s) from the degree plan. +
-Format: `planner_remove code/CODE [code/CODE]…`
-
-* All the module(s) to remove must exist in the degree plan.
-* After removing, the updated degree plan will be displayed.
-
-Examples:
+*Examples:*
 
 * `planner_remove code/CS1231` +
-Removes module CS1231 from the degree plan.
+Removes module `CS1231` from the *degree plan*.
 
 * `planner_remove code/CS2100 code/CS2040C` +
-Removes modules CS2100 and CS2040C from the degree plan.
+Removes modules `CS2100` and `CS2040C` from the *degree plan*.
 
-=== Listing a degree planner : `planner_list`
+//tag::plannermove[]
+==== Moving a module between semesters: `planner_move` image:https://img.shields.io/badge/planner-move-F17D3F.svg[]
 
-Shows a list of a specific degree planner. +
-Format: `planner_list y/YEAR s/SEMESTER`
+Any change in your decision? Want to take your module in other semester instead? +
+No worry! Simply use `planner_move` command to move your module in the degree plan along with its co-requisite(s)
+between the semesters by providing your module code and a semester you want to move your module to. +
 
-Examples:
+*Command Format:* `planner_move year/YEAR sem/SEMESTER code/CODE`
 
-* `planner_list y/1 s/1` +
-Shows a degree planner for year 1 semester 1.
-* `planner_list y/1 s/2` +
-Shows a degree planner for year 1 semester 2
+[NOTE]
+====
+When moving a module with co-requisites, if the module is moved successfully, the co-requisite modules will be moved as
+well.
+====
 
-=== Using degree planner to suggest modules : `planner_suggest`
+*Examples:*
 
-Displays a list of modules that can be added to the degree planner.
+* `planner_move year/1 sem/2 code/CS1231` +
+Moves module CS1231 along with its co-requisite(s) to year 1 semester 2.
 
-=== Moving a module between degree requirement categories : `requirement_move`
+* `planner_move year/2 sem/1 code/CS1231` +
+Moves module CS1231 along with its co-requisite(s) to year 2 semester 1.
 
-Moves the specified module to another degree requirement category. +
-Format: `requirement_move CODE name/NAME`
+Before the `planner_move` command:
+[[beforePlannerMove]]
+.Before executing the `planner_move` command.
+ifdef::env-github[]
+image::plannermove1.png[width=800]
+endif::[]
 
-*  After moving, the updated requirement category will be displayed.
+ifndef::env-github[]
+image::plannermove1.png[width=970]
+endif::[]
 
-Examples:
+After entering `planner_move` and pressing kbd:[Enter]:
 
-* `requirement_move IS4231 name/IT Professionalism` +
-Moves the module `IS4231` from to `IT Professionalism` degree requirement category.
+.After executing the `planner_move` command.
+ifdef::env-github[]
+image::plannermove2.png[width=800]
+endif::[]
+
+ifndef::env-github[]
+image::plannermove2.png[width=970]
+endif::[]
+
+Note that co-requste of the module is moved too:
+
+.After executing the `planner_move` command.
+ifdef::env-github[]
+image::plannermove3.png[width=800]
+endif::[]
+
+ifndef::env-github[]
+image::plannermove3.png[width=970]
+endif::[]
+//end::plannermove[]
+
+//tag::plannershow[]
+==== Showing semesters based on year/semester: `planner_show` image:https://img.shields.io/badge/planner-show-F17D3F.svg[]
+
+Having trouble locating semesters you want? +
+Simply use `planner_show` command. It will only show you the semesters you want to see. +
+
+*Command Format:* `planner_list [y/YEAR] OPERATOR [s/SEMESTER`]
+
+When this command is used, the application will display only those semesters which satisfy the search criteria.
+
+The following table describes the valid prefixes that you can use to supply to the search criteria.
+|====
+| *Prefix* | *Description*
+| `year/YEAR` | Search for any semester `year` which matches `YEAR`
+| `sem/SEMESTER` | Search for any semester `sem` which matches `SEMESTER`
+|====
+
+The following table describes the valid operators which you can to use supply to the search criteria.
+
+|====
+| *Operator* | *Description* | *Precedence*
+| `&&` | Logical "AND" operation (both conditions A AND B must match) | Highest
+| `\|\|` | Logical "OR" operation (either conditions A OR B must match)| Lowest
+|====
+
+The following examples describes how you could form a valid search criteria for the `planner_show` command.
+
+|====
+| *Single Prefix Usage* | *Expected Result*
+| `planner_show year/YEAR` | Shows only semesters that are in year `YEAR`
+| `planner_show sem/SEMESTER` | Shows only semesters that are in semester `SEMESTER`
+|====
+
+If you need multiple prefixes, the following table shows you how you could do it.
+ +
+Note that you will need to separate multiple prefixes with an operator.
+[TIP]
+====
+You could choose which search criteria having a higher priority by specifying parenthesis
+====
+|====
+| *Multiple Prefix Usage* | *Expected Result*
+| `planner_show year/YEAR1 \|\| year/YEAR2` | Shows only semesters that are in years `YEAR1` or `YEAR2`.
+| `planner_show sem/SEMESTER1 \|\| sem/SEMESTER2` | Shows only semesters that are in semester `SEMESTER1`
+or `SEMESTER`.
+| `planner_show sem/SEMESTER && (year/YEAR1 \|\| year/YEAR2)` | Shows only semesters that are in year `YEAR1`
+semester `SEMESTER` or `YEAR2` semester `SEMESTER`.
+|====
+
+****
+* The order of the prefixes does not matter. e.g. `planner_show sem/SEMESTER || year/YEAR` returns the same result as
+`planner_show year/YEAR || sem/SEMESTER`
+****
+*Examples:*
+
+* `planner_show year/1` +
+Shows any semesters having the year `1` (e.g. `Year 1 Semester 1`, `Year 1 Semester 2` ...) in the degree plan.
+* `planner_show sem/1` +
+Shows any semesters having the year `1` (e.g. `Year 1 Semester 1`, `Year 2 Semester 1` ...) in the degree plan.
+* `planner_show year/1 || year/2`  +
+Shows any semesters having the year `1` or year `2` in the degree plan.
+* `planner_show sem/1 || sem/2` +
+Shows any semesters having the semester `1` or semester `2` in the degree plan.
+* `planner_show year/1 && sem/1` +
+Shows a semester having the year `1` and semester `1` (e.g. `Year 1 Semester 1`)in the degree plan.
+* `planner_show sem/1 && (year/1 || year/2)` +
+Shows a semester having the year `1` semester `1` and  year `2` semester `1` (e.g. `Year 1 Semester 1` and `Year 2
+Semester 2`) in the degree plan.
+
+Before the `planner_show` command:
+[[beforePlannerShow]]
+.Before executing the `planner_show` command.
+ifdef::env-github[]
+image::plannershow1.png[width=800]
+endif::[]
+
+ifndef::env-github[]
+image::plannershow1.png[width=970]
+endif::[]
+
+After entering `planner_show` and pressing kbd:[Enter]:
+
+.After executing the `planner_show` command.
+ifdef::env-github[]
+image::plannershow2.png[width=800]
+endif::[]
+
+ifndef::env-github[]
+image::plannershow2.png[width=970]
+endif::[]
+//end::plannershow[]
+
+//tag::plannerlist[]
+==== Listing all semesters: `planner_list` image:https://img.shields.io/badge/planner-list-F17D3F.svg[]
+
+Maybe you need to list all your semesters back after using `planner_show`? +
+Simply enter `planner_list` into the application! +
+It wil show you a list of all semesters in degree plan.
+
+*Command Format:* `planner_list`
+//end::plannerlist[]
+
+==== Using degree plan to suggest modules : `planner_suggest` image:https://img.shields.io/badge/planner-suggest-F17D3F.svg[]
+
+Having trouble identifying modules to add to the *degree plan*? +
+Make use of `planner_suggest` command to find out recommended modules to add to the *degree plan*. +
+
+*Command Format:* `planner_suggest credits/CREDITS [tag/TAG]…`
+
+When this command is successfully executed, the *result box* will display modules recommended.
+
+[NOTE]
+====
+* *Maximum 10* modules are recommended in the recommendation list.
+* In addition to the recommendation list, supplementary information on the specific modules with matching tags and credits
+is given as two additional lists. The modules in the two additional lists are all from the recommendation list.
+* Modules recommended in all 3 aforementioned lists are sorted according to the following criteria:
+** For modules with different number of tags that match the desirable tags (matching tags), modules with more matching
+tags will be sorted to the front of the list.
+** If modules have the same number of matching tags but different credits, modules with the credits closer to the
+desirable credits will be sorted to the front of the list.
+** If modules have the same number of matching tags and credits, they will be sorted according to alphabetical
+order.
+** If `tag/TAG` is not supplied as a parameter in the command, modules will be sorted according to credits and alphabetical order only.
+* All modules in the recommendation list and the two additional lists are modules not found in the degree plan.
+====
+
+*Examples:*
+
+* `planner_suggest credits/4` +
+Suggests maximum 10 modules not found in the degree plan, prioritizing modules with credits closer to 4. If tie,
+prioritizes according to alphabetical order.
+
+* `planner_suggest credits/2 tag/algorithms` +
+Suggests maximum 10 modules not found in the degree plan, prioritizing modules with tag `algorithms`. If tie, prioritizes
+according to credits closer to 2. If tie again, prioritizes according to alphabetical order.
+
+
+== Future Enhancements `[coming in v2.0]`
+These are features that will come in future releases of *PlanWithEase*
+
+=== Module Prerequisites `prereq/`
+
+We aim to provide the support of `prerequisites` for our *Module Management*. +
+This changes will allow our users to indicate a module prerequisites and we can handle its dependency for the users
+before they add the module into the *Degree Plan*.
+
+=== Auto-create Degree Plan `autoplan`
+
+We plan to implement this feature to allow an automated planning, we can make use of users feedback and current
+treads based on module popularity then create the degree plan for the users.
+
 
 == FAQ
 
@@ -746,32 +1128,38 @@ a| `planner_add year/1 sem/2 code/CS1010 code/CS2113T`
 |*Remove module(s) from degree plan*| Remove module(s) from degree plan based on the module code
 a| `planner_remove code/CODE [code/CODE]…`
 a| `planner_remove code/CS1231 code/CS1010`
-| *Move module between academic semesters in the degree plan* | Move module between the academic semesters based on
-module code and academic semesters.
+| *Move module between semesters in the degree plan* | Move module between the semesters based on year and
+semester.
 a| `planner_move year/YEAR sem/SEMESTER code/CODE`
 a| `planner_move year/1 sem/2 code/CS1231`
-|*List all degree plans* | List all degree plans a| `planner_list` a| `planner_list`
-|*List specific degree plans* | List specific degree plans based on your search term.
+|*List all semesters in the degree plan* | List all semesters in the degree plan a| `planner_list` a| `planner_list`
+|*List specific semesters in the degree plan* | List specific semesters in the degree plan based on your search term.
 a| `planner_show [year/YEAR] OPERATOR [sem/SEMESTER]`
 a| `planner_show sem/2 && ( year/1 \|\|year/2 )`
 | *Suggest available modules* | Suggest available modules from the module lists based on input argument.
-a| `planner_suggest...`
-a| `planner_suggest...`
+a| `planner_suggest credits/CREDITS [tag/TAG]…`
+a| `planner_suggest credits/4 tag/maths`
 |====
 
-=== Requirement Categories Commands
-The table below shows a list of command which helps you to manage track your requirements
+=== Requirement Tracker Commands
+The table below shows a list of command which helps you to manage and track your degree requirements.
 
 |====
 |*Task*  | *Purpose* |*Command* | *Example*
-| *Add module(s) to degree requirement category* | Add module(s) based on the module code to the chosen category.
+| *Add module(s) to a requirement category* | Add module(s) to the specified requirement category based
+ on the module code provided.
 a| `requirement_add name/NAME code/CODE [code/CODE]…`
 a| `requirement_add name/IT Professionalism code/IS4231`
-| *Remove module from degree requirement category* | Remove module from requirement category based on module code.
-a| `requirement_remove name/NAME code/CODE [code/CODE]…`
-a| `requirement_remove name/IT Professionalism code/IS4231`
-| *Move module(s) between degree requirement categories* | Move module(s) between the requirement categories from any
-requirement categories to a chosen requirement categories.
-a| `requirement_move code/CODE`
-a| `requirement_move code/IS4231 name/IT Professionalism`
+| *Remove module(s) from the requirement category* | Remove module(s) from the requirement category
+based on the module code provided.
+a| `requirement_remove code/CODE [code/CODE]…`
+a| `requirement_remove code/IS4231`
+| *Move module(s) between requirement categories* | Move module(s) between the requirement categories from
+ any requirement categories to a specified requirement categories.
+a| `requirement_move name/NAME code/CODE [code/CODE]…`
+a| `requirement_move name/IT Professionalism code/IS4231`
+| *List all requirement categories in the application*
+| List all requirement categories in the application and the module(s) added to each requirement categories
+a| `requirement_list`
+a| `requirement_list`
 |====
