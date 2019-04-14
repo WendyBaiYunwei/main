@@ -31,8 +31,8 @@ import pwe.planner.logic.commands.ListCommand;
 import pwe.planner.logic.commands.PlannerAddCommand;
 import pwe.planner.logic.commands.PlannerListCommand;
 import pwe.planner.logic.commands.PlannerMoveCommand;
-import pwe.planner.logic.commands.PlannerSuggestCommand;
 import pwe.planner.logic.commands.PlannerShowCommand;
+import pwe.planner.logic.commands.PlannerSuggestCommand;
 import pwe.planner.logic.commands.RedoCommand;
 import pwe.planner.logic.commands.RequirementAddCommand;
 import pwe.planner.logic.commands.RequirementListCommand;
@@ -49,8 +49,8 @@ import pwe.planner.model.module.Name;
 import pwe.planner.model.module.NameContainsKeywordsPredicate;
 import pwe.planner.model.planner.Semester;
 import pwe.planner.model.planner.Year;
-import pwe.planner.model.tag.Tag;
 import pwe.planner.model.planner.YearContainsKeywordPredicate;
+import pwe.planner.model.tag.Tag;
 import pwe.planner.testutil.EditModuleDescriptorBuilder;
 import pwe.planner.testutil.ModuleBuilder;
 import pwe.planner.testutil.ModuleUtil;
@@ -166,20 +166,20 @@ public class CommandParserTest {
     }
 
     @Test
-<<<<<<< HEAD
     public void parseCommand_plannerSuggest() throws Exception {
         Set<Tag> validTags = Set.of(new Tag("validTag"));
         PlannerSuggestCommand command = (PlannerSuggestCommand) parser.parseCommand(
                 PlannerSuggestCommand.COMMAND_WORD + " " + PREFIX_CREDITS + "2 " + PREFIX_TAG + "validTag");
         assertEquals(new PlannerSuggestCommand(new Credits("2"), validTags), command);
-=======
+    }
+
+    @Test
     public void parseCommand_plannerAdd() throws Exception {
         Set<Code> codesToAdd = Set.of(new Code("CS1010"));
         PlannerAddCommand command = (PlannerAddCommand) parser.parseCommand(
                 PlannerAddCommand.COMMAND_WORD + " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "2 " + PREFIX_CODE
                         + "CS1010");
         assertEquals(new PlannerAddCommand(new Year("1"), new Semester("2"), codesToAdd), command);
->>>>>>> master
     }
 
     @Test
