@@ -94,7 +94,7 @@ public class PlannerSuggestCommand extends Command {
 
         // Returns a sorted list of codes to suggest based on both credits and tags.
         List<Code> codesToSuggest = modulesToSuggest.stream().map(ModuleToSuggest::getModuleCode)
-            .filter(module -> !plannerCodes.contains(module)).sorted().limit(MAX_NUMBER_OF_ELEMENETS)
+            .filter(code -> !plannerCodes.contains(code)).sorted().limit(MAX_NUMBER_OF_ELEMENETS)
                 .collect(Collectors.toList());
         // Converts the list to a string to remove the brackets of list.
         String suggestionString = codesToSuggest.stream().map(Code::toString)
