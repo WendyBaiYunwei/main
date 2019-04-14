@@ -4,11 +4,9 @@ import static java.lang.Math.abs;
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
-import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +19,6 @@ import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Credits;
 import pwe.planner.model.module.Module;
 import pwe.planner.model.planner.DegreePlanner;
-import pwe.planner.model.planner.Semester;
 import pwe.planner.model.tag.Tag;
 
 /**
@@ -34,7 +31,6 @@ public class PlannerSuggestCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Suggests module(s) to take. "
             + "Parameters: "
             + PREFIX_CREDITS + "CREDITS "
-            + "[" + PREFIX_SEMESTER + "SEMESTER]... "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_CREDITS + "2 "
@@ -48,17 +44,15 @@ public class PlannerSuggestCommand extends Command {
     private static final int VALUE_OF_NO_DIFFERENCE = 0;
 
     private Credits creditsToFind;
-    private Set<Semester> semestersToFind;
     private Set<Tag> tagsToFind;
 
     /**
      * Creates a PlannerSuggestCommand to suggest {@code codes} to take.
      */
-    public PlannerSuggestCommand(Credits bestCredits, Set<Semester> semesters, Set<Tag> tags) {
+    public PlannerSuggestCommand(Credits bestCredits, Set<Tag> tags) {
         requireAllNonNull(bestCredits, tags);
 
         creditsToFind = bestCredits;
-        semestersToFind = semesters;
         tagsToFind = tags;
     }
 
@@ -87,11 +81,7 @@ public class PlannerSuggestCommand extends Command {
 
             ModuleToSuggest moduleToSuggest =
                     new ModuleToSuggest(creditDifference, matchingTags.size(), module.getCode());
-
-            // Makes sure that the modules suggested are offered in any of the required semesters.
-            if (!Collections.disjoint(module.getSemesters(), semestersToFind)) {
-                modulesToSuggest.add(moduleToSuggest);
-            }
+            modulesToSuggest.add(moduleToSuggest);
 
             if (!matchingTags.isEmpty()) {
                 modulesWithMatchingTags.add(moduleToSuggest);
@@ -104,7 +94,7 @@ public class PlannerSuggestCommand extends Command {
 
         // Returns a sorted list of codes to suggest based on both credits and tags.
         List<Code> codesToSuggest = modulesToSuggest.stream().map(ModuleToSuggest::getModuleCode)
-            .filter(code -> !plannerCodes.contains(code)).sorted().limit(MAX_NUMBER_OF_ELEMENETS)
+            .filter(module -> !plannerCodes.contains(module)).sorted().limit(MAX_NUMBER_OF_ELEMENETS)
                 .collect(Collectors.toList());
         // Converts the list to a string to remove the brackets of list.
         String suggestionString = codesToSuggest.stream().map(Code::toString)
