@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.logic.commands.exceptions.CommandException;
 import pwe.planner.model.Model;
@@ -90,24 +91,21 @@ public class PlannerAddCommand extends Command {
                 .collect(Collectors.toSet());
         if (!duplicatePlannerCodes.isEmpty()) {
             // Converts a set to a string to remove the brackets of set.
-            String duplicatePlannerCodeString = duplicatePlannerCodes.stream().map(Code::toString)
-                    .collect(Collectors.joining(", "));
+            String duplicatePlannerCodeString = StringUtil.joinStreamAsString(duplicatePlannerCodes.stream().sorted());
             throw new CommandException(String.format(MESSAGE_DUPLICATE_CODE, duplicatePlannerCodeString));
         }
 
         Set<Code> nonExistentModuleCodes = codesToAdd.stream()
                 .filter(codeToCheck -> !model.hasModuleCode(codeToCheck)).collect(Collectors.toSet());
         if (!nonExistentModuleCodes.isEmpty()) {
-            String nonExistentModuleString = nonExistentModuleCodes.stream().map(Code::toString)
-                    .collect(Collectors.joining(", "));
+            String nonExistentModuleString = StringUtil.joinStreamAsString(nonExistentModuleCodes.stream().sorted());
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_MODULES, nonExistentModuleString));
         }
 
         Set<Code> invalidSemesterCodes = codesToAdd.stream().filter(codeToCheck -> !model.getModuleByCode(codeToCheck)
                         .getSemesters().contains(semesterToAddTo)).collect(Collectors.toSet());
         if (!invalidSemesterCodes.isEmpty()) {
-            String invalidSemCodesString = invalidSemesterCodes.stream().map(Code::toString)
-                    .collect(Collectors.joining(", "));
+            String invalidSemCodesString = StringUtil.joinStreamAsString(invalidSemesterCodes.stream().sorted());
             throw new CommandException(String.format(MESSAGE_CODE_INVALID_SEMESTER, invalidSemCodesString,
                     semesterToAddTo));
         }
@@ -126,10 +124,8 @@ public class PlannerAddCommand extends Command {
                     .filter(codeToCheck -> !Collections.disjoint(model.getModuleByCode(codeToCheck)
                             .getCorequisites(), invalidSemesterCoreqs)).collect(Collectors.toSet());
 
-            String invalidCodeString = invalidCodesToAdd.stream().map(Code::toString)
-                    .collect(Collectors.joining(", "));
-            String invalidSemCoreqsString = invalidSemesterCoreqs.stream().map(Code::toString)
-                    .collect(Collectors.joining(", "));
+            String invalidCodeString = StringUtil.joinStreamAsString(invalidCodesToAdd.stream().sorted());
+            String invalidSemCoreqsString = StringUtil.joinStreamAsString(invalidSemesterCoreqs.stream().sorted());
 
             throw new CommandException(String.format(MESSAGE_COREQ_INVALID_SEMESTER, invalidSemCoreqsString,
                     invalidCodeString, semesterToAddTo));
@@ -152,10 +148,8 @@ public class PlannerAddCommand extends Command {
             // Returns the invalid duplicate co-requisite(s) that exists in a different section of the degree plan.
             invalidCoreqs.removeAll(selectedDegreePlanner.getCodes());
             if (!invalidCoreqs.isEmpty()) {
-                String invalidCoreqsString = invalidCoreqs.stream().map(Code::toString)
-                        .collect(Collectors.joining(", "));
-                String codesToAddString = codesToAdd.stream().map(Code::toString)
-                        .collect(Collectors.joining(", "));
+                String invalidCoreqsString = StringUtil.joinStreamAsString(invalidCoreqs.stream().sorted());
+                String codesToAddString = StringUtil.joinStreamAsString(codesToAdd.stream().sorted());
                 throw new CommandException(String.format(MESSAGE_INVALID_COREQ, invalidCoreqsString, codesToAddString));
             }
 
@@ -174,8 +168,8 @@ public class PlannerAddCommand extends Command {
         model.setDegreePlanner(selectedDegreePlanner, editedDegreePlanner);
         model.commitApplication();
 
-        String codesToAddString = codesToAdd.stream().map(Code::toString).collect(Collectors.joining(", "));
-        String coreqsAddedString = coreqsAdded.stream().map(Code::toString).collect(Collectors.joining(", "));
+        String codesToAddString = StringUtil.joinStreamAsString(codesToAdd.stream().sorted());
+        String coreqsAddedString = StringUtil.joinStreamAsString(coreqsAdded.stream().sorted());
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo,
                 codesToAddString, coreqsAdded.isEmpty() ? "None" : coreqsAddedString));
