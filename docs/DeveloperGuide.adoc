@@ -965,37 +965,99 @@ image::PlannerRemoveCommandClassDiagram.png[width="650"]
 
 // tag::planner-move[]
 === Planner Move Feature
-The `planner_move` command provides functionality for users to move a module between academic semesters in the degree
-plan.
+
+The `planner_move` command aims to provide functionality for users to move a module between academic semesters in the
+degree plan along with its co-requisites.
+
+This section shares the implementation and design considerations made during the enhancement of the `planner_move`
+feature.
+
+==== Overview
+
+As the users often encounter situations where they decide to take the modules in other semesters after they have
+completed their degree planning, the `planner_move` feature is essential to have.
+
+Current `planner_move` feature supports the moving of a module along with its co-requisites given the module and
+its co-requisites are offered in the semester the users wants to move to.
 
 ==== Current Implementation
-The user input provided will be parsed by the `PlannerMoveCommandParser` class.
-Then, the parsed input will be passed to `PlannerMoveCommand` class to execute the `planner_move` command.
 
-The input should consist of the year and the semester of the degree plan that the user wants to move to and the module
-code that the user want to move.
+When a user execute the `planner_move` command (e.g. `planner_move year/1 sem/2 code/CS1010`), the following steps
+are taken by the application.
 
-`PlannerMoveCommandParser` will throw an error if the user input does not match the command format.
-
-When `PlannerMoveCommand` receives the parsed data, it will perform the following checks in order:
-
-- Check if there exists any academic semester in degree plan that has the module code provided through the user input.
-- Check if there exists any academic semester in degree plan that has the corresponding year and the semester provided
-through the user input.
-- Check if the academic semester in degree plan that the user is trying to move the module from is not same as the
-academic semester that the user is trying to move the module to.
-
-`PlannerMoveCommand` will throw an error if any of the first two check fails.
-
-If the last check fails, `PlannerMoveCommand` will not update the degree plan since there is nothing to be changed.
-
-If all checks pass, `PlannerMoveCommand` will update the context in `ModelManager` through `setDegreePlanner`.
-
-In addition, the `PlannerMoveCommand` class also saves the current database state through `commitApplication` (for
-undo/redo functions).
+Given below is a sequence diagram for moving a module that illustrates the interactions among `PlannerMoveCommand`,
+`PlannerMoveCommandParser` and `Model`:
 
 .PlannerMove component interactions
 image::PlannerMoveComponentSequenceDiagram.png[width="650"]
+
+Step 1. The `PlannerMoveCommandParser#parse` method is invoked. The `PlannerMoveCommandParser` receives the command with
+the arguments as a string.
+
+Step 2. The `PlannerMoveCommandParser` parses the text related to each `PREFIX` and constructs the `PlannerMoveCommand`
+. If more than one of each kind of `PREFIX` (e.g. `year/1 sem/2 code/CS1231 code/CS1010`) is provided, only text related
+to last of each `PREFIX` (e.g. `year/1 sem/2 code/CS1010`) will be parsed.
+
+[NOTE]
+====
+* The input should consist of the year and the semester of the degree plan that the user wants to move to and the module
+code that the user want to move.
+* `PlannerMoveCommandParser` will throw an error if the user input does not match the command format.
+====
+
+Step 3. The `PlannerMoveCommand` with `YEAR`, `SEMESTER` and `CODE` specified by the user is returned.
+
+Step 4. The `PlannerMoveCommand#execute` method is invoked.
+
+Given below is a sequence diagram that illustrates the interactions among `PlannerMoveCommand`, `Model` and
+`Application`:
+
+.PlannerMoveCommand in detail interactions
+image::PlannerMoveCommandSequenceDiagramDetail.png[width="650"]
+
+During this step, the following methods are carried out in the order:
+
+* The `getDegreePlannerByCode` method will be called to check if there exists any academic semester in degree plan that
+has the parsed module code.
+
+* The `getApplication` method will be called followed by the `getDegreePlannerList` method will be called by the
+model to retrieve the list of academic semesters available in the degree plan. Then, `filter` will be carried out
+with the help of `DegreePlanner#isSameDegreePlanner` to locate the academic semester the user wants to move the
+module to.
+
+[NOTE]
+====
+`null` will be returned instead of `DegreePlanner` object if no academic semester matching the year and the semester is
+found.
+====
+
+* The `getModuleByCode` method will be called to return `Module` object having the code `toMove`. Then, the `Module`
+object will be used to retrieve the semesters the module is available in with the `getSemesters` method to check if the
+module is offered in the academic semester the user is trying to move to.
+
+* The `getModuleByCode` method will be called in a loop during the `filter` to find out all the module's co-requisites
+not offered in the academic semester the user is trying to move to.
+
+[NOTE]
+====
+Any violations in the checks will result in throwing of an error message.
+====
+
+Step 5. The `Model` is updated.
+
+[NOTE]
+====
+* If any of the above check fails, `Model` will not be updated since there is nothing to be
+changed.
+
+* If all the above checks passes, the `PlannerMoveCommand` class will update the context in `ModelManager` by calling
+ the`moveModuleBetweenPlanner` method which will call `setDegreePlanner` method.
+
+* After updating the `Model` The `PlannerMoveCommand` will save the current database state through `commitApplication`
+(for undo/redo functions).
+====
+
+Step 6. A `CommandResult` object is returned.
 
 ==== Design Considerations
 ===== Aspect: How should searching of the degree plan based on the year and the semester provided to be done
@@ -1014,78 +1076,67 @@ the semester provided.
 
 [cols="30%,<70%"]
 |======
+|*Pros*| Easy to implement.
 |*Cons*| The method will create unnecessary couplings between `Application` and `Year` as well as between `Application`
  and `Semester`.
 |======
 
-===== Aspect: How should moving of the module code provided from the academic semester to the same academic semester to be done
-
-* **Alternative 1 (current choice):** Do not update the degree plan
-
-[cols="30%,<70%"]
-|======
-|*Pros*|Minimize any overhead trying to attempt moving of the module code from and to the same degree plan.
-|*Cons*|Extra check is needed to determine if the module that the user is trying to move belongs to the same academic
- semester as the academic semester the user wants to move to.
-|======
-
-* **Alternative 2:** Modify `setDegreePlanner` to not throw `DuplicateDegreePlannerException` when `target` is same as
-`editedDegreePlanner`
-
-[cols="30%,<70%"]
-|======
-|*Pros*|Easy to implement as just needs to remove the `if` condition for the check in `setDegreePlanner` method.
-|*Cons*|Simply modifying it to not throw the error will potentially break many other parts of codes. In this case, it
- is not easy to implement anymore.
-|======
-
 // end::planner-move[]
 
-// tag::planner-list[]
-=== Planner List Feature
+// tag::planner-show[]
+=== Planner Show Feature
 
-Planner list feature aims to help users to be able to locate any degree planner(s) based on certain condition(s) in our
-application easily. We support the listing of degree planners based on year and semester. This enable a user to be able
-to list any degree planner(s) with partial information.
+Planner show feature aims to help users to be able to easily locate and display any academic semesters in the degree
+plan which is in our application. We support the displaying of degree planners based on year, semester and boolean
+expressions. This enables our users to display only specific academic semesters in the degree plan that they want.
 
 ==== Overview
 
-When a user invokes the `planner_list` command. (e.g. planner_list y/YEAR s/SEMESTER), the following steps
+When a user invokes the `planner_show` command. (e.g. `planner_show y/YEAR && s/SEMESTER`), the following steps
 are taken by the program.
 
-1. Extract out the text related to `planner_list` command
+1. Extract the text related to `planner_show` command (e.g. `y/YEAR && s/SEMESTER`)
 2. Parse the text related to each `PREFIX` individually.
 3. Return a composite predicate for all attributes.
 
-.PlannerList component interactions
-image::PlannerListComponentSequenceDiagram.png[width="650"]
+Step 1 is performed by the `ApplicationParser` class.
+
+Step 2 and 3 are performed by `BooleanExpressionParser#parse`.
 
 ==== Current Implementation
 
-Planner List is able to:
-
-* list degree planner(s) by year
-i.e. `planner_list y/YEAR`
+* Show degree planner(s) by year
+i.e. `planner_show y/YEAR`
 returns degree planner(s) having its year matches the year given
 
-* list degree planner(s) by semester
-i.e. `planner_list s/SEMESTER`
+* Show degree planner(s) by semester
+i.e. `planner_show s/SEMESTER`
 returns degree planner(s) having its semester matches the semester given
 
-* include `year` and `semester` attributes in one `planner_list` command and list degree planner(s)
-i.e. `planner_list y/YEAR s/SEMESTER`
+* include `year` and `semester` attributes in one `planner_show` command and list degree planner(s)
+i.e. `planner_show y/YEAR s/SEMESTER`
 returns module having its year or semester matches the given year and semester
 
 ==== Design Considerations
 ===== Aspect: How to parse multiple attributes
 
-- Alternative 1 (current choice): Parse the text related to each `PREFIX` individually
-** Pros: User is able to have more flexible search
-** Cons: More time and work needed for developer to implement
+* **Alternative 1 (current choice):** Parse the text related to each `PREFIX` individually using `BooleanExpressionParser`
 
-- Alternative 2: Parse the text related to each `PREFIX` at one go
-** Pros: Easy to implement
-** Cons: Additional overhead needed
+[cols="30%,<70%"]
+|======
+|*Pros*|User is able to have more flexible search.
+|*Cons*|More time and work needed for developer to implement.
+|======
+
+* **Alternative 2:** Parse the text related to each `PREFIX` at one go without using `BooleanExpressionParser`
+
+[cols="30%,<70%"]
+|======
+|*Pros*|Easy to implement.
+|*Cons*|Additional overhead needed and inconsistent in the application's commands since `find` utilises `BooleanExpressionParser`.
+|======
+
+
 // end::planner-list[]
 
 // tag::planner-suggest[]
@@ -1997,14 +2048,66 @@ command.
 .. Test case: `find code/ZZZZZZ` +
 Expected: A guide on how the accepted value for `code` will be displayed in the *result box*.
 
-=== Saving data
+=== Moving a module in the degree plan
 
-. Dealing with missing/corrupted data files
+. Moving a module in the degree plan while all modules are listed
 
-.. _{explain how to simulate a missing/corrupted file and the expected behavior}_
+.. Prerequisites: List all academic semesters using the `planner_list` command. All academic semesters present in the
+degree plan. Application is started with the sample data without any modification in the data.
+.. Test case: `planner_move year/1 sem/1 code/CS1010` +
+   Expected: CS1010 module remains in *Year 1 Semester 1* of the degree plan. Success message will be shown in the
+   status message. Timestamp in the status bar is updated.
+.. Test case: `planner_move year/1 sem/2 code/CS1010` +
+   Expected: CS1010 module is moved from *Year 1 Semester 1*  to *Year 1 Semester 2* of the degree plan. Success
+   message will be shown in the status message. Timestamp in the status bar is updated.
+.. Test case: `planner_move year/1 sem/2 code/CS2101` +
+   Expected: CS2101 module is moved along with its co-requisite CS2113T to *Year 1 Semester 2* of the degree plan.
+   Success message will be shown in the status message. Timestamp in the status bar is updated.
+.. Other incorrect `planner_move` commands to try:
+* `planner_move year/x sem/y code/CS1010` (where x or y is larger than 4) +
+Expected: Error message is displayed.
+* `planner_move year/1 sem/3 code/CS2101` +
+Expected: Error message is displayed since CS2101 module is not offered in semester 3 based on the module list.
 
-_{ more test cases ... }_
 
+=== Showing the academic semesters in the degree plan
+
+. Showing some academic semesters in the degree plan based on the condition
+
+.. Prerequisites: List all academic semesters using the `planner_list` command. All academic semesters present in the degree plan.
+.. Test case: `planner_show year/1` +
+   Expected: Only the academic semesters with year `1` are displayed.
+.. Test case: `planner_show sem/1` +
+   Expected: Only the academic semesters with semester `1` are displayed.
+.. Test case: `planner_show year/1 || year/2` +
+   Expected: Only the academic semesters with year `1` or year `2` are displayed.
+.. Test case: `planner_show sem/1 || sem/2` +
+   Expected: Only the academic semesters with semester `1` or semester `2` are displayed.
+.. Test case: `planner_show year/1 && ( sem/1 || sem2 )` +
+   Expected: Only the academic semesters with year `1` and semester 1 or semester 2 are displayed.
+
+.. Other incorrect `planner_show` commands to try:
+* `planner_show year/x`, (where x is larger than 4) +
+   Expected: Error message is displayed.
+* `planner_show sem/x`, (where x is larger than 4) +
+   Expected: Error message is displayed.
+* `planner_show sem/1 sem/2` +
+   Expected: Error message is displayed since there is no boolean expression in between.
+* `planner_show sem/1 ((`, +
+   Expected: Error message is displayed.
+* `planner_show sem/2 & yea/1`, +
+   Expected: Error message is displayed.
+* `planner_show sem/2 | yea/1`, +
+   Expected: Error message is displayed.
+
+=== Listing all the academic semesters in the degree plan
+
+. Listing all the academic semesters in the degree plan when only some academic semesters are listed
+
+.. Prerequisites: List some academic semesters using the `planner_show` command (e.g. `planner_show year/1`). All
+academic semesters present in the degree plan.
+.. Test case: `planner_list` +
+   Expected: All the academic semesters are listed in the degree plan.
 
 === Degree Requirement Category
 
@@ -2074,4 +2177,12 @@ _{ more test cases ... }_
 .. Test case: `requirement_list` +
    Expected: All the degree requirement categories in the applications, including the current modular credit count
    and the module code(s) added to the degree requirement categories is listed in the application result box.
+
+=== Saving data
+
+. Dealing with missing/corrupted data files
+
+.. _{explain how to simulate a missing/corrupted file and the expected behavior}_
+
+_{ more test cases ... }_
 
