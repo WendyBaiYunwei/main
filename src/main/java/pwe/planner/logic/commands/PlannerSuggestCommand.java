@@ -107,9 +107,9 @@ public class PlannerSuggestCommand extends Command {
         String matchingTagCodeString = StringUtil.joinStreamAsString(codesWithMatchingTags.stream().sorted());
 
         // Returns a sorted list of codes with matching credits in the recommendation list.
-        List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream().sorted().map(ModuleToSuggest::getModuleCode)
-                .filter(code -> !plannerCodes.contains(code) && codesToSuggest.contains(code))
-                .collect(Collectors.toList());
+        List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream().sorted()
+                .map(ModuleToSuggest::getModuleCode).filter(code -> !plannerCodes.contains(code) && codesToSuggest
+                        .contains(code)).collect(Collectors.toList());
         String matchingCreditCodeString = StringUtil.joinStreamAsString(codesWithMatchingCredits.stream().sorted());
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, suggestionString, matchingTagCodeString,
