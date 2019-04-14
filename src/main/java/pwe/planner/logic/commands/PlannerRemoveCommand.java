@@ -24,7 +24,6 @@ public class PlannerRemoveCommand extends Command {
     public static final String COMMAND_WORD = "planner_remove";
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Removes module(s) from the degree plan.\n"
-            + "Parameters: "
             + "Format: " + COMMAND_WORD + " "
             + PREFIX_CODE + "CODE "
             + "[" + PREFIX_CODE + "CODE]...\n"
