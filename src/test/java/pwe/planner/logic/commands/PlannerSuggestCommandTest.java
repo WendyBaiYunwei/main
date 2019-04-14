@@ -7,12 +7,12 @@ import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequir
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import pwe.planner.commons.exceptions.IllegalValueException;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
@@ -42,8 +42,7 @@ public class PlannerSuggestCommandTest {
         Set<Tag> tagsToFind = Set.of(new Tag("nonexistent"));
         List<Code> recommendedCodes = List.of(new Code("CS2101"), new Code("CS2105"));
 
-        String recommendedCodesString = recommendedCodes.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String recommendedCodesString = StringUtil.joinStreamAsString(recommendedCodes.stream().sorted());
 
         String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, recommendedCodesString, "None",
                 "None");
@@ -59,11 +58,9 @@ public class PlannerSuggestCommandTest {
         List<Code> recommendedCodes = List.of(new Code("CS2101"), new Code("CS2105"));
         List<Code> codesWithMatchingCredits = List.of(new Code("CS2101"));
 
-        String matchingCreditCodesString = codesWithMatchingCredits.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String matchingCreditCodesString = StringUtil.joinStreamAsString(codesWithMatchingCredits.stream().sorted());
 
-        String recommendedCodesString = recommendedCodes.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String recommendedCodesString = StringUtil.joinStreamAsString(recommendedCodes.stream().sorted());
 
         String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, recommendedCodesString, "None",
                 matchingCreditCodesString);

@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.model.Model;
 import pwe.planner.model.module.Code;
@@ -97,22 +98,19 @@ public class PlannerSuggestCommand extends Command {
             .filter(code -> !plannerCodes.contains(code)).sorted().limit(MAX_NUMBER_OF_ELEMENETS)
                 .collect(Collectors.toList());
         // Converts the list to a string to remove the brackets of list.
-        String suggestionString = codesToSuggest.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String suggestionString = StringUtil.joinStreamAsString(codesToSuggest.stream().sorted());
 
         // Returns a sorted list of codes with matching tags in the recommendation list.
         List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream().map(ModuleToSuggest::getModuleCode)
             .filter(code -> !plannerCodes.contains(code) && codesToSuggest.contains(code))
                 .sorted().collect(Collectors.toList());
-        String matchingTagCodeString = codesWithMatchingTags.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String matchingTagCodeString = StringUtil.joinStreamAsString(codesWithMatchingTags.stream().sorted());
 
         // Returns a sorted list of codes with matching credits in the recommendation list.
         List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream().map(ModuleToSuggest::getModuleCode)
             .filter(code -> !plannerCodes.contains(code) && codesToSuggest.contains(code))
                 .sorted().collect(Collectors.toList());
-        String matchingCreditCodeString = codesWithMatchingCredits.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String matchingCreditCodeString = StringUtil.joinStreamAsString(codesWithMatchingCredits.stream().sorted());
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, codesToSuggest.isEmpty() ? "None"
                         : suggestionString, codesWithMatchingTags.isEmpty() ? "None" : matchingTagCodeString,
