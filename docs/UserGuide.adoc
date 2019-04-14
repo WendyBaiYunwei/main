@@ -641,6 +641,11 @@ Format: `planner_add year/YEAR sem/SEMESTER code/CODE [code/CODE]…`
 ====
 * 3 and 4 for `SEMESTER` indicates special term semesters 1 and 2 respectively.
 * All the module(s) to be added *must exist in the module list*.
+* All the module(s) to add *must not have duplicate(s)* in the *degree plan*.
+* For the following two points, `added to the valid semester` is defined as:
+The semesters in which module(s) are offered should contain the semester to which the module(s) are added.
+* The module(s) must be added to the valid semester.
+* The co-requisite(s) of the module(s) added must be added to the valid semester.
 * After adding, the updated *degree plan* will be displayed.
 ====
 
@@ -655,7 +660,7 @@ Adds modules `CS1231` and `CS2040C` to year 1 semester 4 (special term semester 
 * `planner_add year/1 sem/2 code/CS2113T code/CS2107` +
 Adds modules `CS2113T` and `CS2107` to year 1 semester 2 of the *degree plan*.
 
-==== Removing module(s) : `planner_remove`
+==== Removing modules : `planner_remove`
 
 Want to remove modules from the *degree plan*? +
 Make use of `planner_remove` command to remove one or multiple modules from the *degree plan*. +
@@ -699,7 +704,7 @@ Format: `planner_list`
 
 ==== Using degree plan to suggest modules : `planner_suggest`
 
-Having trouble identifying modules to add to the *degree plan*?
+Having trouble identifying modules to add to the *degree plan*? +
 Make use of `planner_suggest` command to find out recommended modules to add to the *degree plan*. +
 
 Format: `planner_suggest credits/CREDITS [tag/TAG]…`
