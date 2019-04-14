@@ -35,6 +35,7 @@ import pwe.planner.logic.commands.RedoCommand;
 import pwe.planner.logic.commands.RequirementAddCommand;
 import pwe.planner.logic.commands.RequirementListCommand;
 import pwe.planner.logic.commands.RequirementRemoveCommand;
+import pwe.planner.logic.commands.ResetCommand;
 import pwe.planner.logic.commands.SelectCommand;
 import pwe.planner.logic.commands.UndoCommand;
 import pwe.planner.logic.parser.exceptions.ParseException;
@@ -66,6 +67,12 @@ public class CommandParserTest {
     public void parseCommand_clear() throws Exception {
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD) instanceof ClearCommand);
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD + " planner") instanceof ClearCommand);
+    }
+
+    @Test
+    public void parseCommand_reset() throws Exception {
+        assertTrue(parser.parseCommand(ResetCommand.COMMAND_WORD) instanceof ResetCommand);
+        assertTrue(parser.parseCommand(ResetCommand.COMMAND_WORD + " abc") instanceof ResetCommand);
     }
 
     @Test
