@@ -1,14 +1,17 @@
 package pwe.planner.logic.parser;
 
-import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
 import static pwe.planner.logic.parser.Operator.getOperatorFromString;
 import static pwe.planner.logic.parser.ParserUtil.parseCode;
 import static pwe.planner.logic.parser.ParserUtil.parseCredits;
 import static pwe.planner.logic.parser.ParserUtil.parseName;
+import static pwe.planner.logic.parser.ParserUtil.parseSemester;
+import static pwe.planner.logic.parser.ParserUtil.parseYear;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -16,19 +19,38 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
-import pwe.planner.logic.commands.FindCommand;
+import pwe.planner.logic.parser.exceptions.BooleanParserException;
+import pwe.planner.logic.parser.exceptions.BooleanParserPredicateException;
 import pwe.planner.logic.parser.exceptions.ParseException;
 import pwe.planner.model.module.CodeContainsKeywordsPredicate;
 import pwe.planner.model.module.CreditsContainsKeywordsPredicate;
 import pwe.planner.model.module.KeywordsPredicate;
 import pwe.planner.model.module.NameContainsKeywordsPredicate;
+import pwe.planner.model.planner.SemesterContainsKeywordPredicate;
+import pwe.planner.model.planner.YearContainsKeywordPredicate;
 
 /**
  * Parse input string into a composite predicate.
  */
 public class BooleanExpressionParser<T> {
 
+    public static final String MESSAGE_TIP = "[Tip] If you are unclear about the expected expression format, "
+            + "please check the help page.\nYou can do so by typing \"help\"";
+    public static final String MESSAGE_INVALID_EXPRESSION =
+            "It looks like an invalid command format! (Filter expression is invalid) \n%1$s";
+    public static final String MESSAGE_INVALID_OPERATOR = "This operator is not supported yet!";
+    public static final String MESSAGE_INVALID_OPERATOR_APPLICATION =
+            "Perhaps you missed out one or more search terms?\n" + MESSAGE_TIP;
+    public static final String MESSAGE_UNABLE_TO_CREATE_PREDICATE =
+            "%1$s is not a valid parameter accepted by this command!";
+    public static final String MESSAGE_EMPTY_OUTPUT = "There seems to be an empty condition!\n"
+            + "Perhaps you might want to consider providing the criteria to filter?\n" + MESSAGE_TIP;
+    public static final String MESSAGE_GENERAL_FAIL = "You might want to double check your filter expression!\n"
+            + MESSAGE_TIP;
+
+
     private static final String WHITESPACE = " ";
+
     private List<Prefix> prefixes;
     private String stringToTokenize;
 
@@ -38,7 +60,7 @@ public class BooleanExpressionParser<T> {
         this.prefixes = prefixes;
     }
 
-    private Predicate<T> getKeywordsPredicate(String args) throws ParseException {
+    private Predicate<T> getKeywordsPredicate(String args) throws BooleanParserPredicateException, ParseException {
         assert args != null;
 
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, prefixes.toArray(new Prefix[0]));
@@ -52,21 +74,28 @@ public class BooleanExpressionParser<T> {
         } else if (prefixes.contains(PREFIX_CREDITS) && argMultimap.getValue(PREFIX_CREDITS).isPresent()) {
             String creditKeyword = parseCredits(argMultimap.getValue(PREFIX_CREDITS).get()).toString();
             predicate = new CreditsContainsKeywordsPredicate<T>(List.of(creditKeyword));
+        } else if (prefixes.contains(PREFIX_YEAR) && argMultimap.getValue(PREFIX_YEAR).isPresent()) {
+            String yearKeyword = parseYear(argMultimap.getValue(PREFIX_YEAR).get()).toString();
+            predicate = new YearContainsKeywordPredicate<>(yearKeyword);
+        } else if (prefixes.contains(PREFIX_SEMESTER) && argMultimap.getValue(PREFIX_SEMESTER).isPresent()) {
+            String semesterKeyword = parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get()).toString();
+            predicate = new SemesterContainsKeywordPredicate<>(semesterKeyword);
         } else {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+            throw new BooleanParserPredicateException(String.format(MESSAGE_UNABLE_TO_CREATE_PREDICATE, args));
         }
         return predicate;
     }
 
     /**
      * Apply the operator on the 2 predicates
+     *
      * @param operator
      * @param predicate1
      * @param predicate2
      * @return a composite predicate
      */
     private Predicate<T> applyOperator(Operator operator, Predicate<T> predicate1,
-            Predicate<T> predicate2) throws ParseException {
+                                       Predicate<T> predicate2) throws BooleanParserException {
         requireAllNonNull(operator, predicate1, predicate2);
 
         switch (operator) {
@@ -75,7 +104,7 @@ public class BooleanExpressionParser<T> {
         case AND:
             return predicate1.and(predicate2);
         default:
-            throw new ParseException(String.format(FindCommand.MESSAGE_INVALID_EXPRESSION, FindCommand.MESSAGE_USAGE));
+            throw new BooleanParserException(String.format(MESSAGE_INVALID_EXPRESSION, MESSAGE_INVALID_OPERATOR));
         }
     }
 
@@ -83,9 +112,10 @@ public class BooleanExpressionParser<T> {
      * Parse input argument into a composite predicate.
      * This parse method make use of the shunting yard algorithm to convert in-fix to post fix then evaluate
      * the expression.
+     *
      * @return a composite predicate
      */
-    public Predicate<T> parse() throws ParseException {
+    public Predicate<T> parse() throws BooleanParserException, ParseException {
         BooleanExpressionTokenizer tokenizer = new BooleanExpressionTokenizer(stringToTokenize, prefixes);
 
         Deque<Predicate<T>> output = new ArrayDeque<>();
@@ -98,8 +128,8 @@ public class BooleanExpressionParser<T> {
                 switch (currentToken) {
                 case CliSyntax.OPERATOR_LEFT_BRACKET:
                     if (isNotExpectingLeftBracket) {
-                        throw new ParseException(
-                                String.format(FindCommand.MESSAGE_INVALID_EXPRESSION, FindCommand.MESSAGE_USAGE));
+                        throw new BooleanParserException(String.format(MESSAGE_INVALID_EXPRESSION,
+                                MESSAGE_GENERAL_FAIL));
                     } else {
                         operatorStack.push(Operator.LEFT_BRACKET);
                         isNotExpectingLeftBracket = false;
@@ -133,7 +163,7 @@ public class BooleanExpressionParser<T> {
                 }
             }
         } catch (NoSuchElementException nse) {
-            throw new ParseException(String.format(FindCommand.MESSAGE_INVALID_EXPRESSION, FindCommand.MESSAGE_USAGE));
+            throw new BooleanParserException(String.format(MESSAGE_INVALID_EXPRESSION, MESSAGE_GENERAL_FAIL));
         }
 
         while (!operatorStack.isEmpty()) {
@@ -141,15 +171,20 @@ public class BooleanExpressionParser<T> {
             if (output.size() >= 2) {
                 output.push(applyOperator(operatorStack.pop(), output.pop(), output.pop()));
             } else {
-                throw new ParseException(
-                        String.format(FindCommand.MESSAGE_INVALID_EXPRESSION, FindCommand.MESSAGE_USAGE));
+                throw new BooleanParserException(
+                        String.format(MESSAGE_INVALID_EXPRESSION, MESSAGE_INVALID_OPERATOR_APPLICATION));
             }
         }
 
         // Output stack cannot have more than 1 predicate after shunting yard.
         // i.e. There is 2 predicate in an expression without a operator.
         if (output.size() > 1) {
-            throw new ParseException(String.format(FindCommand.MESSAGE_INVALID_EXPRESSION, FindCommand.MESSAGE_USAGE));
+            throw new BooleanParserException(String.format(MESSAGE_INVALID_EXPRESSION,
+                    MESSAGE_INVALID_OPERATOR_APPLICATION));
+        }
+
+        if (output.size() == 0) {
+            throw new BooleanParserException(String.format(MESSAGE_INVALID_EXPRESSION, MESSAGE_EMPTY_OUTPUT));
         }
 
         assert output.size() == 1 : "output.size() should be 1.";

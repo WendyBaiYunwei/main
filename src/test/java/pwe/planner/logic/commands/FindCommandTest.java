@@ -24,6 +24,7 @@ import pwe.planner.model.ModelManager;
 import pwe.planner.model.UserPrefs;
 import pwe.planner.model.module.CodeContainsKeywordsPredicate;
 import pwe.planner.model.module.CreditsContainsKeywordsPredicate;
+import pwe.planner.model.module.Module;
 import pwe.planner.model.module.NameContainsKeywordsPredicate;
 import pwe.planner.storage.JsonSerializableApplication;
 
@@ -44,10 +45,10 @@ public class FindCommandTest {
 
     @Test
     public void equals() {
-        NameContainsKeywordsPredicate firstPredicate =
-                new NameContainsKeywordsPredicate(Collections.singletonList("first"));
-        NameContainsKeywordsPredicate secondPredicate =
-                new NameContainsKeywordsPredicate(Collections.singletonList("second"));
+        NameContainsKeywordsPredicate<Module> firstPredicate =
+                new NameContainsKeywordsPredicate<>(Collections.singletonList("first"));
+        NameContainsKeywordsPredicate<Module> secondPredicate =
+                new NameContainsKeywordsPredicate<>(Collections.singletonList("second"));
 
         FindCommand findFirstCommand = new FindCommand(firstPredicate);
         FindCommand findSecondCommand = new FindCommand(secondPredicate);
@@ -72,7 +73,7 @@ public class FindCommandTest {
     @Test
     public void execute_zeroKeywords_noModuleFound() {
         String expectedMessage = String.format(MESSAGE_MODULES_LISTED_OVERVIEW, 0);
-        NameContainsKeywordsPredicate predicate = prepareNamePredicate(" ");
+        NameContainsKeywordsPredicate<Module> predicate = prepareNamePredicate(" ");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredModuleList(predicate);
         assertCommandSuccess(command, model, commandHistory, expectedMessage, expectedModel);
@@ -82,7 +83,7 @@ public class FindCommandTest {
     @Test
     public void execute_multipleNameKeywords_multipleModulesFound() {
         String expectedMessage = String.format(MESSAGE_MODULES_LISTED_OVERVIEW, 3);
-        NameContainsKeywordsPredicate predicate = prepareNamePredicate("Kurz Elle Kunz");
+        NameContainsKeywordsPredicate<Module> predicate = prepareNamePredicate("Kurz Elle Kunz");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredModuleList(predicate);
         assertCommandSuccess(command, model, commandHistory, expectedMessage, expectedModel);
@@ -93,7 +94,7 @@ public class FindCommandTest {
     public void execute_multipleCodeKeywords_multipleModulesFound() {
         String expectedMessage = String.format(MESSAGE_MODULES_LISTED_OVERVIEW, 3);
         // TODO: update the module code after TypicalModule attribute are updated
-        CodeContainsKeywordsPredicate predicate = prepareCodePredicate("CS2040C CS2101 CS2102");
+        CodeContainsKeywordsPredicate<Module> predicate = prepareCodePredicate("CS2040C CS2101 CS2102");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredModuleList(predicate);
         assertCommandSuccess(command, model, commandHistory, expectedMessage, expectedModel);
@@ -104,7 +105,7 @@ public class FindCommandTest {
     public void execute_multipleCreditsKeywords_multipleModulesFound() {
         String expectedMessage = String.format(MESSAGE_MODULES_LISTED_OVERVIEW, 3);
         // TODO: update the module credits after TypicalModule attribute are updated
-        CreditsContainsKeywordsPredicate predicate = prepareCreditsPredicate("2 4 5");
+        CreditsContainsKeywordsPredicate<Module> predicate = prepareCreditsPredicate("2 4 5");
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredModuleList(predicate);
         assertCommandSuccess(command, model, commandHistory, expectedMessage, expectedModel);
@@ -114,22 +115,22 @@ public class FindCommandTest {
     /**
      * Parses {@code userInput} into a {@code NameContainsKeywordsPredicate}.
      */
-    private NameContainsKeywordsPredicate prepareNamePredicate(String userInput) {
-        return new NameContainsKeywordsPredicate(Arrays.asList(userInput.split("\\s+")));
+    private NameContainsKeywordsPredicate<Module> prepareNamePredicate(String userInput) {
+        return new NameContainsKeywordsPredicate<>(Arrays.asList(userInput.split("\\s+")));
     }
 
     /**
      * Parses {@code userInput} into a {@code CodeContainsKeywordsPredicate}.
      */
-    private CodeContainsKeywordsPredicate prepareCodePredicate(String userInput) {
-        return new CodeContainsKeywordsPredicate(Arrays.asList(userInput.split("\\s+")));
+    private CodeContainsKeywordsPredicate<Module> prepareCodePredicate(String userInput) {
+        return new CodeContainsKeywordsPredicate<>(Arrays.asList(userInput.split("\\s+")));
     }
 
     /**
      * Parses {@code userInput} into a {@code CreditsContainsKeywordsPredicate}.
      */
-    private CreditsContainsKeywordsPredicate prepareCreditsPredicate(String userInput) {
-        return new CreditsContainsKeywordsPredicate(Arrays.asList(userInput.split("\\s+")));
+    private CreditsContainsKeywordsPredicate<Module> prepareCreditsPredicate(String userInput) {
+        return new CreditsContainsKeywordsPredicate<>(Arrays.asList(userInput.split("\\s+")));
     }
 
 }

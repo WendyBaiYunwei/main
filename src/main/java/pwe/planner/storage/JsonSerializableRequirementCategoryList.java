@@ -3,6 +3,7 @@ package pwe.planner.storage;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,13 +14,12 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import javafx.collections.ObservableList;
 
 import pwe.planner.commons.exceptions.IllegalValueException;
-import pwe.planner.model.ReadOnlyApplication;
 import pwe.planner.model.module.Code;
 import pwe.planner.model.requirement.RequirementCategory;
 import pwe.planner.model.requirement.UniqueRequirementCategoryList;
 
 /**
- * An Immutable requirementCategoryList that is serializable to JSON format.
+ * An immutable list of requirement categories that is serializable to JSON format.
  */
 @JsonRootName(value = "requirementCategoryList")
 public class JsonSerializableRequirementCategoryList {
@@ -30,62 +30,67 @@ public class JsonSerializableRequirementCategoryList {
     public static final String MESSAGE_DUPLICATE_REQUIREMENT_CATEGORY_CODE =
             "The module code (%1$s) is added to more than one requirement category!";
 
-    private final List<JsonAdaptedRequirementCategoryList> requirementCategories = new ArrayList<>();
+    private final List<JsonAdaptedRequirementCategory> requirementCategories = new ArrayList<>();
 
     /**
-     * Constructs a {@code JsonSerializableRequirementCategoryList} with the given requirementCategories.
+     * Constructs a {@link JsonSerializableRequirementCategoryList} with the given list of
+     * {@link JsonAdaptedRequirementCategory}.
      */
     @JsonCreator
     public JsonSerializableRequirementCategoryList(
-            @JsonProperty("requirementCategories") List<JsonAdaptedRequirementCategoryList> requirementCategories) {
+            @JsonProperty("requirementCategories") List<JsonAdaptedRequirementCategory> requirementCategories) {
         requireNonNull(requirementCategories);
 
         this.requirementCategories.addAll(requirementCategories);
     }
 
     /**
-     * Converts a given {@code JsonSerializableRequirementCategoryList} into this class for Jackson use.
+     * Converts a given {@link ObservableList} of {@link RequirementCategory} into this class for Jackson use.
      *
-     * @param source future changes to this will not affect the created {@code JsonSerializableRequirementCategoryList}.
+     * @param source future changes to this will not affect the created {@link JsonSerializableModuleList}.
      */
-
-    public JsonSerializableRequirementCategoryList(ReadOnlyApplication source) {
+    public JsonSerializableRequirementCategoryList(ObservableList<RequirementCategory> source) {
         requireNonNull(source);
 
-        requirementCategories.addAll(source.getRequirementCategoryList().stream()
-                .map(JsonAdaptedRequirementCategoryList::new).collect(Collectors.toList()));
+        source.stream().map(JsonAdaptedRequirementCategory::new).forEach(requirementCategories::add);
     }
 
     /**
-     * Converts this requirementCategory list into the model's {@code JsonAdaptedRequirementCategoryList} object.
+     * Converts the list of {@link JsonAdaptedRequirementCategory} into the model's
+     * {@code ObservableList<RequirementCategory>} object.
+     * <br><br>
+     * Data constraints:<br>
+     * - All requirement categories must be unique.<br>
+     * - All codes within requirement categories must be unique (cannot appear in multiple requirement categories).
      *
      * @throws IllegalValueException if there were any data constraints violated.
      */
     public ObservableList<RequirementCategory> toModelType() throws IllegalValueException {
+        // Ensure all requirement categories are unique
         UniqueRequirementCategoryList uniqueRequirementCategoryList = new UniqueRequirementCategoryList();
-        for (JsonAdaptedRequirementCategoryList jsonAdaptedRequirementCategoryList : requirementCategories) {
-            RequirementCategory requirementCategory = jsonAdaptedRequirementCategoryList.toModelType();
+        for (JsonAdaptedRequirementCategory jsonAdaptedRequirementCategory : requirementCategories) {
+            RequirementCategory requirementCategory = jsonAdaptedRequirementCategory.toModelType();
             if (uniqueRequirementCategoryList.contains(requirementCategory)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_REQUIREMENT_CATEGORY);
             }
             uniqueRequirementCategoryList.add(requirementCategory);
         }
 
+        // Ensure that all module codes appears at most once
         ObservableList<RequirementCategory> requirementCategories = uniqueRequirementCategoryList
                 .asUnmodifiableObservableList();
+        List<Code> allRequirementCategoryCodes = requirementCategories.stream().map(RequirementCategory::getCodeSet)
+                .flatMap(Collection::stream).collect(Collectors.toList());
+        for (Code code : allRequirementCategoryCodes) {
+            long codeAppearanceInRequirementCategories = allRequirementCategoryCodes.stream()
+                    .filter(requirementCategoryCode -> requirementCategoryCode.equals(code))
+                    .count();
 
-        for (RequirementCategory requirementCategory : requirementCategories) {
-            for (Code code : requirementCategory.getCodeSet()) {
-                long codeApperanceInRequirementCategories = requirementCategories.stream()
-                        .map(RequirementCategory::getCodeSet)
-                        .filter(codes -> codes.contains(code))
-                        .count();
-
-                if (codeApperanceInRequirementCategories > 1) {
-                    throw new IllegalValueException(String.format(MESSAGE_DUPLICATE_REQUIREMENT_CATEGORY_CODE, code));
-                }
+            if (codeAppearanceInRequirementCategories > 1) {
+                throw new IllegalValueException(String.format(MESSAGE_DUPLICATE_REQUIREMENT_CATEGORY_CODE, code));
             }
         }
+
         return requirementCategories;
     }
 }

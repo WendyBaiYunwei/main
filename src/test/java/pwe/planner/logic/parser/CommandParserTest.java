@@ -13,7 +13,6 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
 import static pwe.planner.testutil.TypicalIndexes.INDEX_FIRST_MODULE;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,13 +30,17 @@ import pwe.planner.logic.commands.FindCommand;
 import pwe.planner.logic.commands.HelpCommand;
 import pwe.planner.logic.commands.HistoryCommand;
 import pwe.planner.logic.commands.ListCommand;
-import pwe.planner.logic.commands.PlannerListAllCommand;
+import pwe.planner.logic.commands.PlannerAddCommand;
+import pwe.planner.logic.commands.PlannerListCommand;
 import pwe.planner.logic.commands.PlannerMoveCommand;
 import pwe.planner.logic.commands.PlannerSuggestCommand;
+import pwe.planner.logic.commands.PlannerShowCommand;
 import pwe.planner.logic.commands.RedoCommand;
 import pwe.planner.logic.commands.RequirementAddCommand;
 import pwe.planner.logic.commands.RequirementListCommand;
+import pwe.planner.logic.commands.RequirementMoveCommand;
 import pwe.planner.logic.commands.RequirementRemoveCommand;
+import pwe.planner.logic.commands.ResetCommand;
 import pwe.planner.logic.commands.SelectCommand;
 import pwe.planner.logic.commands.UndoCommand;
 import pwe.planner.logic.parser.exceptions.ParseException;
@@ -49,6 +52,7 @@ import pwe.planner.model.module.NameContainsKeywordsPredicate;
 import pwe.planner.model.planner.Semester;
 import pwe.planner.model.planner.Year;
 import pwe.planner.model.tag.Tag;
+import pwe.planner.model.planner.YearContainsKeywordPredicate;
 import pwe.planner.testutil.EditModuleDescriptorBuilder;
 import pwe.planner.testutil.ModuleBuilder;
 import pwe.planner.testutil.ModuleUtil;
@@ -71,6 +75,12 @@ public class CommandParserTest {
     public void parseCommand_clear() throws Exception {
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD) instanceof ClearCommand);
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD + " planner") instanceof ClearCommand);
+    }
+
+    @Test
+    public void parseCommand_reset() throws Exception {
+        assertTrue(parser.parseCommand(ResetCommand.COMMAND_WORD) instanceof ResetCommand);
+        assertTrue(parser.parseCommand(ResetCommand.COMMAND_WORD + " abc") instanceof ResetCommand);
     }
 
     @Test
@@ -100,7 +110,7 @@ public class CommandParserTest {
         List<String> keywords = Arrays.asList("foo");
         FindCommand command = (FindCommand) parser.parseCommand(FindCommand.COMMAND_WORD + " "
                 + PREFIX_NAME + "foo");
-        assertEquals(new FindCommand(new NameContainsKeywordsPredicate(keywords)), command);
+        assertEquals(new FindCommand(new NameContainsKeywordsPredicate<>(keywords)), command);
     }
 
     @Test
@@ -136,9 +146,17 @@ public class CommandParserTest {
     }
 
     @Test
-    public void parseCommand_plannerListAll() throws Exception {
-        assertTrue(parser.parseCommand(PlannerListAllCommand.COMMAND_WORD) instanceof PlannerListAllCommand);
-        assertTrue(parser.parseCommand(PlannerListAllCommand.COMMAND_WORD + " 3") instanceof PlannerListAllCommand);
+    public void parseCommand_plannerList() throws Exception {
+        assertTrue(parser.parseCommand(PlannerListCommand.COMMAND_WORD) instanceof PlannerListCommand);
+        assertTrue(parser.parseCommand(PlannerListCommand.COMMAND_WORD + " 3") instanceof PlannerListCommand);
+    }
+
+    @Test
+    public void parseCommand_plannerShow() throws Exception {
+        String keyword = "1";
+        PlannerShowCommand yearCommand = (PlannerShowCommand) parser.parseCommand(PlannerShowCommand.COMMAND_WORD + " "
+                + PREFIX_YEAR + "1");
+        assertEquals(new PlannerShowCommand(new YearContainsKeywordPredicate<>(keyword)), yearCommand);
     }
 
     @Test
@@ -150,18 +168,26 @@ public class CommandParserTest {
     }
 
     @Test
+<<<<<<< HEAD
     public void parseCommand_plannerSuggest() throws Exception {
         Set<Tag> validTags = Set.of(new Tag("validTag"));
         PlannerSuggestCommand command = (PlannerSuggestCommand) parser.parseCommand(
                 PlannerSuggestCommand.COMMAND_WORD + " " + PREFIX_CREDITS + "2 " + PREFIX_TAG + "validTag");
         assertEquals(new PlannerSuggestCommand(new Credits("2"), validTags), command);
+=======
+    public void parseCommand_plannerAdd() throws Exception {
+        Set<Code> codesToAdd = Set.of(new Code("CS1010"));
+        PlannerAddCommand command = (PlannerAddCommand) parser.parseCommand(
+                PlannerAddCommand.COMMAND_WORD + " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "2 " + PREFIX_CODE
+                        + "CS1010");
+        assertEquals(new PlannerAddCommand(new Year("1"), new Semester("2"), codesToAdd), command);
+>>>>>>> master
     }
 
     @Test
     public void parseCommand_requirementAdd() throws Exception {
         Name name = new Name("Computing Foundation");
-        Set<Code> codeSet = new HashSet<>();
-        codeSet.add(new Code("CS1010"));
+        Set<Code> codeSet = Set.of(new Code("CS1010"));
         RequirementAddCommand command = (RequirementAddCommand)
                 parser.parseCommand(RequirementUtil.getRequirementAddCommand(name, codeSet));
         assertEquals(new RequirementAddCommand(name, codeSet), command);
@@ -173,13 +199,21 @@ public class CommandParserTest {
     }
 
     @Test
+    public void parseCommand_requirementMove() throws Exception {
+        Set<Code> codeSet = Set.of(new Code("CS2100"));
+        RequirementMoveCommand command = (RequirementMoveCommand) parser.parseCommand(
+                RequirementMoveCommand.COMMAND_WORD + " " + PREFIX_NAME + "Computing Breadth " + PREFIX_CODE
+                        + "CS2100");
+        assertEquals(new RequirementMoveCommand(new Name("Computing Breadth"), codeSet), command);
+    }
+
+    @Test
     public void parseCommand_requirementRemove() throws Exception {
-        Name name = new Name("Computing Foundation");
-        Set<Code> codeSet = new HashSet<>();
-        codeSet.add(new Code("CS1010"));
+        Set<Code> codeSet = Set.of(new Code("CS1010"));
         RequirementRemoveCommand command = (RequirementRemoveCommand)
-                parser.parseCommand(RequirementUtil.getRequirementRemoveCommand(name, codeSet));
-        assertEquals(new RequirementRemoveCommand(name, codeSet), command);
+                parser.parseCommand(RequirementUtil.getRequirementRemoveCommand(
+                        new Name("Computing Foundation"), codeSet));
+        assertEquals(new RequirementRemoveCommand(new Name("Computing Foundation"), codeSet), command);
     }
 
     @Test

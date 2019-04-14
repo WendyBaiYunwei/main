@@ -22,7 +22,7 @@
   }, {
     "name" : "Mathematics",
     "credits" : "12",
-    "codeList" : [ ]
+    "codeList" : [ "CS1231" ]
   }, {
     "name" : "General Education",
     "credits" : "20",

@@ -188,7 +188,9 @@ public class JsonApplicationStorage implements ApplicationStorage {
         requireAllNonNull(application, filePath);
 
         FileUtil.createIfMissing(filePath);
-        JsonUtil.saveJsonFile(new JsonSerializableDegreePlannerList(application), filePath);
+        JsonSerializableDegreePlannerList serializedDegreePlannerList =
+                new JsonSerializableDegreePlannerList(application.getDegreePlannerList());
+        JsonUtil.saveJsonFile(serializedDegreePlannerList, filePath);
     }
 
     @Override
@@ -233,7 +235,9 @@ public class JsonApplicationStorage implements ApplicationStorage {
         requireAllNonNull(application, filePath);
 
         FileUtil.createIfMissing(filePath);
-        JsonUtil.saveJsonFile(new JsonSerializableRequirementCategoryList(application), filePath);
+        JsonSerializableRequirementCategoryList serializedRequirementCategoryList =
+                new JsonSerializableRequirementCategoryList(application.getRequirementCategoryList());
+        JsonUtil.saveJsonFile(serializedRequirementCategoryList, filePath);
     }
 
 }

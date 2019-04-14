@@ -1,5 +1,6 @@
 package systemtests;
 
+import static org.junit.Assert.assertTrue;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_MODULE_DISPLAYED_INDEX;
 import static pwe.planner.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
@@ -58,13 +59,10 @@ public class DeleteCommandSystemTest extends ApplicationSystemTest {
         /* ------------------ Performing delete operation while a filtered list is being shown ---------------------- */
 
         /* Case: filtered module list, delete index within bounds of application and module list -> deleted */
-        // TODO: revisit this unit test due to a strange bug with Travis CI. Where assertion returned false at line 65
-        /*
         showModulesWithName(KEYWORD_MATCHING_MEIER);
         Index index = INDEX_FIRST_MODULE;
         assertTrue(index.getZeroBased() < getModel().getFilteredModuleList().size());
         assertCommandSuccess(index);
-        */
 
         /* Case: filtered module list, delete index within bounds of application but out of bounds of module list
          * -> rejected

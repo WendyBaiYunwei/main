@@ -31,6 +31,10 @@ public class PlannerAddCommandParser implements Parser<PlannerAddCommand> {
     public PlannerAddCommand parse(String args) throws ParseException {
         requireNonNull(args);
 
+        if (args.isEmpty()) {
+            throw new ParseException(PlannerAddCommand.MESSAGE_USAGE);
+        }
+
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_CODE, PREFIX_YEAR , PREFIX_SEMESTER);
 

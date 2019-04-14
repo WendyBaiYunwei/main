@@ -26,7 +26,7 @@ public class JsonAdaptedCode {
     }
 
     /**
-     * Converts a given {@code Tag} into this class for Jackson use.
+     * Converts a given {@link Code} into this class for Jackson use.
      */
     public JsonAdaptedCode(Code source) {
         requireNonNull(source);
@@ -40,9 +40,9 @@ public class JsonAdaptedCode {
     }
 
     /**
-     * Converts this Jackson-friendly adapted tag object into the model's {@code Tag} object.
+     * Converts this Jackson-friendly adapted code object into the model's {@link Code} object.
      *
-     * @throws IllegalValueException if there were any data constraints violated in the adapted tag.
+     * @throws IllegalValueException if there were any data constraints violated in the adapted code.
      */
     public Code toModelType() throws IllegalValueException {
         if (!Code.isValidCode(codeValue)) {
