@@ -19,6 +19,7 @@ import pwe.planner.model.ModelManager;
 import pwe.planner.model.UserPrefs;
 import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Credits;
+import pwe.planner.model.planner.Semester;
 import pwe.planner.model.tag.Tag;
 import pwe.planner.storage.JsonSerializableApplication;
 
@@ -40,6 +41,7 @@ public class PlannerSuggestCommandTest {
     public void execute_modulesWithoutMatchingTagsAndCredits_recommendedModulesFound() {
         Credits bestCredits = new Credits("3");
         Set<Tag> tagsToFind = Set.of(new Tag("nonexistent"));
+        Set<Semester> semestersToFind = Set.of(new Semester("1"));
         List<Code> recommendedCodes = List.of(new Code("CS2101"), new Code("CS2105"));
 
         String recommendedCodesString = recommendedCodes.stream().map(Code::toString)
@@ -48,7 +50,7 @@ public class PlannerSuggestCommandTest {
         String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, recommendedCodesString, "None",
                 "None");
 
-        assertCommandSuccess(new PlannerSuggestCommand(bestCredits, tagsToFind), model, commandHistory,
+        assertCommandSuccess(new PlannerSuggestCommand(bestCredits, semestersToFind, tagsToFind), model, commandHistory,
                 expectedMessage, model);
     }
 
@@ -56,6 +58,7 @@ public class PlannerSuggestCommandTest {
     public void execute_modulesWithMatchingCredits_recommendedModulesFound() {
         Credits bestCredits = new Credits("4");
         Set<Tag> tagsToFind = Set.of(new Tag("nonexistent"));
+        Set<Semester> semestersToFind = Set.of(new Semester("1"));
         List<Code> recommendedCodes = List.of(new Code("CS2101"), new Code("CS2105"));
         List<Code> codesWithMatchingCredits = List.of(new Code("CS2101"));
 
@@ -68,7 +71,7 @@ public class PlannerSuggestCommandTest {
         String expectedMessage = String.format(PlannerSuggestCommand.MESSAGE_SUCCESS, recommendedCodesString, "None",
                 matchingCreditCodesString);
 
-        assertCommandSuccess(new PlannerSuggestCommand(bestCredits, tagsToFind), model, commandHistory,
+        assertCommandSuccess(new PlannerSuggestCommand(bestCredits, semestersToFind, tagsToFind), model, commandHistory,
                 expectedMessage, model);
     }
 }

@@ -3,9 +3,12 @@ package pwe.planner.logic.parser;
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 import static pwe.planner.logic.parser.ParserUtil.arePrefixesPresent;
 import static pwe.planner.logic.parser.ParserUtil.parseCredits;
+import static pwe.planner.logic.parser.ParserUtil.parseSemester;
+import static pwe.planner.logic.parser.ParserUtil.parseSemesters;
 import static pwe.planner.logic.parser.ParserUtil.parseTags;
 
 import java.util.Set;
@@ -13,6 +16,7 @@ import java.util.Set;
 import pwe.planner.logic.commands.PlannerSuggestCommand;
 import pwe.planner.logic.parser.exceptions.ParseException;
 import pwe.planner.model.module.Credits;
+import pwe.planner.model.planner.Semester;
 import pwe.planner.model.tag.Tag;
 
 /**
@@ -32,7 +36,7 @@ public class PlannerSuggestCommandParser implements Parser<PlannerSuggestCommand
             throw new ParseException(PlannerSuggestCommand.MESSAGE_USAGE);
         }
 
-        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_CREDITS, PREFIX_TAG);
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_CREDITS, PREFIX_SEMESTER, PREFIX_TAG);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_CREDITS) || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(
@@ -40,8 +44,9 @@ public class PlannerSuggestCommandParser implements Parser<PlannerSuggestCommand
         }
 
         Credits credits = parseCredits(argMultimap.getValue(PREFIX_CREDITS).get());
+        Set<Semester> semesters = parseSemesters(argMultimap.getAllValues(PREFIX_SEMESTER));
         Set<Tag> tags = parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
-        return new PlannerSuggestCommand(credits, tags);
+        return new PlannerSuggestCommand(credits, semesters, tags);
     }
 }
