@@ -112,9 +112,8 @@ public class PlannerSuggestCommand extends Command {
                 .sorted().collect(Collectors.toList());
         String matchingCreditCodeString = StringUtil.joinStreamAsString(codesWithMatchingCredits.stream().sorted());
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, codesToSuggest.isEmpty() ? "None"
-                        : suggestionString, codesWithMatchingTags.isEmpty() ? "None" : matchingTagCodeString,
-                codesWithMatchingCredits.isEmpty() ? "None" : matchingCreditCodeString));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, suggestionString, matchingTagCodeString,
+                matchingCreditCodeString));
     }
 
     @Override
