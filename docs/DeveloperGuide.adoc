@@ -811,7 +811,7 @@ of tags that match the desirable tags will be prioritized. If tie, modules with 
 will be prioritized. If tie again, modules will be sorted according to alphabetical order.
 
 .PlannerSuggestCommand activity diagram
-image::PlannerSuggestCommandAcitivityDiagram.png[width="650"]
+image::PlannerSuggestCommandActivityDiagram.png[width="650"]
 
 ==== Design Considerations
 ===== Aspect: Choice of where to put `ModuleToSuggest` class.
