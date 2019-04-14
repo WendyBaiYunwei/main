@@ -639,7 +639,7 @@ After passing all of the above checks, `PlannerRemoveCommand` updates the contex
 In addition to removing module code(s) from the degree plan, the `PlannerRemoveCommand` class also saves the
 current database state through `commitApplication` (for undo/redo functions).
 
-.PlannerRemoveCommand component interactions
+.PlannerRemoveCommand class diagram
 image::PlannerRemoveCommandClassDiagram.png[width="650"]
 
 ==== Design Considerations
@@ -806,7 +806,7 @@ is the main recommendation list that sorts the modules in a specific way and dis
 
 If `tag` is supplied as a parameter in input, modules will be sorted according to tags first. Modules with greater number of tags that match the desirable tags will be prioritized. If tie, modules with credits closer to the desirable credits will be prioritized. If tie, modules will be sorted according to alphabetical order.
 
-.PlannerSuggestCommand component interactions
+.PlannerSuggestCommand activity diagram
 image::PlannerSuggestCommandAcitivityDiagram.png[width="650"]
 
 ==== Design Considerations
