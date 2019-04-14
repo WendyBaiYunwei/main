@@ -93,8 +93,7 @@ public class PlannerRemoveCommand extends Command {
 
         // Converts a set to a string to remove the brackets of set.
         String removedCodesString = StringUtil.joinStreamAsString(codesToRemove.stream().sorted());
-        String coreqsRemovedString = coreqsRemoved.isEmpty() ? "None" : StringUtil
-                .joinStreamAsString(coreqsRemoved.stream().sorted());
+        String coreqsRemovedString = StringUtil.joinStreamAsString(coreqsRemoved.stream().sorted());
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, removedCodesString, coreqsRemovedString));
     }
