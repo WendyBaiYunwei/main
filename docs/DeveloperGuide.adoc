@@ -560,6 +560,108 @@ image::RequirementListCommandSequenceDiagram.png[width="650"]
 
 //end::requirement-list[]
 
+// tag::planner-add[]
+=== Planner Add Feature
+The `planner_add` command in PWE is used to add module code(s) to the degree plan.
+
+==== Current implementation
+
+The `planner_add` command requires the `PlannerAddCommandParser` class to parse the user input provided. The
+ parsed data will then be passed to the `PlannerAddCommand` class.
+
+The input should contain the year and semester of the degree plan as well as the module code(s) to be added.
+
+`PlannerAddCommandParser` will throw an error if the user input does not match the command format.
+
+When `PlannerAddCommand` receives the parsed data, it will perform the following checks:
+
+- Check if the year and semester exist in the degree plan
+- Check if the module codes provided exists in PWE through `model.hasModuleCode`
+- Check if the module codes have already been added to the degree plan
+- Check if the co-requisites of modules provided already exist in other semesters of the degree plan
+
+`PlannerAddCommand` will throw an error if any of the above checks fails.
+
+After passing all of the above checks, `PlannerAddCommand` updates the context in `ModelManager` through
+`setDegreePlanner`.
+
+In addition to adding module code(s) to the degree plan, the `PlannerAddCommand` class also saves the
+current database state through `commitApplication` (for undo/redo functions).
+
+.PlannerAddCommand component interactions
+image::PlannerAddCommandSequenceDiagram1.png[width="650"]
+image::PlannerAddCommandSequenceDiagram2.png[width="650"]
+
+==== Design Considerations
+===== Aspect: Choice of whether to deal with certain possible errors when the application gets modified.
+
+- Alternative 1 (current choice): Checking for invalid co-requisites as well as non-existent year and semester in degree plan.
+
+[cols="30%,<70%"]
+|======
+|*Pros*| Software is more secure against possible errors.
+|*Cons*| Harder to maintain.
+|======
+
+- Alternative 2: Skipping checks for invalid co-requisites as well as non-existent year and semester in degree plan.
+
+[cols="30%,<70%"]
+|=====
+|*Pros*| Easier to maintain.
+|*Cons*| When certain parts of the software get modified, some errors may occur with this command. For instance, a user may use `EditCommand` to edit co-requisites. If the check was not in place and the edit command fails to add the edited co-requisites to the degree plan, the user will then be able to add the co-requisites to invalid semesters of the degree plan.
+
+|=====
+//end::planner-add[]
+
+// tag::planner-remove[]
+=== Planner Remove Feature
+The `planner_remove` command in PWE is used to remove module code(s) from the degree plan.
+
+==== Current implementation
+
+The `planner_remove` command requires the `PlannerRemoveCommandParser` class to parse the user input provided. The
+ parsed data will then be passed to the `PlannerRemoveCommand` class.
+
+The input should contain the module code(s) to be removed.
+
+`PlannerRemoveCommandParser` will throw an error if the user input does not match the command format.
+
+When `PlannerRemoveCommand` receives the parsed data, it will perform the following checks:
+
+- Check if the module codes to remove exist in the degree plan.
+
+`PlannerRemoveCommand` will throw an error if any of the above checks fails.
+
+After passing all of the above checks, `PlannerRemoveCommand` updates the context in `ModelManager` through
+`setDegreePlanner`.
+
+In addition to removing module code(s) from the degree plan, the `PlannerRemoveCommand` class also saves the
+current database state through `commitApplication` (for undo/redo functions).
+
+.PlannerRemoveCommand component interactions
+image::PlannerRemoveCommandClassDiagram.png[width="650"]
+
+==== Design Considerations
+===== Aspect: Choice of whether to use `getDegreePlannerByCode` method for removing module codes.
+
+- Alternative 1 (current choice): Looping through all semesters of the degree plan instead of using `getDegreePlannerByCode` to identify the relevant semesters of the codes to remove.
+
+[cols="30%,<70%"]
+|======
+|*Pros*| Simpler code.
+|*Cons*| May loop through extra semesters when there are few module codes to remove.
+|======
+
+- Alternative 2: Using `getDegreePlannerByCode` method to identify the relevant semesters containing the code to remove. Removing the codes in the selected semester only.
+
+[cols="30%,<70%"]
+|=====
+|*Pros*| When there are few module codes to remove, the method may incur in slightly less overhead.
+|*Cons*| When there are N modules to remove, while the current method only needs 16 (total number of semesters) outer loops, this alternative method needs N outer loops. Moreover, `getDegreePlannerByCode` method itself also needs to loop through the DegreePlanner List to find out the part with suitable semester. The time comlexity for both methods can be the same.
+
+|=====
+//end::planner-remove[]
+
 // tag::planner-move[]
 === Planner Move Feature
 The `planner_move` command provides functionality for users to move a module between academic semesters in the degree
@@ -684,6 +786,48 @@ returns module having its year or semester matches the given year and semester
 ** Pros: Easy to implement
 ** Cons: Additional overhead needed
 // end::planner-list[]
+
+// tag::planner-suggest[]
+=== Planner Suggest Feature
+The `planner_suggest` command in PWE is used to suggest module code(s) to add to the degree plan.
+
+==== Current implementation
+
+The `planner_suggest` command requires the `PlannerSuggestCommandParser` class to parse the user input provided. The
+ parsed data will then be passed to the `PlannerSuggestCommand` class.
+
+The input should contain the desirable credits. Another optional input is the desirable tags.
+
+`PlannerSuggestCommandParser` will throw an error if the user input does not match the command format.
+
+After passing the above check, `PlannerSuggestCommand` will make the result box display 3 lists of modules. The first list
+is the main recommendation list that sorts the modules in a specific way and displays maximum 10 most recommended modules. The second and the third list respectively displays the modules with matching tags and modules with matching credits. The modules in the two lists should also exist in the main recommendation list.
+
+If `tag` is supplied as a parameter in input, modules will be sorted according to tags first. Modules with greater number of tags that match the desirable tags will be prioritized. If tie, modules with credits closer to the desirable credits will be prioritized. If tie, modules will be sorted according to alphabetical order.
+
+.PlannerSuggestCommand component interactions
+image::PlannerSuggestCommandAcitivityDiagram.png[width="650"]
+
+==== Design Considerations
+===== Aspect: Choice of where to put `ModuleToSuggest` class.
+
+- Alternative 1 (current choice): Put `ModuleToSuggest` as inner class of `PlannerSuggestCommand` class.
+
+[cols="30%,<70%"]
+|======
+|*Pros*| Cleaner model for the Application.
+|*Cons*| The inner class has access to the private and protected members of the outer class, which can be unnecessary.
+|======
+
+- Alternative 2: Put `ModuleToSuggest` as a separate class apart from `PlannerSuggestCommand` class.
+
+[cols="30%,<70%"]
+|=====
+|*Pros*| Better encapsulation for `PlannerSuggestCommand` class.
+|*Cons*| As no other class needs to access the `ModuleToSuggest` class, making it a separate class is unnecessary and makes the model more complex.
+
+|=====
+//end::planner-suggest[]
 
 === Logging
 
@@ -1441,6 +1585,52 @@ _{ more test cases ... }_
    Expected: Similar to previous.
 
 _{ more test cases ... }_
+
+=== Adding module(s) to the degree plan
+
+. Adding valid module(s).
+
+.. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list` command.
+.. Test case: `planner_add year/1 sem/1 code/CS1010 code/CS1231`
+Expected: Module codes `CS1010` and `CS1231` will be added to year 1 semester 1 of the degree plan.
+
+. Adding module(s) with bad bad parameters.
+
+.. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list` command.
+.. Test case: `planner_add invalid/1 sem/1 code/CS1010 code/CS1231`
+Expected: Invalid command format.
+
+. Adding module(s) with invalid values.
+
+.. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list` command.
+.. Test case: `planner_add year/-1 sem/1 code/CS1010 code/CS1231`
+Expected: A message that indicates the valid value range of year.
+
+=== Removing module(s) from the degree plan
+
+. Removing valid module(s).
+
+.. Prerequisites: Populate degree plan with sample data using `reset` command, then list all modules using the `planner_list`
+command.
+.. Test case: `planner_remove code/CS1010 code/CS1231`
+Expected: Module codes `CS1010` and `CS1231` will be removed from the degree plan.
+
+. Removing module(s) with bad bad parameters.
+
+.. Prerequisites: Populate degree plan with sample data using `reset` command, then list all modules using the `planner_list`
+command.
+.. Test case: `planner_remove invalid/CS1010 code/CS1231`
+Expected: Invalid command format.
+
+=== Using the degree plan to suggest module(s) to take
+
+. Suggesting valid module(s).
+
+.. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list` command.
+.. Test case: `planner_suggest credits/1`
+Expected: Maximum 10 modules recommended in a specially sorted order.
+.. Test case: `planner_suggest credits/1 tag/maths`
+Expected: Maximum 10 modules recommended in a specially sorted order.
 
 === Saving data
 
