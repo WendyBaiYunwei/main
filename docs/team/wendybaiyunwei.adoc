@@ -16,12 +16,12 @@ endif::[]
 
 == PROJECT: PlanWithEase
 
-Hi! I am Yunwei. I am currently a student at the National University of Singapore +
-(NUS) studying Information Security. I love to build applications that improve people's lives.
+Hi! I am Yunwei, a student from the National University of Singapore +
+(NUS). I love to build applications that improve people's lives.
 
 This portfolio documents my involvement in the PlanWithEase (PWE), a degree planner
 application created by my team-mates, Ahn Taegyu, Ngo Wei Lin, Lee Yu Choy, Yeo Cheng Hong and me
- within one school semester. This portfolio shows what the project is about and my 
+ within one school semester. This portfolio shows what the project is about and my
  contribution to the project.
 
 == Overview
@@ -37,7 +37,7 @@ image::Ui.png[width="970"]
 endif::[]
 
 
-My role as a developer in this project involves designing and writing code to allow users to:
+As a developer, my role in the project was writing codes to enable users to:
 
 * Add modules to the degree plan.
 * Remove modules from the degree plan.
@@ -51,7 +51,7 @@ My role as a developer in this project involves designing and writing code to al
 
 * *Major enhancement*: added *the ability to add/remove module codes to/from the degree plan*
 ** What it does: allows the user to add module codes to the degree plan, and remove the codes from the degree plan.
-** Justification: This feature can be crucial because the degree plan is an important section that enables the users to plan well. Therefore, adding and removing the module codes are essential operations to make PWE fulfill its purpose.
+** Justification: This feature can be crucial because the degree plan is an important section that enables the users to plan well. Therefore, adding and removing the module codes are essential features that make PWE fulfill its purpose.
 ** Highlights: This enhancement aims to prevent possible errors, including the hidden ones that may occur when other parts of the software get modified. Besides, the model and logic implementation for the feature is kept as minimalistic as possible to reduce unnecessary coupling.
 
 * *Minor enhancement*: added a command to suggest modules to put inside the degree plan.
