@@ -16,8 +16,8 @@ endif::[]
 
 == PROJECT: PlanWithEase
 
-Hi! I am Yunwei, a student from the National University of Singapore +
-(NUS). I love to build applications that improve people's lives.
+Hi! I am Yunwei, a student from the National University of Singapore (NUS). I love to build
+applications that improve people's lives.
 
 This portfolio documents my involvement in the PlanWithEase (PWE), a degree planner
 application created by my team-mates, Ahn Taegyu, Ngo Wei Lin, Lee Yu Choy, Yeo Cheng Hong and me
