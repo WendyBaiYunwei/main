@@ -876,7 +876,7 @@ The input should contain the year and semester of the degree plan as well as the
 When `PlannerAddCommand` receives the parsed data, it will perform the following checks:
 
 - Check if the year and semester exist in the degree plan
-- Check if the module codes provided exists in PWE through `model.hasModuleCode`
+- Check if the module codes provided exist in PWE through `model.hasModuleCode`
 - Check if the module codes have already been added to the degree plan
 - Check if the co-requisites of modules provided already exist in other semesters of the degree plan
 
@@ -890,7 +890,7 @@ current database state through `commitApplication` (for undo/redo functions).
 
 .PlannerAddCommand component interactions part 1
 image::PlannerAddCommandSequenceDiagram1.png[width="650"]
-.PlannerAddCommand component interactions part 1
+.PlannerAddCommand component interactions part 2
 image::PlannerAddCommandSequenceDiagram2.png[width="650"]
 
 ==== Design Considerations
@@ -958,7 +958,9 @@ image::PlannerRemoveCommandClassDiagram.png[width="650"]
 [cols="30%,<70%"]
 |=====
 |*Pros*| When there are few module codes to remove, the method may incur in slightly less overhead.
-|*Cons*| When there are N modules to remove, while the current method only needs 16 (total number of semesters) outer loops, this alternative method needs N outer loops. Moreover, `getDegreePlannerByCode` method itself also needs to loop through the DegreePlanner List to find out the part with suitable semester. The time comlexity for both methods can be the same.
+|*Cons*| When there are N modules to remove, while the current method only needs 16 (total number of semesters) outer loops,
+ this alternative method needs N outer loops. Moreover, `getDegreePlannerByCode` method itself also needs to loop through
+  the DegreePlanner List to find out the right semester. The time complexity for both methods can be the same.
 
 |=====
 //end::planner-remove[]
@@ -1966,15 +1968,13 @@ Expected: A message that indicates the valid value range of year.
 
 . Removing valid module(s).
 
-.. Prerequisites: Populate degree plan with sample data using `reset` command, then list all modules using the `planner_list`
-command.
+.. Prerequisites: List all academic semesters using the `planner_list` command.
 .. Test case: `planner_remove code/CS1010 code/CS1231` +
 Expected: Module codes `CS1010` and `CS1231` will be removed from the degree plan.
 
 . Removing module(s) with bad bad parameters.
 
-.. Prerequisites: Populate degree plan with sample data using `reset` command, then list all modules using the `planner_list`
-command.
+.. Prerequisites: List all academic semesters using the `planner_list` command.
 .. Test case: `planner_remove invalid/CS1010 code/CS1231` +
 Expected: Invalid command format.
 
