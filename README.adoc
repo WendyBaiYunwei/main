@@ -9,18 +9,18 @@ https://app.netlify.com/sites/cs2113-ay1819s2-t09-1/deploys[image:https://img.sh
 link:https://github.com/cs2113-ay1819s2-t09-1/main/blob/master/LICENSE[image:https://img.shields.io/badge/license-MIT-blue.svg?logo=github&logoColor=white[MIT License]]
 
 ifdef::env-github[]
-image::docs/images/Ui.png[width="600"]
+image::docs/images/Ui.png[width="800"]
 endif::[]
 
 ifndef::env-github[]
-image::images/Ui.png[width="800"]
+image::images/Ui.png[width="970"]
 endif::[]
 
 * PlanWithEase (PWE) is a degree planner desktop application. It has a GUI but most of the user
 interactions happen
 using a CLI
 (Command Line Interface).
-* PWE is designed to help students in National University of Singapore(NUS) Information Security freshmen in creating a
+* PWE is designed to help students in National University of Singapore (NUS) Information Security freshmen in creating a
  comprehensive degree plan according to the degree requirements.
 * PWE is optimized for those who prefer using a CLI. The commands used to interact with PWE
 are designed to be simple and intuitive, so even those who are unfamiliar with CLI can use PWE with ease.
@@ -44,5 +44,6 @@ Level 4 project] created by https://github.com/se-edu/[SE-EDU initiative]
 _Marco Jakob_.
 * Libraries used: https://github.com/TestFX/TestFX[TestFX], https://github.com/FasterXML/jackson[Jackson], https://github.com/junit-team/junit5[JUnit5]
 * Modified icon from https://fontawesome.com[Font Awesome]
+* Modified CSS from https://bitbucket.org/agix-material-fx/materialfx-material-design-for-javafx[MaterialFX - Material design for javafx]
 
 == Licence : link:https://github.com/cs2113-ay1819s2-t09-1/main/blob/master/LICENSE[MIT]

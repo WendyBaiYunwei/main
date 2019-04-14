@@ -25,20 +25,23 @@ import pwe.planner.model.tag.Tag;
 class JsonAdaptedModule {
 
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Module's %s field is missing!";
+    public static final String MESSAGE_INVALID_COREQUISITE =
+            "The module code (%1$s) cannot be a co-requisite of itself!";
 
-    private final String code;
-    private final String name;
-    private final String credits;
+    private final JsonAdaptedCode code;
+    private final JsonAdaptedName name;
+    private final JsonAdaptedCredits credits;
     private final List<JsonAdaptedSemester> semesters = new ArrayList<>();
     private final List<JsonAdaptedCode> corequisites = new ArrayList<>();
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
+
     /**
-     * Constructs a {@code JsonAdaptedModule} with the given module details.
+     * Constructs a {@link JsonAdaptedModule} with the given module details.
      */
     @JsonCreator
-    public JsonAdaptedModule(@JsonProperty("code") String code,
-            @JsonProperty("name") String name,
-            @JsonProperty("credits") String credits,
+    public JsonAdaptedModule(@JsonProperty("code") JsonAdaptedCode code,
+            @JsonProperty("name") JsonAdaptedName name,
+            @JsonProperty("credits") JsonAdaptedCredits credits,
             @JsonProperty("semesters") List<JsonAdaptedSemester> semesters,
             @JsonProperty("corequisites") List<JsonAdaptedCode> corequisites,
             @JsonProperty("tagged") List<JsonAdaptedTag> tags) {
@@ -60,21 +63,29 @@ class JsonAdaptedModule {
     }
 
     /**
-     * Converts a given {@code Module} into this class for Jackson use.
+     * Converts a given {@link Module} into this class for Jackson use.
      */
     public JsonAdaptedModule(Module source) {
         requireNonNull(source);
 
-        code = source.getCode().value;
-        name = source.getName().fullName;
-        credits = source.getCredits().value;
+        code = new JsonAdaptedCode(source.getCode());
+        name = new JsonAdaptedName(source.getName());
+        credits = new JsonAdaptedCredits(source.getCredits());
         semesters.addAll(source.getSemesters().stream().map(JsonAdaptedSemester::new).collect(Collectors.toList()));
         corequisites.addAll(source.getCorequisites().stream().map(JsonAdaptedCode::new).collect(Collectors.toList()));
         tags.addAll(source.getTags().stream().map(JsonAdaptedTag::new).collect(Collectors.toList()));
     }
 
     /**
-     * Converts this Jackson-friendly adapted module object into the model's {@code Module} object.
+     * Converts this Jackson-friendly adapted module object into the model's {@link Module} object.
+     * <br><br>
+     * Data constraints:<br>
+     * - Module code must be valid.<br>
+     * - Module name must be valid.<br>
+     * - Module credits must be valid.<br>
+     * - Semesters offering module must be valid.<br>
+     * - Module co-requisites must not contain current module code.<br>
+     * - Module tags must be valid.<br>
      *
      * @throws IllegalValueException if there were any data constraints violated in the adapted module.
      */
@@ -84,36 +95,23 @@ class JsonAdaptedModule {
             String exceptionMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Code.class.getSimpleName());
             throw new IllegalValueException(exceptionMessage);
         }
-        if (!Code.isValidCode(code)) {
-            throw new IllegalValueException(Code.MESSAGE_CONSTRAINTS);
-        }
-        final Code modelCode = new Code(code);
+        final Code modelCode = code.toModelType();
 
         // Check valid Name
         if (name == null) {
             String exceptionMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Name.class.getSimpleName());
             throw new IllegalValueException(exceptionMessage);
         }
-        if (!Name.isValidName(name)) {
-            throw new IllegalValueException(Name.MESSAGE_CONSTRAINTS);
-        }
-        final Name modelName = new Name(name);
+        final Name modelName = name.toModelType();
 
         // Check valid Credits
         if (credits == null) {
             String exceptionMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Credits.class.getSimpleName());
             throw new IllegalValueException(exceptionMessage);
         }
-        if (!Credits.isValidCredits(credits)) {
-            throw new IllegalValueException(Credits.MESSAGE_CONSTRAINTS);
-        }
-        final Credits modelCredits = new Credits(credits);
+        final Credits modelCredits = credits.toModelType();
 
         // Check valid Semesters
-        if (semesters.isEmpty()) {
-            String exceptionMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Semester.class.getSimpleName());
-            throw new IllegalValueException(exceptionMessage);
-        }
         final Set<Semester> modelSemesters = new HashSet<>();
         for (JsonAdaptedSemester semester : semesters) {
             modelSemesters.add(semester.toModelType());
@@ -122,7 +120,11 @@ class JsonAdaptedModule {
         // Check valid Corequisites
         final Set<Code> modelCorequisites = new HashSet<>();
         for (JsonAdaptedCode corequisite : corequisites) {
-            modelCorequisites.add(corequisite.toModelType());
+            Code corequisiteCode = corequisite.toModelType();
+            if (corequisiteCode.equals(modelCode)) {
+                throw new IllegalValueException(String.format(MESSAGE_INVALID_COREQUISITE, corequisiteCode));
+            }
+            modelCorequisites.add(corequisiteCode);
         }
 
         // Check valid Tags

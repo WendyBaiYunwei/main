@@ -4,6 +4,10 @@ import static org.junit.Assert.assertFalse;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static pwe.planner.commons.core.Messages.MESSAGE_MODULES_LISTED_OVERVIEW;
 import static pwe.planner.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
+import static pwe.planner.logic.parser.BooleanExpressionParser.MESSAGE_EMPTY_OUTPUT;
+import static pwe.planner.logic.parser.BooleanExpressionParser.MESSAGE_GENERAL_FAIL;
+import static pwe.planner.logic.parser.BooleanExpressionParser.MESSAGE_INVALID_EXPRESSION;
+import static pwe.planner.logic.parser.BooleanExpressionParser.MESSAGE_INVALID_OPERATOR_APPLICATION;
 import static pwe.planner.logic.parser.CliSyntax.OPERATOR_AND;
 import static pwe.planner.logic.parser.CliSyntax.OPERATOR_LEFT_BRACKET;
 import static pwe.planner.logic.parser.CliSyntax.OPERATOR_OR;
@@ -291,10 +295,15 @@ public class FindCommandSystemTest extends ApplicationSystemTest {
     public void negativeTest() {
         // invalid operator
         String command = FindCommand.COMMAND_WORD + " name/Programming !! code/CS1231";
-        assertCommandFailure(command, String.format(FindCommand.MESSAGE_INVALID_EXPRESSION, FindCommand.MESSAGE_USAGE));
+        assertCommandFailure(command, String.format(MESSAGE_INVALID_EXPRESSION, MESSAGE_INVALID_OPERATOR_APPLICATION));
         // invalid operator
         command = FindCommand.COMMAND_WORD + " name/Programming ## code/CS1231";
-        assertCommandFailure(command, String.format(FindCommand.MESSAGE_INVALID_EXPRESSION, FindCommand.MESSAGE_USAGE));
+        assertCommandFailure(command, String.format(MESSAGE_INVALID_EXPRESSION, MESSAGE_INVALID_OPERATOR_APPLICATION));
+
+        // missing operator
+        command = FindCommand.COMMAND_WORD + " name/Programming code/CS1231";
+        assertCommandFailure(command, String.format(MESSAGE_INVALID_EXPRESSION, MESSAGE_INVALID_OPERATOR_APPLICATION));
+
         // valid + invalid prefix
         command = FindCommand.COMMAND_WORD + " name/Programming " + OPERATOR_OR + " nonExisting/CS1231";
         assertCommandFailure(command, String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
@@ -304,6 +313,13 @@ public class FindCommandSystemTest extends ApplicationSystemTest {
         // single invalid prefix with multiple white space
         command = FindCommand.COMMAND_WORD + "                          nonExisting/CS1231                ";
         assertCommandFailure(command, String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+
+        // empty criteria with ()
+        command = FindCommand.COMMAND_WORD + " ()";
+        assertCommandFailure(command, String.format(MESSAGE_INVALID_EXPRESSION, MESSAGE_EMPTY_OUTPUT));
+
+        command = FindCommand.COMMAND_WORD + " (name/Programming))";
+        assertCommandFailure(command, String.format(MESSAGE_INVALID_EXPRESSION, MESSAGE_GENERAL_FAIL));
 
 
     }

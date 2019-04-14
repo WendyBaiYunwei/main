@@ -81,6 +81,8 @@ public class TestApp extends MainApp {
         double y = Screen.getPrimary().getVisualBounds().getMinY();
         userPrefs.setGuiSettings(new GuiSettings(600.0, 600.0, (int) x, (int) y));
         userPrefs.setModuleListFilePath(saveModuleListFileLocation);
+        userPrefs.setRequirementCategoryListFilePath(saveRequirementCategoryListFileLocation);
+        userPrefs.setDegreePlannerListFilePath(saveDegreePlannerListFileLocation);
         return userPrefs;
     }
 

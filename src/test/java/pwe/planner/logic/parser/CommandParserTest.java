@@ -29,13 +29,14 @@ import pwe.planner.logic.commands.FindCommand;
 import pwe.planner.logic.commands.HelpCommand;
 import pwe.planner.logic.commands.HistoryCommand;
 import pwe.planner.logic.commands.ListCommand;
-import pwe.planner.logic.commands.PlannerListAllCommand;
+import pwe.planner.logic.commands.PlannerListCommand;
 import pwe.planner.logic.commands.PlannerMoveCommand;
 import pwe.planner.logic.commands.PlannerRemoveCommand;
 import pwe.planner.logic.commands.RedoCommand;
 import pwe.planner.logic.commands.RequirementAddCommand;
 import pwe.planner.logic.commands.RequirementListCommand;
 import pwe.planner.logic.commands.RequirementRemoveCommand;
+import pwe.planner.logic.commands.ResetCommand;
 import pwe.planner.logic.commands.SelectCommand;
 import pwe.planner.logic.commands.UndoCommand;
 import pwe.planner.logic.parser.exceptions.ParseException;
@@ -70,6 +71,12 @@ public class CommandParserTest {
     }
 
     @Test
+    public void parseCommand_reset() throws Exception {
+        assertTrue(parser.parseCommand(ResetCommand.COMMAND_WORD) instanceof ResetCommand);
+        assertTrue(parser.parseCommand(ResetCommand.COMMAND_WORD + " abc") instanceof ResetCommand);
+    }
+
+    @Test
     public void parseCommand_delete() throws Exception {
         DeleteCommand command = (DeleteCommand) parser.parseCommand(
                 DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_MODULE.getOneBased());
@@ -96,7 +103,7 @@ public class CommandParserTest {
         List<String> keywords = Arrays.asList("foo");
         FindCommand command = (FindCommand) parser.parseCommand(FindCommand.COMMAND_WORD + " "
                 + PREFIX_NAME + "foo");
-        assertEquals(new FindCommand(new NameContainsKeywordsPredicate(keywords)), command);
+        assertEquals(new FindCommand(new NameContainsKeywordsPredicate<>(keywords)), command);
     }
 
     @Test
@@ -132,9 +139,9 @@ public class CommandParserTest {
     }
 
     @Test
-    public void parseCommand_plannerListAll() throws Exception {
-        assertTrue(parser.parseCommand(PlannerListAllCommand.COMMAND_WORD) instanceof PlannerListAllCommand);
-        assertTrue(parser.parseCommand(PlannerListAllCommand.COMMAND_WORD + " 3") instanceof PlannerListAllCommand);
+    public void parseCommand_plannerList() throws Exception {
+        assertTrue(parser.parseCommand(PlannerListCommand.COMMAND_WORD) instanceof PlannerListCommand);
+        assertTrue(parser.parseCommand(PlannerListCommand.COMMAND_WORD + " 3") instanceof PlannerListCommand);
     }
 
     @Test
