@@ -43,20 +43,20 @@ public class PlannerAddCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Successfully added new module(s) to year %1$s semester %2$s of"
             + " the degree plan: %3$s\nCo-requisite(s) added: %4$s";
-    public static final String MESSAGE_DUPLICATE_CODE = "You cannot add the module(s) %1$s, as the module code(s) %1$s"
-            + " already exists in the degree plan!";
-    public static final String MESSAGE_INVALID_COREQ = "You cannot add the module(s) %2$s, as the co-requisite(s) %1$s "
-            + "of module(s) %2$s already exists in a different year and semester of the degree plan.\n"
+    public static final String MESSAGE_DUPLICATE_CODE = "You cannot add the module(s) %1$s"
+            + " that already exists in the degree plan.\n";
+    public static final String MESSAGE_INVALID_COREQ = "You cannot add the module(s) %2$s with co-requisite(s) %1$s"
+            + " that already exists in a different year and semester of the degree plan.\n"
             + "Co-requisite module(s) have to be in the same year and semester of the degree plan.";
     public static final String MESSAGE_NONEXISTENT_MODULES = "You cannot add module(s) %1$s that does not exist in the "
             + "module list.\n [Tip] Maybe you want to review the module list and select module(s) from there.";
     public static final String MESSAGE_NONEXISTENT_DEGREE_PLANNER = "You cannot add to year %1$s semester "
-            + "%2$s as it does not exist in the degree plan.";
-    public static final String MESSAGE_CODE_INVALID_SEMESTER = "You cannot add the module(s) as module(s) %1$s is not "
+            + "%2$s which does not exist in the degree plan.";
+    public static final String MESSAGE_CODE_INVALID_SEMESTER = "You cannot add module(s) %1$s that is not "
             + "offered in semester %2$s.\n[Tip] Maybe you can review the semesters of the modules "
             + ", and perhaps use edit command to amend.";
-    public static final String MESSAGE_COREQ_INVALID_SEMESTER = "You cannot add the module(s) as the co-requisite(s) "
-            + "%1$s of module(s) %2$s is not offered in semester %3$s!\n[Tip] Maybe you can review the semesters of the"
+    public static final String MESSAGE_COREQ_INVALID_SEMESTER = "You cannot add module(s) %2$s with co-requisite(s) "
+            + "%1$s that is not offered in semester %3$s!\n[Tip] Maybe you can review the semesters of the"
             + " modules, and perhaps use edit command to amend.";
     private Year yearToAddTo;
     private Semester semesterToAddTo;
