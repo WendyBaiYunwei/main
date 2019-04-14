@@ -622,25 +622,18 @@ The following table describes the parameters you may use for commands in this se
 | `YEAR` | Indicates the year. |
 `YEAR` should be between 1 and 4
 | `SEMESTER` | Indicates the semester. |
-`SEMESTER` follow the same format as `YEAR`
+`SEMESTER` follow the same format as `YEAR`.
+| `credits/CREDITS` | `CREDITS` indicates the desirable credits of the modules to suggest |
+`CREDITS` should be between 0 to 999.
+| `tag/TAG` | `TAG` indicates the desirable tags of the modules to suggest |
+`TAG` should only contain alphanumeric characters.
+`TAG` should not be blank unless otherwise specified.
 |======
 
 ==== Adding modules : `planner_add` image:https://img.shields.io/badge/planner-add-F17D3F.svg[]
 
-Want to add modules to the degree plan?
-
-Make use of `planner_add` command to add one or multiple modules to the degree plan. +
+Adds module(s) to the degree plan. +
 Format: `planner_add year/YEAR sem/SEMESTER code/CODE [code/CODE]…`
-
-When this command is successfully executed, the degree plan will be updated with the selected module code(s) added.
-
-The following table describes the valid prefixes that you can use:
-|====
-| *Prefix* | *Description*
-| `year/YEAR` | `YEAR` indicates the year
-| `sem/SEMESTER` | `SEMESTER` indicates the semester
-| `code/CODE` | `CODE` indicates the module code
-|====
 
 [NOTE]
 ====
@@ -653,29 +646,20 @@ The following table describes the valid prefixes that you can use:
 Examples:
 
 * `planner_add year/1 sem/3 code/CS1010` +
-Adds module CS1010 to year 1 semester 3 (special term semester 1) of the degree plan.
+Adds module `CS1010` to year 1 semester 3 (special term semester 1) of the degree plan.
 
 * `planner_add year/1 sem/4 code/CS1231 code/CS2040C` +
-Adds modules CS1231 and CS2040C to year 1 semester 4 (special term semester 2) of the degree plan.
+Adds modules `CS1231` and `CS2040C` to year 1 semester 4 (special term semester 2) of the degree plan.
 
 * `planner_add year/1 sem/2 code/CS2113T code/CS2107` +
-Adds modules CS2113T and CS2107 to year 1 semester 2 of the degree plan.
+Adds modules `CS2113T` and `CS2107` to year 1 semester 2 of the degree plan.
 
-<<<<<<< HEAD
-=== Removing module(s) from degree plan : `planner_remove`
+
+=== Removing module(s) : `planner_remove`
 
 Want to remove modules from the degree plan?
-
 Make use of `planner_remove` command to remove one or multiple modules from the degree plan. +
 Format: `planner_remove code/CODE [code/CODE]…`
-
-When this command is successfully executed, the degree plan will be updated with the selected module code(s) removed.
-
-The following table describes the valid prefixes that you can use:
-|====
-| *Prefix* | *Description*
-| `code/CODE` | `CODE` indicates the module code
-|====
 
 [NOTE]
 ====
@@ -686,15 +670,12 @@ The following table describes the valid prefixes that you can use:
 Examples:
 
 * `planner_remove code/CS1231` +
-Removes module CS1231 from the degree plan.
+Removes module `CS1231` from the degree plan.
 
 * `planner_remove code/CS2100 code/CS2040C` +
-Removes modules CS2100 and CS2040C from the degree plan.
+Removes modules `CS2100` and `CS2040C` from the degree plan.
 
-=== Moving a module between academic semesters in the degree plan : `planner_move`
-=======
 ==== Moving modules between semesters : `planner_move` image:https://img.shields.io/badge/planner-move-F17D3F.svg[]
->>>>>>> master
 
 Moves a module in the degree plan to another academic semester. +
 Format: `planner_move year/YEAR sem/SEMESTER code/CODE`
@@ -713,8 +694,9 @@ Moves module CS1231 to year 1 semester 4 (special term semester 2).
 
 Shows a list of all semesters in the degree plan. +
 
-<<<<<<< HEAD
-=== Suggesting module(s) to add to degree plan : `planner_suggest`
+Format: `planner_list`
+
+=== Using degree planner to suggest modules : `planner_suggest`
 
 Having trouble identifying modules to add to the degree plan?
 
@@ -723,20 +705,11 @@ Format: `planner_suggest credits/CREDITS [tag/TAG]…`
 
 When this command is successfully executed, the result box will display modules recommended.
 
-The following table describes the valid prefixes that you can use:
-|====
-| *Prefix* | *Description*
-| `credits/CREDITS` | `CREDITS` indicates the desirable credits
-| `tag/TAG` | `TAG` indicates the desirable tags
-|====
-
 [NOTE]
 ====
 * *Maximum 10* modules are recommended in the recommendation list.
-
 * In addition to the recommendation list, supplementary information on the specific modules with matching tags and credits
 will be given as two additional lists. The modules in the two additional lists are all from the recommendation list.
-
 * Modules recommended in all 3 aforementioned lists will be sorted according to the following criteria:
 ** For modules with different number of tags that match the desirable tags (matching tags), modules with more matching
 tags will be sorted to the front of the list.
@@ -744,9 +717,7 @@ tags will be sorted to the front of the list.
 desirable credits will be sorted to the front of the list.
 ** If modules have the same number of matching tags and credits, they will be sorted according to alphabetical
 order.
-** If `tag/TAG` is not supplied in the command as a parameter, modules will be sorted according to credits and
-alphabetical order only.
-
+** If `tag/TAG` is not supplied in the command, modules will be sorted according to credits and alphabetical order only.
 * All modules in recommendation list and the two additional lists are modules not found in the degree plan.
 ====
 
@@ -759,28 +730,8 @@ prioritizes according to alphabetical order.
 * `planner_suggest credits/2 tag/algorithms` +
 Suggests maximum 10 modules not found in the degree plan, prioritizing modules with tag `algorithms`. If tie, prioritizes
 according to credits closer to 2. If tie, prioritizes according to alphabetical order.
-=======
-Format: `planner_list`
 
 == Future Enhancements `[coming in v2.0]`
->>>>>>> master
-
-=== Removing module(s) : `planner_remove`
-
-Coming in v2.0 you will be able to removes module(s) from the degree plan. +
-Format: `planner_remove code/CODE [code/CODE]…`
-
-* All the module(s) to remove must exist in the degree plan.
-* After removing, the updated degree plan will be displayed.
-
-Examples:
-
-* `planner_remove code/CS1231` +
-Removes module CS1231 from the degree plan.
-
-* `planner_remove code/CS2100 code/CS2040C` +
-Removes modules CS2100 and CS2040C from the degree plan.
-
 === Listing a degree planner : `planner_list`
 
 Shows a list of a specific degree planner. +
@@ -792,10 +743,6 @@ Examples:
 Shows a degree planner for year 1 semester 1.
 * `planner_list y/1 s/2` +
 Shows a degree planner for year 1 semester 2
-
-=== Using degree planner to suggest modules : `planner_suggest`
-
-Displays a list of modules that can be added to the degree planner.
 
 === Moving a module between degree requirement categories : `requirement_move`
 
@@ -848,51 +795,13 @@ a| `planner_move year/1 sem/2 code/CS1231`
 a| `planner_show [year/YEAR] OPERATOR [sem/SEMESTER]`
 a| `planner_show sem/2 && ( year/1 \|\|year/2 )`
 | *Suggest available modules* | Suggest available modules from the module lists based on input argument.
-a| `planner_suggest...`
-a| `planner_suggest...`
+a| `planner_suggest credits/CREDITS [tag/TAG]…`
+a| `planner_suggest credits/4 tag/maths`
 |====
 
 === Requirement Categories Commands
 The table below shows a list of command which helps you to manage track your requirements
 
-<<<<<<< HEAD
-* *Add module to module list* : `add name/NAME code/CODE credits/CREDITS [tag/TAG]… [coreq/COREQUISITE]…` +
-e.g. `add code/CS2113T name/Software Engineering and Object-Oriented Programming credits/4 tag/sweng tag/java
-coreq/CS2101`
-* *Edit* : `edit INDEX [name/NAME] [code/CODE] [credits/CREDITS] [tag/TAG]… [coreq/COREQUISITE]…` +
-e.g. `edit 1 name/Data Structures and Algorithms code/CS2040C`
-* *Delete* : `delete INDEX` +
-e.g. `delete 3`
-* *Find* : `find [name/NAME NAME…] [code/CODE CODE…] [credits/CREDITS CREDITS…]` +
-e.g. `find name/Information Security`
-* *Clear* : `clear`
-* *List* : `list`
-* *Help* : `help`
-* *Select* : `select INDEX` +
-e.g.`select 2`
-* *History* : `history`
-* *Undo* : `undo`
-* *Redo* : `redo`
-* *Add module(s) to degree plan* : `planner_add year/YEAR sem/SEMESTER code/CODE [code/CODE]…` +
-e.g.  `planner_add year/1 sem/2 code/CS1010 code/CS2113T`
-* *Remove module(s) from degree plan* : `planner_remove code/CODE [code/CODE]…` +
-e.g.  `planner_remove code/CS1231 code/CS1010`
-* *Move module between academic semesters in the degree plan* : `planner_move year/YEAR sem/SEMESTER code/CODE` +
-e.g.  `planner_move year/1 sem/2 code/CS1231`
-* *List all degree planners* : `planner_list_all`
-* *List specific degree planner* : `planner_list y/YEAR s/SEMESTER` +
-e.g. `planner_list y/1 s/2`
-* *Using degree planner to suggest modules* : `planner_suggest credits/CREDITS [tag/TAG]…` +
-e.g `planner_suggest credits/4 tag/maths`
-* *Add module to degree requirement category* : `requirement_add name/NAME code/CODE [code/CODE]…` +
-e.g. `requirement_add name/IT Professionalism code/IS4231`
-* *Remove module from degree requirement category* : `requirement_remove name/NAME code/CODE [code/CODE]…` +
-e.g. `requirement_remove name/IT Professionalism code/IS4231`
-* *Move module between degree requirement categories*  : `requirement_move CODE
-name/NAME` +
-e.g. `requirement_move IS4231 name/IT Professionalism`
-* *List all degree requirement categories* : `requirement_list`
-=======
 |====
 |*Task*  | *Purpose* |*Command* | *Example*
 | *Add module(s) to degree requirement category* | Add module(s) based on the module code to the chosen category.
@@ -906,4 +815,3 @@ requirement categories to a chosen requirement categories.
 a| `requirement_move code/CODE`
 a| `requirement_move code/IS4231 name/IT Professionalism`
 |====
->>>>>>> master
