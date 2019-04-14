@@ -1234,7 +1234,7 @@ Use case ends.
 Use case resumes from step 1.
 
 [discrete]
-=== Use case: Find modules to add to degree plan
+=== Use case: Identify modules to add to degree plan
 *Guarantee(s):*
 [none]
 * Modules will be listed if the input from the user is valid and can match the existing entries in the module list. +
