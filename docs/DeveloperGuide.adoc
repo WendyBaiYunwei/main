@@ -802,9 +802,13 @@ The input should contain the desirable credits. Another optional input is the de
 `PlannerSuggestCommandParser` will throw an error if the user input does not match the command format.
 
 After passing the above check, `PlannerSuggestCommand` will make the result box display 3 lists of modules. The first list
-is the main recommendation list that sorts the modules in a specific way and displays maximum 10 most recommended modules. The second and the third list respectively displays the modules with matching tags and modules with matching credits. The modules in the two lists should also exist in the main recommendation list.
+is the main recommendation list that sorts the modules in a specific way and displays maximum 10 most recommended modules.
+The second and the third list respectively displays the modules with matching tags and modules with matching credits. The
+modules in the two lists should also exist in the main recommendation list.
 
-If `tag` is supplied as a parameter in input, modules will be sorted according to tags first. Modules with greater number of tags that match the desirable tags will be prioritized. If tie, modules with credits closer to the desirable credits will be prioritized. If tie, modules will be sorted according to alphabetical order.
+If `tag` is supplied as a parameter in input, modules will be sorted according to tags first. Modules with greater number
+of tags that match the desirable tags will be prioritized. If tie, modules with credits closer to the desirable credits
+will be prioritized. If tie again, modules will be sorted according to alphabetical order.
 
 .PlannerSuggestCommand activity diagram
 image::PlannerSuggestCommandAcitivityDiagram.png[width="650"]
@@ -1592,19 +1596,19 @@ _{ more test cases ... }_
 . Adding valid module(s).
 
 .. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list` command.
-.. Test case: `planner_add year/1 sem/1 code/CS1010 code/CS1231`
+.. Test case: `planner_add year/1 sem/1 code/CS1010 code/CS1231` +
 Expected: Module codes `CS1010` and `CS1231` will be added to year 1 semester 1 of the degree plan.
 
 . Adding module(s) with bad bad parameters.
 
 .. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list` command.
-.. Test case: `planner_add invalid/1 sem/1 code/CS1010 code/CS1231`
+.. Test case: `planner_add invalid/1 sem/1 code/CS1010 code/CS1231` +
 Expected: Invalid command format.
 
 . Adding module(s) with invalid values.
 
 .. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list` command.
-.. Test case: `planner_add year/-1 sem/1 code/CS1010 code/CS1231`
+.. Test case: `planner_add year/-1 sem/1 code/CS1010 code/CS1231` +
 Expected: A message that indicates the valid value range of year.
 
 === Removing module(s) from the degree plan
@@ -1613,14 +1617,14 @@ Expected: A message that indicates the valid value range of year.
 
 .. Prerequisites: Populate degree plan with sample data using `reset` command, then list all modules using the `planner_list`
 command.
-.. Test case: `planner_remove code/CS1010 code/CS1231`
+.. Test case: `planner_remove code/CS1010 code/CS1231` +
 Expected: Module codes `CS1010` and `CS1231` will be removed from the degree plan.
 
 . Removing module(s) with bad bad parameters.
 
 .. Prerequisites: Populate degree plan with sample data using `reset` command, then list all modules using the `planner_list`
 command.
-.. Test case: `planner_remove invalid/CS1010 code/CS1231`
+.. Test case: `planner_remove invalid/CS1010 code/CS1231` +
 Expected: Invalid command format.
 
 === Using the degree plan to suggest module(s) to take
@@ -1628,9 +1632,9 @@ Expected: Invalid command format.
 . Suggesting valid module(s).
 
 .. Prerequisites: Populate module list with sample data using `reset` command, then list all modules using the `list` command.
-.. Test case: `planner_suggest credits/1`
+.. Test case: `planner_suggest credits/1` +
 Expected: Maximum 10 modules recommended in a specially sorted order.
-.. Test case: `planner_suggest credits/1 tag/maths`
+.. Test case: `planner_suggest credits/1 tag/maths` +
 Expected: Maximum 10 modules recommended in a specially sorted order.
 
 === Saving data
