@@ -6,6 +6,7 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -49,6 +50,10 @@ public class PlannerAddCommand extends Command {
     public static final String MESSAGE_NONEXISTENT_MODULES = "The module(s) %1$s does not exist in the module list.";
     public static final String MESSAGE_NONEXISTENT_DEGREE_PLANNER = "Year %1$s Semester"
             + "%2$s does not exist in the degree plan!";
+    public static final String MESSAGE_CODE_INVALID_SEMESTER = "The module(s) %1$s is not offered in semester %2$s!";
+    public static final String MESSAGE_COREQ_INVALID_SEMESTER = "The co-requisite(s) %1$s of module(s) %2$s is "
+            + "not offered in semester %3$s!\n[Tip] Co-requisite modules are always offered in the same semester."
+            + " Perhaps you entered inaccurate information and want to use the edit command.";
     private Year yearToAddTo;
     private Semester semesterToAddTo;
     private Set<Code> codesToAdd;
@@ -79,7 +84,7 @@ public class PlannerAddCommand extends Command {
                 .getDegreePlannerList().stream().map(DegreePlanner::getCodes)
                 .anyMatch(selectedPlannerCodes -> selectedPlannerCodes.contains(codesToCheck)))
                 .collect(Collectors.toSet());
-        if (duplicatePlannerCodes.size() > 0) {
+        if (!duplicatePlannerCodes.isEmpty()) {
             // Converts a set to a string to remove the brackets of set.
             String duplicatePlannerCodeString = duplicatePlannerCodes.stream().map(Code::toString)
                     .collect(Collectors.joining(", "));
@@ -87,11 +92,43 @@ public class PlannerAddCommand extends Command {
         }
 
         Set<Code> nonExistentModuleCodes = codesToAdd.stream()
-                .filter(codesToCheck -> !model.hasModuleCode(codesToCheck)).collect(Collectors.toSet());
-        if (nonExistentModuleCodes.size() > 0) {
+                .filter(codeToCheck -> !model.hasModuleCode(codeToCheck)).collect(Collectors.toSet());
+        if (!nonExistentModuleCodes.isEmpty()) {
             String nonExistentModuleString = nonExistentModuleCodes.stream().map(Code::toString)
                     .collect(Collectors.joining(", "));
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_MODULES, nonExistentModuleString));
+        }
+
+        Set<Code> invalidSemesterCodes = codesToAdd.stream().filter(codeToCheck -> !model.getModuleByCode(codeToCheck)
+                        .getSemesters().contains(semesterToAddTo)).collect(Collectors.toSet());
+        if (!invalidSemesterCodes.isEmpty()) {
+            String invalidSemCodesString = invalidSemesterCodes.stream().map(Code::toString)
+                    .collect(Collectors.joining(", "));
+            throw new CommandException(String.format(MESSAGE_CODE_INVALID_SEMESTER, invalidSemCodesString,
+                    semesterToAddTo));
+        }
+
+        // Returns the co-requisite(s) of codes to add.
+        Set<Code> coreqsOfCodesToAdd = new HashSet<>();
+        codesToAdd.stream().map(model::getModuleByCode).map(Module::getCorequisites)
+                .forEach(coreqsOfCodesToAdd::addAll);
+        // Returns the invalid co-requisite(s) of codes to add.
+        Set<Code> invalidSemesterCoreqs = coreqsOfCodesToAdd.stream().filter(
+                codeToCheck -> !model.getModuleByCode(codeToCheck).getSemesters().contains(semesterToAddTo))
+                .collect(Collectors.toSet());
+        if (!invalidSemesterCoreqs.isEmpty()) {
+            // Returns the codes to add that has invalid co-requisite(s).
+            Set<Code> invalidCodesToAdd = codesToAdd.stream().filter(
+                    codeToCheck -> !Collections.disjoint(model.getModuleByCode(codeToCheck).getCorequisites(),
+                            invalidSemesterCoreqs)).collect(Collectors.toSet());
+
+            String invalidCodeString = invalidCodesToAdd.stream().map(Code::toString)
+                    .collect(Collectors.joining(", "));
+            String invalidSemCoreqsString = invalidSemesterCoreqs.stream().map(Code::toString)
+                    .collect(Collectors.joining(", "));
+
+            throw new CommandException(String.format(MESSAGE_COREQ_INVALID_SEMESTER, invalidSemCoreqsString,
+                    invalidCodeString, semesterToAddTo));
         }
 
         Set<Code> selectedCodeSet = new HashSet<>(selectedDegreePlanner.getCodes());
