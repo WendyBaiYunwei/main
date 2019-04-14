@@ -113,14 +113,14 @@ public class PlannerAddCommand extends Command {
         codesToAdd.stream().map(model::getModuleByCode).map(Module::getCorequisites)
                 .forEach(coreqsOfCodesToAdd::addAll);
         // Returns the invalid co-requisite(s) of codes to add.
-        Set<Code> invalidSemesterCoreqs = coreqsOfCodesToAdd.stream().filter(
-                codeToCheck -> !model.getModuleByCode(codeToCheck).getSemesters().contains(semesterToAddTo))
-                .collect(Collectors.toSet());
+        Set<Code> invalidSemesterCoreqs = coreqsOfCodesToAdd.stream()
+                .filter(codeToCheck -> !model.getModuleByCode(codeToCheck).getSemesters().contains(semesterToAddTo))
+                    .collect(Collectors.toSet());
         if (!invalidSemesterCoreqs.isEmpty()) {
             // Returns the codes to add that has invalid co-requisite(s).
-            Set<Code> invalidCodesToAdd = codesToAdd.stream().filter(
-                    codeToCheck -> !Collections.disjoint(model.getModuleByCode(codeToCheck).getCorequisites(),
-                            invalidSemesterCoreqs)).collect(Collectors.toSet());
+            Set<Code> invalidCodesToAdd = codesToAdd.stream()
+                    .filter(codeToCheck -> !Collections.disjoint(model.getModuleByCode(codeToCheck)
+                            .getCorequisites(), invalidSemesterCoreqs)).collect(Collectors.toSet());
 
             String invalidCodeString = invalidCodesToAdd.stream().map(Code::toString)
                     .collect(Collectors.joining(", "));
