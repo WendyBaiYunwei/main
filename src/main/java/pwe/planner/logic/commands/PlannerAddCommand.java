@@ -172,7 +172,7 @@ public class PlannerAddCommand extends Command {
         String coreqsAddedString = StringUtil.joinStreamAsString(coreqsAdded.stream().sorted());
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, yearToAddTo, semesterToAddTo,
-                codesToAddString, coreqsAdded.isEmpty() ? "None" : coreqsAddedString));
+                codesToAddString, coreqsAddedString));
     }
 
     @Override
