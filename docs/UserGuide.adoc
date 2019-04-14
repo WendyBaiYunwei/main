@@ -644,8 +644,8 @@ Format: `planner_add year/YEAR sem/SEMESTER code/CODE [code/CODE]…`
 * All the module(s) to add *must not have duplicate(s)* in the *degree plan*.
 * For the following two points, `added to the valid semester` is defined as:
 The semesters in which module(s) are offered should contain the semester to which the module(s) are added.
-* The module(s) must be added to the valid semester.
-* The co-requisite(s) of the module(s) added must be added to the valid semester.
+* The module(s) *must be added to the valid semester*.
+* The co-requisite(s) of the module(s) added *must be added to the valid semester*.
 * After adding, the updated *degree plan* will be displayed.
 ====
 
@@ -723,7 +723,7 @@ tags will be sorted to the front of the list.
 desirable credits will be sorted to the front of the list.
 ** If modules have the same number of matching tags and credits, they will be sorted according to alphabetical
 order.
-** If `tag/TAG` is not supplied in the command, modules will be sorted according to credits and alphabetical order only.
+** If `tag/TAG` is not supplied as a parameter in the command, modules will be sorted according to credits and alphabetical order only.
 * All modules in the recommendation list and the two additional lists are modules not found in the degree plan.
 ====
 
@@ -735,7 +735,7 @@ prioritizes according to alphabetical order.
 
 * `planner_suggest credits/2 tag/algorithms` +
 Suggests maximum 10 modules not found in the degree plan, prioritizing modules with tag `algorithms`. If tie, prioritizes
-according to credits closer to 2. If tie, prioritizes according to alphabetical order.
+according to credits closer to 2. If tie again, prioritizes according to alphabetical order.
 
 == Future Enhancements `[coming in v2.0]`
 === Listing a degree planner : `planner_list`
