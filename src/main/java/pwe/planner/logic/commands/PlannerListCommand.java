@@ -3,8 +3,9 @@ package pwe.planner.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.model.Model.PREDICATE_SHOW_ALL_DEGREE_PLANNERS;
 
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.model.Model;
 import pwe.planner.model.planner.DegreePlanner;
@@ -23,9 +24,8 @@ public class PlannerListCommand extends Command {
         requireNonNull(model);
 
         model.updateFilteredDegreePlannerList(PREDICATE_SHOW_ALL_DEGREE_PLANNERS);
-        String degreePlannerListContent = model.getApplication().getDegreePlannerList().stream()
-                .map(DegreePlanner::toString)
-                .collect(Collectors.joining("\n"));
+        Stream<DegreePlanner> degreePlannersStream = model.getApplication().getDegreePlannerList().stream().sorted();
+        String degreePlannerListContent = StringUtil.joinStreamAsString(degreePlannersStream, "\n");
         return new CommandResult(String.format(MESSAGE_SUCCESS, degreePlannerListContent));
     }
 }

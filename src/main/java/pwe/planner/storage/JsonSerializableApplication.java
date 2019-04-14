@@ -3,10 +3,10 @@ package pwe.planner.storage;
 import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
 import pwe.planner.commons.exceptions.IllegalValueException;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.model.Application;
 import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Module;
@@ -126,8 +126,7 @@ public class JsonSerializableApplication {
                                 MESSAGE_INVALID_DEGREE_PLANNER_EMPTY_MODULE_SEMESTERS, code, degreePlanner.getYear(),
                                 degreePlanner.getSemester()));
                     } else {
-                        String semestersOfferingModule = semesters.stream().sorted().map(Semester::toString)
-                                .collect(Collectors.joining(", "));
+                        String semestersOfferingModule = StringUtil.joinStreamAsString(semesters.stream().sorted());
                         throw new IllegalValueException(String.format(MESSAGE_INVALID_DEGREE_PLANNER_MODULE_SEMESTER,
                                 code, degreePlanner.getYear(), degreePlanner.getSemester(), semestersOfferingModule));
                     }

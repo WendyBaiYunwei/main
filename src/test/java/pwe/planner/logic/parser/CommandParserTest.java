@@ -10,8 +10,6 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
 import static pwe.planner.testutil.TypicalIndexes.INDEX_FIRST_MODULE;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Rule;
@@ -103,10 +101,10 @@ public class CommandParserTest {
 
     @Test
     public void parseCommand_find() throws Exception {
-        List<String> keywords = Arrays.asList("foo");
+        String keyword = "foo";
         FindCommand command = (FindCommand) parser.parseCommand(FindCommand.COMMAND_WORD + " "
                 + PREFIX_NAME + "foo");
-        assertEquals(new FindCommand(new NameContainsKeywordsPredicate<>(keywords)), command);
+        assertEquals(new FindCommand(new NameContainsKeywordsPredicate<>(keyword)), command);
     }
 
     @Test
@@ -198,10 +196,9 @@ public class CommandParserTest {
     @Test
     public void parseCommand_requirementRemove() throws Exception {
         Set<Code> codeSet = Set.of(new Code("CS1010"));
-        RequirementRemoveCommand command = (RequirementRemoveCommand)
-                parser.parseCommand(RequirementUtil.getRequirementRemoveCommand(
-                        new Name("Computing Foundation"), codeSet));
-        assertEquals(new RequirementRemoveCommand(new Name("Computing Foundation"), codeSet), command);
+        RequirementRemoveCommand command = (RequirementRemoveCommand) parser.parseCommand(
+                RequirementUtil.getRequirementRemoveCommand(codeSet));
+        assertEquals(new RequirementRemoveCommand(codeSet), command);
     }
 
     @Test

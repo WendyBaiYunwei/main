@@ -3,18 +3,16 @@ package pwe.planner.model.module;
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.logic.parser.ParserUtil.parseKeyword;
 
-import java.util.List;
-
 /**
- * Tests that a {@code Module}'s {@code Code} matches any of the keywords given.
+ * Tests that a {@code Module}'s {@code Code} matches the keyword given.
  */
 public class CodeContainsKeywordsPredicate<T> implements KeywordsPredicate<T> {
-    private final List<String> keywords;
+    private final String keyword;
 
-    public CodeContainsKeywordsPredicate(List<String> keywords) {
-        requireNonNull(keywords);
+    public CodeContainsKeywordsPredicate(String keyword) {
+        requireNonNull(keyword);
 
-        this.keywords = keywords;
+        this.keyword = keyword;
     }
 
     @Override
@@ -23,14 +21,14 @@ public class CodeContainsKeywordsPredicate<T> implements KeywordsPredicate<T> {
         Module module = (Module) object;
 
         String moduleCode = module.getCode().toString();
-        return keywords.stream().anyMatch(keyword -> parseKeyword(keyword, moduleCode));
+        return parseKeyword(keyword, moduleCode);
     }
 
     @Override
     public boolean equals(Object other) {
         return other == this // short circuit if same object
                 || (other instanceof CodeContainsKeywordsPredicate // instanceof handles nulls
-                && keywords.equals(((CodeContainsKeywordsPredicate) other).keywords)); // state check
+                && keyword.equals(((CodeContainsKeywordsPredicate) other).keyword)); // state check
     }
 
 }

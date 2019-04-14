@@ -19,7 +19,6 @@ import pwe.planner.model.module.Module;
  * Adds a {@link Module} to the {@link Application#modules module list}.
  */
 public class AddCommand extends Command {
-
     public static final String COMMAND_WORD = "add";
 
     // This is declared before MESSAGE_USAGE to prevent illegal forward reference
@@ -59,6 +58,12 @@ public class AddCommand extends Command {
             + "Afterwards, add the module (%2$s) and specify the module (%1$s) as a co-requisite.\n"
             + "This will make both modules (%1$s & %2$s) co-requisites!";
 
+    public static final String MESSAGE_EXISTING_COREQUISITES_IN_DEGREE_PLAN =
+            "You cannot add a new module (%1$s) that has a co-requisite module (%2$s) that exists in the degree plan!\n"
+            + "[Tip] You can remove the module (%2$s) from the degree plan first, add the module (%1$s) and specify "
+            + "(%2$s) as a co-requisite, then add back the module (%2$s) to the degree plan.\n"
+            + "This will make both modules (%1$s & %2$s) co-requisites!";
+
     private final Module toAdd;
 
     /**
@@ -82,6 +87,11 @@ public class AddCommand extends Command {
             if (!model.hasModuleCode(corequisite)) {
                 throw new CommandException(String.format(
                         MESSAGE_NON_EXISTENT_COREQUISITE, toAdd.getCode(), corequisite)
+                );
+            }
+            if (model.getDegreePlannerByCode(corequisite) != null) {
+                throw new CommandException(String.format(
+                        MESSAGE_EXISTING_COREQUISITES_IN_DEGREE_PLAN, toAdd.getCode(), corequisite)
                 );
             }
         }

@@ -2,16 +2,13 @@ package pwe.planner.ui;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.stream.Collectors;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import pwe.planner.model.module.Code;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.model.module.Module;
-import pwe.planner.model.planner.Semester;
 
 /**
  * An UI component that displays information of a {@code Module}.
@@ -56,18 +53,10 @@ public class ModuleCard extends UiPart<Region> {
         credits.setText("Modular Credits: " + module.getCredits().value);
         code.setText(module.getCode().value);
 
-        String semestersText = module.getSemesters().stream().map(Semester::toString)
-                .collect(Collectors.joining(", "));
-        if (semestersText.length() == 0) {
-            semestersText = "None";
-        }
+        String semestersText = StringUtil.joinStreamAsString(module.getSemesters().stream().sorted());
         semesters.setText("Offered in Semesters: " + semestersText);
 
-        String corequisitesText = module.getCorequisites().stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
-        if (corequisitesText.length() == 0) {
-            corequisitesText = "None";
-        }
+        String corequisitesText = StringUtil.joinStreamAsString(module.getCorequisites().stream().sorted());
         corequisites.setText("Co-requisites: " + corequisitesText);
         module.getTags().stream().sorted().forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
     }

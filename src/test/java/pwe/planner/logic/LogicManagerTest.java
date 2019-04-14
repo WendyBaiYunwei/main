@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.commands.AddCommand;
 import pwe.planner.logic.commands.CommandResult;
 import pwe.planner.logic.commands.HistoryCommand;
@@ -33,7 +34,6 @@ import pwe.planner.model.ModelManager;
 import pwe.planner.model.ReadOnlyApplication;
 import pwe.planner.model.UserPrefs;
 import pwe.planner.model.module.Module;
-import pwe.planner.model.planner.DegreePlanner;
 import pwe.planner.storage.JsonApplicationStorage;
 import pwe.planner.storage.JsonUserPrefsStorage;
 import pwe.planner.storage.StorageManager;
@@ -85,9 +85,8 @@ public class LogicManagerTest {
     @Test
     public void execute_validPlannerListCommand_success() {
         String plannerListCommand = PlannerListCommand.COMMAND_WORD;
-        String degreePlannerListContent = model.getApplication().getDegreePlannerList().stream()
-                .map(DegreePlanner::toString)
-                .collect(Collectors.joining("\n"));
+        String degreePlannerListContent = StringUtil.joinStreamAsString(
+                model.getApplication().getDegreePlannerList().stream().sorted());
         String expectedMessage = String.format(PlannerListCommand.MESSAGE_SUCCESS, degreePlannerListContent);
         assertCommandSuccess(plannerListCommand, expectedMessage, model);
         assertHistoryCorrect(plannerListCommand);
