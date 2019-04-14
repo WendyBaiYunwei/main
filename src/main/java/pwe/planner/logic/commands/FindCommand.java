@@ -9,6 +9,7 @@ import static pwe.planner.logic.parser.CliSyntax.OPERATOR_RIGHT_BRACKET;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.function.Predicate;
 
@@ -31,7 +32,9 @@ public class FindCommand extends Command {
             + "OPERATOR "
             + "[" + PREFIX_CODE + "CODE] "
             + "OPERATOR "
-            + "[" + PREFIX_CREDITS + "CREDITS]\n"
+            + "[" + PREFIX_CREDITS + "CREDITS]"
+            + "OPERATOR "
+            + "[" + PREFIX_TAG + "TAGS]\n"
             + "OPERATOR " + OPERATOR_AND + "for logical \"AND\" operation (both conditions A AND B must match)\n"
             + "OPERATOR " + OPERATOR_OR + " for logical \"OR\" operation (either conditions A OR B must match)\n"
             + "You can also use parenthesis to group what search conditions to evaluate first.\n"

@@ -20,6 +20,12 @@ public class PlannerMoveCommandParserTest {
     private PlannerMoveCommandParser parser = new PlannerMoveCommandParser();
 
     @Test
+    public void parse_emptyArg_throwsParseException() {
+        //Displays usage
+        assertParseFailure(parser, "", PlannerMoveCommand.MESSAGE_USAGE);
+    }
+
+    @Test
     public void parse_invalidValue_failure() {
         // invalid code
         assertParseFailure(parser, " " + PREFIX_YEAR + "1 " + PREFIX_SEMESTER + "1 "

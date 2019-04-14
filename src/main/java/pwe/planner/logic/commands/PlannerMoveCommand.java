@@ -7,13 +7,14 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.logic.commands.exceptions.CommandException;
 import pwe.planner.model.Model;
 import pwe.planner.model.module.Code;
+import pwe.planner.model.module.Module;
 import pwe.planner.model.planner.DegreePlanner;
 import pwe.planner.model.planner.Semester;
 import pwe.planner.model.planner.Year;
@@ -25,22 +26,44 @@ public class PlannerMoveCommand extends Command {
 
     public static final String COMMAND_WORD = "planner_move";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Moves a module in a degree plan. "
-            + "Parameters: "
+    // General command help details
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Moves a module along with its co-requisites to"
+            + " the given year/semester of the degree plan.\n"
+            + "Format: " + COMMAND_WORD + " "
             + PREFIX_YEAR + "YEAR "
-            + PREFIX_SEMESTER + "SEMESTER\n"
-            + PREFIX_CODE + "CODE "
+            + PREFIX_SEMESTER + "SEMESTER "
+            + PREFIX_CODE + "CODE\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_YEAR + "1 "
             + PREFIX_SEMESTER + "2 "
             + PREFIX_CODE + "CS1010";
 
-    public static final String MESSAGE_SUCCESS =
-            "Successfully moved %1$s to Year %2$s Semester %3$s of the degree plan!";
+    // Command success message
+    public static final String MESSAGE_SUCCESS = "Successfully moved %1$s to Year %2$s Semester %3$s of "
+            + "degree planner!\n" + "Co-Requisite(s) moved along: %4$s";
+
+    // Command failure messages
     public static final String MESSAGE_NONEXISTENT_CODE =
-            "The module %1$s does not exist in the degree plan!";
+            "You cannot move a module %1$s that does not exist in the degree plan!\n"
+            + "Perhaps you were trying to add the module into the degree plan?\n"
+            + "[Tip] You may want to try adding the module into the degree plan using the "
+            + "\"planner_add\" command!";
+
     public static final String MESSAGE_NONEXISTENT_DEGREE_PLANNER =
-            "Year %1$s Semester %2$s does not exist in the degree planner!";
+            "You cannot move a module as Year %1$s Semester %2$s does not exist in the degree plan!\n"
+            + "Perhaps you mistyped either year or semester?\n"
+            + "[Tip] You may want to refer to the degree plan to see the semesters"
+            + " available in the application using the \"planner_list\" command!";
+
+    public static final String MESSAGE_UNAVAILABLE_SEMESTER =
+            "You cannot move a module that is not offered in Semester %1$s\n"
+            + "Perhaps you may want to check the module list for the semester(s) the module is offered in.\n"
+            + "[Tip] You may want to refer to the degree plan to see the semesters"
+            + " available in the application using the \"planner_list\" command!";
+
+    public static final String MESSAGE_UNAVAILABLE_COREQUISITES =
+            "You cannot move a module that has co-requisite(s) %1$s, which isn't offered in Semester %2$s\n"
+            + "Perhaps, you may want to check the semester(s) the co-requisite modules are offered in.";
 
     private final Year destinationYear;
     private final Semester destinationSemester;
@@ -72,29 +95,38 @@ public class PlannerMoveCommand extends Command {
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_CODE, toMove));
         }
 
+        Module moduleToMove = model.getModuleByCode(toMove);
+        if (!moduleToMove.getSemesters().contains(destinationSemester)) {
+            throw new CommandException(String.format(MESSAGE_UNAVAILABLE_SEMESTER, destinationSemester));
+        }
+
         if (destinationPlanner == null) {
             throw new CommandException(
                     String.format(MESSAGE_NONEXISTENT_DEGREE_PLANNER, destinationYear, destinationSemester));
         }
 
-        if (!sourcePlanner.isSameDegreePlanner(destinationPlanner)) {
-            Set<Code> newSourceCodes = new HashSet<>(sourcePlanner.getCodes());
-            newSourceCodes.remove(toMove);
-            Set<Code> newDestinationCodes = new HashSet<>(destinationPlanner.getCodes());
-            newDestinationCodes.add(toMove);
+        Set<Code> codesNotOffered = moduleToMove.getCorequisites().stream()
+                .filter(corequisite -> !model.getModuleByCode(corequisite).getSemesters()
+                        .contains(destinationPlanner.getSemester()))
+                .collect(Collectors.toSet());
 
-            DegreePlanner editedSourcePlanner =
-                    new DegreePlanner(sourcePlanner.getYear(), sourcePlanner.getSemester(), newSourceCodes);
-            DegreePlanner editedDestinationPlanner =
-                    new DegreePlanner(destinationPlanner.getYear(), destinationPlanner.getSemester(),
-                            newDestinationCodes);
-
-            model.setDegreePlanner(sourcePlanner, editedSourcePlanner);
-            model.setDegreePlanner(destinationPlanner, editedDestinationPlanner);
+        if (!codesNotOffered.isEmpty()) {
+            String codesNotOfferedContent =
+                    codesNotOffered.stream().sorted().map(Code::toString).collect(Collectors.joining(", "));
+            throw new CommandException(
+                    String.format(MESSAGE_UNAVAILABLE_COREQUISITES, codesNotOfferedContent, destinationSemester));
         }
 
+        model.moveModuleBetweenPlanner(sourcePlanner, destinationPlanner, toMove);
+
+        Set<Code> corequisites = moduleToMove.getCorequisites();
+        String corequisitesMoved = corequisites.isEmpty()
+                ? "None"
+                : corequisites.stream().sorted().map(Code::toString).collect(Collectors.joining(", "));
+
         model.commitApplication();
-        return new CommandResult(String.format(MESSAGE_SUCCESS, toMove, destinationYear, destinationSemester));
+        return new CommandResult(
+                String.format(MESSAGE_SUCCESS, toMove, destinationYear, destinationSemester, corequisitesMoved));
     }
 
     @Override

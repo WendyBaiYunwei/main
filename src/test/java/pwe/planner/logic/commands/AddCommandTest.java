@@ -303,7 +303,12 @@ public class AddCommandTest {
 
         @Override
         public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
-            //ToDo: implement error check
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void moveModuleBetweenPlanner(DegreePlanner sourcePlanner, DegreePlanner destinationPlanner, Code code) {
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
