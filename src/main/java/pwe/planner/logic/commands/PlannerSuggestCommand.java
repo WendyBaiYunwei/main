@@ -98,19 +98,19 @@ public class PlannerSuggestCommand extends Command {
                 .filter(code -> !plannerCodes.contains(code)).limit(MAX_NUMBER_OF_ELEMENETS)
                     .collect(Collectors.toList());
         // Converts the list to a string to remove the brackets of list.
-        String suggestionString = StringUtil.joinStreamAsString(codesToSuggest.stream().sorted());
+        String suggestionString = StringUtil.joinStreamAsString(codesToSuggest.stream());
 
         // Returns a sorted list of codes with matching tags in the recommendation list.
         List<Code> codesWithMatchingTags = modulesWithMatchingTags.stream().sorted().map(ModuleToSuggest::getModuleCode)
                 .filter(code -> !plannerCodes.contains(code) && codesToSuggest.contains(code))
                     .collect(Collectors.toList());
-        String matchingTagCodeString = StringUtil.joinStreamAsString(codesWithMatchingTags.stream().sorted());
+        String matchingTagCodeString = StringUtil.joinStreamAsString(codesWithMatchingTags.stream());
 
         // Returns a sorted list of codes with matching credits in the recommendation list.
         List<Code> codesWithMatchingCredits = modulesWithMatchingCredits.stream().sorted()
                 .map(ModuleToSuggest::getModuleCode).filter(code -> !plannerCodes.contains(code) && codesToSuggest
                         .contains(code)).collect(Collectors.toList());
-        String matchingCreditCodeString = StringUtil.joinStreamAsString(codesWithMatchingCredits.stream().sorted());
+        String matchingCreditCodeString = StringUtil.joinStreamAsString(codesWithMatchingCredits.stream());
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, suggestionString, matchingTagCodeString,
                 matchingCreditCodeString));
