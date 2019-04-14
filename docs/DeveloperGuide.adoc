@@ -958,6 +958,8 @@ categories
 
 |`* *` |user |choose to overload/underload modules in a semester |manage my workload better
 
+|`*` |user |know the modules to put inside the degree plan |find out the suitable modules to take easily
+
 |`*` |user |generate my own module plan |easily plan which modules to take during university life
 
 |`*`|user |export my data from the application|reuse the existing data on other devices
@@ -1230,6 +1232,29 @@ Use case ends.
 ** 1a1. Application shows an error message that given input is invalid.
 +
 Use case resumes from step 1.
+
+[discrete]
+=== Use case: Find modules to add to degree plan
+*Guarantee(s):*
+[none]
+* Modules will be listed if the input from the user is valid and can match the existing entries in the module list. +
+
+*MSS*
+
+1. User requests to find modules to put inside the degree plan with their criteria of choice.
+2. Application shows a list of modules sorted according to the given criteria, filtering off the modules already existing
+ inside the degree plan.
++
+Use case ends.
+
+*Extensions*
+[none]
+* 1a. The given input is invalid.
++
+[none]
+** 1a1. Application shows an error message that given input is invalid.
++
+Use case ends.
 
 [discrete]
 === Use case: Add a module to degree requirement category
