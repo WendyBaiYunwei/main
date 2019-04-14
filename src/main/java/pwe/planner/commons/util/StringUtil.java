@@ -7,11 +7,36 @@ import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Helper functions for handling strings.
  */
 public class StringUtil {
+
+    /**
+     * Returns a string of all elements of the stream separated by commas.
+     * If there are no elements in the stream, returns "None".
+     * Syntactic sugar for {@code joinStreamAsString(stream, ", ")}
+     * @param stream stream of elements to join
+     */
+    public static String joinStreamAsString(Stream<?> stream) {
+        return joinStreamAsString(stream, ", ");
+    }
+
+    /**
+     * Returns a string of all elements of the stream separated by delimiter.
+     * If there are no elements in the stream, returns "None".
+     * @param stream stream of elements to join
+     * @param delimiter string used to separate the elements when joining them together as a string
+     */
+    public static String joinStreamAsString(Stream<?> stream, String delimiter) {
+        requireAllNonNull(stream, delimiter);
+
+        String joinnedString = stream.map(Object::toString).collect(Collectors.joining(delimiter));
+        return (joinnedString.isEmpty()) ? "None" : joinnedString;
+    }
 
     /**
      * Returns true if the {@code sentence} contains the {@code word}.

@@ -13,8 +13,6 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
 import static pwe.planner.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static pwe.planner.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
-import java.util.Arrays;
-
 import org.junit.Test;
 
 import pwe.planner.logic.commands.FindCommand;
@@ -46,17 +44,17 @@ public class FindCommandParserTest {
     public void parse_validArgs_returnsFindCommand() {
         // no leading and trailing whitespaces
         FindCommand expectedFindNameCommand =
-                new FindCommand(new NameContainsKeywordsPredicate<>(Arrays.asList("Alice")));
+                new FindCommand(new NameContainsKeywordsPredicate<>("Alice"));
         // single keyword
         assertParseSuccess(parser, PREFIX_NAME + "Alice", expectedFindNameCommand);
 
         FindCommand expectedFindCodeCommand =
-                new FindCommand(new CodeContainsKeywordsPredicate<>(Arrays.asList("CS1231")));
+                new FindCommand(new CodeContainsKeywordsPredicate<>("CS1231"));
         // single keyword
         assertParseSuccess(parser, PREFIX_CODE + "CS1231", expectedFindCodeCommand);
 
         FindCommand expectedFindCreditsCommand =
-                new FindCommand(new CreditsContainsKeywordsPredicate<>(Arrays.asList("999")));
+                new FindCommand(new CreditsContainsKeywordsPredicate<>("999"));
         // single keyword
         assertParseSuccess(parser, PREFIX_CREDITS + "999", expectedFindCreditsCommand);
     }

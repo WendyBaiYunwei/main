@@ -249,15 +249,15 @@ public class Application implements ReadOnlyApplication {
     }
 
     /**
-     * Removes {@code key} from this {@code Application}.
-     * {@code key} must exist in the application.
+     * Deletes {@code module} from this {@code Application}.
+     * {@code moduleToDelete} must exist in the application.
      */
-    public void removeModule(Module key) {
-        requireNonNull(key);
+    public void removeModule(Module moduleToDelete) {
+        requireNonNull(moduleToDelete);
 
-        modules.remove(key);
-        cascadeDeletedCodeInDegreePlanners(key.getCode());
-        cascadeDeletedCodeInRequirementCategories(key.getCode());
+        modules.remove(moduleToDelete);
+        cascadeDeleteCodeToDegreePlanners(moduleToDelete.getCode());
+        cascadeDeleteCodeToRequirementCategories(moduleToDelete.getCode());
         indicateModified();
     }
 
@@ -265,8 +265,8 @@ public class Application implements ReadOnlyApplication {
      * Cascades the deleted module code by removing it from {@code UniqueDegreePlannerList} accordingly
      * @param codeToDelete module code to delete
      */
-    private void cascadeDeletedCodeInDegreePlanners(Code codeToDelete) {
-        requireNonNull(codeToDelete);
+    private void cascadeDeleteCodeToDegreePlanners(Code codeToDelete) {
+        assert codeToDelete != null;
 
         ObservableList<DegreePlanner> degreePlanners = getDegreePlannerList();
         for (DegreePlanner degreePlanner : degreePlanners) {
@@ -289,8 +289,8 @@ public class Application implements ReadOnlyApplication {
      * Cascades the deleted module code by removing it from {@code UniqueRequirementCategoryList} accordingly
      * @param codeToDelete module code to delete
      */
-    private void cascadeDeletedCodeInRequirementCategories(Code codeToDelete) {
-        requireNonNull(codeToDelete);
+    private void cascadeDeleteCodeToRequirementCategories(Code codeToDelete) {
+        assert codeToDelete != null;
 
         ObservableList<RequirementCategory> requirementCategories = getRequirementCategoryList();
         for (RequirementCategory requirementCategory : requirementCategories) {

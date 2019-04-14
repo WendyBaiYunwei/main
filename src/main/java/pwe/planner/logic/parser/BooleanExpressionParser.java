@@ -67,13 +67,13 @@ public class BooleanExpressionParser<T> {
         KeywordsPredicate<T> predicate = null;
         if (prefixes.contains(PREFIX_NAME) && argMultimap.getValue(PREFIX_NAME).isPresent()) {
             String nameKeyword = parseName(argMultimap.getValue(PREFIX_NAME).get()).toString();
-            predicate = new NameContainsKeywordsPredicate<T>(List.of(nameKeyword));
+            predicate = new NameContainsKeywordsPredicate<>(nameKeyword);
         } else if (prefixes.contains(PREFIX_CODE) && argMultimap.getValue(PREFIX_CODE).isPresent()) {
             String codeKeyword = parseCode(argMultimap.getValue(PREFIX_CODE).get()).toString();
-            predicate = new CodeContainsKeywordsPredicate<T>(List.of(codeKeyword));
+            predicate = new CodeContainsKeywordsPredicate<>(codeKeyword);
         } else if (prefixes.contains(PREFIX_CREDITS) && argMultimap.getValue(PREFIX_CREDITS).isPresent()) {
             String creditKeyword = parseCredits(argMultimap.getValue(PREFIX_CREDITS).get()).toString();
-            predicate = new CreditsContainsKeywordsPredicate<T>(List.of(creditKeyword));
+            predicate = new CreditsContainsKeywordsPredicate<>(creditKeyword);
         } else if (prefixes.contains(PREFIX_YEAR) && argMultimap.getValue(PREFIX_YEAR).isPresent()) {
             String yearKeyword = parseYear(argMultimap.getValue(PREFIX_YEAR).get()).toString();
             predicate = new YearContainsKeywordPredicate<>(yearKeyword);

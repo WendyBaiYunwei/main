@@ -983,11 +983,25 @@ _{More to be added}_
 specified otherwise)
 
 [discrete]
-=== Use case: Add a module to Application
+=== Use Case: Clear All Modules in Application
 
 *MSS*
 
-1. User requests to add a module
+1.  User requests to clear all modules in the module list
+2.  Application clear all modules in the module list
++
+Use case ends.
+
+*Extensions*
+[none]
+* None
+
+[discrete]
+=== Use case: Add a Module to Module List
+
+*MSS*
+
+1. User requests to add a module to the module list
 2. Application adds the module into the module list
 +
 Use case ends.
@@ -996,45 +1010,25 @@ Use case ends.
 
 [none]
 * 1a. The given input is invalid.
-[none]
 ** 1a1. Application shows an error message that given input is invalid.
 +
 Use case ends.
 * 1b. The module already exists in the module list.
-[none]
 ** 1b1. Application shows an error message that module specified by user already exists in module list.
 +
 Use case ends.
-
-[discrete]
-=== Use case: Delete module from Application
-
-*MSS*
-
-1.  User requests to list modules
-2.  Application shows a list of modules
-3.  User requests to delete a specific module in the module list
-4.  Application deletes the module in the module list
+* 1c. The module to be added has a corequisite that does not exists in the module list.
+** 1c1. Application shows an error message that module specified by user has a non-existent corequisite.
++
+Use case ends.
+* 1d. The module to be added has a corequisite that exists in the degree plan.
+** 1d1. Application shows an error message that module specified by user has a corequisite that exists in the degree
+plan.
 +
 Use case ends.
 
-*Extensions*
-
-[none]
-* 2a. The list is empty.
-+
-Use case ends.
-
-[none]
-* 3a. The given index is invalid.
-+
-[none]
-** 3a1. Application shows an error message.
-+
-Use case resumes at step 2.
-
 [discrete]
-=== Use case: Edit module from Application
+=== Use Case: Edit a Module in Application
 
 *MSS*
 
@@ -1069,6 +1063,47 @@ Use case resumes at step 2.
 Use case ends.
 
 [discrete]
+=== Use Case: Delete a Module in Application
+
+*MSS*
+
+1.  User requests to list modules
+2.  Application shows a list of modules
+3.  User requests to delete a specific module in the module list
+4.  Application deletes the module in the module list
++
+Use case ends.
+
+*Extensions*
+
+[none]
+* 2a. The list is empty.
++
+Use case ends.
+
+[none]
+* 3a. The given index is invalid.
++
+[none]
+** 3a1. Application shows an error message.
++
+Use case resumes at step 2.
+
+[discrete]
+=== Use Case: List All Modules in Application
+
+*MSS*
+
+1.  User requests to list all modules in the module list
+2.  Application shows a list of all modules in the module list
++
+Use case ends.
+
+*Extensions*
+[none]
+* None
+
+[discrete]
 === Use case: Find a module in Application
 *Guarantee(s):*
 [none]
@@ -1089,34 +1124,6 @@ Use case ends.
 ** 1a1. Application shows an error message that given input is invalid.
 +
 Use case ends.
-
-[discrete]
-=== Use case: List all modules in Application
-
-*MSS*
-
-1.  Student requests to list all modules in the module list
-2.  Application shows a list of all modules in the module list
-+
-Use case ends.
-
-*Extensions*
-[none]
-* None
-
-[discrete]
-=== Use case: Clear all modules in Application
-
-*MSS*
-
-1.  Student requests to clear all modules in the module list
-2.  Application clear all modules in the module list
-+
-Use case ends.
-
-*Extensions*
-[none]
-* None
 
 [discrete]
 === Use case: Add module(s) to degree plan

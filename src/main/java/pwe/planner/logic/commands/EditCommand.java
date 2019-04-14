@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_MODULE_DISPLAYED_INDEX;
 import static pwe.planner.commons.util.CollectionUtil.isAnyNonNull;
 import static pwe.planner.commons.util.CollectionUtil.requireAllNonNull;
+import static pwe.planner.commons.util.StringUtil.joinStreamAsString;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_COREQUISITE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
@@ -62,23 +63,40 @@ public class EditCommand extends Command {
     public static final String MESSAGE_EDIT_MODULE_SUCCESS = "Successfully edited the module (%1$s) to:\n%2$s";
 
     // Command failure messages
+    public static final String MESSAGE_COREQUISITES_NOT_IN_DEGREE_PLANNER =
+            "You cannot edit the module (%1$s) to have co-requisite module(s) (%2$s) when Year %3$s Semester %4$s of "
+            + "the degree plan contains the module (%1$s), but not the all the co-requisite module(s) (%5$s)!\n"
+            + "[Tip] You can use the \"planner_add\" command to add the co-requisite module(s) (%5$s) into Year %3$s "
+            + "Semester %4$s of the degree plan, then edit the module (%1$s) to have co-requisite module(s) (%2$s)!";
     public static final String MESSAGE_DUPLICATE_MODULE =
-            "You cannot edit module (%1$s) to have the module code %2$s.\n"
+            "You cannot edit module (%1$s) to have the module code (%2$s).\n"
             + "Module (%2$s) already exists in the module list!";
-    public static final String MESSAGE_INVALID_COREQUISITE = "A module cannot be a co-requisite of itself!\n"
+    public static final String MESSAGE_SELF_REFERENCING_COREQUISITE =
+            "You cannot edit the module (%1$s) to have itself as a co-requisite module!\n"
             + "Perhaps you might have entered the new co-requisites module(s) incorrectly?";
     public static final String MESSAGE_INVALID_SEMESTER =
             "You cannot edit the semesters offering module (%1$s) from (%2$s) to (%3$s), as the module can no longer "
-            + "be taken in Year %4$s Semester %5$s (according to your degree plan)!\n"
+            + "be taken in Year %4$s Semester %5$s (as indicated in your degree plan)!\n"
             + "[Tip] You can remove module (%1$s) from the degree plan first, edit the semesters offering the module "
             + "to (%3$s), and then add the module back to a suitable year/semester of the degree plan!\n";
+    public static final String MESSAGE_NON_EXISTENT_COREQUISITE =
+            "You cannot edit the module (%1$s) to have a co-requisite module(s) (%2$s) "
+            + "that does not exists in the module list!\n"
+            + "[Tip] You can add the module (%1$s), and specify the module(s) (%2$s) as co-requisite module(s) instead!"
+            + '\n';
     public static final String MESSAGE_NOT_EDITED = "You didn't specify what module details you want to edit.\n"
             + "Perhaps you would like to see the command format and example again?\n"
             + FORMAT_AND_EXAMPLES;
-    public static final String MESSAGE_NON_EXISTENT_COREQUISITE =
-            "You cannot edit the module (%1$s) to have a co-requisite module (%2$s) "
-            + "that does not exists in the module list!\n"
-            + "[Tip] You can add the module (%1$s), and specify the module (%2$s) as a co-requisite instead!\n";
+    public static final String MESSAGE_MODULE_AND_COREQUISITES_DIFFERENT_SEMESTERS =
+            "You cannot edit the module (%1$s) to have co-requisite module(s) that are already being "
+            + "added to different semesters of the degree plan!\n"
+            + "[Tip] You can move all co-requisite module(s) to the same semester, or remove them from the degree plan."
+            + "\nBelow is a list of the co-requisite module(s) that are causing the error:\n%2$s";
+    public static final String MESSAGE_MODULE_NOT_IN_DEGREE_PLANNER_BUT_SOME_COREQUISITES_IN_DEGREE_PLANNER =
+            "You cannot edit the module (%1$s) to have co-requisite module(s) (%2$s) that are already added to Year "
+            + "%3$s Semester %4$s of the degree plan!\n"
+            + "[Tip] You can add the module (%1$s) to Year %3$s Semester %4$s of the degree plan first, then edit "
+            + "the module (%1$s) to have co-requisite modules (%5$s)!";
 
     private final Index index;
     private final EditModuleDescriptor editModuleDescriptor;
@@ -98,67 +116,20 @@ public class EditCommand extends Command {
     public CommandResult execute(Model model, CommandHistory history) throws CommandException {
         requireNonNull(model);
 
-        List<Module> lastShownList = model.getFilteredModuleList();
+        List<Module> lastShownModuleList = model.getFilteredModuleList();
+        ensureValidIndexInModuleList(lastShownModuleList);
 
-        if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(MESSAGE_INVALID_MODULE_DISPLAYED_INDEX);
-        }
-
-        Module moduleToEdit = lastShownList.get(index.getZeroBased());
+        Module moduleToEdit = lastShownModuleList.get(index.getZeroBased());
         Module editedModule = createEditedModule(moduleToEdit, editModuleDescriptor);
 
-        // Check if module to edit is the same as edited module
-        if (!moduleToEdit.isSameModule(editedModule) && model.hasModule(editedModule)) {
-            throw new CommandException(
-                    String.format(MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(), editedModule.getCode())
-            );
+        ensureEditedModuleIsUniqueInModel(model, moduleToEdit, editedModule);
+        ensureEditedModuleIsNotCorequisiteOfItself(moduleToEdit, editedModule);
+        ensureEditedCorequisitesExistsInModel(model, moduleToEdit, editedModule);
+        if (!moduleToEdit.getCorequisites().equals(editedModule.getCorequisites())) {
+            ensureDegreePlannerUnaffectedByEditedCorequisites(model, moduleToEdit, editedModule);
         }
-
-        boolean hasSemestersChanged = !moduleToEdit.getSemesters().equals(editedModule.getSemesters());
-        Optional<DegreePlanner> degreePlannerContainingModuleToEdit = model.getApplication().getDegreePlannerList()
-                .stream()
-                .filter(degreePlanner -> (degreePlanner.getCodes().contains(moduleToEdit.getCode())))
-                .findFirst();
-
-        /**
-         * Checks if there are any issues updating a module's semesters.
-         * There is no issues updating a module's semesters if the module is not added to any {@link DegreePlanner}.
-         * However, if {@code moduleToEdit} exists in a {@link DegreePlanner}} and {@code moduleToEdit#getSemesters()}
-         * is different from {@code editedModule#getSemeters()}, we need to check if {@link DegreePlanner#getSemester()}
-         * is within {@code editedModule#getSemesters()}.
-         *
-         * If {@link DegreePlanner#getSemester()} is within {@code editedModule#getSemesters()}, there are no issues.
-         * otherwise, editing the semesters of the module will violate data integrity, which results in an exception.
-         */
-        if (hasSemestersChanged && degreePlannerContainingModuleToEdit.isPresent()) {
-            DegreePlanner degreePlanner = degreePlannerContainingModuleToEdit.get();
-            Semester semester = degreePlanner.getSemester();
-            if (!editedModule.getSemesters().contains(semester)) {
-                String semestersToEdit = moduleToEdit.getSemesters().stream().sorted().map(Semester::toString)
-                        .collect(Collectors.joining(", "));
-                if (semestersToEdit.isEmpty()) {
-                    semestersToEdit = "None";
-                }
-                String editedSemesters = editedModule.getSemesters().stream().sorted().map(Semester::toString)
-                        .collect(Collectors.joining(", "));
-                if (editedSemesters.isEmpty()) {
-                    editedSemesters = "None";
-                }
-                String exceptionMessage = String.format(MESSAGE_INVALID_SEMESTER, moduleToEdit.getCode(),
-                        semestersToEdit, editedSemesters, degreePlanner.getYear(), degreePlanner.getSemester());
-                throw new CommandException(exceptionMessage);
-            }
-        }
-
-        // Ensure that all module co-requisites exists, and no module co-requisite is the same as code of module to edit
-        for (Code corequisite : editedModule.getCorequisites()) {
-            if (moduleToEdit.getCode().equals(corequisite)) {
-                throw new CommandException(MESSAGE_INVALID_COREQUISITE);
-            } else if (!model.hasModuleCode(corequisite)) {
-                throw new CommandException(
-                        String.format(MESSAGE_NON_EXISTENT_COREQUISITE, moduleToEdit.getCode(), corequisite)
-                );
-            }
+        if (!moduleToEdit.getSemesters().equals(editedModule.getSemesters())) {
+            ensureDegreePlannerUnaffectedByEditedSemesters(model, moduleToEdit, editedModule);
         }
 
         // Edit and cascade the changes of the module to the rest of the entire application
@@ -167,12 +138,189 @@ public class EditCommand extends Command {
         model.commitApplication();
 
         // Get latest copy of edited module after cascading changes
-        Module editedModuleInModuleList = model.getFilteredModuleList().stream()
-                .filter(module -> editedModule.getCode().equals(module.getCode())).findFirst().get();
+        Optional<Module> editedModuleInModuleList = model.getFilteredModuleList().stream()
+                .filter(module -> editedModule.getCode().equals(module.getCode())).findFirst();
 
-        return new CommandResult(
-                String.format(MESSAGE_EDIT_MODULE_SUCCESS, moduleToEdit.getCode(), editedModuleInModuleList)
-        );
+        assert editedModuleInModuleList.isPresent();
+
+        String successMessage = String.format(MESSAGE_EDIT_MODULE_SUCCESS, moduleToEdit.getCode(),
+                editedModuleInModuleList.get());
+        return new CommandResult(successMessage);
+    }
+
+    /**
+     * Ensures that {@code index} is valid in the displayed {@code module list}.
+     * @param lastShownModuleList the displayed module list
+     * @throws CommandException
+     */
+    private void ensureValidIndexInModuleList(List<Module> lastShownModuleList) throws CommandException {
+        assert lastShownModuleList != null;
+
+        if (index.getZeroBased() >= lastShownModuleList.size()) {
+            throw new CommandException(MESSAGE_INVALID_MODULE_DISPLAYED_INDEX);
+        }
+    }
+
+    /**
+     * Ensures that the edited module is unique in the module list.
+     * @throws CommandException if editing the module will result in duplicate modules
+     */
+    private void ensureEditedModuleIsUniqueInModel(Model model, Module moduleToEdit, Module editedModule)
+            throws CommandException {
+        assert model != null;
+        assert moduleToEdit != null;
+        assert editedModule != null;
+
+        if (!moduleToEdit.isSameModule(editedModule) && model.hasModule(editedModule)) {
+            String exceptionMessage = String.format(MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(),
+                    editedModule.getCode());
+            throw new CommandException(exceptionMessage);
+        }
+    }
+
+    /**
+     * Ensures that the edited module is not a co-requisite of itself.
+     * @throws CommandException if the above constraint is violated.
+     */
+    private void ensureEditedModuleIsNotCorequisiteOfItself(Module moduleToEdit, Module editedModule)
+            throws CommandException {
+        assert moduleToEdit != null;
+        assert editedModule != null;
+
+        boolean hasOriginalCodeInCorequisites = editedModule.getCorequisites().contains(moduleToEdit.getCode());
+        boolean hasEditedCodeInCorequisites = editedModule.getCorequisites().contains(editedModule.getCode());
+        if (hasOriginalCodeInCorequisites || hasEditedCodeInCorequisites) {
+            String exceptionMessage = String.format(MESSAGE_SELF_REFERENCING_COREQUISITE, moduleToEdit.getCode());
+            throw new CommandException(exceptionMessage);
+        }
+    }
+
+    /**
+     * Ensures that the corequisites of the edited module exists in the module list.
+     * @throws CommandException if the above constraint is violated.
+     */
+    private void ensureEditedCorequisitesExistsInModel(Model model, Module moduleToEdit, Module editedModule)
+            throws CommandException {
+        assert model != null;
+        assert moduleToEdit != null;
+        assert editedModule != null;
+
+        Set<Code> nonExistentCorequisites = editedModule.getCorequisites().stream()
+                .filter(corequisite -> !model.hasModuleCode(corequisite)).collect(Collectors.toSet());
+
+        if (!nonExistentCorequisites.isEmpty()) {
+            String exceptionMessage = String.format(MESSAGE_NON_EXISTENT_COREQUISITE, moduleToEdit.getCode(),
+                    joinStreamAsString(nonExistentCorequisites.stream().sorted()));
+            throw new CommandException(exceptionMessage);
+        }
+    }
+
+    /**
+     * Ensures that the editing the module does not affect the data integrity of the degree planner.
+     * - Edited module is not in the degree plan, but at least one co-requisite module is in the degree plan.
+     * - Edited module and corequisites exists in different semesters of the degree plan.
+     * - Edited module is in the degree plan, but at least one co-requisite module is not.
+     * @throws CommandException if any of the above constraints is violated.
+     */
+    private void ensureDegreePlannerUnaffectedByEditedCorequisites(Model model, Module moduleToEdit,
+            Module editedModule) throws CommandException {
+        assert model != null;
+        assert moduleToEdit != null;
+        assert editedModule != null;
+
+        List<Code> editedCorequisitesInDegreePlanner = editedModule.getCorequisites().stream()
+                .filter(code -> model.getDegreePlannerByCode(code) != null).collect(Collectors.toList());
+
+        List<DegreePlanner> degreePlannersContainingEditedCorequisites = editedCorequisitesInDegreePlanner.stream()
+                .map(model::getDegreePlannerByCode).distinct().collect(Collectors.toList());
+
+        if (degreePlannersContainingEditedCorequisites.size() > 1) {
+            List<DegreePlanner> problematicDegreePlanners = degreePlannersContainingEditedCorequisites.stream()
+                    .map((degreePlanner) -> {
+                        Set<Code> newCodes = new HashSet<>(degreePlanner.getCodes());
+                        newCodes.retainAll(editedModule.getCorequisites());
+                        return new DegreePlanner(degreePlanner.getYear(), degreePlanner.getSemester(), newCodes);
+                    }).collect(Collectors.toList());
+
+            String exceptionMessage = String.format(MESSAGE_MODULE_AND_COREQUISITES_DIFFERENT_SEMESTERS,
+                    moduleToEdit.getCode(), joinStreamAsString(problematicDegreePlanners.stream().sorted(), "\n"));
+            throw new CommandException(exceptionMessage);
+        }
+
+        DegreePlanner degreePlannerContainingModuleToEdit = model.getDegreePlannerByCode(moduleToEdit.getCode());
+        boolean isModuleToEditInDegreePlanner = degreePlannerContainingModuleToEdit != null;
+        boolean isEditedCorequisitesInDegreePlanner = !degreePlannersContainingEditedCorequisites.isEmpty();
+
+        if (!isModuleToEditInDegreePlanner && isEditedCorequisitesInDegreePlanner) {
+            DegreePlanner degreePlannerContainingEditedCorequisites = degreePlannersContainingEditedCorequisites.get(0);
+            Set<Code> existingCorequisites = degreePlannerContainingEditedCorequisites.getCodes().stream()
+                    .filter(editedModule.getCorequisites()::contains).collect(Collectors.toSet());
+            String existingCorequisitesInDegreePlanner = joinStreamAsString(existingCorequisites.stream().sorted());
+            String year = degreePlannersContainingEditedCorequisites.get(0).getYear().toString();
+            String semester = degreePlannersContainingEditedCorequisites.get(0).getSemester().toString();
+            String editedCorequisites = joinStreamAsString(editedModule.getCorequisites().stream().sorted());
+            String exceptionMessage = String.format(
+                    MESSAGE_MODULE_NOT_IN_DEGREE_PLANNER_BUT_SOME_COREQUISITES_IN_DEGREE_PLANNER,
+                    moduleToEdit.getCode(), existingCorequisitesInDegreePlanner, year, semester, editedCorequisites);
+            throw new CommandException(exceptionMessage);
+        }
+        if (isModuleToEditInDegreePlanner && isEditedCorequisitesInDegreePlanner) {
+            DegreePlanner degreePlannerContainingEditedCorequisites = degreePlannersContainingEditedCorequisites.get(0);
+            boolean isDegreePlannersSemesterEquals = degreePlannerContainingEditedCorequisites.getSemester()
+                    .equals(degreePlannerContainingModuleToEdit.getSemester());
+            if (!isDegreePlannersSemesterEquals) {
+                List<DegreePlanner> problematicDegreePlanners = degreePlannersContainingEditedCorequisites.stream()
+                        .map((degreePlanner) -> {
+                            Set<Code> newCodes = new HashSet<>(degreePlanner.getCodes());
+                            newCodes.retainAll(editedModule.getCorequisites());
+                            return new DegreePlanner(degreePlanner.getYear(), degreePlanner.getSemester(), newCodes);
+                        }).collect(Collectors.toList());
+
+                String exceptionMessage = String.format(MESSAGE_MODULE_AND_COREQUISITES_DIFFERENT_SEMESTERS,
+                        moduleToEdit.getCode(), joinStreamAsString(problematicDegreePlanners.stream().sorted(), "\n"));
+                throw new CommandException(exceptionMessage);
+            }
+        }
+
+        boolean hasMissingCorequisitesInDegreePlanner =
+                editedCorequisitesInDegreePlanner.size() != editedModule.getCorequisites().size();
+
+        if (isModuleToEditInDegreePlanner && hasMissingCorequisitesInDegreePlanner) {
+            Set<Code> missingCorequisites = new HashSet<>(editedModule.getCorequisites());
+            missingCorequisites.removeAll(editedCorequisitesInDegreePlanner);
+            String exceptionMessage = String.format(MESSAGE_COREQUISITES_NOT_IN_DEGREE_PLANNER, moduleToEdit.getCode(),
+                    joinStreamAsString(editedModule.getCorequisites().stream().sorted()),
+                    degreePlannerContainingModuleToEdit.getYear(), degreePlannerContainingModuleToEdit.getSemester(),
+                    joinStreamAsString(missingCorequisites.stream().sorted()));
+            throw new CommandException(exceptionMessage);
+        }
+    }
+
+    /**
+     * Ensures that the edited module remains valid after updating semesters.
+     * If the module is in semester X, but the edited module's semesters do not contain X, the edited module is
+     * considered invalid.
+     * @throws CommandException if the above constraint is violated.
+     */
+    private void ensureDegreePlannerUnaffectedByEditedSemesters(Model model, Module moduleToEdit,
+            Module editedModule) throws CommandException {
+        assert model != null;
+        assert moduleToEdit != null;
+        assert editedModule != null;
+
+        DegreePlanner degreePlannerContainingModuleToEdit = model.getDegreePlannerByCode(moduleToEdit.getCode());
+        if (degreePlannerContainingModuleToEdit == null) {
+            return;
+        }
+
+        if (!editedModule.getSemesters().contains(degreePlannerContainingModuleToEdit.getSemester())) {
+            String semestersToEdit = joinStreamAsString(moduleToEdit.getSemesters().stream().sorted());
+            String editedSemesters = joinStreamAsString(editedModule.getSemesters().stream().sorted());
+            String exceptionMessage = String.format(MESSAGE_INVALID_SEMESTER, moduleToEdit.getCode(), semestersToEdit,
+                    editedSemesters, degreePlannerContainingModuleToEdit.getYear(),
+                    degreePlannerContainingModuleToEdit.getSemester());
+            throw new CommandException(exceptionMessage);
+        }
     }
 
     /**

@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.model.module.Code;
 
 /**
@@ -93,7 +93,7 @@ public class DegreePlanner implements Comparable<DegreePlanner> {
     public String toString() {
         final String allCodes = codes.isEmpty()
                 ? "No modules"
-                : codes.stream().sorted().map(Code::toString).collect(Collectors.joining(", "));
+                : StringUtil.joinStreamAsString(codes.stream().sorted());
 
         return String.format(STRING_REPRESENTATION, year, semester, allCodes);
     }

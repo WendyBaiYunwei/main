@@ -64,7 +64,7 @@ public class UniqueModuleList implements Iterable<Module> {
         }
         internalList.add(toAdd);
 
-        cascadeAddModuleCorequisites(toAdd);
+        cascadeAddToModuleCorequisites(toAdd);
     }
 
     /**
@@ -73,7 +73,7 @@ public class UniqueModuleList implements Iterable<Module> {
      *
      * @param moduleToAdd
      */
-    private void cascadeAddModuleCorequisites(Module moduleToAdd) {
+    private void cascadeAddToModuleCorequisites(Module moduleToAdd) {
         assert moduleToAdd != null;
 
         // create a union Set<Code> of co-requisites
@@ -151,10 +151,10 @@ public class UniqueModuleList implements Iterable<Module> {
 
         if (cascade) {
             if (!target.getCode().equals(editedModule.getCode())) {
-                cascadeEditModuleCorequisites(target, editedModule);
+                cascadeEditToModuleCorequisites(target, editedModule);
             }
-            cascadeDeleteModuleCorequisites(target);
-            cascadeAddModuleCorequisites(editedModule);
+            cascadeDeleteToModuleCorequisites(target);
+            cascadeAddToModuleCorequisites(editedModule);
         }
     }
 
@@ -163,7 +163,7 @@ public class UniqueModuleList implements Iterable<Module> {
      * @param target module code to edit/find
      * @param editedModule module code to replace with
      */
-    private void cascadeEditModuleCorequisites(Module target, Module editedModule) {
+    private void cascadeEditToModuleCorequisites(Module target, Module editedModule) {
         assert target != null;
         assert editedModule != null;
 
@@ -202,14 +202,14 @@ public class UniqueModuleList implements Iterable<Module> {
             throw new ModuleNotFoundException();
         }
 
-        cascadeDeleteModuleCorequisites(toRemove);
+        cascadeDeleteToModuleCorequisites(toRemove);
     }
 
     /**
      * Cascades the deleted module code by removing it from {@code UniqueModuleList} accordingly
      * @param moduleToDelete module code to delete
      */
-    private void cascadeDeleteModuleCorequisites(Module moduleToDelete) {
+    private void cascadeDeleteToModuleCorequisites(Module moduleToDelete) {
         assert moduleToDelete != null;
 
         ObservableList<Module> modules = internalUnmodifiableList;

@@ -10,7 +10,6 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import pwe.planner.commons.core.index.Index;
@@ -158,8 +157,7 @@ public class CommandTestUtil {
         assertTrue(targetIndex.getZeroBased() < model.getFilteredModuleList().size());
 
         Module module = model.getFilteredModuleList().get(targetIndex.getZeroBased());
-        final String[] splitName = module.getName().fullName.split("\\s+");
-        model.updateFilteredModuleList(new NameContainsKeywordsPredicate<>(Arrays.asList(splitName[0])));
+        model.updateFilteredModuleList(new NameContainsKeywordsPredicate<>(module.getName().toString()));
 
         assertEquals(1, model.getFilteredModuleList().size());
     }
