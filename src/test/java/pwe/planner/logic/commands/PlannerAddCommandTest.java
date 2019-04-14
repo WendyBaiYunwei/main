@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import pwe.planner.commons.exceptions.IllegalValueException;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.logic.commands.exceptions.CommandException;
 import pwe.planner.model.Model;
@@ -88,8 +89,7 @@ public class PlannerAddCommandTest {
 
         expectedModel.commitApplication();
 
-        String validCodeString = validCodeSet.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String validCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
 
         assertCommandSuccess(new PlannerAddCommand(validYear, validSemester, validCodeSet), model, commandHistory,
                 String.format(PlannerAddCommand.MESSAGE_SUCCESS, validYear, validSemester, validCodeString, "None"),
@@ -104,8 +104,7 @@ public class PlannerAddCommandTest {
 
         PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, validCodeSet);
 
-        String validCodeString = validCodeSet.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String validCodeString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
 
         thrown.expect(CommandException.class);
         thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_DUPLICATE_CODE, validCodeString));
@@ -120,8 +119,7 @@ public class PlannerAddCommandTest {
 
         PlannerAddCommand plannerAddCommand = new PlannerAddCommand(validYear, validSemester, nonexistentCodeSet);
 
-        String nonexistentCodeString = nonexistentCodeSet.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String nonexistentCodeString = StringUtil.joinStreamAsString(nonexistentCodeSet.stream().sorted());
 
         thrown.expect(CommandException.class);
         thrown.expectMessage(String.format(PlannerAddCommand.MESSAGE_NONEXISTENT_MODULES, nonexistentCodeString));
