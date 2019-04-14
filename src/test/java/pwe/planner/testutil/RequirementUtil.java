@@ -26,7 +26,6 @@ public class RequirementUtil {
         return sb.toString();
     }
 
-
     /**
      * Returns an add command string for adding the {@code code}.
      */
