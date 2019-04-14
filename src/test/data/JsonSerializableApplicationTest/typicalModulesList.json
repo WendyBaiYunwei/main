@@ -39,7 +39,7 @@
     "code" : "CS2102",
     "name" : "Fiona Kunz",
     "credits" : "5",
-    "semesters" : [ "1", "2" ],
+    "semesters" : [ "1" ],
     "corequisites": [ "CS1231" ],
     "tagged" : [ ]
   }, {

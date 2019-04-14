@@ -21,20 +21,19 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.commands.AddCommand;
 import pwe.planner.logic.commands.CommandResult;
 import pwe.planner.logic.commands.HistoryCommand;
 import pwe.planner.logic.commands.ListCommand;
-import pwe.planner.logic.commands.PlannerListAllCommand;
+import pwe.planner.logic.commands.PlannerListCommand;
 import pwe.planner.logic.commands.exceptions.CommandException;
 import pwe.planner.logic.parser.exceptions.ParseException;
 import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
 import pwe.planner.model.ReadOnlyApplication;
 import pwe.planner.model.UserPrefs;
-import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Module;
-import pwe.planner.model.planner.DegreePlanner;
 import pwe.planner.storage.JsonApplicationStorage;
 import pwe.planner.storage.JsonUserPrefsStorage;
 import pwe.planner.storage.StorageManager;
@@ -58,8 +57,7 @@ public class LogicManagerTest {
                 new JsonApplicationStorage(temporaryFolder.newFile().toPath(), temporaryFolder.newFile().toPath(),
                         temporaryFolder.newFile().toPath());
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.newFile().toPath());
-        StorageManager storage =
-                new StorageManager(applicationStorage, userPrefsStorage);
+        StorageManager storage = new StorageManager(applicationStorage, userPrefsStorage);
         logic = new LogicManager(model, storage);
     }
 
@@ -86,22 +84,10 @@ public class LogicManagerTest {
 
     @Test
     public void execute_validPlannerListCommand_success() {
-        String plannerListCommand = PlannerListAllCommand.COMMAND_WORD;
-        StringBuilder degreePlannerListContent = new StringBuilder();
-        for (DegreePlanner degreePlanner : model.getFilteredDegreePlannerList()) {
-            degreePlannerListContent
-                    .append("Year: " + degreePlanner.getYear() + " Semester: " + degreePlanner.getSemester() + "\n");
-            if (degreePlanner.getCodes().isEmpty()) {
-                degreePlannerListContent.append("No module inside");
-            } else {
-                degreePlannerListContent
-                        .append("Modules: " + degreePlanner.getCodes().stream().map(Code::toString).collect(
-                                Collectors.joining(", ")));
-            }
-            degreePlannerListContent.append("\n\n");
-        }
-        String expectedMessage =
-                String.format(PlannerListAllCommand.MESSAGE_SUCCESS, degreePlannerListContent.toString());
+        String plannerListCommand = PlannerListCommand.COMMAND_WORD;
+        String degreePlannerListContent = StringUtil.joinStreamAsString(
+                model.getApplication().getDegreePlannerList().stream().sorted());
+        String expectedMessage = String.format(PlannerListCommand.MESSAGE_SUCCESS, degreePlannerListContent);
         assertCommandSuccess(plannerListCommand, expectedMessage, model);
         assertHistoryCorrect(plannerListCommand);
     }

@@ -69,27 +69,56 @@ public class AddCommandTest {
     }
 
     @Test
+    public void execute_nonExistentCorequisites_throwsCommandException() throws Exception {
+        String nonExistentCorequisite = "ZYX9876W";
+        Module invalidModule = new ModuleBuilder().withCorequisites(nonExistentCorequisite).build();
+        AddCommand addCommand = new AddCommand(invalidModule);
+        ModelStub modelStub = new ModelStubWithModule(invalidModule);
+        String expectedMessage = String.format(AddCommand.MESSAGE_DUPLICATE_MODULE, invalidModule.getCode(),
+                nonExistentCorequisite);
+
+        thrown.expect(CommandException.class);
+        thrown.expectMessage(expectedMessage);
+        addCommand.execute(modelStub, commandHistory);
+    }
+
+    @Test
+    public void execute_addMultipleValidCorequisites_successful() throws CommandException {
+        ModelStubAcceptingModuleAdded modelStub = new ModelStubAcceptingModuleAdded();
+        Module moduleA = new ModuleBuilder().withCode("AA1111").build();
+        Module moduleB = new ModuleBuilder().withCode("BB2222").build();
+        modelStub.addModule(moduleA);
+        modelStub.addModule(moduleB);
+
+        Module moduleWithCorequisites = new ModuleBuilder().withCode("CC3333").withCorequisites("AA1111", "BB2222")
+                .build();
+
+        AddCommand addCommand = new AddCommand(moduleWithCorequisites);
+        addCommand.execute(modelStub, commandHistory);
+    }
+
+    @Test
     public void equals() {
-        Module alice = new ModuleBuilder().withName("Alice").build();
-        Module bob = new ModuleBuilder().withName("Bob").build();
-        AddCommand addAliceCommand = new AddCommand(alice);
-        AddCommand addBobCommand = new AddCommand(bob);
+        Module cs1010 = new ModuleBuilder().withName("Programming Methodology").build();
+        Module cs1231 = new ModuleBuilder().withName("Data Structures").build();
+        AddCommand addCS1010Command = new AddCommand(cs1010);
+        AddCommand addCS1231Command = new AddCommand(cs1231);
 
         // same object -> returns true
-        assertTrue(addAliceCommand.equals(addAliceCommand));
+        assertTrue(addCS1010Command.equals(addCS1010Command));
 
         // same values -> returns true
-        AddCommand addAliceCommandCopy = new AddCommand(alice);
-        assertTrue(addAliceCommand.equals(addAliceCommandCopy));
+        AddCommand addCS1010CommandCopy = new AddCommand(cs1010);
+        assertTrue(addCS1010Command.equals(addCS1010CommandCopy));
 
         // different types -> returns false
-        assertFalse(addAliceCommand.equals(1));
+        assertFalse(addCS1010Command.equals(1));
 
         // null -> returns false
-        assertFalse(addAliceCommand.equals(null));
+        assertFalse(addCS1010Command.equals(null));
 
         // different module -> returns false
-        assertFalse(addAliceCommand.equals(addBobCommand));
+        assertFalse(addCS1010Command.equals(addCS1231Command));
     }
 
     /**
@@ -274,7 +303,12 @@ public class AddCommandTest {
 
         @Override
         public void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner) {
-            //ToDo: implement error check
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void moveModuleBetweenPlanner(DegreePlanner sourcePlanner, DegreePlanner destinationPlanner, Code code) {
+            throw new AssertionError("This method should not be called.");
         }
 
         @Override
@@ -368,13 +402,27 @@ public class AddCommandTest {
         @Override
         public boolean hasModule(Module module) {
             requireNonNull(module);
+
             return modulesAdded.stream().anyMatch(module::isSameModule);
+        }
+
+        @Override
+        public boolean hasModuleCode(Code code) {
+            requireNonNull(code);
+
+            return modulesAdded.stream().map(Module::getCode).anyMatch(code::equals);
         }
 
         @Override
         public void addModule(Module module) {
             requireNonNull(module);
             modulesAdded.add(module);
+        }
+
+        @Override
+        public DegreePlanner getDegreePlannerByCode(Code toCheck) {
+            requireNonNull(toCheck);
+            return null;
         }
 
         @Override

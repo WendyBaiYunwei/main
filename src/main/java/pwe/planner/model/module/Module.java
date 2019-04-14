@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.model.planner.Semester;
 import pwe.planner.model.tag.Tag;
 
@@ -128,17 +128,11 @@ public class Module {
     @Override
     public String toString() {
 
-        final String allSemesters = semesters.isEmpty()
-                ? "None"
-                : semesters.stream().sorted().map(Semester::toString).collect(Collectors.joining(", "));
+        final String allSemesters = StringUtil.joinStreamAsString(semesters.stream().sorted());
 
-        final String allCorequisites = corequisites.isEmpty()
-                ? "None"
-                : corequisites.stream().sorted().map(Code::toString).collect(Collectors.joining(", "));
+        final String allCorequisites = StringUtil.joinStreamAsString(corequisites.stream().sorted());
 
-        final String allTags = tags.isEmpty()
-                ? "None"
-                : tags.stream().sorted().map(Tag::toString).collect(Collectors.joining(", "));
+        final String allTags = StringUtil.joinStreamAsString(tags.stream().sorted());
 
         return String.format(STRING_REPRESENTATION, code, name, credits, allSemesters, allCorequisites, allTags);
     }

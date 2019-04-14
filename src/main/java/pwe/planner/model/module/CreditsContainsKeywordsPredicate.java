@@ -3,18 +3,16 @@ package pwe.planner.model.module;
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.logic.parser.ParserUtil.parseKeyword;
 
-import java.util.List;
-
 /**
- * Tests that a {@code Module}'s {@code Credit} matches any of the keywords given.
+ * Tests that a {@code Module}'s {@code Credit} matches keyword given.
  */
 public class CreditsContainsKeywordsPredicate<T> implements KeywordsPredicate<T> {
-    private final List<String> keywords;
+    private final String keyword;
 
-    public CreditsContainsKeywordsPredicate(List<String> keywords) {
-        requireNonNull(keywords);
+    public CreditsContainsKeywordsPredicate(String keyword) {
+        requireNonNull(keyword);
 
-        this.keywords = keywords;
+        this.keyword = keyword;
     }
 
     @Override
@@ -23,14 +21,14 @@ public class CreditsContainsKeywordsPredicate<T> implements KeywordsPredicate<T>
         Module module = (Module) object;
 
         String moduleCredits = module.getCredits().toString();
-        return keywords.stream().anyMatch(keyword -> parseKeyword(keyword, moduleCredits));
+        return parseKeyword(keyword, moduleCredits);
     }
 
     @Override
     public boolean equals(Object other) {
         return other == this // short circuit if same object
                 || (other instanceof CreditsContainsKeywordsPredicate // instanceof handles nulls
-                && keywords.equals(((CreditsContainsKeywordsPredicate) other).keywords)); // state check
+                && keyword.equals(((CreditsContainsKeywordsPredicate) other).keyword)); // state check
     }
 
 }

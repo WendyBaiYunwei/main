@@ -180,8 +180,8 @@ public class ModelManagerTest {
         assertFalse(modelManager.equals(new ModelManager(differentApplication, userPrefs)));
 
         // different filteredList -> returns false
-        String[] keywords = ALICE.getName().fullName.split("\\s+");
-        modelManager.updateFilteredModuleList(new NameContainsKeywordsPredicate<>(Arrays.asList(keywords)));
+        String keyword = ALICE.getName().toString();
+        modelManager.updateFilteredModuleList(new NameContainsKeywordsPredicate<>(keyword));
 
         assertFalse(modelManager
                 .equals(new ModelManager(application, userPrefs)));

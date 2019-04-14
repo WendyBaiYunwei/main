@@ -3,12 +3,10 @@ package pwe.planner.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static pwe.planner.model.Model.PREDICATE_SHOW_ALL_REQUIREMENT_CATEGORIES;
 
-import java.util.stream.Collectors;
-
 import javafx.collections.ObservableList;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.model.Model;
-import pwe.planner.model.module.Code;
 import pwe.planner.model.requirement.RequirementCategory;
 
 /**
@@ -41,8 +39,8 @@ public class RequirementListCommand extends Command {
             if (requirementCategory.getCodeSet().isEmpty()) {
                 requirementListContent.append("No modules added!");
             } else {
-                requirementListContent.append("Modules: ").append(requirementCategory.getCodeSet().stream()
-                        .map(Code::toString).sorted().collect(Collectors.joining(", ")));
+                requirementListContent.append("Modules: ")
+                        .append(StringUtil.joinStreamAsString(requirementCategory.getCodeSet().stream().sorted()));
             }
 
             requirementListContent.append("\n\n");

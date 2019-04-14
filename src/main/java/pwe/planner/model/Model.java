@@ -219,6 +219,13 @@ public interface Model {
      */
     void setDegreePlanner(DegreePlanner target, DegreePlanner editedDegreePlanner);
 
+    /**
+     * Moves the given module code {@code code} from {@code sourcePlanner} to {@code destinationPlanner} along
+     * with its corequisites.
+     * {@code code} must exist in the {@code sourcePlanner}.
+     */
+    void moveModuleBetweenPlanner(DegreePlanner sourcePlanner, DegreePlanner destinationPlanner, Code code);
+
     /** Returns an unmodifiable view of the filtered degreePlanner list */
     ObservableList<DegreePlanner> getFilteredDegreePlannerList();
 

@@ -249,15 +249,15 @@ public class Application implements ReadOnlyApplication {
     }
 
     /**
-     * Removes {@code key} from this {@code Application}.
-     * {@code key} must exist in the application.
+     * Deletes {@code module} from this {@code Application}.
+     * {@code moduleToDelete} must exist in the application.
      */
-    public void removeModule(Module key) {
-        requireNonNull(key);
+    public void removeModule(Module moduleToDelete) {
+        requireNonNull(moduleToDelete);
 
-        modules.remove(key);
-        cascadeDeletedCodeInDegreePlanners(key.getCode());
-        cascadeDeletedCodeInRequirementCategories(key.getCode());
+        modules.remove(moduleToDelete);
+        cascadeDeleteCodeToDegreePlanners(moduleToDelete.getCode());
+        cascadeDeleteCodeToRequirementCategories(moduleToDelete.getCode());
         indicateModified();
     }
 
@@ -265,8 +265,8 @@ public class Application implements ReadOnlyApplication {
      * Cascades the deleted module code by removing it from {@code UniqueDegreePlannerList} accordingly
      * @param codeToDelete module code to delete
      */
-    private void cascadeDeletedCodeInDegreePlanners(Code codeToDelete) {
-        requireNonNull(codeToDelete);
+    private void cascadeDeleteCodeToDegreePlanners(Code codeToDelete) {
+        assert codeToDelete != null;
 
         ObservableList<DegreePlanner> degreePlanners = getDegreePlannerList();
         for (DegreePlanner degreePlanner : degreePlanners) {
@@ -289,8 +289,8 @@ public class Application implements ReadOnlyApplication {
      * Cascades the deleted module code by removing it from {@code UniqueRequirementCategoryList} accordingly
      * @param codeToDelete module code to delete
      */
-    private void cascadeDeletedCodeInRequirementCategories(Code codeToDelete) {
-        requireNonNull(codeToDelete);
+    private void cascadeDeleteCodeToRequirementCategories(Code codeToDelete) {
+        assert codeToDelete != null;
 
         ObservableList<RequirementCategory> requirementCategories = getRequirementCategoryList();
         for (RequirementCategory requirementCategory : requirementCategories) {
@@ -350,6 +350,41 @@ public class Application implements ReadOnlyApplication {
         requireAllNonNull(target, editedDegreePlanner);
 
         degreePlanners.setDegreePlanner(target, editedDegreePlanner);
+    }
+
+    /**
+     * Moves the given module code {@code code} from {@code sourcePlanner} to {@code destinationPlanner} along
+     * with its corequisites.
+     * {@code code} must exist in the {@code sourcePlanner}.
+     */
+    public void moveModuleBetweenPlanner(DegreePlanner sourcePlanner, DegreePlanner destinationPlanner, Code code) {
+        requireAllNonNull(sourcePlanner, destinationPlanner, code);
+
+        Set<Code> codesToMove = new HashSet<>(modules.getModuleByCode(code).getCorequisites());
+        codesToMove.add(code);
+        Set<Code> editedDestinationPlannerCodes = new HashSet<>(destinationPlanner.getCodes());
+
+        for (Code codeToMove : codesToMove) {
+            DegreePlanner sourceDegreePlanner = degreePlanners.getDegreePlannerByCode(codeToMove);
+            Set<Code> editedSourceDegreePlanner = new HashSet<>(sourceDegreePlanner.getCodes());
+            editedSourceDegreePlanner.remove(codeToMove);
+            DegreePlanner editedSourcePlanner =
+                    new DegreePlanner(sourceDegreePlanner.getYear(), sourceDegreePlanner.getSemester(),
+                            editedSourceDegreePlanner);
+
+            setDegreePlanner(sourceDegreePlanner, editedSourcePlanner);
+        }
+
+        editedDestinationPlannerCodes.addAll(codesToMove);
+        DegreePlanner editedDestinationPlanner = new DegreePlanner(destinationPlanner.getYear(),
+                destinationPlanner.getSemester(), editedDestinationPlannerCodes);
+
+        // Search for the destinationPlanner is necessary as code could have been removed from destinationPlanner
+        DegreePlanner targetDestinationPlanner = getDegreePlannerList().stream()
+                .filter(destinationPlanner::isSameDegreePlanner)
+                .findFirst()
+                .orElse(null);
+        setDegreePlanner(targetDestinationPlanner, editedDestinationPlanner);
     }
 
     /**

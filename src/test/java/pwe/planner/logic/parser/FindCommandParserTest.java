@@ -10,10 +10,10 @@ import static pwe.planner.logic.parser.CliSyntax.OPERATOR_RIGHT_BRACKET;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 import static pwe.planner.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static pwe.planner.logic.parser.CommandParserTestUtil.assertParseSuccess;
-
-import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -25,6 +25,8 @@ import pwe.planner.model.module.Credits;
 import pwe.planner.model.module.CreditsContainsKeywordsPredicate;
 import pwe.planner.model.module.Name;
 import pwe.planner.model.module.NameContainsKeywordsPredicate;
+import pwe.planner.model.module.TagContainsKeywordsPredicate;
+import pwe.planner.model.planner.SemesterContainsKeywordPredicate;
 
 public class FindCommandParserTest {
 
@@ -46,19 +48,26 @@ public class FindCommandParserTest {
     public void parse_validArgs_returnsFindCommand() {
         // no leading and trailing whitespaces
         FindCommand expectedFindNameCommand =
-                new FindCommand(new NameContainsKeywordsPredicate<>(Arrays.asList("Alice")));
+                new FindCommand(new NameContainsKeywordsPredicate<>("Alice"));
         // single keyword
         assertParseSuccess(parser, PREFIX_NAME + "Alice", expectedFindNameCommand);
 
         FindCommand expectedFindCodeCommand =
-                new FindCommand(new CodeContainsKeywordsPredicate<>(Arrays.asList("CS1231")));
+                new FindCommand(new CodeContainsKeywordsPredicate<>("CS1231"));
         // single keyword
         assertParseSuccess(parser, PREFIX_CODE + "CS1231", expectedFindCodeCommand);
 
         FindCommand expectedFindCreditsCommand =
-                new FindCommand(new CreditsContainsKeywordsPredicate<>(Arrays.asList("999")));
+                new FindCommand(new CreditsContainsKeywordsPredicate<>("999"));
         // single keyword
         assertParseSuccess(parser, PREFIX_CREDITS + "999", expectedFindCreditsCommand);
+
+        // single keyword
+        FindCommand expectedFindTagsCommand = new FindCommand(new TagContainsKeywordsPredicate<>("tag"));
+        assertParseSuccess(parser, PREFIX_TAG + "tag", expectedFindTagsCommand);
+
+        FindCommand expectedFindSemesterCommand = new FindCommand(new SemesterContainsKeywordPredicate<>("2"));
+        assertParseSuccess(parser, PREFIX_SEMESTER + "2", expectedFindSemesterCommand);
     }
 
     @Test
@@ -73,6 +82,10 @@ public class FindCommandParserTest {
         // credits/CREDITS || credits/CREDITS
         assertParserSuccess(parser, PREFIX_CREDITS + "4 " + WHITESPACE + OPERATOR_OR + WHITESPACE
                 + PREFIX_CREDITS + "999");
+        // tag/TAGG || tag/Tag1
+        assertParserSuccess(parser, PREFIX_TAG + "TAGG " + OPERATOR_OR + PREFIX_TAG + "Tag1");
+        // sem/1 || sem/2
+        assertParserSuccess(parser, PREFIX_SEMESTER + "1 " + OPERATOR_OR + PREFIX_SEMESTER + "2");
 
         // test for boolean AND
         // name/NAME && name/NAME
@@ -84,6 +97,11 @@ public class FindCommandParserTest {
         // credits/CREDITS && credits/CREDITS
         assertParserSuccess(parser, PREFIX_CREDITS + "4 " + WHITESPACE + OPERATOR_AND + WHITESPACE
                 + PREFIX_CREDITS + "999");
+        // tag/TAG && tag/TAG
+        assertParserSuccess(parser, PREFIX_TAG + "TAG " + WHITESPACE + OPERATOR_AND + WHITESPACE
+                + PREFIX_TAG + "TAGGG");
+        // sem1 && sem/2
+        assertParserSuccess(parser, PREFIX_SEMESTER + "1" + OPERATOR_AND + PREFIX_SEMESTER + "2");
 
         // test for boolean AND and boolean OR
         // credits/CREDITS || credits/CREDITS && name/Programming
@@ -93,6 +111,14 @@ public class FindCommandParserTest {
         // credits/4 || (name/Information && name/Security)
         assertParserSuccess(parser, PREFIX_CREDITS + "4" + OPERATOR_OR + OPERATOR_LEFT_BRACKET + PREFIX_NAME
                 + "information" + OPERATOR_AND + PREFIX_NAME + "security" + OPERATOR_RIGHT_BRACKET);
+
+        // tag/C || (name/Information && name/Security)
+        assertParserSuccess(parser, PREFIX_TAG + "C" + OPERATOR_OR + OPERATOR_LEFT_BRACKET + PREFIX_NAME
+                + "information" + OPERATOR_AND + PREFIX_NAME + "security" + OPERATOR_RIGHT_BRACKET);
+
+        // tag/C && (name/Information || name/Security)
+        assertParserSuccess(parser, PREFIX_TAG + "C" + OPERATOR_AND + OPERATOR_LEFT_BRACKET + PREFIX_NAME
+                + "information" + OPERATOR_OR + PREFIX_NAME + "security" + OPERATOR_RIGHT_BRACKET);
 
     }
 

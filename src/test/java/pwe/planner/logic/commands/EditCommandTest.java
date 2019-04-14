@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static pwe.planner.commons.core.Messages.MESSAGE_INVALID_MODULE_DISPLAYED_INDEX;
+import static pwe.planner.commons.util.StringUtil.joinStreamAsString;
 import static pwe.planner.logic.commands.CommandTestUtil.DESC_AMY;
 import static pwe.planner.logic.commands.CommandTestUtil.DESC_BOB;
 import static pwe.planner.logic.commands.CommandTestUtil.VALID_CREDITS_BOB;
@@ -12,23 +13,25 @@ import static pwe.planner.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static pwe.planner.logic.commands.CommandTestUtil.assertCommandFailure;
 import static pwe.planner.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static pwe.planner.logic.commands.CommandTestUtil.showModuleAtIndex;
-import static pwe.planner.testutil.TypicalDegreePlanners.getTypicalDegreePlannerList;
 import static pwe.planner.testutil.TypicalIndexes.INDEX_FIRST_MODULE;
 import static pwe.planner.testutil.TypicalIndexes.INDEX_SECOND_MODULE;
-import static pwe.planner.testutil.TypicalModules.getTypicalModuleList;
-import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
+
+import java.util.Set;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
 import pwe.planner.commons.core.index.Index;
-import pwe.planner.commons.exceptions.IllegalValueException;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.logic.commands.EditCommand.EditModuleDescriptor;
 import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
 import pwe.planner.model.UserPrefs;
+import pwe.planner.model.module.Code;
 import pwe.planner.model.module.Module;
-import pwe.planner.storage.JsonSerializableApplication;
+import pwe.planner.model.planner.DegreePlanner;
+import pwe.planner.model.planner.Semester;
+import pwe.planner.model.util.SampleDataUtil;
 import pwe.planner.testutil.EditModuleDescriptorBuilder;
 import pwe.planner.testutil.ModuleBuilder;
 
@@ -36,13 +39,10 @@ import pwe.planner.testutil.ModuleBuilder;
  * Contains integration tests (interaction with the Model, UndoCommand and RedoCommand) and unit tests for EditCommand.
  */
 public class EditCommandTest {
-
-    //ToDo: Implement getTypicalDegreePlannerList for DegreePlannerList and update the codes below
-    private Model model = new ModelManager(new JsonSerializableApplication(getTypicalModuleList(),
-            getTypicalDegreePlannerList(), getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
+    private Model model = new ModelManager(SampleDataUtil.getSampleApplication(), new UserPrefs());
     private CommandHistory commandHistory = new CommandHistory();
 
-    public EditCommandTest() throws IllegalValueException {}
+    public EditCommandTest() {}
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
@@ -249,6 +249,172 @@ public class EditCommandTest {
         // redo -> edits same second module in unfiltered module list
         expectedModel.redoApplication();
         assertCommandSuccess(new RedoCommand(), model, commandHistory, RedoCommand.MESSAGE_SUCCESS, expectedModel);
+    }
+
+    /**
+     * 1. Edits a {@code Module} in the filtered module list to have another module that is not added to the degree plan
+     * as a corequisite -> success
+     */
+    @Test
+    public void execute_nonExistentCorequisites_throwsCommandException() {
+        showModuleAtIndex(model, INDEX_FIRST_MODULE);
+
+        Module moduleToEdit = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
+        String nonExistentCorequisite = "ZYX9876W";
+        EditCommand.EditModuleDescriptor editModuleDescriptor = new EditModuleDescriptorBuilder()
+                .withCorequisites(nonExistentCorequisite).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, editModuleDescriptor);
+        String expectedMessage = String.format(EditCommand.MESSAGE_NON_EXISTENT_COREQUISITE, moduleToEdit.getCode(),
+                nonExistentCorequisite);
+
+        assertCommandFailure(editCommand, model, commandHistory, expectedMessage);
+    }
+
+    @Test
+    public void execute_directSelfReferencingCorequisites_throwsCommandException() {
+        showModuleAtIndex(model, INDEX_FIRST_MODULE);
+
+        Module moduleToEdit = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
+        String editedModuleCode = moduleToEdit.getCode().toString();
+        EditCommand.EditModuleDescriptor editModuleDescriptor = new EditModuleDescriptorBuilder()
+                .withCorequisites(editedModuleCode).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, editModuleDescriptor);
+        String expectedMessage = String.format(EditCommand.MESSAGE_SELF_REFERENCING_COREQUISITE, moduleToEdit.getCode(),
+                editedModuleCode);
+
+        assertCommandFailure(editCommand, model, commandHistory, expectedMessage);
+    }
+
+    @Test
+    public void execute_indirectSelfReferencingCorequisites_throwsCommandException() {
+        showModuleAtIndex(model, INDEX_FIRST_MODULE);
+
+        Module moduleToEdit = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
+        String originalModuleCode = moduleToEdit.getCode().toString();
+        String editedModuleCode = "CS1337";
+        EditCommand.EditModuleDescriptor editModuleDescriptor = new EditModuleDescriptorBuilder()
+                .withCode(editedModuleCode).withCorequisites(originalModuleCode).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, editModuleDescriptor);
+        String expectedMessage = String.format(EditCommand.MESSAGE_SELF_REFERENCING_COREQUISITE, originalModuleCode,
+                editedModuleCode);
+
+        assertCommandFailure(editCommand, model, commandHistory, expectedMessage);
+    }
+
+    @Test
+    public void execute_moduleAndCorequisiteModuleExistsInDifferentSemesters_throwsCommandException() {
+        showModuleAtIndex(model, INDEX_FIRST_MODULE);
+
+        Module moduleToEdit = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
+        Code corequisiteModuleInDifferentSemester = new Code("CS2040C");
+        DegreePlanner originalDegreePlanner = model.getDegreePlannerByCode(corequisiteModuleInDifferentSemester);
+        assert originalDegreePlanner != null;
+        assert !originalDegreePlanner.equals(model.getDegreePlannerByCode(moduleToEdit.getCode()));
+
+        DegreePlanner truncatedDegreePlanner = new DegreePlanner(originalDegreePlanner.getYear(),
+                originalDegreePlanner.getSemester(), Set.of(corequisiteModuleInDifferentSemester));
+
+        EditCommand.EditModuleDescriptor editModuleDescriptor = new EditModuleDescriptorBuilder()
+                .withCorequisites(corequisiteModuleInDifferentSemester.toString()).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, editModuleDescriptor);
+        String expectedMessage = String.format(EditCommand.MESSAGE_MODULE_AND_COREQUISITES_DIFFERENT_SEMESTERS,
+                moduleToEdit.getCode(), truncatedDegreePlanner);
+
+        assertCommandFailure(editCommand, model, commandHistory, expectedMessage);
+    }
+
+    @Test
+    public void execute_moduleAndCorequisiteModulesExistsInDifferentSemesters_throwsCommandException() {
+        showModuleAtIndex(model, INDEX_FIRST_MODULE);
+
+        Module moduleToEdit = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
+        Code firstCorequisiteModuleInDifferentSemester = new Code("CS2040C");
+        Code secondCorequisiteModuleInDifferentSemester = new Code("GER1000");
+        DegreePlanner firstDegreePlanner = model.getDegreePlannerByCode(firstCorequisiteModuleInDifferentSemester);
+        DegreePlanner secondDegreePlanner = model.getDegreePlannerByCode(secondCorequisiteModuleInDifferentSemester);
+        assert firstDegreePlanner != null;
+        assert secondDegreePlanner != null;
+        assert !firstDegreePlanner.equals(secondDegreePlanner);
+
+        DegreePlanner truncatedFirstDegreePlanner = new DegreePlanner(firstDegreePlanner.getYear(),
+                firstDegreePlanner.getSemester(), Set.of(firstCorequisiteModuleInDifferentSemester));
+        DegreePlanner truncatedSecondDegreePlanner = new DegreePlanner(secondDegreePlanner.getYear(),
+                secondDegreePlanner.getSemester(), Set.of(secondCorequisiteModuleInDifferentSemester));
+
+        Stream<DegreePlanner> stream = Stream.of(truncatedFirstDegreePlanner, truncatedSecondDegreePlanner).sorted();
+
+        EditCommand.EditModuleDescriptor editModuleDescriptor = new EditModuleDescriptorBuilder()
+                .withCorequisites(firstCorequisiteModuleInDifferentSemester.toString(),
+                        secondCorequisiteModuleInDifferentSemester.toString()).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, editModuleDescriptor);
+        String expectedMessage = String.format(EditCommand.MESSAGE_MODULE_AND_COREQUISITES_DIFFERENT_SEMESTERS,
+                moduleToEdit.getCode(), joinStreamAsString(stream, "\n"));
+
+        assertCommandFailure(editCommand, model, commandHistory, expectedMessage);
+    }
+
+    @Test
+    public void execute_moduleNotInDegreePlannerButCorequisiteInDegreePlanner_throwsCommandException() {
+        Index lastModuleIndex = Index.fromOneBased(model.getFilteredModuleList().size());
+        Module moduleToEdit = model.getFilteredModuleList().get(lastModuleIndex.getZeroBased());
+        assert model.getDegreePlannerByCode(moduleToEdit.getCode()) == null;
+
+        Code corequisiteModule = new Code("CS2040C");
+        DegreePlanner degreePlannerContainingCorequisite = model.getDegreePlannerByCode(corequisiteModule);
+
+        EditCommand.EditModuleDescriptor editModuleDescriptor = new EditModuleDescriptorBuilder()
+                .withCorequisites(corequisiteModule.toString()).build();
+        EditCommand editCommand = new EditCommand(lastModuleIndex, editModuleDescriptor);
+
+        String expectedMessage = String.format(
+                EditCommand.MESSAGE_MODULE_NOT_IN_DEGREE_PLANNER_BUT_SOME_COREQUISITES_IN_DEGREE_PLANNER,
+                moduleToEdit.getCode(), corequisiteModule,
+                degreePlannerContainingCorequisite.getYear(), degreePlannerContainingCorequisite.getSemester(),
+                joinStreamAsString(editModuleDescriptor.getCorequisites().get().stream().sorted()));
+
+        assertCommandFailure(editCommand, model, commandHistory, expectedMessage);
+    }
+
+    @Test
+    public void execute_editExistingModuleInDegreePlannerInvalidSemester_throwsCommandException() {
+        showModuleAtIndex(model, INDEX_FIRST_MODULE);
+
+        Module moduleToEdit = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
+        DegreePlanner degreePlannerContainingModule = model.getDegreePlannerByCode(moduleToEdit.getCode());
+        Semester editedSemester = new Semester("2");
+        assert degreePlannerContainingModule != null;
+        assert !degreePlannerContainingModule.getSemester().equals(editedSemester);
+
+        EditCommand.EditModuleDescriptor editModuleDescriptor = new EditModuleDescriptorBuilder()
+                .withSemesters(editedSemester.toString()).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, editModuleDescriptor);
+
+        String expectedMessage = String.format(EditCommand.MESSAGE_INVALID_SEMESTER, moduleToEdit.getCode(),
+                joinStreamAsString(moduleToEdit.getSemesters().stream().sorted()),
+                editedSemester, degreePlannerContainingModule.getYear(), degreePlannerContainingModule.getSemester()
+        );
+        assertCommandFailure(editCommand, model, commandHistory, expectedMessage);
+    }
+
+    @Test
+    public void execute_missingCorequisiteInDegreePlanner_throwsCommandException() {
+        showModuleAtIndex(model, INDEX_FIRST_MODULE);
+
+        Module moduleToEdit = model.getFilteredModuleList().get(INDEX_FIRST_MODULE.getZeroBased());
+        DegreePlanner degreePlannerContainingModule = model.getDegreePlannerByCode(moduleToEdit.getCode());
+        assert degreePlannerContainingModule != null;
+
+        Code missingCorequisite = new Code("ST2334");
+        assert model.getDegreePlannerByCode(missingCorequisite) == null;
+
+        EditCommand.EditModuleDescriptor editModuleDescriptor = new EditModuleDescriptorBuilder()
+                .withCorequisites(missingCorequisite.toString()).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_MODULE, editModuleDescriptor);
+
+        String expectedMessage = String.format(EditCommand.MESSAGE_COREQUISITES_NOT_IN_DEGREE_PLANNER,
+                moduleToEdit.getCode(), missingCorequisite, degreePlannerContainingModule.getYear(),
+                degreePlannerContainingModule.getSemester(), missingCorequisite);
+        assertCommandFailure(editCommand, model, commandHistory, expectedMessage);
     }
 
     @Test

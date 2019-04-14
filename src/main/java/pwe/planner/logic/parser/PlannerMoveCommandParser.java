@@ -29,6 +29,10 @@ public class PlannerMoveCommandParser implements Parser<PlannerMoveCommand> {
     public PlannerMoveCommand parse(String args) throws ParseException {
         requireNonNull(args);
 
+        if (args.isEmpty()) {
+            throw new ParseException(PlannerMoveCommand.MESSAGE_USAGE);
+        }
+
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_YEAR, PREFIX_SEMESTER, PREFIX_CODE);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_YEAR, PREFIX_SEMESTER, PREFIX_CODE)

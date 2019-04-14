@@ -2,11 +2,13 @@ package pwe.planner.commons.util;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,6 +18,46 @@ public class StringUtilTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+
+    //---------------- Tests for joinStreamAsString --------------------------------------------
+
+    @Test
+    public void joinStreamAsString_nullStream_throwsNullPointerException() {
+        thrown.expect(NullPointerException.class);
+        StringUtil.joinStreamAsString(null);
+    }
+
+    @Test
+    public void joinStreamAsString_nullStreamNonNullDelimiter_throwsNullPointerException() {
+        thrown.expect(NullPointerException.class);
+        StringUtil.joinStreamAsString(null, "delimiter");
+    }
+
+    @Test
+    public void joinStreamAsString_nonNullStreamNullDelimiter_throwsNullPointerException() {
+        thrown.expect(NullPointerException.class);
+        StringUtil.joinStreamAsString(Stream.of(), null);
+    }
+
+    @Test
+    public void joinStreamAsString_emptyStreamNonEmptyDelimiter_success() {
+        // use default delimiter on empty string -> success
+        assertEquals(StringUtil.joinStreamAsString(Stream.of()), "None");
+        // use custom delimiter on empty string -> success
+        assertEquals(StringUtil.joinStreamAsString(Stream.of(), "delimiter"), "None");
+    }
+
+    @Test
+    public void joinStreamAsString_nonEmptyStreamEmptyDelimiter_success() {
+        assertEquals(StringUtil.joinStreamAsString(Stream.of(), ""), "None");
+        assertEquals(StringUtil.joinStreamAsString(Stream.of("A", "B", "C"), "   "), "A   B   C");
+    }
+
+    @Test
+    public void joinStreamAsString_mixedElementsInStream_success() {
+        assertEquals(StringUtil.joinStreamAsString(Stream.of("A", 'b', 3)), "A, b, 3");
+        assertEquals(StringUtil.joinStreamAsString(Stream.of("A", 'b', 3), "\n"), "A\nb\n3");
+    }
 
     //---------------- Tests for isNonZeroUnsignedInteger --------------------------------------
 

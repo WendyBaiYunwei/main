@@ -1,5 +1,7 @@
 ﻿Some code adapted from http://code.makery.ch/library/javafx-8-tutorial/ by Marco Jakob
 
+Some css adapted from https://bitbucket.org/agix-material-fx/materialfx-material-design-for-javafx by AGIX | Innovative Engineering
+
 Copyright by Font Awesome - https://fontawesome.com/
 - plan_with_ease_32.png
 

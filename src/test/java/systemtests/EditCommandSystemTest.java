@@ -16,9 +16,9 @@ import static pwe.planner.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
 import static pwe.planner.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static pwe.planner.logic.commands.CommandTestUtil.NAME_DESC_BOB;
 import static pwe.planner.logic.commands.CommandTestUtil.SEMESTERS_DESC_AMY;
-import static pwe.planner.logic.commands.CommandTestUtil.SEMESTERS_DESC_BOB;
 import static pwe.planner.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static pwe.planner.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
+import static pwe.planner.logic.commands.CommandTestUtil.VALID_CODE_AMY;
 import static pwe.planner.logic.commands.CommandTestUtil.VALID_CODE_BOB;
 import static pwe.planner.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static pwe.planner.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
@@ -57,9 +57,9 @@ public class EditCommandSystemTest extends ApplicationSystemTest {
          * -> edited
          */
         Index index = INDEX_FIRST_MODULE;
-        String command = " " + EditCommand.COMMAND_WORD + "  " + index.getOneBased() + "  " + NAME_DESC_BOB + "  "
-                + CREDITS_DESC_BOB + " " + CODE_DESC_BOB + " " + SEMESTERS_DESC_BOB + "  " + TAG_DESC_HUSBAND + " ";
-        Module editedModule = new ModuleBuilder(BOB).withTags(VALID_TAG_HUSBAND).build();
+        String command = " " + EditCommand.COMMAND_WORD + "  " + index.getOneBased() + "  " + NAME_DESC_AMY + "  "
+                + CREDITS_DESC_AMY + " " + CODE_DESC_AMY + " " + SEMESTERS_DESC_AMY + "  " + TAG_DESC_HUSBAND + " ";
+        Module editedModule = new ModuleBuilder(AMY).withTags(VALID_TAG_HUSBAND).build();
         assertCommandSuccess(command, index, editedModule);
 
         /* Case: undo editing the last module in the list -> last module restored */
@@ -74,29 +74,29 @@ public class EditCommandSystemTest extends ApplicationSystemTest {
         assertCommandSuccess(command, model, expectedResultMessage);
 
         /* Case: edit a module with new values same as existing values -> edited */
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_BOB
-                + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
-        assertCommandSuccess(command, index, BOB);
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + CREDITS_DESC_AMY
+                + CODE_DESC_AMY + SEMESTERS_DESC_AMY + TAG_DESC_FRIEND;
+        assertCommandSuccess(command, index, AMY);
 
         /* Case: edit a module with new values same as another module's values but with different name -> rejected */
-        assertTrue(getModel().getApplication().getModuleList().contains(BOB));
+        assertTrue(getModel().getApplication().getModuleList().contains(AMY));
         index = INDEX_SECOND_MODULE;
-        assertNotEquals(getModel().getFilteredModuleList().get(index.getZeroBased()), BOB);
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + CREDITS_DESC_BOB
-                + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
+        assertNotEquals(getModel().getFilteredModuleList().get(index.getZeroBased()), AMY);
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_AMY
+                + CODE_DESC_AMY + SEMESTERS_DESC_AMY + TAG_DESC_FRIEND;
         Module moduleToEdit = getModel().getFilteredModuleList().get(index.getZeroBased());
         expectedResultMessage = String.format(
-                EditCommand.MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(), VALID_CODE_BOB
+                EditCommand.MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(), VALID_CODE_AMY
         );
         assertCommandFailure(command, expectedResultMessage);
 
         /* Case: edit a module with new values same as another module's values but with different credits -> rejected */
         index = INDEX_SECOND_MODULE;
-        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_BOB + CREDITS_DESC_AMY
-                + CODE_DESC_BOB + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
+        command = EditCommand.COMMAND_WORD + " " + index.getOneBased() + NAME_DESC_AMY + CREDITS_DESC_BOB
+                + CODE_DESC_AMY + SEMESTERS_DESC_AMY + TAG_DESC_FRIEND;
         moduleToEdit = getModel().getFilteredModuleList().get(index.getZeroBased());
         expectedResultMessage = String.format(
-                EditCommand.MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(), VALID_CODE_BOB
+                EditCommand.MESSAGE_DUPLICATE_MODULE, moduleToEdit.getCode(), VALID_CODE_AMY
         );
         assertCommandFailure(command, expectedResultMessage);
 
