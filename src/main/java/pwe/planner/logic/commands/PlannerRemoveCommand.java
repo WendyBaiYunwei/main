@@ -33,7 +33,7 @@ public class PlannerRemoveCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Successfully removed module(s) %1$s from the degree plan!\n"
             + "Co-requisite(s) removed: %2$s";
     public static final String MESSAGE_NONEXISTENT_CODES = "You cannot remove module(s) %1$s that does not"
-            + "exist in the degree plan.\n [Tip] Maybe you can review the module(s) in the degree plan, "
+            + "exist in the degree plan.\n[Tip] Maybe you can review the module(s) in the degree plan, "
             + "then select module(s) to remove from there.";
     private Set<Code> codesToRemove;
 
