@@ -19,14 +19,13 @@ endif::[]
 Hi! I am Yunwei, a student from the National University of Singapore (NUS). I love to build
 applications that improve people's lives.
 
-This portfolio documents my involvement in the PlanWithEase (PWE), a degree planner
-application created by my team-mates, Ahn Taegyu, Ngo Wei Lin, Lee Yu Choy, Yeo Cheng Hong and me
- within one school semester. This portfolio shows what the project is about and my
- contribution to the project.
+This portfolio documents my involvement in a software development project, through which my teammates
+and me created a degree planner application within one school semester. This portfolio shows 
+what the project is about and my contribution to the project.
 
 == Overview
 
-For this project, we aim to simplify the process of degree-planning for NUS information security students.
+For this project, we aim to simplify the process of degree-planning among NUS information security students.
 
 ifdef::env-github[]
 image::Ui.png[width="800"]
