@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import pwe.planner.commons.exceptions.IllegalValueException;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.model.Model;
 import pwe.planner.model.ModelManager;
@@ -63,8 +64,7 @@ public class PlannerRemoveCommandTest {
         }
         expectedModel.commitApplication();
 
-        String removedCodesString = validCodeSet.stream().map(Code::toString).collect(Collectors.joining(", "));
-
+        String removedCodesString = StringUtil.joinStreamAsString(validCodeSet.stream().sorted());
         assertCommandSuccess(new PlannerRemoveCommand(validCodeSet), model, commandHistory,
                 String.format(PlannerRemoveCommand.MESSAGE_SUCCESS, removedCodesString, "None"), expectedModel);
     }
@@ -73,8 +73,7 @@ public class PlannerRemoveCommandTest {
     public void execute_nonexistentPlannerCodes_throwsCommandException() {
         Set<Code> nonexistentCodeSet = Set.of(new Code("CS9999"));
 
-        String nonexistentCodesString = nonexistentCodeSet.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String nonexistentCodesString = StringUtil.joinStreamAsString(nonexistentCodeSet.stream().sorted());
 
         PlannerRemoveCommand plannerRemoveCommand = new PlannerRemoveCommand(nonexistentCodeSet);
         assertCommandFailure(plannerRemoveCommand, model, commandHistory,
