@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
+import pwe.planner.commons.util.StringUtil;
 import pwe.planner.logic.CommandHistory;
 import pwe.planner.logic.commands.exceptions.CommandException;
 import pwe.planner.model.Model;
@@ -57,8 +58,7 @@ public class PlannerRemoveCommand extends Command {
                 .collect(Collectors.toSet());
         if (!nonExistentPlannerCodes.isEmpty()) {
             // Converts the set to a string to remove the square brackets.
-            String nonExistentCodesString = nonExistentPlannerCodes.stream().map(Code::toString)
-                    .collect(Collectors.joining(", "));
+            String nonExistentCodesString = StringUtil.joinStreamAsString(nonExistentPlannerCodes.stream().sorted());
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_CODES, nonExistentCodesString));
         }
 
@@ -92,9 +92,9 @@ public class PlannerRemoveCommand extends Command {
         model.commitApplication();
 
         // Converts a set to a string to remove the brackets of set.
-        String removedCodesString = codesToRemove.stream().map(Code::toString).collect(Collectors.joining(", "));
-        String coreqsRemovedString = coreqsRemoved.isEmpty() ? "None" : coreqsRemoved.stream().map(Code::toString)
-                .collect(Collectors.joining(", "));
+        String removedCodesString = StringUtil.joinStreamAsString(codesToRemove.stream().sorted());
+        String coreqsRemovedString = coreqsRemoved.isEmpty() ? "None" : StringUtil
+                .joinStreamAsString(coreqsRemoved.stream().sorted());
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, removedCodesString, coreqsRemovedString));
     }
