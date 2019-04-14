@@ -15,9 +15,13 @@ import static pwe.planner.logic.parser.CliSyntax.OPERATOR_RIGHT_BRACKET;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
+import static pwe.planner.testutil.TypicalModules.ALICE;
 import static pwe.planner.testutil.TypicalModules.BENSON;
 import static pwe.planner.testutil.TypicalModules.CARL;
 import static pwe.planner.testutil.TypicalModules.DANIEL;
+import static pwe.planner.testutil.TypicalModules.ELLE;
 import static pwe.planner.testutil.TypicalModules.KEYWORD_MATCHING_MEIER;
 
 import java.util.ArrayList;
@@ -172,9 +176,33 @@ public class FindCommandSystemTest extends ApplicationSystemTest {
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
+        /* Case: find code of module in application with correct PREFIX -> 3 module found */
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_TAG + "friends";
+        ModelHelper.setFilteredList(expectedModel, ALICE, BENSON, DANIEL);
+        assertCommandSuccess(command, expectedModel);
+        assertSelectedCardUnchanged();
+
+        /* Case: find non-existent module in application with PREFIX_TAG -> 0 modules found */
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_TAG + "NotExisting";
+        ModelHelper.setFilteredList(expectedModel);
+        assertCommandSuccess(command, expectedModel);
+        assertSelectedCardUnchanged();
+
+        /* Case: find module in application with PREFIX_TAG, keyword is substring of a valid tag -> 0 modules found */
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_TAG + "frie"; // derived from friends
+        ModelHelper.setFilteredList(expectedModel);
+        assertCommandSuccess(command, expectedModel);
+        assertSelectedCardUnchanged();
+
         /* Case: find tags of module in application -> 0 modules found */
         List<Tag> tags = new ArrayList<>(DANIEL.getTags());
         command = FindCommand.COMMAND_WORD + " " + PREFIX_NAME + tags.get(0).tagName;
+        assertCommandSuccess(command, expectedModel);
+        assertSelectedCardUnchanged();
+
+        /* Case: find module in the application with PREFIX_SEM/4 -> 2 modules found */
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_SEMESTER + "4";
+        ModelHelper.setFilteredList(expectedModel, ALICE);
         assertCommandSuccess(command, expectedModel);
         assertSelectedCardUnchanged();
 
@@ -277,6 +305,11 @@ public class FindCommandSystemTest extends ApplicationSystemTest {
         expectedModel = getModel();
         ModelHelper.setFilteredList(expectedModel);
         assertCommandSuccess(command, expectedModel);
+
+        command = FindCommand.COMMAND_WORD + " " + PREFIX_SEMESTER + "4" + OPERATOR_AND + " " + PREFIX_SEMESTER
+                + "2";
+        ModelHelper.setFilteredList(expectedModel, ALICE);
+        assertCommandSuccess(command, expectedModel);
     }
 
     @Test
@@ -288,6 +321,12 @@ public class FindCommandSystemTest extends ApplicationSystemTest {
                         + PREFIX_NAME + "Meier " + OPERATOR_RIGHT_BRACKET;
         Model expectedModel = getModel();
         ModelHelper.setFilteredList(expectedModel, DANIEL, CARL);
+        assertCommandSuccess(command, expectedModel);
+
+        /* find (sem/1 || sem/2) && credits/4 -> Return 1 module */
+        command = FindCommand.COMMAND_WORD + " " + OPERATOR_LEFT_BRACKET + PREFIX_SEMESTER + "1" + OPERATOR_OR
+                + PREFIX_SEMESTER + "2" + OPERATOR_RIGHT_BRACKET + OPERATOR_AND + PREFIX_CREDITS + "4";
+        ModelHelper.setFilteredList(expectedModel, ELLE);
         assertCommandSuccess(command, expectedModel);
     }
 

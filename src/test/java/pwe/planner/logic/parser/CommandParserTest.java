@@ -31,6 +31,7 @@ import pwe.planner.logic.commands.ListCommand;
 import pwe.planner.logic.commands.PlannerAddCommand;
 import pwe.planner.logic.commands.PlannerListCommand;
 import pwe.planner.logic.commands.PlannerMoveCommand;
+import pwe.planner.logic.commands.PlannerRemoveCommand;
 import pwe.planner.logic.commands.PlannerShowCommand;
 import pwe.planner.logic.commands.PlannerSuggestCommand;
 import pwe.planner.logic.commands.RedoCommand;
@@ -211,6 +212,14 @@ public class CommandParserTest {
         RequirementRemoveCommand command = (RequirementRemoveCommand) parser.parseCommand(
                 RequirementUtil.getRequirementRemoveCommand(codeSet));
         assertEquals(new RequirementRemoveCommand(codeSet), command);
+    }
+
+    @Test
+    public void parseCommand_plannerRemove() throws Exception {
+        Set<Code> codesToRemove = Set.of(new Code("CS1010"));
+        PlannerRemoveCommand command = (PlannerRemoveCommand) parser.parseCommand(
+                PlannerRemoveCommand.COMMAND_WORD + " " + PREFIX_CODE + "CS1010");
+        assertEquals(new PlannerRemoveCommand(codesToRemove), command);
     }
 
     @Test

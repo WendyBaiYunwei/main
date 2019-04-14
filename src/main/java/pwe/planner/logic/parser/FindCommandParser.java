@@ -7,6 +7,8 @@ import static pwe.planner.logic.commands.FindCommand.MESSAGE_USAGE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -26,7 +28,9 @@ public class FindCommandParser implements Parser<FindCommand> {
     private static final List<Prefix> PREFIXES = List.of(
             PREFIX_NAME,
             PREFIX_CODE,
-            PREFIX_CREDITS
+            PREFIX_CREDITS,
+            PREFIX_TAG,
+            PREFIX_SEMESTER
     );
 
     /**

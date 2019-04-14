@@ -5,12 +5,14 @@ import static pwe.planner.logic.parser.CliSyntax.PREFIX_CODE;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_CREDITS;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_NAME;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
+import static pwe.planner.logic.parser.CliSyntax.PREFIX_TAG;
 import static pwe.planner.logic.parser.CliSyntax.PREFIX_YEAR;
 import static pwe.planner.logic.parser.Operator.getOperatorFromString;
 import static pwe.planner.logic.parser.ParserUtil.parseCode;
 import static pwe.planner.logic.parser.ParserUtil.parseCredits;
 import static pwe.planner.logic.parser.ParserUtil.parseName;
 import static pwe.planner.logic.parser.ParserUtil.parseSemester;
+import static pwe.planner.logic.parser.ParserUtil.parseTag;
 import static pwe.planner.logic.parser.ParserUtil.parseYear;
 
 import java.util.ArrayDeque;
@@ -26,6 +28,7 @@ import pwe.planner.model.module.CodeContainsKeywordsPredicate;
 import pwe.planner.model.module.CreditsContainsKeywordsPredicate;
 import pwe.planner.model.module.KeywordsPredicate;
 import pwe.planner.model.module.NameContainsKeywordsPredicate;
+import pwe.planner.model.module.TagContainsKeywordsPredicate;
 import pwe.planner.model.planner.SemesterContainsKeywordPredicate;
 import pwe.planner.model.planner.YearContainsKeywordPredicate;
 
@@ -47,7 +50,6 @@ public class BooleanExpressionParser<T> {
             + "Perhaps you might want to consider providing the criteria to filter?\n" + MESSAGE_TIP;
     public static final String MESSAGE_GENERAL_FAIL = "You might want to double check your filter expression!\n"
             + MESSAGE_TIP;
-
 
     private static final String WHITESPACE = " ";
 
@@ -80,6 +82,9 @@ public class BooleanExpressionParser<T> {
         } else if (prefixes.contains(PREFIX_SEMESTER) && argMultimap.getValue(PREFIX_SEMESTER).isPresent()) {
             String semesterKeyword = parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get()).toString();
             predicate = new SemesterContainsKeywordPredicate<>(semesterKeyword);
+        } else if (prefixes.contains(PREFIX_TAG) && argMultimap.getValue(PREFIX_TAG).isPresent()) {
+            String tagKeyword = parseTag(argMultimap.getValue(PREFIX_TAG).get()).tagName;
+            predicate = new TagContainsKeywordsPredicate<>(tagKeyword);
         } else {
             throw new BooleanParserPredicateException(String.format(MESSAGE_UNABLE_TO_CREATE_PREDICATE, args));
         }

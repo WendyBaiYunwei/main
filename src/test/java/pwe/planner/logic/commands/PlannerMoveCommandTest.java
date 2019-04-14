@@ -9,8 +9,8 @@ import static pwe.planner.testutil.TypicalModules.getTypicalModuleList;
 import static pwe.planner.testutil.TypicalRequirementCategories.getTypicalRequirementCategoriesList;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,17 +30,15 @@ import pwe.planner.storage.JsonSerializableApplication;
 
 public class PlannerMoveCommandTest {
 
-    @Rule public ExpectedException thrown = ExpectedException.none();
-
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
     private CommandHistory commandHistory = new CommandHistory();
     private Model model;
 
     @Before
     public void setUp() throws IllegalValueException {
-        model = new ModelManager(
-                new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
-                        getTypicalRequirementCategoriesList()).toModelType(),
-                new UserPrefs());
+        model = new ModelManager(new JsonSerializableApplication(getTypicalModuleList(), getTypicalDegreePlannerList(),
+                getTypicalRequirementCategoriesList()).toModelType(), new UserPrefs());
     }
 
     @Test
@@ -73,7 +71,7 @@ public class PlannerMoveCommandTest {
     }
 
     @Test
-    public void execute_validPlannerUnfilteredList_success() throws Exception {
+    public void execute_validPlannerUnfilteredList_success() {
         Code validCodeToMove = new Code("CS1010");
         Year validYear = new Year("1");
         Semester validSemester = new Semester("2");
@@ -84,26 +82,19 @@ public class PlannerMoveCommandTest {
                 .findFirst()
                 .orElse(null);
 
-        PlannerMoveCommand plannerMoveCommand =
-                new PlannerMoveCommand(validYear, validSemester, validCodeToMove);
+        PlannerMoveCommand plannerMoveCommand = new PlannerMoveCommand(validYear, validSemester, validCodeToMove);
 
         Model expectedModel = new ModelManager(model.getApplication(), new UserPrefs());
 
-        String expectedMessage =
-                String.format(PlannerMoveCommand.MESSAGE_SUCCESS, validCodeToMove, validYear, validSemester);
+        expectedModel.moveModuleBetweenPlanner(sourcePlannerToEdit, destinationPlannerToEdit, validCodeToMove);
 
-        Set<Code> newSourceCodes = new HashSet<>(sourcePlannerToEdit.getCodes());
-        newSourceCodes.remove(validCodeToMove);
-        Set<Code> newDestinationCodes = new HashSet<>(destinationPlannerToEdit.getCodes());
-        newDestinationCodes.add(validCodeToMove);
+        Set<Code> corequisites = model.getModuleByCode(validCodeToMove).getCorequisites();
+        String corequisitesMoved = corequisites.isEmpty()
+                ? "None"
+                : corequisites.stream().sorted().map(Code::toString).collect(Collectors.joining(", "));
+        String expectedMessage = String.format(PlannerMoveCommand.MESSAGE_SUCCESS, validCodeToMove, validYear,
+                validSemester, corequisitesMoved);
 
-        DegreePlanner editedSourcePlanner =
-                new DegreePlanner(sourcePlannerToEdit.getYear(), sourcePlannerToEdit.getSemester(), newSourceCodes);
-        DegreePlanner editedDestinationPlanner =
-                new DegreePlanner(destinationPlannerToEdit.getYear(), destinationPlannerToEdit.getSemester(),
-                        newDestinationCodes);
-        expectedModel.setDegreePlanner(sourcePlannerToEdit, editedSourcePlanner);
-        expectedModel.setDegreePlanner(destinationPlannerToEdit, editedDestinationPlanner);
         expectedModel.commitApplication();
 
         // plannerMove -> module moved
@@ -124,13 +115,16 @@ public class PlannerMoveCommandTest {
         Year validYear = new Year("1");
         Semester validSemester = new Semester("1");
 
-        PlannerMoveCommand plannerMoveCommand =
-                new PlannerMoveCommand(validYear, validSemester, validCodeToMove);
+        PlannerMoveCommand plannerMoveCommand = new PlannerMoveCommand(validYear, validSemester, validCodeToMove);
         Model expectedModel = new ModelManager(model.getApplication(), new UserPrefs());
         expectedModel.commitApplication();
 
-        String expectedMessage =
-                String.format(PlannerMoveCommand.MESSAGE_SUCCESS, validCodeToMove, validYear, validSemester);
+        Set<Code> corequisites = model.getModuleByCode(validCodeToMove).getCorequisites();
+        String corequisitesMoved = corequisites.isEmpty()
+                ? "None"
+                : corequisites.stream().sorted().map(Code::toString).collect(Collectors.joining(", "));
+        String expectedMessage = String.format(PlannerMoveCommand.MESSAGE_SUCCESS, validCodeToMove, validYear,
+                validSemester, corequisitesMoved);
 
         assertCommandSuccess(plannerMoveCommand, model, commandHistory, expectedMessage, expectedModel);
 
@@ -144,12 +138,51 @@ public class PlannerMoveCommandTest {
     }
 
     @Test
+    public void execute_unavailableModuleInSemesterPlannerUnfilteredList_success() {
+        // module not available in the semester
+        Code unavailableValidCodeToMove = new Code("CS1010");
+        Year validYear = new Year("1");
+        Semester validSemester = new Semester("3");
+
+        PlannerMoveCommand plannerMoveCommand =
+                new PlannerMoveCommand(validYear, validSemester, unavailableValidCodeToMove);
+        Model expectedModel = new ModelManager(model.getApplication(), new UserPrefs());
+        expectedModel.commitApplication();
+
+        String expectedMessage = String.format(PlannerMoveCommand.MESSAGE_UNAVAILABLE_SEMESTER, validSemester);
+
+        assertCommandFailure(plannerMoveCommand, model, commandHistory, expectedMessage);
+    }
+
+    @Test
+    public void execute_unavailableCorequisitesInSemesterPlannerUnfilteredList_success() {
+        // module's corequisite(s) not available in the semester
+        Code codeToMove = new Code("CS1231");
+        Year validYear = new Year("1");
+        Semester validSemester = new Semester("2");
+
+        PlannerMoveCommand plannerMoveCommand =
+                new PlannerMoveCommand(validYear, validSemester, codeToMove);
+        Model expectedModel = new ModelManager(model.getApplication(), new UserPrefs());
+        expectedModel.commitApplication();
+
+        Set<Code> corequisites = model.getModuleByCode(codeToMove).getCorequisites();
+        String corequisitesMoved = corequisites.isEmpty()
+                ? "None"
+                : corequisites.stream().sorted().map(Code::toString).collect(Collectors.joining(", "));
+
+        String expectedMessage =
+                String.format(PlannerMoveCommand.MESSAGE_UNAVAILABLE_COREQUISITES, corequisitesMoved, validSemester);
+
+        assertCommandFailure(plannerMoveCommand, model, commandHistory, expectedMessage);
+    }
+
+    @Test
     public void executeUndoRedo_invalidPlannerUnfilteredList_success() {
         Code invalidCodeToMove = new Code("CS9999");
         Year validYear = new Year("1");
         Semester validSemester = new Semester("2");
-        PlannerMoveCommand plannerMoveCommand =
-                new PlannerMoveCommand(validYear, validSemester, invalidCodeToMove);
+        PlannerMoveCommand plannerMoveCommand = new PlannerMoveCommand(validYear, validSemester, invalidCodeToMove);
 
         // execution failed -> application state not added into model
         assertCommandFailure(plannerMoveCommand, model, commandHistory,

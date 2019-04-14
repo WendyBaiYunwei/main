@@ -70,7 +70,7 @@ public class TypicalModules {
             .withCode("CS2102")
             .withName("Fiona Kunz")
             .withCredits("5")
-            .withSemesters("1", "2")
+            .withSemesters("1")
             .withCorequisites("CS1231")
             .build();
 

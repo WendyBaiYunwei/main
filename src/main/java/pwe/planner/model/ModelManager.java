@@ -351,6 +351,13 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void moveModuleBetweenPlanner(DegreePlanner sourcePlanner, DegreePlanner destinationPlanner, Code code) {
+        requireAllNonNull(sourcePlanner, destinationPlanner, code);
+
+        versionedApplication.moveModuleBetweenPlanner(sourcePlanner, destinationPlanner, code);
+    }
+
+    @Override
     public ObservableList<DegreePlanner> getFilteredDegreePlannerList() {
         return filteredDegreePlanners;
     }
@@ -394,8 +401,7 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void setRequirementCategory(RequirementCategory target,
-            RequirementCategory editedRequirementCategory) {
+    public void setRequirementCategory(RequirementCategory target, RequirementCategory editedRequirementCategory) {
         requireAllNonNull(target, editedRequirementCategory);
 
         versionedApplication.setRequirementCategory(target, editedRequirementCategory);

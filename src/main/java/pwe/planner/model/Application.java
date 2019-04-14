@@ -353,6 +353,41 @@ public class Application implements ReadOnlyApplication {
     }
 
     /**
+     * Moves the given module code {@code code} from {@code sourcePlanner} to {@code destinationPlanner} along
+     * with its corequisites.
+     * {@code code} must exist in the {@code sourcePlanner}.
+     */
+    public void moveModuleBetweenPlanner(DegreePlanner sourcePlanner, DegreePlanner destinationPlanner, Code code) {
+        requireAllNonNull(sourcePlanner, destinationPlanner, code);
+
+        Set<Code> codesToMove = new HashSet<>(modules.getModuleByCode(code).getCorequisites());
+        codesToMove.add(code);
+        Set<Code> editedDestinationPlannerCodes = new HashSet<>(destinationPlanner.getCodes());
+
+        for (Code codeToMove : codesToMove) {
+            DegreePlanner sourceDegreePlanner = degreePlanners.getDegreePlannerByCode(codeToMove);
+            Set<Code> editedSourceDegreePlanner = new HashSet<>(sourceDegreePlanner.getCodes());
+            editedSourceDegreePlanner.remove(codeToMove);
+            DegreePlanner editedSourcePlanner =
+                    new DegreePlanner(sourceDegreePlanner.getYear(), sourceDegreePlanner.getSemester(),
+                            editedSourceDegreePlanner);
+
+            setDegreePlanner(sourceDegreePlanner, editedSourcePlanner);
+        }
+
+        editedDestinationPlannerCodes.addAll(codesToMove);
+        DegreePlanner editedDestinationPlanner = new DegreePlanner(destinationPlanner.getYear(),
+                destinationPlanner.getSemester(), editedDestinationPlannerCodes);
+
+        // Search for the destinationPlanner is necessary as code could have been removed from destinationPlanner
+        DegreePlanner targetDestinationPlanner = getDegreePlannerList().stream()
+                .filter(destinationPlanner::isSameDegreePlanner)
+                .findFirst()
+                .orElse(null);
+        setDegreePlanner(targetDestinationPlanner, editedDestinationPlanner);
+    }
+
+    /**
      * Removes {@code key} from this {@code DegreePlannerList}.
      * {@code key} must exist in the degree planner list.
      */
