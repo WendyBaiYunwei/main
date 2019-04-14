@@ -588,8 +588,9 @@ After passing all of the above checks, `PlannerAddCommand` updates the context i
 In addition to adding module code(s) to the degree plan, the `PlannerAddCommand` class also saves the
 current database state through `commitApplication` (for undo/redo functions).
 
-.PlannerAddCommand component interactions
+.PlannerAddCommand component interactions part 1
 image::PlannerAddCommandSequenceDiagram1.png[width="650"]
+.PlannerAddCommand component interactions part 1
 image::PlannerAddCommandSequenceDiagram2.png[width="650"]
 
 ==== Design Considerations
