@@ -64,13 +64,13 @@ public class PlannerRemoveCommand extends Command {
 
         Set<Code> coreqsRemoved = new HashSet<>();
         Set<Code> coreqsOfCodesToRemove = new HashSet<>();
-        // Adds co-requisites of codes to remove to a set.
-        codesToRemove.stream().map(model::getModuleByCode).map(Module::getCorequisites)
-                .forEach(coreqsOfCodesToRemove::addAll);
 
         ObservableList<DegreePlanner> degreePlannerList = model.getApplication().getDegreePlannerList();
         for (DegreePlanner degreePlanner : degreePlannerList) {
             Set<Code> selectedCodeSet = new HashSet<>(degreePlanner.getCodes());
+            // Adds co-requisites of codes to remove to a set.
+            codesToRemove.stream().map(model::getModuleByCode).map(Module::getCorequisites)
+                    .forEach(coreqsOfCodesToRemove::addAll);
             // Returns relevant codes that are not just co-requisites to the code to remove, but are also existing
             // in the selected section of the degree plan.
             coreqsOfCodesToRemove.retainAll(selectedCodeSet);

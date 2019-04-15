@@ -2,57 +2,74 @@
 :site-section: AboutUs
 :imagesDir: ../images
 :stylesDir: ../stylesheets
+:repoURL: https://github.com/CS2113-AY1819S2-T09-1/main
+:prURL: {repoURL}/pull
+:forumURL: https://github.com/nusCS2113-AY1819S2/forum/issues
+:budgeterURL: https://github.com/CS2113-AY1819S2-M11-2/main
+:experimental:
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:warning-caption: :warning:
+endif::[]
+
 
 == PROJECT: PlanWithEase
-_{The dummy content given below serves as a placeholder to be updated in the future.}_ +
 
----
+Hi! I am Yunwei, a student from the National University of Singapore (NUS). I love to build
+applications that improve people's lives.
+
+This portfolio documents my involvement in a software development project, through which my teammates
+and me created a degree planner application within one school semester. This portfolio shows
+ what the project is about and my contribution to the project.
 
 == Overview
 
-AddressBook - Level 4 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
+For this project, we aim to simplify the process of degree-planning among NUS information security students.
+
+ifdef::env-github[]
+image::Ui.png[width="800"]
+endif::[]
+
+ifndef::env-github[]
+image::Ui.png[width="970"]
+endif::[]
+
+
+As a developer, my role in the project was writing codes to enable users to:
+
+* Add modules to the degree plan.
+* Remove modules from the degree plan.
+* Know the modules suggested to put inside the degree plan.
 
 == Summary of contributions
 
-* *Major enhancement*: added *the ability to undo/redo previous commands*
-** What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be reversed by using the redo command.
-** Justification: This feature improves the product significantly because a user can make mistakes in commands and the app should provide a convenient way to rectify them.
-** Highlights: This enhancement affects existing commands and commands to be added in future. It required an in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
-** Credits: _{mention here if you reused any code/ideas from elsewhere or if a third-party library is heavily used in the feature so that a reader can make a more accurate judgement of how much effort went into the feature}_
+|===
+|_This section summarises my contribution to the project._
+|===
 
-* *Minor enhancement*: added a history command that allows the user to navigate to previous commands using up/down keys.
+* *Major enhancement*: added *the ability to add/remove module codes to/from the degree plan*
+** What it does: allows the user to add module codes to the degree plan, and remove the codes from the degree plan.
+** Justification: This feature can be crucial because the degree plan is an important section that enables the users to plan well. Therefore, adding and removing the module codes are essential features that make PWE fulfill its purpose.
+** Highlights: This enhancement aims to prevent possible errors, including the hidden ones that may occur when other parts of the software get modified. Besides, the model and logic implementation for the feature is kept as minimalistic as possible to reduce unnecessary coupling.
 
-* *Code contributed*: [https://github.com[Functional code]] [https://github.com[Test code]] _{give links to collated code files}_
+* *Minor enhancement*: added a command to suggest modules to put inside the degree plan.
 
-* *Other contributions*:
+* *Code contributed*: [{repoURL}/commits?author=WendyBaiyunwei[Commits]] [https://nuscs2113-ay1819s2.github.io/dashboard-beta/#search=WendyBaiyunwei[RepoSense Code Contribution Dashboard]]
 
 ** Project management:
-*** Managed releases `v1.3` - `v1.5rc` (3 releases) on GitHub
-** Enhancements to existing features:
-*** Updated the GUI color scheme (Pull requests https://github.com[#33], https://github.com[#34])
-*** Wrote additional tests for existing features to increase coverage from 88% to 92% (Pull requests https://github.com[#36], https://github.com[#38])
-** Documentation:
-*** Did cosmetic tweaks to existing contents of the User Guide: https://github.com[#14]
-** Community:
-*** PRs reviewed (with non-trivial review comments): https://github.com[#12], https://github.com[#32], https://github.com[#19], https://github.com[#42]
-*** Contributed to forum discussions (examples:  https://github.com[1], https://github.com[2], https://github.com[3], https://github.com[4])
-*** Reported bugs and suggestions for other teams in the class (examples:  https://github.com[1], https://github.com[2], https://github.com[3])
-*** Some parts of the history feature I added was adopted by several other class mates (https://github.com[1], https://github.com[2])
-** Tools:
-*** Integrated a third party library (Natty) to the project (https://github.com[#42])
-*** Integrated a new Github plugin (CircleCI) to the team repo
-
-_{you can add/remove categories in the list above}_
+*** Assigned and managed "issues" for "planner_add", "planner_remove" and "planner_suggest" commands.
+*** PR reviewed: https://github.com/CS2113-AY1819S2-T09-1/main/pull/146
 
 == Contributions to the User Guide
 
-
 |===
-|_Given below are sections I contributed to the User Guide. They showcase my ability to write documentation targeting end-users._
+|_Given below are sections I contributed to the User Guide. They showcase my ability to write
+documentation targeting end-users to facilitate mastering of *PlanWithEase*'s features. ._
 |===
 
-include::../UserGuide.adoc[tag=undoredo]
-
+include::../UserGuide.adoc[tag=planner-add-remove]
+include::../UserGuide.adoc[tag=planner-suggest]
 
 == Contributions to the Developer Guide
 
@@ -60,12 +77,6 @@ include::../UserGuide.adoc[tag=undoredo]
 |_Given below are sections I contributed to the Developer Guide. They showcase my ability to write technical documentation and the technical depth of my contributions to the project._
 |===
 
-include::../DeveloperGuide.adoc[tag=undoredo]
-
-
-
-== PROJECT: PowerPointLabs
-
----
-
-_{Optionally, you may include other projects in your portfolio.}_
+include::../DeveloperGuide.adoc[tag=planner-add]
+include::../DeveloperGuide.adoc[tag=planner-remove]
+include::../DeveloperGuide.adoc[tag=planner-suggest]

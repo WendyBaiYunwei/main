@@ -4,68 +4,101 @@
 :stylesDir: ../stylesheets
 
 == PROJECT: PlanWithEase
-_{The dummy content given below serves as a placeholder to be updated in the future.}_ +
+Greetings! I am *Yeo Cheng Hong*, a Year 2 student studying in the National University of Singapore (NUS). +
+I have a burning passion for developing applications and software that have a positive impact on peoples’ life.
 
----
+This portfolio serves as a documentation of my contributions and involvements of a team-based project that I recently
+worked on for a module (CS2113T
+Software Engineering & Object-Oriented Programming) here at NUS. +
+
+This project was completed over the span of 8 weeks by me and 4 other amazing students (<<truegitnovice#,Ahn TaeGyu>>,
+<<wendybaiyunwei#,Bai YunWei>>, <<lycjackie#,Lee Yu Choy>>, <<creastery#, Ngo Wei Lin>>).
+
+I believe that this project is able to illustrate how I am able to turn my passion into a positive impact.
 
 == Overview
 
-AddressBook - Level 4 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
+PlanWithEase (PWE) is an application designed to help National University of Singapore (NUS) Information Security
+freshmen in creating a comprehensive degree plan according to the degree requirements.
+
+The main motivation behind PWE is to assist students by simplify the degree planning process, and at the same time
+provide them with an overview of the degree plan so that they are able to make informed decisions.
+
+ifndef::env-github[]
+image::Ui.png[width="700"]
+endif::[]
+
+== Understanding This Project Portfolio
+
+The following symbols are used throughout this project portfolio:
+[NOTE]
+====
+This symbol denotes information that you may want to take note of when using PlanWithEase.
+====
+[TIP]
+====
+This symbol denotes a tip which you may find useful when using PlanWithEase.
+====
+[WARNING]
+====
+This symbol denotes a warning message which you need to be careful of when using PlanWithEase.
+====
 
 == Summary of contributions
 
-* *Major enhancement*: added *the ability to undo/redo previous commands*
-** What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be reversed by using the redo command.
-** Justification: This feature improves the product significantly because a user can make mistakes in commands and the app should provide a convenient way to rectify them.
-** Highlights: This enhancement affects existing commands and commands to be added in future. It required an in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
-** Credits: _{mention here if you reused any code/ideas from elsewhere or if a third-party library is heavily used in the feature so that a reader can make a more accurate judgement of how much effort went into the feature}_
+This section provides an overview of the contributions that I have made to this project
 
-* *Minor enhancement*: added a history command that allows the user to navigate to previous commands using up/down keys.
+* *Major enhancement*: Degree Requirement Management
+** This feature allows the user to manage the degree requirement categories in PlanWithEase easily using the
+`requirement_add`, `requirement_remove` and `requirement_move` and `requirement_list` commands.
 
-* *Code contributed*: [https://github.com[Functional code]] [https://github.com[Test code]] _{give links to collated code files}_
+** Justification: This feature allows users to be able to keep track of the various different requirement categories.
+ So that they are able to fulfill all the degree requirement categories in order to graduate on time.
 
-* *Other contributions*:
+** Highlights: This enhancement provides an overview of all the degree requirement categories by listing the modules
+added to each degree requirement category as well as the current credit count of each degree requirement category.
 
-** Project management:
-*** Managed releases `v1.3` - `v1.5rc` (3 releases) on GitHub
+* *Code contributed* : [link:https://github.com/CS2113-AY1819S2-T09-1/main/commits/master?author=chyeo[Commits]] [link:https://github.com/CS2113-AY1819S2-T09-1/main/pulls?q=is%3Apr+author%3Achyeo[Pull Requests]] [https://nuscs2113-ay1819s2.github.io/dashboard-beta/#=undefined&search=chyeo[RepoSense Code Contribution Dashboard]]
+
+* *Notable Enhancements to the project*:
 ** Enhancements to existing features:
-*** Updated the GUI color scheme (Pull requests https://github.com[#33], https://github.com[#34])
-*** Wrote additional tests for existing features to increase coverage from 88% to 92% (Pull requests https://github.com[#36], https://github.com[#38])
-** Documentation:
-*** Did cosmetic tweaks to existing contents of the User Guide: https://github.com[#14]
-** Community:
-*** PRs reviewed (with non-trivial review comments): https://github.com[#12], https://github.com[#32], https://github.com[#19], https://github.com[#42]
-*** Contributed to forum discussions (examples:  https://github.com[1], https://github.com[2], https://github.com[3], https://github.com[4])
-*** Reported bugs and suggestions for other teams in the class (examples:  https://github.com[1], https://github.com[2], https://github.com[3])
-*** Some parts of the history feature I added was adopted by several other class mates (https://github.com[1], https://github.com[2])
-** Tools:
-*** Integrated a third party library (Natty) to the project (https://github.com[#42])
-*** Integrated a new Github plugin (CircleCI) to the team repo
+*** Updated the UI aesthetics: https://github.com/CS2113-AY1819S2-T09-1/main/pull/133[#133]
 
-_{you can add/remove categories in the list above}_
+** Signification Modification of Address Book code base for use in PWE:
+*** Implementation of `RequirementCategory` model: https://github.com/CS2113-AY1819S2-T09-1/main/pull/43[#43]
+*** Combination of all `Versioned` class to a single: `VersionAddressBook` class https://github.com/CS2113-AY1819S2-T09-1/main/pull/69[#69]
+
+** Documentation:
+*** Update of user stories and Use Cases: https://github.com/CS2113-AY1819S2-T09-1/main/pull/61[#61]
+
+** Community:
+*** Contributed to *forum discussions* (examples: Forum link:https://github.com/nusCS2113-AY1819S2/forum/issues/25[#25])
+*** Reported bugs in another team's project, link:https://github.com/cs2113-ay1819s2-t08-2/main[LIFE] (examples: Issues
+link:https://github.com/cs2113-ay1819s2-t08-2/main/issues/55[#55], link:https://github.com/cs2113-ay1819s2-t08-2/main/issues/62[#62], link:https://github.com/cs2113-ay1819s2-t08-2/main/issues/65[#65],
+link:https://github.com/cs2113-ay1819s2-t08-2/main/issues/67[#67], link:https://github.com/cs2113-ay1819s2-t08-2/main/issues/75[#75])
+
 
 == Contributions to the User Guide
 
 
 |===
-|_Given below are sections I contributed to the User Guide. They showcase my ability to write documentation targeting end-users._
+|_The following are documentations made to the User Guide which acts as manual on how to use the features that I have
+implemented in PWE. On top of that, it provides me with an opportunity to showcase my ability to write documentation
+ for end-users._
 |===
 
-include::../UserGuide.adoc[tag=undoredo]
+include::../UserGuide.adoc[tag=requirementtracker]
+include::../UserGuide.adoc[tag=requirementadd]
 
 
 == Contributions to the Developer Guide
 
 |===
-|_Given below are sections I contributed to the Developer Guide. They showcase my ability to write technical documentation and the technical depth of my contributions to the project._
+|_The following are documentations made to the Developer Guide to serve as a manual to guide the developers on how the
+ features are implemented PWE as well as insights on the design considerations made. On top of that, it provides me an
+ opportunity to showcase my ability to write technical documentation and the technical depth of my contributions to PWE.._
 |===
 
-include::../DeveloperGuide.adoc[tag=undoredo]
+include::../DeveloperGuide.adoc[tag=requirement-add]
 
 
-
-== PROJECT: PowerPointLabs
-
----
-
-_{Optionally, you may include other projects in your portfolio.}_

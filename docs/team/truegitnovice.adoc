@@ -2,6 +2,15 @@
 :site-section: AboutUs
 :imagesDir: ../images
 :stylesDir: ../stylesheets
+:repoURL: https://github.com/CS2113-AY1819S2-T09-1/main
+:prURL: {repoURL}/pull
+:forumURL: https://github.com/nusCS2113-AY1819S2/forum/issues
+:experimental:
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:warning-caption: :warning:
+endif::[]
 
 == PROJECT: PlanWithEase
 
@@ -16,61 +25,119 @@ Information Security freshmen in creating a comprehensive degree plan according 
 designed to be simple and intuitive application that allows users to interact with by typing the commands
 (using a Command Line Interface). Moreover, PWE also comes with a clean Graphical User Interface (GUI) that presents
 information in an organized manner.Hence, even if you are unfamiliar with the Command Line Interface, you will  not
-need to spend much time understanding how to use PWE. PWE is build by me and 4 other Information Security students.
+need to spend much time understanding how to use PWE. PWE was completed by a team of five members consisting of
+<<creastery#,Ngo Wei Lin>>, <<wendybaiyunwei#,Bai YunWei>>, <<lycjackie#,Lee Yu Choy>>, <<chyeo#, Yeo Cheng Hong>>
+and me.
 
-.PlanWithEase Application
+ifdef::env-github[]
 image::Ui.png[width="800"]
+endif::[]
+
+ifndef::env-github[]
+image::Ui.png[width="970"]
+endif::[]
+
+== Understanding This Project Portfolio
+
+The following symbols are used throughout this project portfolio:
+[NOTE]
+====
+This symbol denotes information that you may want to take note of when using the application.
+====
+[TIP]
+====
+This symbol denotes a tip which you may find useful when using the application.
+====
+[WARNING]
+====
+This symbol denotes a warning message which you need to be careful of when using the application.
+====
+
+Additionally, you may also encounter the following text styles:
+====
+* Commands or parameters will be in this `format`.
+* Important messages will be *bold*.
+* Undoable command will be in _italics_.
+* Keyboard buttons will be referred to as such: kbd:[F1].
+====
 
 == Summary of contributions
+|===
+|_Given below is a summary of contributions I made in this project._
+|===
 
-* *Enhancements added:*
+=== *Major Enhancement*: Degree Plan Management
 
-** *Enhancement 1:* Built the degree planner model
-(Pull Requests https://github.com/CS2113-AY1819S2-T09-1/main/pull/34[#34], https://github.com/CS2113-AY1819S2-T09-1/main/pull/75[#75])
-*** What it does: allows the application to handle of all the *degree planner* related features.
-*** Justification: This feature ...
-*** Highlights: This enhancement ...
+==== Planner Move, Planner Show & Planner list
 
-** *Enhancement 2:* Added the ability to move modules between academic semesters of degree plan
-*** What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be
-reversed by using the redo command.
-*** Justification: This feature improves the product significantly because a user can ...
-*** Highlights: This enhancement affects existing commands and commands to be added in future. It required an
-in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
+During this enhancement, *Degree Planner* model was build to allow other developer <<wendybaiyunwei#,Bai YunWei>> and me
+to integrate planner related features into the application as well as stores degree plan related information.
 
-** *Enhancement 3:* Added the ability to list the degree plan
-*** What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be
-reversed by using the redo command.
-*** Justification: This feature is essential in the product ...
-*** Highlights: This enhancement affects existing commands and commands to be added in future. It required an
-in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
+* Summary of the features:
+** Planner Move feature allows a module in the degree plan to be easily moved to another semester.
+** Planner Show feature allows displaying of specific semesters.
+** Planner list feature allows displaying of all semesters in the degree plan.
 
-** *Enhancement 4:* Added the ability list specific academic semesters of degree plan
-*** What it does: allows the user to list specific academic semesters of degree plan
-*** Justification: This feature improves the product significantly because a user can...
-*** Highlights: T...
+* Justification:
+** Users can keep track of degree plan details (such as modules to take in particular semesters).
+** Users can easily make changes to the degree plan by moving a module in the degree plan with `planner_move` command.
+** Users can easily display specific semesters that the user wants with `planner_show` command.
 
-** *Enhancement 5:* Added the degree planner panel for UI ...
-*** What it does: allows the user to list specific academic semesters of degree plan
-*** Justification: This feature improves the product significantly because a user can...
-*** Highlights: T...
+* Highlights:
+** During the enhancement, there were numerous reviews done to ensure that no other model components is
+broken and any degree plan related features can be integrated without any problem.
+* Planner Move was enhanced to carried out checks for the module's co-requisite and semesters it and its
+co-requisites are offered in.
+* Planner Show was enhanced to utilize boolean expression parser that was designed by <<lycjackie#,Lee Yu Choy>>.
 
-* *Code contributions*: https://nuscs2113-ay1819s2.github.io/dashboard-beta/#search=Ahn%20TaeGyu[RepoSense]
+* Credits:
+** Plenty of module corrections and suggestions were made during the built of  *Degree Planner* model by <<creastery#,
+Ngo Wei Lin>>.
+** Boolean expression parser was designed by <<lycjackie#,Lee Yu Choy>>.
 
-* *Other contributions*:
+=== *Minor Enhancement*: Adding UI segment for degree plan
+* Justification: UI part for degree plan was added to displays the semesters and modules to be taken during the
+semesters.
+* Highlights:
+** Browser Panel that existed originally have to be adjusted in order for the UI part of the degree
+plan to be added.
+** UI for Degree plan was updated to sort the degree plan before displaying.
+* Credits:
+** Beautification of the overall UI including the part for the degree plan was done by <<lycjackie#,Lee Yu
+Choy>>
+
+=== *Code Contributed*:
+
+link:{repoURL}/commits?author=truegitnovice[Commits],
+link:{repoURL}/pulls?q=is%3Apr+is%3Amerged+author%3Atruegitnovice[Pull Requests] &
+https://nuscs2113-ay1819s2.github.io/dashboard-beta/#=undefined&search=truegitnovice[RepoSense Code Contribution
+Dashboard]
+
+=== *Other contributions*:
 
 ** Project management:
 ** Enhancements to existing features:
-*** Enhance `planner_list` feature ...
+*** Enhance `planner_move` feature to handle co-requisites as well as semester the modules are offered in (Pull
+Request https://github.com/CS2113-AY1819S2-T09-1/main/pull/197[#197])
+*** Enhance `planner_show` feature to utilize `BooleanExpressionParser` (Pull Request
+https://github.com/CS2113-AY1819S2-T09-1/main/pull/196[#196]) (Note: this was done during the implementation)
 ** Documentation:
-*** Update UI mock up for v.1.2 ...
-*** Manage user guide ...
-*** Manage developer guide ...
-** Community:
-*** PRs reviewed (with non-trivial review comments): https://github.com[#12], https://github.com[#32], https://github.com[#19], https://github.com[#42]
-*** Reported bugs and suggestions for other teams in the class (examples:  https://github.com[1], https://github.com[2], https://github.com[3])
-*** Some parts of the history feature I added was adopted by several other class mates (https://github.com[1], https://github.com[2])
+*** Update UI mock up for
+**** v 1.1 (Pull Request https://github.com/CS2113-AY1819S2-T09-1/main/pull/31[#31])
+**** v.1.2 (Pull Request https://github.com/CS2113-AY1819S2-T09-1/main/pull/98[#98])
+*** Manage user guide (e.g. Pull Request https://github.com/CS2113-AY1819S2-T09-1/main/pull/47[#47])
+*** Manage developer guide (e.g. Pull Request https://github.com/CS2113-AY1819S2-T09-1/main/pull/2[#2],
+https://github.com/CS2113-AY1819S2-T09-1/main/pull/7[#7])
+*** Documentation management was mainly done through reviews (e.g.
+https://github.com/CS2113-AY1819S2-T09-1/main/pull/172[#172])
 
+** PRs reviewed:
+https://github.com/CS2113-AY1819S2-T09-1/main/pulls?q=is%3Apr+is%3Aclosed+reviewed-by%3Atruegitnovice[Approved Pull
+Requests]
+
+** Issues:
+*** Opened issues for enhancement and improvements that could be made (e.g.
+https://github.com/CS2113-AY1819S2-T09-1/main/issues/164[164], https://github.com/CS2113-AY1819S2-T09-1/main/issues/97[97])
 
 == Contributions to the User Guide
 
@@ -79,11 +146,9 @@ in-depth analysis of design alternatives. The implementation too was challenging
 |_Given below are sections I contributed to the User Guide. They showcase my ability to write documentation targeting end-users._
 |===
 
-include::../UserGuide.adoc[tag=planner-move]
+include::../UserGuide.adoc[tag=plannermove]
 
-include::../UserGuide.adoc[tag=planner-show]
-
-include::../UserGuide.adoc[tag=planner-list]
+include::../UserGuide.adoc[tag=plannershow]
 
 == Contributions to the Developer Guide
 
@@ -94,5 +159,3 @@ include::../UserGuide.adoc[tag=planner-list]
 include::../DeveloperGuide.adoc[tag=planner-move]
 
 include::../DeveloperGuide.adoc[tag=planner-show]
-
-include::../DeveloperGuide.adoc[tag=planner-list]
