@@ -68,6 +68,7 @@ public class PlannerRemoveCommand extends Command {
         ObservableList<DegreePlanner> degreePlannerList = model.getApplication().getDegreePlannerList();
         for (DegreePlanner degreePlanner : degreePlannerList) {
             Set<Code> selectedCodeSet = new HashSet<>(degreePlanner.getCodes());
+
             // Adds co-requisites of codes to remove to a set.
             codesToRemove.stream().map(model::getModuleByCode).map(Module::getCorequisites)
                     .forEach(coreqsOfCodesToRemove::addAll);
