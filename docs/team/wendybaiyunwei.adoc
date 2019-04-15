@@ -20,8 +20,13 @@ Hi! I am Yunwei, a student from the National University of Singapore (NUS). I lo
 applications that improve people's lives.
 
 This portfolio documents my involvement in a software development project, through which my teammates
+<<<<<<< HEAD
 and me created a degree planner application within one school semester. This portfolio shows
  what the project is about and my contribution to the project.
+=======
+and I created a degree planner application within one school semester. This portfolio shows 
+what the project is about and my contribution to the project.
+>>>>>>> cd04ee3904119a4cc0a70a170d5bfc2ba873e35d
 
 == Overview
 
@@ -68,7 +73,11 @@ As a developer, my role in the project was writing codes to enable users to:
 documentation targeting end-users to facilitate mastering of *PlanWithEase*'s features. ._
 |===
 
+<<<<<<< HEAD
 include::../UserGuide.adoc[tag=planner-add-remove]
+=======
+include::../UserGuide.adoc[tag=planner-add-remove] +
+>>>>>>> cd04ee3904119a4cc0a70a170d5bfc2ba873e35d
 include::../UserGuide.adoc[tag=planner-suggest]
 
 == Contributions to the Developer Guide
